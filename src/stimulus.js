@@ -40,6 +40,21 @@ export function calibration1Stimulus(trialNum) {
     `;
 }
 
+export function calibration2Stimulus(trialNum, targetHeight, mercuryHeight) {
+    return `
+        <div id="calibration2-task" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
+            <h2>Calibration Task - Step 2</h2>
+            <p>Trial ${trialNum} of 15</p>
+            <div id="thermometer-container" style="display: flex; justify-content: center; align-items: center; height: 300px; width: 100px; border: 1px solid #000;">
+                <div id="thermometer" style="position: relative; width: 100%; height: 100%; background-color: #e0e0e0;">
+                    <div id="mercury" style="height: ${mercuryHeight}%; background-color: red;"></div>
+                    <div id="target-bar" style="position: absolute; bottom: ${targetHeight}%; width: 100%; height: 2px; background-color: black;"></div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
 export const calibrationWelcomeMessage = "<p>Welcome to the Calibration Task!<p/><p><b>Please press any key to start the calibration.</b></p>";
 
 export const experimentWelcomeMessage = "<p>Welcome to Cognitive Apathy!<p/><p><b>Please press any key to start the experiment.</b></p>";

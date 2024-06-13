@@ -1,7 +1,7 @@
 import { ParameterType } from "jspsych";
 import { calibration1Stimulus } from "./stimulus";  // <-- Added this line
 
-class CalibrationPlugin {
+class Calibration1Plugin {
     static info = {
         name: 'calibration-task',
         parameters: {
@@ -117,4 +117,4 @@ class CalibrationPlugin {
     }
 }
 
-export default CalibrationPlugin;
+export default Calibration1Plugin;

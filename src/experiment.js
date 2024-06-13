@@ -11,7 +11,8 @@ import "../styles/main.scss";
 
 import FullscreenPlugin from "@jspsych/plugin-fullscreen";
 import HtmlKeyboardResponsePlugin from "@jspsych/plugin-html-keyboard-response";
-import CalibrationPlugin from "./calibration1";
+import Calibration1Plugin from "./calibration1";
+import Calibration2Plugin from "./calibration2";
 import ThermometerPlugin from "./thermometer";
 import PreloadPlugin from "@jspsych/plugin-preload";
 import {initJsPsych, ParameterType} from "jspsych";
@@ -54,10 +55,10 @@ export async function run({ assetPaths, input = {}, environment, title, version 
       stimulus: calibrationWelcomeMessage
   });
 
-  // Calibration trials
+  // Calibration 1 trials
     const calibration_trials = {
       timeline: Array.from({ length: 15 }, (_, i) => ({
-          type: CalibrationPlugin,
+          type: Calibration1Plugin,
           duration: 5000, // 5 seconds
           trialNum: i + 1  // Pass trial number to the plugin
       }))
@@ -76,6 +77,24 @@ export async function run({ assetPaths, input = {}, environment, title, version 
             return `<p>Average Tap Count: ${averageTaps}</p><p><b>Press any key to continue.</b></p>`;
         }
     });
+  // Welcome screen for second calibration
+    timeline.push({
+        type: HtmlKeyboardResponsePlugin,
+        stimulus: "<p>Calibration Part 2. Please press any key to start.</p>",
+    });
+
+  // Second calibration trials (Step 2)
+    const second_calibration_trials = [
+        ...Array(5).fill({ targetHeight: 25 }),  // 5 low targetHeight
+        ...Array(5).fill({ targetHeight: 50 }),  // 5 medium targetHeight
+        ...Array(5).fill({ targetHeight: 90 }),  // 5 high targetHeight
+    ].map((trial, i) => ({
+        ...trial,
+        type: Calibration2Plugin,
+        trialNum: i + 1
+    }));
+
+    timeline.push(...second_calibration_trials);
 
   // accept trial object
   const acceptStep = {
