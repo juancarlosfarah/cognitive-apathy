@@ -25,6 +25,8 @@ import { generateStimulus, calibrationWelcomeMessage, experimentWelcomeMessage }
  * @type {import("jspsych-builder").RunFunction}
  */
 export async function run({ assetPaths, input = {}, environment, title, version }) {
+  const calibrationOneNumberOfTrials = 15;
+  
   const jsPsych = initJsPsych();
 
   const targetOptions = [25, 50, 90];
@@ -57,7 +59,7 @@ export async function run({ assetPaths, input = {}, environment, title, version 
 
   // Calibration 1 trials
     const calibration_trials = {
-      timeline: Array.from({ length: 2 }, (_, i) => ({
+      timeline: Array.from({ length: calibrationOneNumberOfTrials }, (_, i) => ({
           type: Calibration1Plugin,
           duration: 5000, // 5 seconds
           trialNum: i + 1  // Pass trial number to the plugin
