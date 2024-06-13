@@ -57,7 +57,7 @@ export async function run({ assetPaths, input = {}, environment, title, version 
 
   // Calibration 1 trials
     const calibration_trials = {
-      timeline: Array.from({ length: 15 }, (_, i) => ({
+      timeline: Array.from({ length: 2 }, (_, i) => ({
           type: Calibration1Plugin,
           duration: 5000, // 5 seconds
           trialNum: i + 1  // Pass trial number to the plugin
@@ -72,7 +72,7 @@ export async function run({ assetPaths, input = {}, environment, title, version 
         type: HtmlKeyboardResponsePlugin,
         stimulus: function() {
             const trials = jsPsych.data.get().filter({ trial_type: 'calibration-task' }).values();
-            const averageTaps = CalibrationPlugin.calculateAverageTaps(trials);
+            const averageTaps = Calibration1Plugin.calculateAverageTaps(trials);
             window.averageTaps = averageTaps; // Store the average in a global variable for easy access
             return `<p>Average Tap Count: ${averageTaps}</p><p><b>Press any key to continue.</b></p>`;
         }

@@ -77,7 +77,8 @@ class Calibration2Plugin {
         // Event listener for key presses
         document.addEventListener('keydown', handleKeyDown);
     }
-
+    
+    //Not sure how to proceed with this
     static calculateAutoDecrease(data) {
         const tapCounts = data.map(trial => trial.tapCount);
         const averageTaps = tapCounts.reduce((a, b) => a + b, 0) / tapCounts.length;
