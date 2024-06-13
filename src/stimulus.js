@@ -24,3 +24,22 @@ export function generateStimulus(isAcceptStep, reward, targetHeight, mercuryHeig
 
         `;
 }
+export function calibration1Stimulus(trialNum) {
+    return `
+        <div id="calibration-task" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
+            <h2>Calibration Task</h2>
+            <p id="hold-keys-message">Hold the <b>A</b> key with pinky, <b>W</b> key with ring finger, and <b>E</b> key with middle finger!
+            <p id="start-message" style="display: none;">Hit <b>Enter</b> to start! Then tap the <b>R</b> key with your index finger as fast as possible.</p>
+            <div id="circle-container" style="position: relative; width: 100px; height: 100px;">
+                <div id="blink-circle" style="width: 100px; height: 100px; border: 3px solid black; border-radius: 50%; position: absolute; top: 0; left: 0;">
+                    <div id="inner-circle" style="width: 80px; height: 80px; background-color: red; border-radius: 50%; position: absolute; top: 10px; left: 10px; visibility: hidden;"></div>
+                </div>
+            </div>
+            <p>Trial ${trialNum} of 15</p>
+        </div>
+    `;
+}
+
+export const calibrationWelcomeMessage = "<p>Welcome to the Calibration Task!<p/><p><b>Please press any key to start the calibration.</b></p>";
+
+export const experimentWelcomeMessage = "<p>Welcome to Cognitive Apathy!<p/><p><b>Please press any key to start the experiment.</b></p>";
