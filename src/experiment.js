@@ -11,10 +11,12 @@ import "../styles/main.scss";
 
 import FullscreenPlugin from "@jspsych/plugin-fullscreen";
 import HtmlKeyboardResponsePlugin from "@jspsych/plugin-html-keyboard-response";
+import CalibrationPlugin from "./calibration1";
 import ThermometerPlugin from "./thermometer";
 import PreloadPlugin from "@jspsych/plugin-preload";
 import {initJsPsych, ParameterType} from "jspsych";
-import {generateStimulus} from "./stimulus";
+import { generateStimulus, calibrationWelcomeMessage, experimentWelcomeMessage } from "./stimulus"; 
+
 
 /**
  * This function will be executed by jsPsych Builder and is expected to run the jsPsych experiment
@@ -46,7 +48,34 @@ export async function run({ assetPaths, input = {}, environment, title, version 
     video: assetPaths.video,
   });
 
-  // calibration
+  // Welcome screen for calibration
+    timeline.push({
+      type: HtmlKeyboardResponsePlugin,
+      stimulus: calibrationWelcomeMessage
+  });
+
+  // Calibration trials
+    const calibration_trials = {
+      timeline: Array.from({ length: 15 }, (_, i) => ({
+          type: CalibrationPlugin,
+          duration: 5000, // 5 seconds
+          trialNum: i + 1  // Pass trial number to the plugin
+      }))
+  };
+
+    timeline.push(calibration_trials);  // <-- Added the calibration trials to the main timeline
+
+  // display average taps temporarily
+
+      timeline.push({  // <-- Added this block to display average taps
+        type: HtmlKeyboardResponsePlugin,
+        stimulus: function() {
+            const trials = jsPsych.data.get().filter({ trial_type: 'calibration-task' }).values();
+            const averageTaps = CalibrationPlugin.calculateAverageTaps(trials);
+            window.averageTaps = averageTaps; // Store the average in a global variable for easy access
+            return `<p>Average Tap Count: ${averageTaps}</p><p><b>Press any key to continue.</b></p>`;
+        }
+    });
 
   // accept trial object
   const acceptStep = {
@@ -90,7 +119,7 @@ export async function run({ assetPaths, input = {}, environment, title, version 
   // start
   timeline.push({
     type: HtmlKeyboardResponsePlugin,
-    stimulus: "<p>Welcome to Cognitive Apathy!<p/><p><b>Please press any key to start the experiment.</b></p>",
+    stimulus: experimentWelcomeMessage,
   });
 
   // Switch to fullscreen
