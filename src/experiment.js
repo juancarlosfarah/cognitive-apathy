@@ -74,7 +74,7 @@ export async function run({ assetPaths, input = {}, environment, title, version 
 
   //
   const trial = {
-    autoDecreaseAmount: 1,
+    autoDecreaseAmount: 5,
     randomDelay: [0, 0],
     reward: 0.25,
     targetHeight: 25,
