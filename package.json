@@ -1,5 +1,6 @@
 {
   "private": true,
+  "homepage": "https://juancarlosfarah.github.io/cognitive-apathy",
   "scripts": {
     "jspsych": "jspsych -e experiment",
     "start": "npm run jspsych -- run",
