@@ -13,7 +13,9 @@
     "jspsych": "^7.3.1"
   },
   "devDependencies": {
-    "jspsych-builder": "^4.4.0"
+    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+    "jspsych-builder": "^4.4.0",
+    "prettier": "3.3.2"
   },
   "browserslist": ">0.25%, not dead"
 }
