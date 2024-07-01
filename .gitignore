@@ -37,3 +37,5 @@ database.sqlite
 
 # jspysch
 .jspsych-builder
+packaged/
+experiment/
