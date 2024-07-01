@@ -1,11 +1,10 @@
 import { ParameterType } from 'jspsych';
 
-import { generateStimulus } from './stimulus';
-import { randomNumberBm } from './utils';
+import { calibrationStimulus } from './stimulus';
 
-class ThermometerPlugin {
+class CalibrationPlugin {
   static info = {
-    name: 'cognitive-agency-task',
+    name: 'calibration-task',
     parameters: {
       autoDecreaseAmount: {
         type: ParameterType.FLOAT,
@@ -19,10 +18,17 @@ class ThermometerPlugin {
         type: ParameterType.INT,
         default: 10,
       },
-      randomDelay: {
+      reward: {
+        type: ParameterType.FLOAT,
+        default: 0.5,
+      },
+      showThermometer: {
+        type: ParameterType.BOOL,
+        default: true,
+      },
+      targetHeight: {
         type: ParameterType.INT,
-        array: true,
-        default: [0, 0],
+        default: 50,
       },
       duration: {
         type: ParameterType.INT,
@@ -46,18 +52,8 @@ class ThermometerPlugin {
     let error = '';
     let areKeysHeld = false;
     let keysState = { a: false, w: false, e: false };
-    let randomDelay = trial.randomDelay;
     let timerRef = null;
     let intervalRef = null;
-
-    // create variation in reward and stimulus
-    const targetVariation = 0; // Math.random() * 10 - 5;
-    const rewardVariation = 0; // Math.random() * 4 - 2;
-
-    const targetHeight =
-      this.jsPsych.timelineVariable('targetHeight') + targetVariation;
-    const reward =
-      (this.jsPsych.timelineVariable('reward') + rewardVariation) / 100;
 
     // helper functions
     const increaseMercury = (amount = trial.autoIncreaseAmount) => {
@@ -65,20 +61,14 @@ class ThermometerPlugin {
       updateUI();
     };
 
-    const getRandomDelay = (min, max) => {
-      return randomNumberBm(min, max);
-    };
-
     const updateUI = () => {
-      document.getElementById('mercury').style.height = `${mercuryHeight}%`;
-      document.getElementById('target-bar').style.bottom = `${targetHeight}%`;
-
-      // only show reward if there is one
-      if (trial.reward) {
-        document.getElementById('reward').innerText =
-          `Reward: $${reward.toFixed(2)}`;
+      if (trial.showThermometer) {
+        document.getElementById('mercury').style.height = `${mercuryHeight}%`;
       }
-
+      if (trial.targetHeight) {
+        document.getElementById('target-bar').style.bottom =
+          `${trial.targetHeight}%`;
+      }
       if (error) {
         document.getElementById('error-message').innerText = error;
       } else {
@@ -94,8 +84,7 @@ class ThermometerPlugin {
       }
       if (event.key === 'r' && isRunning) {
         tapCount++;
-        const delay = getRandomDelay(randomDelay[0], randomDelay[1]);
-        setTimeout(increaseMercury, delay);
+        increaseMercury();
       } else if (['a', 'w', 'e'].includes(event.key.toLowerCase())) {
         keysState[event.key.toLowerCase()] = true;
         setAreKeysHeld();
@@ -112,7 +101,7 @@ class ThermometerPlugin {
     const setAreKeysHeld = () => {
       areKeysHeld = keysState.a && keysState.w && keysState.e;
       document.getElementById('hold-keys-message').style.display =
-        !areKeysHeld || isRunning || isOvertime ? 'block' : 'none';
+        !areKeysHeld || isRunning ? 'block' : 'none';
       document.getElementById('start-message').style.display =
         areKeysHeld && !isRunning ? 'block' : 'none';
       if (!areKeysHeld && isRunning) {
@@ -157,12 +146,11 @@ class ThermometerPlugin {
       updateUI();
     };
 
-    // Setup UI
-    display_element.innerHTML = generateStimulus(
-      false,
-      reward,
-      targetHeight,
+    // setup ui
+    display_element.innerHTML = calibrationStimulus(
+      trial.showThermometer,
       mercuryHeight,
+      trial.targetHeight,
       error,
     );
 
@@ -175,26 +163,27 @@ class ThermometerPlugin {
       setTimeout(() => {
         document.removeEventListener('keydown', handleKeyDown);
         document.removeEventListener('keyup', handleKeyUp);
-        clearInterval(timerRef);
-        clearInterval(intervalRef);
         display_element.innerHTML = '';
 
         // Gather data to save for the trial
         const trial_data = {
-          autoDecreaseAmount,
-          mercuryHeight,
+          tapCount,
           startTime,
           endTime,
-          tapCount,
+          mercuryHeight,
           error,
-          reward,
-          targetHeight,
+          targetHeight: trial.targetHeight,
         };
 
         this.jsPsych.finishTrial(trial_data);
       }, 1000);
     };
   }
+
+  static calculateAverageTaps(data) {
+    const tapCounts = data.map((trial) => trial.tapCount);
+    return tapCounts.reduce((a, b) => a + b, 0) / tapCounts.length;
+  }
 }
 
-export default ThermometerPlugin;
+export default CalibrationPlugin;

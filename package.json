@@ -4,16 +4,25 @@
     "jspsych": "jspsych -e experiment",
     "start": "npm run jspsych -- run",
     "build": "npm run jspsych -- build",
-    "jatos": "npm run jspsych -- build --jatos"
+    "jatos": "npm run jspsych -- build --jatos",
+    "unzip": "extract-zip ./packaged/*.zip",
+    "predeploy": "run-s build unzip",
+    "deploy": "gh-pages -d experiment"
   },
   "dependencies": {
     "@jspsych/plugin-fullscreen": "^1.1.2",
     "@jspsych/plugin-html-keyboard-response": "^1.1.2",
     "@jspsych/plugin-preload": "^1.1.2",
+    "fast-cartesian": "^9.0.0",
     "jspsych": "^7.3.1"
   },
   "devDependencies": {
-    "jspsych-builder": "^4.4.0"
+    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+    "extract-zip": "^2.0.1",
+    "gh-pages": "^6.1.1",
+    "jspsych-builder": "^4.4.0",
+    "npm-run-all": "^4.1.5",
+    "prettier": "3.3.2"
   },
   "browserslist": ">0.25%, not dead"
 }
