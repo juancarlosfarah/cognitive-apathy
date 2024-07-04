@@ -40,6 +40,7 @@ import {
   validationWelcomeMessage,
 } from './stimulus';
 import ThermometerPlugin from './thermometer';
+import ReleaseKeysPlugin from './release-keys';
 
 /**
  * This function will be executed by jsPsych Builder and is expected to run the jsPsych experiment
@@ -81,11 +82,9 @@ export async function run({
   });
 
   const releaseKeysStep = {
-    type: HtmlKeyboardResponsePlugin,
-    choices: ['NO_KEYS'],
-    stimulus_duration: RELEASE_KEYS_STIMULUS_DURATION,
-    trial_duration: RELEASE_KEYS_TRIAL_DURATION,
+    type: ReleaseKeysPlugin,
     stimulus: `<p>Release the Keys</p>`,
+    valid_responses: ['a', 'w', 'e'],
   };
 
   // Calibration trials
