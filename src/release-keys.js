@@ -33,8 +33,6 @@ class ReleaseKeysPlugin {
   }
 
   trial(display_element, trial) {
-
-    let areKeysHeld = false;
     let keysState = { a: false, w: false, e: false };
 
     // Display the stimulus
@@ -43,17 +41,23 @@ class ReleaseKeysPlugin {
     // Handle key up events
     const handleKeyUp = (event) => {
       if (['a', 'w', 'e'].includes(event.key.toLowerCase())) {
-        keysState[event.key.toLowerCase()] = true;
+        keysState[event.key.toLowerCase()] = false;
         setAreKeysHeld();
       }
     };
 
+    // Handle key down events
+    const handleKeyDown = (event) => {
+      if (['a', 'w', 'e'].includes(event.key.toLowerCase())) {
+        keysState[event.key.toLowerCase()] = true;
+      }
+    };
 
     // Check if all specified keys are released
     const setAreKeysHeld = () => {
-      console.log(keysState.a || keysState.w || keysState.e),
-      areKeysHeld = keysState.a || keysState.w || keysState.e;
-      if (areKeysHeld) {
+      console.log(keysState.a || keysState.w || keysState.e);
+      const areKeysHeld = keysState.a || keysState.w || keysState.e;
+      if (!areKeysHeld) {
         end_trial();
       }
     };
@@ -61,12 +65,14 @@ class ReleaseKeysPlugin {
     // End the trial
     const end_trial = () => {
       document.removeEventListener('keyup', handleKeyUp);
+      document.removeEventListener('keydown', handleKeyDown);
       display_element.innerHTML = '';
       this.jsPsych.finishTrial();
     };
 
     // Add event listeners
     document.addEventListener('keyup', handleKeyUp);
+    document.addEventListener('keydown', handleKeyDown);
 
     // Initial check if keys are held down
     setTimeout(() => {

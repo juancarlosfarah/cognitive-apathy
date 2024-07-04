@@ -49,6 +49,7 @@ class ThermometerPlugin {
     let randomDelay = trial.randomDelay;
     let timerRef = null;
     let intervalRef = null;
+    let holdStartTime = null;
 
     // create variation in reward and stimulus
     const targetVariation = 0; // Math.random() * 10 - 5;
@@ -111,6 +112,7 @@ class ThermometerPlugin {
 
     const setAreKeysHeld = () => {
       areKeysHeld = keysState.a && keysState.w && keysState.e;
+      areKeysHeldForStartTime = true //put logic here for if it is held for 3 seconds then start running
       document.getElementById('hold-keys-message').style.display =
         !areKeysHeld || isRunning || isOvertime ? 'block' : 'none';
       document.getElementById('start-message').style.display =
