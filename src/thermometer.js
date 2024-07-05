@@ -121,6 +121,7 @@ class ThermometerPlugin {
         stopRunning();
         setError('You stopped holding the keys!');
       }
+
     };
 
     const startRunning = () => {
@@ -191,6 +192,7 @@ class ThermometerPlugin {
           error,
           reward,
           targetHeight,
+          errorOccured,
         };
 
         this.jsPsych.finishTrial(trial_data);
