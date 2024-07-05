@@ -41,7 +41,8 @@ import {
 } from './stimulus';
 import ThermometerPlugin from './thermometer';
 import ReleaseKeysPlugin from './release-keys';
-
+import CountdownTrialPlugin from './countdown';
+import KeyHoldPlugin from './key-hold-plugin';
 /**
  * This function will be executed by jsPsych Builder and is expected to run the jsPsych experiment
  *
@@ -74,13 +75,22 @@ export async function run({
     video: assetPaths.video,
   });
 
+  timeline.push({
+    type: KeyHoldPlugin,
+  })
+
+  timeline.push({
+    type: CountdownTrialPlugin,
+  })
   // welcome screen for calibration part I
   timeline.push({
     type: HtmlKeyboardResponsePlugin,
     choices: ['enter'],
     stimulus: calibrationPartIWelcomeMessage,
   });
-
+  timeline.push({
+    type: CountdownTrialPlugin
+  })
   const releaseKeysStep = {
     type: ReleaseKeysPlugin,
     stimulus: `<p>Release the Keys</p>`,
