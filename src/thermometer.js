@@ -90,9 +90,6 @@ class ThermometerPlugin {
     // event handlers
     const handleKeyDown = (event) => {
       // todo: don't allow enter at the end of a trial
-      if (event.key === 'Enter' && areKeysHeld && !isRunning) {
-        startRunning();
-      }
       if (event.key === 'r' && isRunning) {
         tapCount++;
         const delay = getRandomDelay(randomDelay[0], randomDelay[1]);
@@ -123,7 +120,7 @@ class ThermometerPlugin {
       }
 
     };
-
+  
     const startRunning = () => {
       isRunning = true;
       startTime = this.jsPsych.getTotalTime();

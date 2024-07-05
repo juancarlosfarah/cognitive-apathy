@@ -75,27 +75,20 @@ export async function run({
     video: assetPaths.video,
   });
 
-  timeline.push({
-    type: KeyHoldPlugin,
-  })
 
-  timeline.push({
-    type: CountdownTrialPlugin,
-  })
-  // welcome screen for calibration part I
-  timeline.push({
-    type: HtmlKeyboardResponsePlugin,
-    choices: ['enter'],
-    stimulus: calibrationPartIWelcomeMessage,
-  });
-  timeline.push({
-    type: CountdownTrialPlugin
-  })
   const releaseKeysStep = {
     type: ReleaseKeysPlugin,
     stimulus: `<p>Release the Keys</p>`,
     valid_responses: ['a', 'w', 'e'],
   };
+
+  const keyHoldStep = {
+    type: KeyHoldPlugin,
+  }
+
+  const countdownStep = {
+    type: CountdownTrialPlugin
+  }
 
   // Calibration trials
   const calibrationWithoutFeedback = {
@@ -108,17 +101,29 @@ export async function run({
       },
       releaseKeysStep,
     ],
-    repetitions: NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
   };
+
+
+  timeline.push({
+    type: KeyHoldPlugin,
+  })
+
+  timeline.push({
+    type: CountdownTrialPlugin,
+  })
 
   timeline.push(calibrationWithoutFeedback);
 
-  // welcome screen for calibration part II
   timeline.push({
-    type: HtmlKeyboardResponsePlugin,
-    choices: ['enter'],
-    stimulus: calibrationPartIIWelcomeMessage,
-  });
+    type: KeyHoldPlugin,
+  })
+
+  timeline.push({
+    type: CountdownTrialPlugin,
+  })
+
+  timeline.push(calibrationWithoutFeedback);
+
 
   const calibrationWithFeedback = {
     autoDecreaseAmount: function () {

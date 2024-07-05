@@ -1,5 +1,4 @@
 import { ParameterType } from 'jspsych';
-
 import { calibrationStimulus } from './stimulus';
 
 class CalibrationPlugin {
@@ -45,17 +44,13 @@ class CalibrationPlugin {
     let mercuryHeight = 0;
     let autoDecreaseAmount = trial.autoDecreaseAmount;
     let tapCount = 0;
-    let isRunning = false;
-    let isOvertime = false;
     let startTime = 0;
     let endTime = 0;
     let error = '';
-    let areKeysHeld = false;
-    let keysState = { a: false, w: false, e: false };
+    let keysState = { a: true, w: true, e: true }; // Assume keys are pressed
     let timerRef = null;
     let intervalRef = null;
 
-    // helper functions
     const increaseMercury = (amount = trial.autoIncreaseAmount) => {
       mercuryHeight = Math.min(mercuryHeight + amount, 100);
       updateUI();
@@ -66,8 +61,7 @@ class CalibrationPlugin {
         document.getElementById('mercury').style.height = `${mercuryHeight}%`;
       }
       if (trial.targetHeight) {
-        document.getElementById('target-bar').style.bottom =
-          `${trial.targetHeight}%`;
+        document.getElementById('target-bar').style.bottom = `${trial.targetHeight}%`;
       }
       if (error) {
         document.getElementById('error-message').innerText = error;
@@ -76,42 +70,38 @@ class CalibrationPlugin {
       }
     };
 
-    // event handlers
     const handleKeyDown = (event) => {
-      // todo: don't allow enter at the end of a trial
-      if (event.key === 'Enter' && areKeysHeld && !isRunning) {
-        startRunning();
-      }
-      if (event.key === 'r' && isRunning) {
+      const key = event.key.toLowerCase();
+      if (['a', 'w', 'e'].includes(key)) {
+        keysState[key] = true;
+        setAreKeysHeld();
+      } else if (key === 'r') {
         tapCount++;
         increaseMercury();
-      } else if (['a', 'w', 'e'].includes(event.key.toLowerCase())) {
-        keysState[event.key.toLowerCase()] = true;
-        setAreKeysHeld();
+      } else if (key === 'enter' && areKeysHeld()) {
+        startRunning();
       }
     };
 
     const handleKeyUp = (event) => {
-      if (['a', 'w', 'e'].includes(event.key.toLowerCase())) {
-        keysState[event.key.toLowerCase()] = false;
+      const key = event.key.toLowerCase();
+      if (['a', 'w', 'e'].includes(key)) {
+        keysState[key] = false;
         setAreKeysHeld();
       }
     };
 
     const setAreKeysHeld = () => {
-      areKeysHeld = keysState.a && keysState.w && keysState.e;
-      document.getElementById('hold-keys-message').style.display =
-        !areKeysHeld || isRunning ? 'block' : 'none';
-      document.getElementById('start-message').style.display =
-        areKeysHeld && !isRunning ? 'block' : 'none';
-      if (!areKeysHeld && isRunning) {
+      const areKeysHeld = keysState.a && keysState.w && keysState.e;
+      document.getElementById('hold-keys-message').style.display = !areKeysHeld ? 'block' : 'none';
+      document.getElementById('start-message').style.display = areKeysHeld ? 'block' : 'none';
+      if (!areKeysHeld) {
         stopRunning();
         setError('You stopped holding the keys!');
       }
     };
 
     const startRunning = () => {
-      isRunning = true;
       startTime = this.jsPsych.getTotalTime();
       document.getElementById('start-message').style.visibility = 'hidden';
       tapCount = 0;
@@ -120,14 +110,11 @@ class CalibrationPlugin {
       updateUI();
 
       intervalRef = setInterval(decreaseMercury, trial.autoDecreaseRate);
-
-      // todo: handle overtime
       timerRef = setTimeout(stopRunning, trial.duration);
     };
 
     const stopRunning = () => {
       endTime = this.jsPsych.getTotalTime();
-      isRunning = false;
       clearInterval(timerRef);
       clearInterval(intervalRef);
       timerRef = null;
@@ -146,26 +133,17 @@ class CalibrationPlugin {
       updateUI();
     };
 
-    // setup ui
-    display_element.innerHTML = calibrationStimulus(
-      trial.showThermometer,
-      mercuryHeight,
-      trial.targetHeight,
-      error,
-    );
+    display_element.innerHTML = calibrationStimulus(trial.showThermometer, mercuryHeight, trial.targetHeight, error);
 
-    // Event listeners
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
 
-    // cleanup function
     const end_trial = () => {
       setTimeout(() => {
         document.removeEventListener('keydown', handleKeyDown);
         document.removeEventListener('keyup', handleKeyUp);
         display_element.innerHTML = '';
 
-        // Gather data to save for the trial
         const trial_data = {
           tapCount,
           startTime,
@@ -177,6 +155,11 @@ class CalibrationPlugin {
 
         this.jsPsych.finishTrial(trial_data);
       }, 1000);
+    };
+
+    trial.on_load = function () {
+      setAreKeysHeld(); // Initial check to update the UI based on assumed key states
+      startRunning(); // Start running as the trial loads
     };
   }
 
