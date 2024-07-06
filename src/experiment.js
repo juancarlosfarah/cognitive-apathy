@@ -104,25 +104,17 @@ export async function run({
   };
 
 
-  timeline.push({
-    type: KeyHoldPlugin,
-  })
-
-  timeline.push({
-    type: CountdownTrialPlugin,
-  })
-
-  timeline.push(calibrationWithoutFeedback);
-
-  timeline.push({
-    type: KeyHoldPlugin,
-  })
-
-  timeline.push({
-    type: CountdownTrialPlugin,
-  })
-
-  timeline.push(calibrationWithoutFeedback);
+  const calibrationTrials = {
+    timeline: [
+      keyHoldStep,
+      countdownStep,
+      calibrationWithoutFeedback,
+    ],
+    repetitions: 2  // Adjust the number of repetitions as needed
+  };
+  
+  // Add the repeated trials to the main timeline
+  timeline.push(calibrationTrials);
 
 
   const calibrationWithFeedback = {
