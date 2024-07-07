@@ -42,7 +42,6 @@ class CalibrationPlugin {
 
   trial(display_element, trial) {
     let mercuryHeight = 0;
-    let autoDecreaseAmount = trial.autoDecreaseAmount;
     let tapCount = 0;
     let startTime = 0;
     let endTime = 0;
@@ -78,8 +77,6 @@ class CalibrationPlugin {
       } else if (key === 'r') {
         tapCount++;
         increaseMercury();
-      } else if (key === 'enter' && areKeysHeld()) {
-        startRunning();
       }
     };
 
@@ -124,7 +121,7 @@ class CalibrationPlugin {
     };
 
     const decreaseMercury = () => {
-      mercuryHeight = Math.max(mercuryHeight - autoDecreaseAmount, 0);
+      mercuryHeight = Math.max(mercuryHeight - trial.autoDecreaseAmount, 0);
       updateUI();
     };
 

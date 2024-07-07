@@ -104,7 +104,7 @@ export async function run({
   };
 
 
-  const calibrationTrials = {
+  const calibrationWithoutFeedbackTrials = {
     timeline: [
       keyHoldStep,
       countdownStep,
@@ -114,7 +114,7 @@ export async function run({
   };
   
   // Add the repeated trials to the main timeline
-  timeline.push(calibrationTrials);
+ timeline.push(calibrationWithoutFeedbackTrials);
 
 
   const calibrationWithFeedback = {
@@ -149,7 +149,22 @@ export async function run({
     repetitions: NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
   };
 
-  timeline.push(calibrationWithFeedback);
+  const calibrationWithFeedbackTrials = {
+    timeline: [
+      keyHoldStep,
+      countdownStep,
+      {
+        type: CalibrationPlugin,
+        duration: TRIAL_DURATION,
+        showThermometer: true,
+        targetHeight: 50,
+      },
+      releaseKeysStep,
+    ],
+    repetitions: NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
+  };
+
+  timeline.push(calibrationWithFeedbackTrials);
 
   // display average taps temporarily
   timeline.push({
