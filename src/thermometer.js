@@ -1,5 +1,4 @@
 import { ParameterType } from 'jspsych';
-
 import { generateStimulus } from './stimulus';
 import { randomNumberBm } from './utils';
 
@@ -40,109 +39,101 @@ class ThermometerPlugin {
     let autoDecreaseAmount = trial.autoDecreaseAmount;
     let tapCount = 0;
     let isRunning = false;
-    let isOvertime = false;
     let startTime = 0;
     let endTime = 0;
     let error = '';
-    let areKeysHeld = false;
-    let keysState = { a: false, w: false, e: false };
-    let randomDelay = trial.randomDelay;
+    let keysState = { a: true, w: true, e: true }; // Assume keys are pressed
     let timerRef = null;
     let intervalRef = null;
-    let holdStartTime = null;
+    let errorOccurred = false;
 
-    // create variation in reward and stimulus
-    const targetVariation = 0; // Math.random() * 10 - 5;
-    const rewardVariation = 0; // Math.random() * 4 - 2;
-
-    const targetHeight =
-      this.jsPsych.timelineVariable('targetHeight') + targetVariation;
-    const reward =
-      (this.jsPsych.timelineVariable('reward') + rewardVariation) / 100;
-
-    // helper functions
     const increaseMercury = (amount = trial.autoIncreaseAmount) => {
       mercuryHeight = Math.min(mercuryHeight + amount, 100);
       updateUI();
     };
 
-    const getRandomDelay = (min, max) => {
-      return randomNumberBm(min, max);
-    };
-
     const updateUI = () => {
-      document.getElementById('mercury').style.height = `${mercuryHeight}%`;
-      document.getElementById('target-bar').style.bottom = `${targetHeight}%`;
+      const mercuryElement = document.getElementById('mercury');
+      const targetBarElement = document.getElementById('target-bar');
+      const rewardElement = document.getElementById('reward');
+      const errorMessageElement = document.getElementById('error-message');
 
-      // only show reward if there is one
-      if (trial.reward) {
-        document.getElementById('reward').innerText =
-          `Reward: $${reward.toFixed(2)}`;
+      if (mercuryElement) {
+        mercuryElement.style.height = `${mercuryHeight}%`;
       }
-
-      if (error) {
-        document.getElementById('error-message').innerText = error;
-      } else {
-        document.getElementById('error-message').innerText = '';
+      if (targetBarElement) {
+        targetBarElement.style.bottom = `${trial.targetHeight}%`;
+      }
+      if (rewardElement) {
+        rewardElement.innerText = `Reward: $${trial.reward.toFixed(2)}`;
+      }
+      if (errorMessageElement) {
+        errorMessageElement.innerText = error;
       }
     };
 
-    // event handlers
     const handleKeyDown = (event) => {
-      // todo: don't allow enter at the end of a trial
-      if (event.key === 'r' && isRunning) {
-        tapCount++;
-        const delay = getRandomDelay(randomDelay[0], randomDelay[1]);
-        setTimeout(increaseMercury, delay);
-      } else if (['a', 'w', 'e'].includes(event.key.toLowerCase())) {
-        keysState[event.key.toLowerCase()] = true;
+      const key = event.key.toLowerCase();
+      if (['a', 'w', 'e'].includes(key)) {
+        keysState[key] = true;
         setAreKeysHeld();
+      } else if (key === 'r' && isRunning) {
+        tapCount++;
+        const delay = getRandomDelay(trial.randomDelay[0], trial.randomDelay[1]);
+        setTimeout(increaseMercury, delay);
       }
     };
 
     const handleKeyUp = (event) => {
-      if (['a', 'w', 'e'].includes(event.key.toLowerCase())) {
-        keysState[event.key.toLowerCase()] = false;
+      const key = event.key.toLowerCase();
+      if (['a', 'w', 'e'].includes(key)) {
+        keysState[key] = false;
         setAreKeysHeld();
       }
     };
 
     const setAreKeysHeld = () => {
-      areKeysHeld = keysState.a && keysState.w && keysState.e;
-      areKeysHeldForStartTime = true //put logic here for if it is held for 3 seconds then start running
-      document.getElementById('hold-keys-message').style.display =
-        !areKeysHeld || isRunning || isOvertime ? 'block' : 'none';
-      document.getElementById('start-message').style.display =
-        areKeysHeld && !isRunning ? 'block' : 'none';
-      if (!areKeysHeld && isRunning) {
-        stopRunning();
-        setError('You stopped holding the keys!');
+      const areKeysHeld = keysState.a && keysState.w && keysState.e;
+      const holdKeysMessageElement = document.getElementById('hold-keys-message');
+      const startMessageElement = document.getElementById('start-message');
+
+      if (holdKeysMessageElement) {
+        holdKeysMessageElement.style.display = !areKeysHeld ? 'block' : 'none';
+      }
+      if (startMessageElement) {
+        startMessageElement.style.display = areKeysHeld ? 'block' : 'none';
       }
 
+      if (!areKeysHeld && isRunning) {
+        setError('You stopped holding the keys!');
+        stopRunning(true);
+      }
     };
-  
+
     const startRunning = () => {
       isRunning = true;
       startTime = this.jsPsych.getTotalTime();
-      document.getElementById('start-message').style.visibility = 'hidden';
+      const startMessageElement = document.getElementById('start-message');
+      if (startMessageElement) {
+        startMessageElement.style.visibility = 'hidden';
+      }
       tapCount = 0;
       mercuryHeight = 0;
       error = '';
       updateUI();
 
       intervalRef = setInterval(decreaseMercury, trial.autoDecreaseRate);
-
-      // todo: handle overtime
       timerRef = setTimeout(stopRunning, trial.duration);
     };
 
-    const stopRunning = () => {
+    const stopRunning = (errorFlag = false) => {
       endTime = this.jsPsych.getTotalTime();
       isRunning = false;
       clearInterval(timerRef);
       clearInterval(intervalRef);
       timerRef = null;
       intervalRef = null;
+      errorOccurred = errorFlag;
       end_trial();
       updateUI();
     };
@@ -157,45 +148,47 @@ class ThermometerPlugin {
       updateUI();
     };
 
-    // Setup UI
+    const getRandomDelay = (min, max) => {
+      return randomNumberBm(min, max);
+    };
+
     display_element.innerHTML = generateStimulus(
       false,
-      reward,
-      targetHeight,
+      trial.reward,
+      trial.targetHeight,
       mercuryHeight,
       error,
     );
 
-    // Event listeners
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
 
-    // cleanup function
     const end_trial = () => {
       setTimeout(() => {
         document.removeEventListener('keydown', handleKeyDown);
         document.removeEventListener('keyup', handleKeyUp);
-        clearInterval(timerRef);
-        clearInterval(intervalRef);
         display_element.innerHTML = '';
 
-        // Gather data to save for the trial
         const trial_data = {
-          autoDecreaseAmount,
-          mercuryHeight,
+          tapCount,
           startTime,
           endTime,
-          tapCount,
+          mercuryHeight,
           error,
-          reward,
-          targetHeight,
-          errorOccured,
+          targetHeight: trial.targetHeight,
+          errorOccurred,
         };
 
         this.jsPsych.finishTrial(trial_data);
       }, 1000);
     };
+
+    trial.on_load = function () {
+      setAreKeysHeld(); // Initial check to update the UI based on assumed key states
+      startRunning(); // Start running as the trial loads
+    };
   }
 }
 
 export default ThermometerPlugin;
+

@@ -1,4 +1,3 @@
-
 export function generateStimulus(
   isAcceptStep,
   reward,
@@ -33,6 +32,7 @@ export function generateStimulus(
     </div>
   `;
 }
+
 export function calibrationStimulus(
   showThermometer,
   mercuryHeight,

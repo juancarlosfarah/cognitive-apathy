@@ -41,6 +41,8 @@ class CalibrationPlugin {
   }
 
   trial(display_element, trial) {
+    console.log("Trial started");
+
     let mercuryHeight = 0;
     let tapCount = 0;
     let startTime = 0;
@@ -49,6 +51,9 @@ class CalibrationPlugin {
     let keysState = { a: true, w: true, e: true }; // Assume keys are pressed
     let timerRef = null;
     let intervalRef = null;
+    let errorOccurred = false;
+    let isRunning = false;
+    let trialEnded = false; // Flag to prevent multiple endings
 
     const increaseMercury = (amount = trial.autoIncreaseAmount) => {
       mercuryHeight = Math.min(mercuryHeight + amount, 100);
@@ -57,15 +62,16 @@ class CalibrationPlugin {
 
     const updateUI = () => {
       if (trial.showThermometer) {
-        document.getElementById('mercury').style.height = `${mercuryHeight}%`;
+        const mercuryElement = document.getElementById('mercury');
+        if (mercuryElement) mercuryElement.style.height = `${mercuryHeight}%`;
       }
       if (trial.targetHeight) {
-        document.getElementById('target-bar').style.bottom = `${trial.targetHeight}%`;
+        const targetBarElement = document.getElementById('target-bar');
+        if (targetBarElement) targetBarElement.style.bottom = `${trial.targetHeight}%`;
       }
-      if (error) {
-        document.getElementById('error-message').innerText = error;
-      } else {
-        document.getElementById('error-message').innerText = '';
+      const errorMessageElement = document.getElementById('error-message');
+      if (errorMessageElement) {
+        errorMessageElement.innerText = error;
       }
     };
 
@@ -74,7 +80,7 @@ class CalibrationPlugin {
       if (['a', 'w', 'e'].includes(key)) {
         keysState[key] = true;
         setAreKeysHeld();
-      } else if (key === 'r') {
+      } else if (key === 'r' && isRunning) {
         tapCount++;
         increaseMercury();
       }
@@ -85,37 +91,61 @@ class CalibrationPlugin {
       if (['a', 'w', 'e'].includes(key)) {
         keysState[key] = false;
         setAreKeysHeld();
+        if (!keysState.a && !keysState.w && !keysState.e && !trialEnded) {
+          console.log("All keys released, ending trial.");
+          stopRunning(true);
+        }
       }
     };
 
     const setAreKeysHeld = () => {
       const areKeysHeld = keysState.a && keysState.w && keysState.e;
-      document.getElementById('hold-keys-message').style.display = !areKeysHeld ? 'block' : 'none';
-      document.getElementById('start-message').style.display = areKeysHeld ? 'block' : 'none';
-      if (!areKeysHeld) {
-        stopRunning();
+      const holdKeysMessageElement = document.getElementById('hold-keys-message');
+      const startMessageElement = document.getElementById('start-message');
+
+      if (holdKeysMessageElement) {
+        holdKeysMessageElement.style.display = !areKeysHeld ? 'block' : 'none';
+      }
+      if (startMessageElement) {
+        startMessageElement.style.display = areKeysHeld ? 'block' : 'none';
+      }
+
+      if (!areKeysHeld && !trialEnded) {
         setError('You stopped holding the keys!');
+        console.log("Keys not held, setting error and stopping trial.");
+        stopRunning(true);
       }
     };
 
     const startRunning = () => {
+      console.log("Starting trial run");
+      isRunning = true;
       startTime = this.jsPsych.getTotalTime();
-      document.getElementById('start-message').style.visibility = 'hidden';
+      const startMessageElement = document.getElementById('start-message');
+      if (startMessageElement) startMessageElement.style.visibility = 'hidden';
       tapCount = 0;
       mercuryHeight = 0;
       error = '';
       updateUI();
 
       intervalRef = setInterval(decreaseMercury, trial.autoDecreaseRate);
-      timerRef = setTimeout(stopRunning, trial.duration);
+      timerRef = setTimeout(() => {
+        console.log("Trial duration ended, stopping trial.");
+        stopRunning();
+      }, trial.duration);
     };
 
-    const stopRunning = () => {
+    const stopRunning = (errorFlag = false) => {
+      if (trialEnded) return; // Prevent multiple stops
+      console.log("Stopping trial run");
+      trialEnded = true; // Set the flag to true
       endTime = this.jsPsych.getTotalTime();
+      isRunning = false;
       clearInterval(timerRef);
       clearInterval(intervalRef);
       timerRef = null;
       intervalRef = null;
+      errorOccurred = errorFlag;
       end_trial();
       updateUI();
     };
@@ -136,7 +166,9 @@ class CalibrationPlugin {
     document.addEventListener('keyup', handleKeyUp);
 
     const end_trial = () => {
+      console.log("Ending trial");
       setTimeout(() => {
+        console.log("Cleaning up trial");
         document.removeEventListener('keydown', handleKeyDown);
         document.removeEventListener('keyup', handleKeyUp);
         display_element.innerHTML = '';
@@ -148,13 +180,16 @@ class CalibrationPlugin {
           mercuryHeight,
           error,
           targetHeight: trial.targetHeight,
+          errorOccurred,
         };
 
+        console.log("Finishing trial with data:", trial_data);
         this.jsPsych.finishTrial(trial_data);
       }, 1000);
     };
 
     trial.on_load = function () {
+      console.log("Trial loaded");
       setAreKeysHeld(); // Initial check to update the UI based on assumed key states
       startRunning(); // Start running as the trial loads
     };

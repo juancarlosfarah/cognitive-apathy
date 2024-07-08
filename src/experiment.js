@@ -43,6 +43,7 @@ import ThermometerPlugin from './thermometer';
 import ReleaseKeysPlugin from './release-keys';
 import CountdownTrialPlugin from './countdown';
 import KeyHoldPlugin from './key-hold-plugin';
+
 /**
  * This function will be executed by jsPsych Builder and is expected to run the jsPsych experiment
  *
@@ -75,263 +76,246 @@ export async function run({
     video: assetPaths.video,
   });
 
-
   const releaseKeysStep = {
     type: ReleaseKeysPlugin,
     stimulus: `<p>Release the Keys</p>`,
     valid_responses: ['a', 'w', 'e'],
   };
 
-  const keyHoldStep = {
-    type: KeyHoldPlugin,
-  }
-
   const countdownStep = {
-    type: CountdownTrialPlugin
-  }
-
-  // Calibration trials
-  const calibrationWithoutFeedback = {
-    timeline: [
-      {
-        type: CalibrationPlugin,
-        duration: TRIAL_DURATION,
-        showThermometer: false,
-        targetHeight: 0,
-      },
-      releaseKeysStep,
-    ],
+    type: CountdownTrialPlugin,
   };
 
-
-  const calibrationWithoutFeedbackTrials = {
-    timeline: [
-      keyHoldStep,
-      countdownStep,
-      calibrationWithoutFeedback,
-    ],
-    repetitions: 2  // Adjust the number of repetitions as needed
-  };
-  
-  // Add the repeated trials to the main timeline
- timeline.push(calibrationWithoutFeedbackTrials);
-
-
-  const calibrationWithFeedback = {
-    autoDecreaseAmount: function () {
-      const trials = jsPsych.data
-        .get()
-        .filter({ trial_type: 'calibration-task' })
-        .values();
-
-      const averageTaps = CalibrationPlugin.calculateAverageTaps(
-        trials.slice(1, NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS),
-      );
-
-      const calculatedAutoDecreaseAmount =
-        (EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION -
-          averageTaps * AUTO_INCREASE_AMOUNT) /
-        -(TRIAL_DURATION / AUTO_DECREASE_RATE);
-      return Math.max(
-        MINIMUM_AUTO_DECREASE_AMOUNT,
-        calculatedAutoDecreaseAmount,
-      );
-    },
-    timeline: [
-      {
-        type: CalibrationPlugin,
-        duration: TRIAL_DURATION,
-        showThermometer: true,
-        targetHeight: 50,
-      },
-      releaseKeysStep,
-    ],
-    repetitions: NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
+  // Function to dynamically create a timeline step based on the previous trial's outcome
+  const createCalibrationTrial = (showThermometer, targetHeight) => {
+    return {
+      timeline: [
+        countdownStep,
+        {
+          type: CalibrationPlugin,
+          duration: TRIAL_DURATION,
+          showThermometer: showThermometer,
+          targetHeight: targetHeight,
+        },
+        {
+          timeline: [releaseKeysStep],
+          conditional_function: function () {
+            const lastTrialData = jsPsych.data.getLastTrialData().values()[0];
+            return !lastTrialData.errorOccurred;
+          },
+        },
+      ],
+      repetitions: NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
+    };
   };
 
-  const calibrationWithFeedbackTrials = {
-    timeline: [
-      keyHoldStep,
-      countdownStep,
-      {
-        type: CalibrationPlugin,
-        duration: TRIAL_DURATION,
-        showThermometer: true,
-        targetHeight: 50,
-      },
-      releaseKeysStep,
-    ],
-    repetitions: NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
-  };
+  // Calibration trials without feedback
+  const calibrationWithoutFeedback = createCalibrationTrial(false, 0);
+  timeline.push(calibrationWithoutFeedback);
 
-  timeline.push(calibrationWithFeedbackTrials);
+  // Calibration trials with feedback
+  const calibrationWithFeedback = createCalibrationTrial(true, 50);
+  timeline.push(calibrationWithFeedback);
 
-  // display average taps temporarily
+  // Display average taps
   timeline.push({
     type: HtmlKeyboardResponsePlugin,
     choices: ['enter'],
     stimulus: function () {
-      const trials = jsPsych.data
-        .get()
-        .filter({ trial_type: 'calibration-task' })
-        .values();
+      const trials = jsPsych.data.get().filter({ trial_type: 'calibration-task' }).values();
       const averageTaps = CalibrationPlugin.calculateAverageTaps(trials);
       return `<p><b>Internal Check</b></p><p>Average Tap Count: ${averageTaps}</p><p><b>Press "Enter" to continue.</b></p>`;
     },
   });
 
-  // accept trial object
-  const acceptStep = {
+  // Validation step
+  const validationTrials = TARGET_OPTIONS.map((targetHeight) => ({
+    timeline: [
+      countdownStep,
+      {
+        type: CalibrationPlugin,
+        duration: TRIAL_DURATION,
+        showThermometer: true,
+        targetHeight: targetHeight,
+      },
+      {
+        timeline: [releaseKeysStep],
+        conditional_function: function () {
+          const lastTrialData = jsPsych.data.getLastTrialData().values()[0];
+          return !lastTrialData.errorOccurred;
+        },
+      },
+    ],
+    repetitions: 4,
+  }));
+
+  timeline.push(...validationTrials);
+
+  // Check if any condition failed more than twice
+  const checkValidation = {
     type: HtmlKeyboardResponsePlugin,
-    choices: ['arrowright', 'arrowleft'],
     stimulus: function () {
-      const reward = jsPsych.timelineVariable('reward') / 100;
-      const targetHeight = jsPsych.timelineVariable('targetHeight');
-      return generateStimulus(true, reward, targetHeight, 0, '');
+      const trials = jsPsych.data.get().filter({ trial_type: 'calibration-task' }).values();
+      const failedConditions = TARGET_OPTIONS.filter(targetHeight => {
+        const conditionTrials = trials.filter(trial => trial.targetHeight === targetHeight);
+        return conditionTrials.filter(trial => trial.tapCount < 2).length > 2;
+      });
+      if (failedConditions.length > 0) {
+        return `<p>You failed one or more conditions more than twice. Press Enter to retry the 90% condition.</p>`;
+      } else {
+        return `<p>You passed the validation step. Press Enter to continue.</p>`;
+      }
+    },
+    choices: ['enter'],
+  };
+
+  timeline.push(checkValidation);
+
+  // Additional validation for 90% condition
+  const additionalValidationTrials = {
+    timeline: [
+      countdownStep,
+      {
+        type: CalibrationPlugin,
+        duration: TRIAL_DURATION,
+        showThermometer: true,
+        targetHeight: 90,
+      },
+      {
+        timeline: [releaseKeysStep],
+        conditional_function: function () {
+          const lastTrialData = jsPsych.data.getLastTrialData().values()[0];
+          return !lastTrialData.errorOccurred;
+        },
+      },
+    ],
+    repetitions: 3,
+    conditional_function: function () {
+      const trials = jsPsych.data.get().filter({ trial_type: 'calibration-task' }).values();
+      const failedConditions = TARGET_OPTIONS.filter(targetHeight => {
+        const conditionTrials = trials.filter(trial => trial.targetHeight === targetHeight);
+        return conditionTrials.filter(trial => trial.tapCount < 2).length > 2;
+      });
+      return failedConditions.length > 0;
     },
   };
 
-  // perform trial object
-  const performStep = {
-    type: ThermometerPlugin,
+  timeline.push(additionalValidationTrials);
+
+  // Final check if failed additional validation
+  const finalCheck = {
+    type: HtmlKeyboardResponsePlugin,
+    stimulus: function () {
+      const trials = jsPsych.data.get().filter({ trial_type: 'calibration-task' }).values();
+      const conditionTrials = trials.filter(trial => trial.targetHeight === 90);
+      const failed = conditionTrials.filter(trial => trial.tapCount < 2).length >= 3;
+      if (failed) {
+        return `<p>You failed the additional validation. The experiment will now end.</p>`;
+      } else {
+        return `<p>You passed the validation step. Press Enter to continue.</b>`;
+      }
+    },
+    choices: ['enter'],
+    on_finish: function (data) {
+      const trials = jsPsych.data.get().filter({ trial_type: 'calibration-task' }).values();
+      const conditionTrials = trials.filter(trial => trial.targetHeight === 90);
+      const failed = conditionTrials.filter(trial => trial.tapCount < 2).length >= 3;
+      if (failed) {
+        jsPsych.endExperiment('You failed the validation step.');
+      }
+    },
   };
 
-  const pilotTrials = {
-    autoDecreaseAmount: function () {
-      const trials = jsPsych.data
-        .get()
-        .filter({ trial_type: 'calibration-task' })
-        .values();
-      const averageTaps = CalibrationPlugin.calculateAverageTaps(
-        trials.slice(
-          NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
-          NUM_CALIBRATION_TRIALS,
-        ),
-      );
-      const calculatedAutoDecreaseAmount =
-        (EXPECTED_MAXIMUM_PERCENTAGE - averageTaps * AUTO_INCREASE_AMOUNT) /
-        -(TRIAL_DURATION / AUTO_DECREASE_RATE);
-      return Math.max(
-        MINIMUM_AUTO_DECREASE_AMOUNT,
-        calculatedAutoDecreaseAmount,
-      );
-    },
-    autoDecreaseRate: AUTO_DECREASE_RATE,
-    autoIncreaseAmount: AUTO_INCREASE_AMOUNT,
+  timeline.push(finalCheck);
+
+  // Synchronous block
+  const synchronousBlock = {
+    timeline: [
+      countdownStep,
+      {
+        type: ThermometerPlugin,
+        duration: TRIAL_DURATION,
+        showThermometer: true,
+      },
+      {
+        timeline: [releaseKeysStep],
+        conditional_function: function () {
+          const lastTrialData = jsPsych.data.getLastTrialData().values()[0];
+          return !lastTrialData.errorOccurred;
+        },
+      },
+    ],
     randomDelay: [0, 0],
-    // no need for reward in the pilot phase
-    timeline_variables: TARGET_OPTIONS.map((targetHeight) => ({
-      targetHeight,
-    })),
-    sample: {
-      type: 'fixed-repetitions',
-      size: 1,
-    },
-    timeline: [performStep, releaseKeysStep],
-    duration: TRIAL_DURATION,
+    repetitions: 10, // Define the number of repetitions as needed
   };
 
-  // welcome screen for validation
   timeline.push({
     type: HtmlKeyboardResponsePlugin,
     choices: ['enter'],
-    stimulus: validationWelcomeMessage,
+    stimulus: blockWelcomeMessage('Synchronous Block'),
   });
 
-  timeline.push(pilotTrials);
+  timeline.push(synchronousBlock);
 
-  const conditionalPerformStep = {
-    timeline: [performStep],
-    conditional_function: function () {
-      // get the data from the previous trial,
-      // and check which key was pressed
-      const data = jsPsych.data.get().last(1).values()[0];
-      return jsPsych.pluginAPI.compareKeys(data.response, 'arrowleft');
-    },
-  };
-
-  const conditionalReleaseKeysStep = {
-    timeline: [releaseKeysStep],
-    conditional_function: function () {
-      // get the data from the previous trial,
-      // and check which key was pressed
-      const data = jsPsych.data.get().last(2).values()[0];
-      return jsPsych.pluginAPI.compareKeys(data.response, 'arrowleft');
-    },
-  };
-
-  const questionnaireStep = {};
-
-  //
-  const baseTrials = {
-    autoDecreaseAmount: function () {
-      const trials = jsPsych.data
-        .get()
-        .filter({ trial_type: 'calibration-task' })
-        .values();
-      const averageTaps = CalibrationPlugin.calculateAverageTaps(trials);
-      const calculatedAutoDecreaseAmount =
-        (EXPECTED_MAXIMUM_PERCENTAGE - averageTaps * AUTO_INCREASE_AMOUNT) /
-        -(TRIAL_DURATION / AUTO_DECREASE_RATE);
-      return Math.max(
-        MINIMUM_AUTO_DECREASE_AMOUNT,
-        calculatedAutoDecreaseAmount,
-      );
-    },
-    autoDecreaseRate: AUTO_DECREASE_RATE,
-    autoIncreaseAmount: AUTO_INCREASE_AMOUNT,
-    timeline_variables: PARAMETER_COMBINATIONS,
-    sample: {
-      type: 'fixed-repetitions',
-      size: 1,
-    },
-    duration: TRIAL_DURATION,
+  // Narrow Asynchronous block
+  const narrowAsynchronousBlock = {
     timeline: [
+      countdownStep,
       {
-        ...acceptStep,
+        type: ThermometerPlugin,
+        duration: TRIAL_DURATION,
+        showThermometer: true,
       },
-      conditionalPerformStep,
-      conditionalReleaseKeysStep,
+      {
+        timeline: [releaseKeysStep],
+        conditional_function: function () {
+          const lastTrialData = jsPsych.data.getLastTrialData().values()[0];
+          return !lastTrialData.errorOccurred;
+        },
+      },
     ],
+    randomDelay: [400, 600],
+    repetitions: 10, // Define the number of repetitions as needed
   };
 
-  const synchronousBlock = [
-    {
-      type: HtmlKeyboardResponsePlugin,
-      choices: ['enter'],
-      stimulus: blockWelcomeMessage('Synchronous Block'),
-    },
-    {
-      ...baseTrials,
-      randomDelay: [0, 0],
-    },
-  ];
+  timeline.push({
+    type: HtmlKeyboardResponsePlugin,
+    choices: ['enter'],
+    stimulus: blockWelcomeMessage('Narrow Asynchronous Block'),
+  });
 
-  const narrowAsynchronousBlock = [
-    {
-      type: HtmlKeyboardResponsePlugin,
-      choices: ['enter'],
-      stimulus: blockWelcomeMessage('Narrow Asynchronous Block'),
-    },
-    {
-      ...baseTrials,
-      randomDelay: [400, 600],
-    },
-  ];
+  timeline.push(narrowAsynchronousBlock);
 
-  const wideAsynchronousBlock = [
-    {
-      type: HtmlKeyboardResponsePlugin,
-      choices: ['enter'],
-      stimulus: blockWelcomeMessage('Wide Asynchronous Block'),
-    },
-    {
-      ...baseTrials,
-      randomDelay: [0, 1000],
-    },
-  ];
+  // Wide Asynchronous block
+  const wideAsynchronousBlock = {
+    timeline: [
+      countdownStep,
+      {
+        type: ThermometerPlugin,
+        duration: TRIAL_DURATION,
+        showThermometer: true,
+      },
+      {
+        timeline: [releaseKeysStep],
+        conditional_function: function () {
+          const lastTrialData = jsPsych.data.getLastTrialData().values()[0];
+          return !lastTrialData.errorOccurred;
+        },
+      },
+    ],
+    randomDelay: [0, 1000],
+    repetitions: 10, // Define the number of repetitions as needed
+  };
 
-  // start
+  timeline.push({
+    type: HtmlKeyboardResponsePlugin,
+    choices: ['enter'],
+    stimulus: blockWelcomeMessage('Wide Asynchronous Block'),
+  });
+
+  timeline.push(wideAsynchronousBlock);
+
+  // Start
   timeline.push({
     type: HtmlKeyboardResponsePlugin,
     choices: ['enter'],
@@ -339,14 +323,10 @@ export async function run({
   });
 
   // Switch to fullscreen
-  // timeline.push({
-  //   type: FullscreenPlugin,
-  //   fullscreen_mode: true,
-  // });
-
-  timeline.push(...synchronousBlock);
-  timeline.push(...narrowAsynchronousBlock);
-  timeline.push(...wideAsynchronousBlock);
+  timeline.push({
+    type: FullscreenPlugin,
+    fullscreen_mode: true,
+  });
 
   await jsPsych.run(timeline);
 

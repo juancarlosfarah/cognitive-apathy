@@ -2,18 +2,8 @@ import { ParameterType } from 'jspsych';
 
 class KeyHoldPlugin {
   static info = {
-    name: 'key-hold-plugin',
-    parameters: {
-      keys: {
-        type: ParameterType.STRING,
-        array: true,
-        default: ['a', 'w', 'e'],
-      },
-      message: {
-        type: ParameterType.HTML_STRING,
-        default: '<p>Hold the keys</p>',
-      },
-    },
+    name: 'key-hold',
+    parameters: {},
   };
 
   constructor(jsPsych) {
@@ -21,26 +11,33 @@ class KeyHoldPlugin {
   }
 
   trial(display_element, trial) {
-    let keysState = {};
-    trial.keys.forEach(key => keysState[key] = false);
+    let keysState = { a: false, w: false, e: false };
 
     const setAreKeysHeld = () => {
-      const areKeysHeld = trial.keys.every(key => keysState[key]);
+      const areKeysHeld = keysState.a && keysState.w && keysState.e;
+      const holdKeysMessageElement = document.getElementById('hold-keys-message');
+
+      if (holdKeysMessageElement) {
+        holdKeysMessageElement.style.display = !areKeysHeld ? 'block' : 'none';
+      }
+
       if (areKeysHeld) {
         end_trial();
       }
     };
 
     const handleKeyDown = (event) => {
-      if (trial.keys.includes(event.key.toLowerCase())) {
-        keysState[event.key.toLowerCase()] = true;
+      const key = event.key.toLowerCase();
+      if (['a', 'w', 'e'].includes(key)) {
+        keysState[key] = true;
         setAreKeysHeld();
       }
     };
 
     const handleKeyUp = (event) => {
-      if (trial.keys.includes(event.key.toLowerCase())) {
-        keysState[event.key.toLowerCase()] = false;
+      const key = event.key.toLowerCase();
+      if (['a', 'w', 'e'].includes(key)) {
+        keysState[key] = false;
         setAreKeysHeld();
       }
     };
@@ -48,17 +45,13 @@ class KeyHoldPlugin {
     const end_trial = () => {
       document.removeEventListener('keydown', handleKeyDown);
       document.removeEventListener('keyup', handleKeyUp);
-
-      const trial_data = {
-        keys_held: true,
-      };
-
-      display_element.innerHTML = '';
-
-      this.jsPsych.finishTrial(trial_data);
+      this.jsPsych.finishTrial();
     };
 
-    display_element.innerHTML = trial.message;
+    display_element.innerHTML = `
+      <p id="hold-keys-message">Hold the <b>A</b>, <b>W</b>, and <b>E</b> keys!</p>
+      <p id="start-message" style="display: none;">Hit <b>Enter</b> to start!</p>
+    `;
 
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
