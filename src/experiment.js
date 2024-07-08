@@ -9,6 +9,7 @@
 import FullscreenPlugin from '@jspsych/plugin-fullscreen';
 import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
 import PreloadPlugin from '@jspsych/plugin-preload';
+import SurveyLikertPlugin from '@jspsych/plugin-survey-likert';
 import { ParameterType, initJsPsych } from 'jspsych';
 
 import '../styles/main.scss';
@@ -27,6 +28,7 @@ import {
   REWARD_OPTIONS,
   TARGET_OPTIONS,
   TRIAL_DURATION,
+  NUM_VALIDATION_TRIALS
 } from './constants';
 import {
   blockWelcomeMessage,
@@ -170,7 +172,7 @@ export async function run({
         conditional_function: () => !jsPsych.data.getLastTrialData().values()[0].errorOccurred,
       },
     ],
-    repetitions: 4,
+    repetitions: NUM_VALIDATION_TRIALS,
   });
 
   timeline.push(...TARGET_OPTIONS.map(createValidationTrials));
@@ -183,6 +185,7 @@ export async function run({
       const failedConditions = TARGET_OPTIONS.filter(targetHeight =>
         trials.filter(trial => trial.targetHeight === targetHeight).filter(trial => trial.tapCount < 2).length > 2
       );
+      jsPsych.data.addProperties({ failedConditions });
       return failedConditions.length > 0
         ? `<p>You failed one or more conditions more than twice. Press Enter to retry the 90% condition.</p>`
         : `<p>You passed the validation step. Press Enter to continue.</p>`;
@@ -190,8 +193,12 @@ export async function run({
     choices: ['enter'],
   });
 
-  // Additional validation for 90% condition
-  const additionalValidationTrials = {
+  // Additional validation for 90% condition, only if failedConditions exist
+  timeline.push({
+    conditional_function: () => {
+      const failedConditions = jsPsych.data.get().values()[0].failedConditions;
+      return failedConditions.length > 0;
+    },
     timeline: [
       countdownStep,
       {
@@ -210,9 +217,7 @@ export async function run({
       },
     ],
     repetitions: 3,
-  };
-
-  timeline.push(additionalValidationTrials);
+  });
 
   // Final check if failed additional validation
   timeline.push({
@@ -240,9 +245,93 @@ export async function run({
     },
   });
 
+  // Placeholder Likert scale questions
+  const likertQuestions = [
+    {
+      prompt: "Placeholder question 1",
+      labels: ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
+      name: 'Q1'
+    },
+    {
+      prompt: "Placeholder question 2",
+      labels: ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
+      name: 'Q2'
+    },
+    {
+      prompt: "Placeholder question 3",
+      labels: ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
+      name: 'Q3'
+    },
+  ];
+
+  // Additional Likert scale questions after each block
+  const additionalLikertQuestions = [
+    {
+      prompt: "Additional Placeholder question 1",
+      labels: ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
+      name: 'Q4'
+    },
+    {
+      prompt: "Additional Placeholder question 2",
+      labels: ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
+      name: 'Q5'
+    },
+    {
+      prompt: "Additional Placeholder question 3",
+      labels: ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
+      name: 'Q6'
+    },
+    {
+      prompt: "Additional Placeholder question 4",
+      labels: ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
+      name: 'Q7'
+    },
+    {
+      prompt: "Additional Placeholder question 5",
+      labels: ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
+      name: 'Q8'
+    },
+  ];
+
   // Common function for blocks
   const createBlock = (blockName, randomDelay) => ({
     timeline: [
+      // Alert before demo
+      {
+        type: HtmlKeyboardResponsePlugin,
+        stimulus: () => {
+          return `<p>The delay you experience in the demo will be the same in the next block of trials.</p><p>Press Enter to continue.</p>`;
+        },
+        choices: ['enter'],
+      },
+      // Demo trial
+      {
+        timeline: [
+          countdownStep,
+          {
+            type: ThermometerPlugin,
+            duration: TRIAL_DURATION,
+            showThermometer: true,
+            randomDelay,
+            targetHeight: randomTargetHeight,
+            autoIncreaseAmount: function () {
+              const averageTapsPart2 = jsPsych.data.get().values()[0].averageTapsPart2;
+              return 100 / averageTapsPart2;
+            },
+          },
+          releaseKeysStep,
+        ],
+        repetitions: 1,
+      },
+      // Likert scale survey after demo
+      {
+        type: SurveyLikertPlugin,
+        questions: likertQuestions,
+        randomize_question_order: false,
+        preamble: '<p>Please answer the following questions about the demo trial.</p>',
+        button_label: 'Continue'
+      },
+      // Actual trials
       {
         type: HtmlKeyboardResponsePlugin,
         stimulus: () => {
@@ -273,9 +362,17 @@ export async function run({
           return jsPsych.pluginAPI.compareKeys(lastResponse, 'arrowleft');
         },
         data: { block: blockName, phase: 'perform' },
+        repetitions: 10,
+      },
+      // Additional Likert scale questions after block
+      {
+        type: SurveyLikertPlugin,
+        questions: additionalLikertQuestions,
+        randomize_question_order: false,
+        preamble: '<p>Please answer the following questions about the trials you just completed.</p>',
+        button_label: 'Continue'
       },
     ],
-    repetitions: 10,
   });
 
   // Synchronous block
@@ -299,6 +396,6 @@ export async function run({
   await jsPsych.run(timeline);
 
   // Return the jsPsych instance so jsPsych Builder can access the experiment results (remove this
-  // if you handle results yourself, be it here or in `on_finish()`)
+  // if you handle results yourself, be it here or in on_finish())
   return jsPsych;
 }

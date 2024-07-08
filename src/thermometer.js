@@ -206,25 +206,22 @@ class ThermometerPlugin {
 
     const end_trial = () => {
       console.log("Ending trial");
-      setTimeout(() => {
-        console.log("Cleaning up trial");
-        document.removeEventListener('keydown', handleKeyDown);
-        document.removeEventListener('keyup', handleKeyUp);
-        display_element.innerHTML = '';
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('keyup', handleKeyUp);
+      display_element.innerHTML = '';
 
-        const trial_data = {
-          tapCount,
-          startTime,
-          endTime,
-          mercuryHeight,
-          error,
-          targetHeight,
-          errorOccurred,
-        };
+      const trial_data = {
+        tapCount,
+        startTime,
+        endTime,
+        mercuryHeight,
+        error,
+        targetHeight,
+        errorOccurred,
+      };
 
-        console.log("Finishing trial with data:", trial_data);
-        this.jsPsych.finishTrial(trial_data); // Use this.jsPsych
-      }, 1000);
+      console.log("Finishing trial with data:", trial_data);
+      this.jsPsych.finishTrial(trial_data); // Use this.jsPsych
     };
 
     trial.on_load = () => {
