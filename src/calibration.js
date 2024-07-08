@@ -71,6 +71,27 @@ class CalibrationPlugin {
       }
     };
 
+    const setAreKeysHeld = () => {
+      if (trialEnded) return; // Prevent the function from running if the trial has ended
+    
+      const areKeysHeld = keysState.a && keysState.w && keysState.e;
+      const holdKeysMessageElement = document.getElementById('hold-keys-message');
+      const startMessageElement = document.getElementById('start-message');
+    
+      if (holdKeysMessageElement) {
+        holdKeysMessageElement.style.display = !areKeysHeld ? 'block' : 'none';
+      }
+      if (startMessageElement) {
+        startMessageElement.style.display = areKeysHeld ? 'block' : 'none';
+      }
+    
+      if (!areKeysHeld) {
+        setError('You stopped holding the keys!');
+        console.log("Keys not held, setting error and stopping trial.");
+        stopRunning(true);
+      }
+    };
+
     const handleKeyDown = (event) => {
       const key = event.key.toLowerCase();
       if (['a', 'w', 'e'].includes(key)) {
@@ -93,29 +114,6 @@ class CalibrationPlugin {
         }
       }
     };
-
-    const setAreKeysHeld = () => {
-      if (trialEnded) return; // Prevent the function from running if the trial has ended
-    
-      const areKeysHeld = keysState.a && keysState.w && keysState.e;
-      const holdKeysMessageElement = document.getElementById('hold-keys-message');
-      const startMessageElement = document.getElementById('start-message');
-    
-      if (holdKeysMessageElement) {
-        holdKeysMessageElement.style.display = !areKeysHeld ? 'block' : 'none';
-      }
-      if (startMessageElement) {
-        startMessageElement.style.display = areKeysHeld ? 'block' : 'none';
-      }
-    
-      if (!areKeysHeld) {
-        setError('You stopped holding the keys!');
-        console.log("Keys not held, setting error and stopping trial.");
-        stopRunning(true);
-      }
-    };
-    
-    
 
     const startRunning = () => {
       console.log("Starting trial run");
@@ -165,8 +163,6 @@ class CalibrationPlugin {
       end_trial();
       updateUI();
     };
-    
-    
 
     const decreaseMercury = () => {
       mercuryHeight = Math.max(mercuryHeight - trial.autoDecreaseAmount, 0);

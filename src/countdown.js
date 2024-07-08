@@ -51,7 +51,6 @@ class CountdownTrialPlugin {
         displayElement.innerHTML = trial.message; // Reset the display message
       }
     };
-
     const handleKeyDown = (event) => {
       if ((trial.keys || []).includes(event.key.toLowerCase())) {
         keysState[event.key.toLowerCase()] = true;

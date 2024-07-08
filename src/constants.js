@@ -3,8 +3,8 @@ import fastCartesian from 'fast-cartesian';
 // constants
 export const TRIAL_DURATION = 5000; // how long does a trial last (ms)
 export const COUNTDOWN_TIME = 3 // how long the countdown is after "A", "W," and "E" are pressed before trial starts (s)
-export const MINIMUM_AUTO_DECREASE_AMOUNT = 0.5;
-export const AUTO_DECREASE_RATE = 100; // how often do we decrease the thermometer (ms)
+export const MINIMUM_AUTO_DECREASE_AMOUNT = 0;
+export const AUTO_DECREASE_RATE = 0; // how often do we decrease the thermometer (ms)
 export const AUTO_INCREASE_AMOUNT = 10; // how much increase we see in the thermometer with each tap (%)
 export const MAXIMUM_THERMOMETER_HEIGHT = 100; // maximum thermometer height (%)
 export const EXPECTED_MAXIMUM_PERCENTAGE = 100; // where should participants end up if they tap at their maximum rate

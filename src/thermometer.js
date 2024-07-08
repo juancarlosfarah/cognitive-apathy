@@ -8,14 +8,14 @@ class ThermometerPlugin {
     parameters: {
       autoDecreaseAmount: {
         type: ParameterType.FLOAT,
-        default: 1,
+        default: 0,
       },
       autoDecreaseRate: {
         type: ParameterType.INT,
-        default: 100,
+        default: 0,
       },
       autoIncreaseAmount: {
-        type: ParameterType.INT,
+        type: ParameterType.FLOAT,
         default: 10,
       },
       randomDelay: {
@@ -34,6 +34,10 @@ class ThermometerPlugin {
       reward: {
         type: ParameterType.FLOAT,
         default: 0.5,
+      },
+      showThermometer: {
+        type: ParameterType.BOOL,
+        default: true,
       },
     },
   };
@@ -87,6 +91,27 @@ class ThermometerPlugin {
       }
     };
 
+    const setAreKeysHeld = () => {
+      if (trialEnded) return; // Prevent the function from running if the trial has ended
+
+      const areKeysHeld = keysState.a && keysState.w && keysState.e;
+      const holdKeysMessageElement = document.getElementById('hold-keys-message');
+      const startMessageElement = document.getElementById('start-message');
+
+      if (holdKeysMessageElement) {
+        holdKeysMessageElement.style.display = !areKeysHeld ? 'block' : 'none';
+      }
+      if (startMessageElement) {
+        startMessageElement.style.display = areKeysHeld ? 'block' : 'none';
+      }
+
+      if (!areKeysHeld) {
+        setError('You stopped holding the keys!');
+        console.log("Keys not held, setting error and stopping trial.");
+        stopRunning(true);
+      }
+    };
+
     const handleKeyDown = (event) => {
       const key = event.key.toLowerCase();
       if (['a', 'w', 'e'].includes(key)) {
@@ -107,27 +132,6 @@ class ThermometerPlugin {
           console.log("All keys released, ending trial.");
           stopRunning(true);
         }
-      }
-    };
-
-    const setAreKeysHeld = () => {
-      if (trialEnded) return; // Prevent the function from running if the trial has ended
-
-      const areKeysHeld = keysState.a && keysState.w && keysState.e;
-      const holdKeysMessageElement = document.getElementById('hold-keys-message');
-      const startMessageElement = document.getElementById('start-message');
-
-      if (holdKeysMessageElement) {
-        holdKeysMessageElement.style.display = !areKeysHeld ? 'block' : 'none';
-      }
-      if (startMessageElement) {
-        startMessageElement.style.display = areKeysHeld ? 'block' : 'none';
-      }
-
-      if (!areKeysHeld) {
-        setError('You stopped holding the keys!');
-        console.log("Keys not held, setting error and stopping trial.");
-        stopRunning(true);
       }
     };
 
