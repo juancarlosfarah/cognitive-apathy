@@ -86,7 +86,7 @@ export async function run({
     type: CountdownTrialPlugin,
   };
 
-  // Function to dynamically create a timeline step based on the previous trial's outcome
+/*   // Function to dynamically create a timeline step based on the previous trial's outcome
   const createCalibrationTrial = (showThermometer, targetHeight) => {
     return {
       timeline: [
@@ -96,15 +96,6 @@ export async function run({
           duration: TRIAL_DURATION,
           showThermometer: showThermometer,
           targetHeight: targetHeight,
-          on_finish: function (data) {
-            if (data.errorOccurred) {
-              console.log("Skipping release keys step due to error during calibration");
-              jsPsych.data.addProperties({ skipReleaseKeysStep: true });
-            } else {
-              console.log("Including release keys step");
-              jsPsych.data.addProperties({ skipReleaseKeysStep: false });
-            }
-          },
         },
         {
           timeline: [releaseKeysStep],
@@ -238,28 +229,55 @@ export async function run({
     },
   };
 
-  timeline.push(finalCheck);
+  timeline.push(finalCheck); */
 
   // Synchronous block
-  const synchronousBlock = {
+
+   const acceptRejectStep = {
+    type: HtmlKeyboardResponsePlugin,
+    stimulus: function() {
+      const reward = randomReward();
+      return `<p>Reward: $${reward.toFixed(2)}</p>
+              <p>Do you accept the trial? (Arrow Left = Yes, Arrow Right = No)<p/>`;
+    },
+    choices: ['arrowleft', 'arrowright']
+  };
+
+  const performStep = (randomDelay = [0, 0]) => ({
     timeline: [
       countdownStep,
       {
         type: ThermometerPlugin,
         duration: TRIAL_DURATION,
         showThermometer: true,
+        randomDelay: randomDelay,
       },
+      releaseKeysStep,
+    ],
+  });
+
+  const conditionalPerformStep = (randomDelay = [0, 0]) => ({
+    timeline: [performStep(randomDelay)],
+    conditional_function: function () {
+      const data = jsPsych.data.get().last(1).values()[0];
+      return jsPsych.pluginAPI.compareKeys(data.response, 'arrowleft');
+    },
+  });
+
+  const createBlock = (name, randomDelay = [0, 0]) => ({
+    timeline: [
+      acceptRejectStep,
       {
-        timeline: [releaseKeysStep],
+        timeline: [conditionalPerformStep(randomDelay)],
         conditional_function: function () {
-          const lastTrialData = jsPsych.data.getLastTrialData().values()[0];
-          return !lastTrialData.errorOccurred;
+          const data = jsPsych.data.get().last(1).values()[0];
+          return jsPsych.pluginAPI.compareKeys(data.response, 'arrowright');
         },
       },
+      conditionalPerformStep(randomDelay),
     ],
-    randomDelay: [0, 0],
     repetitions: 10, // Define the number of repetitions as needed
-  };
+  });
 
   timeline.push({
     type: HtmlKeyboardResponsePlugin,
@@ -267,28 +285,8 @@ export async function run({
     stimulus: blockWelcomeMessage('Synchronous Block'),
   });
 
+  const synchronousBlock = createBlock('Synchronous Block');
   timeline.push(synchronousBlock);
-
-  // Narrow Asynchronous block
-  const narrowAsynchronousBlock = {
-    timeline: [
-      countdownStep,
-      {
-        type: ThermometerPlugin,
-        duration: TRIAL_DURATION,
-        showThermometer: true,
-      },
-      {
-        timeline: [releaseKeysStep],
-        conditional_function: function () {
-          const lastTrialData = jsPsych.data.getLastTrialData().values()[0];
-          return !lastTrialData.errorOccurred;
-        },
-      },
-    ],
-    randomDelay: [400, 600],
-    repetitions: 10, // Define the number of repetitions as needed
-  };
 
   timeline.push({
     type: HtmlKeyboardResponsePlugin,
@@ -296,28 +294,18 @@ export async function run({
     stimulus: blockWelcomeMessage('Narrow Asynchronous Block'),
   });
 
+  const narrowAsynchronousBlock = createBlock('Narrow Asynchronous Block', [400, 600]);
   timeline.push(narrowAsynchronousBlock);
 
-  // Wide Asynchronous block
-  const wideAsynchronousBlock = {
-    timeline: [
-      countdownStep,
-      {
-        type: ThermometerPlugin,
-        duration: TRIAL_DURATION,
-        showThermometer: true,
-      },
-      {
-        timeline: [releaseKeysStep],
-        conditional_function: function () {
-          const lastTrialData = jsPsych.data.getLastTrialData().values()[0];
-          return !lastTrialData.errorOccurred;
-        },
-      },
-    ],
-    randomDelay: [0, 1000],
-    repetitions: 10, // Define the number of repetitions as needed
-  };
+  timeline.push({
+    type: HtmlKeyboardResponsePlugin,
+    choices: ['enter'],
+    stimulus: blockWelcomeMessage('Wide Asynchronous Block'),
+  });
+
+  const wideAsynchronousBlock = createBlock('Wide Asynchronous Block', [0, 1000]);
+  timeline.push(wideAsynchronousBlock);
+
 
   timeline.push({
     type: HtmlKeyboardResponsePlugin,
