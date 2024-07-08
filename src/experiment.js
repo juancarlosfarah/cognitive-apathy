@@ -32,7 +32,8 @@ import {
   EASY_BOUNDS,
   MEDIUM_BOUNDS,
   HARD_BOUNDS,
-  BOUND_OPTIONS
+  BOUND_OPTIONS,
+  NUM_TRIALS,
 } from './constants';
 import {
   blockWelcomeMessage,
@@ -131,7 +132,7 @@ export async function run({
         type: CalibrationPlugin,
         duration: TRIAL_DURATION,
         showThermometer: true,
-        bounds: [40,60],
+        bounds: [40, 60],
         autoIncreaseAmount: function () {
           const averageTapsPart1 = jsPsych.data.get().values()[0].averageTapsPart1;
           return 50 / averageTapsPart1;
@@ -224,8 +225,8 @@ export async function run({
     repetitions: 3,
   };
 
-  timeline.push(additionalValidationTrials);
-
+/*   timeline.push(additionalValidationTrials);
+ */
   // Final check if failed additional validation
   timeline.push({
     type: HtmlKeyboardResponsePlugin,
@@ -271,91 +272,120 @@ export async function run({
     },
   ];
 
- // Common function for blocks
-const createBlock = (blockName, randomDelay, bounds) => ({
-  timeline: [
-    // Alert before demo
-    {
-      type: HtmlKeyboardResponsePlugin,
-      stimulus: () => {
-        return `<p>The delay you experience in the demo will be the same in the next block of trials.</p><p>Press Enter to continue.</p>`;
-      },
-      choices: ['enter'],
-    },
-    // Demo trial
-    {
-      timeline: [
-        countdownStep,
-        {
-          type: ThermometerPlugin,
-          duration: TRIAL_DURATION,
-          showThermometer: true,
-          randomDelay,
-          bounds,
-          autoIncreaseAmount: function () {
-            const averageTapsPart2 = jsPsych.data.get().values()[0].averageTapsPart2;
-            return 100 / averageTapsPart2;
-          },
+  // Common function for blocks
+  const createBlock = (blockName, randomDelay, bounds) => ({
+    timeline: [
+      // Alert before demo
+      {
+        type: HtmlKeyboardResponsePlugin,
+        stimulus: () => {
+          return `<p>The delay you experience in the demo will be the same in the next block of trials.</p><p>Press Enter to continue.</p>`;
         },
-        releaseKeysStep,
-      ],
-      repetitions: 1,
-    },
-    // Likert scale survey after demo
-    {
-      type: surveyLikert,
-      questions: likertQuestions,
-      randomize_question_order: false,
-      preamble: '<p>Please answer the following questions about the demo trial.</p>',
-      button_label: 'Continue'
-    },
-    // Actual trials
-    {
-      type: HtmlKeyboardResponsePlugin,
-      stimulus: () => {
-        const reward = randomReward() / 100;
-        return `<p>Reward: $${reward.toFixed(2)}</p><p>Do you accept the trial? (Arrow Left = Yes, Arrow Right = No)</p>`;
+        choices: ['enter'],
       },
-      choices: ['arrowleft', 'arrowright'],
-      data: { block: blockName, phase: 'accept' },
-    },
-    {
-      timeline: [
-        countdownStep,
-        {
-          type: ThermometerPlugin,
-          duration: TRIAL_DURATION,
-          showThermometer: true,
-          randomDelay,
-          bounds,
-          autoIncreaseAmount: function () {
-            const averageTapsPart2 = jsPsych.data.get().values()[0].averageTapsPart2;
-            return 100 / averageTapsPart2;
+      // Demo trial
+      {
+        timeline: [
+          countdownStep,
+          {
+            type: ThermometerPlugin,
+            duration: TRIAL_DURATION,
+            showThermometer: true,
+            randomDelay,
+            bounds,
+            autoIncreaseAmount: function () {
+              const averageTapsPart2 = jsPsych.data.get().values()[0].averageTapsPart2;
+              return 100 / averageTapsPart2;
+            },
           },
-        },
-        releaseKeysStep,
-      ],
-      conditional_function: () => {
-        const lastResponse = jsPsych.data.get().last(1).values()[0].response;
-        return jsPsych.pluginAPI.compareKeys(lastResponse, 'arrowleft');
+          releaseKeysStep,
+        ],
+        repetitions: 1,
       },
-      data: { block: blockName, phase: 'perform' },
-      repetitions: 10,
-    },
-  ],
-});
+      // Likert scale survey after demo
+      {
+        type: surveyLikert,
+        questions: likertQuestions,
+        randomize_question_order: false,
+        preamble: '<p>Please answer the following questions about the demo trial.</p>',
+        button_label: 'Continue'
+      },
+    ],
+  });
 
-// Synchronous block
-timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: blockWelcomeMessage('Synchronous Block') });
-timeline.push(createBlock('Synchronous Block', [0, 0], randomBounds()));
+  // Common function for actual block trials
+  const createActualBlock = (blockName, randomDelay) => ({
+    timeline: [
+      {
+        timeline: [
+          {
+            timeline: [
+              {
+                type: HtmlKeyboardResponsePlugin,
+                stimulus: () => {
+                  const reward = randomReward() / 100;
+                  return `<p>Reward: $${reward.toFixed(2)}</p><p>Do you accept the trial? (Arrow Left = Yes, Arrow Right = No)</p>`;
+                },
+                choices: ['arrowleft', 'arrowright'],
+                data: { block: blockName, phase: 'accept' },
+              },
+              {
+                timeline: [
+                  countdownStep,
+                  {
+                    type: ThermometerPlugin,
+                    duration: TRIAL_DURATION,
+                    showThermometer: true,
+                    randomDelay,
+                    bounds: function () {
+                      return randomBounds();
+                    },
+                    autoIncreaseAmount: function () {
+                      const averageTapsPart2 = jsPsych.data.get().values()[0].averageTapsPart2;
+                      return 100 / averageTapsPart2;
+                    },
+                  },
+                  releaseKeysStep,
+                ],
+                conditional_function: () => {
+                  const lastResponse = jsPsych.data.get().last(1).values()[0].response;
+                  return jsPsych.pluginAPI.compareKeys(lastResponse, 'arrowleft');
+                },
+                data: { block: blockName, phase: 'perform' },
+              },
+            ],
+            repetitions: 1,
+          },
+        ],
+        repetitions: NUM_TRIALS,
+      },
+      // Likert scale survey after block
+      {
+        type: surveyLikert,
+        questions: likertQuestions,
+        randomize_question_order: false,
+        preamble: '<p>Please answer the following questions about the block.</p>',
+        button_label: 'Continue'
+      },
+    ],
+  });
+  
+  
 
-// Narrow Asynchronous block
-timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: blockWelcomeMessage('Narrow Asynchronous Block') });
-timeline.push(createBlock('Narrow Asynchronous Block', [400, 600], randomBounds()));
+  // Synchronous block
+  timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: blockWelcomeMessage('Synchronous Block') });
+  timeline.push(createBlock('Synchronous Block', [0, 0], randomBounds()));
+  timeline.push(createActualBlock('Synchronous Block', [0, 0], randomBounds()));
 
-// Wide Asynchronous block
-timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: blockWelcomeMessage('Wide Asynchronous Block') });
-timeline.push(createBlock('Wide Asynchronous Block', [0, 1000], randomBounds()));
+  // Narrow Asynchronous block
+  timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: blockWelcomeMessage('Narrow Asynchronous Block') });
+  timeline.push(createBlock('Narrow Asynchronous Block', [400, 600], randomBounds()));
+  timeline.push(createActualBlock('Narrow Asynchronous Block', [400, 600], randomBounds()));
+
+  // Wide Asynchronous block
+  timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: blockWelcomeMessage('Wide Asynchronous Block') });
+  timeline.push(createBlock('Wide Asynchronous Block', [0, 1000], randomBounds()));
+  timeline.push(createActualBlock('Wide Asynchronous Block', [0, 1000], randomBounds()));
 
   // Start
   timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: experimentWelcomeMessage });
