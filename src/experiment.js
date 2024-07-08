@@ -181,7 +181,10 @@ export async function run({
     repetitions: NUM_VALIDATION_TRIALS,
   });
 
-  timeline.push(...BOUND_OPTIONS.map(createValidationTrials));
+  // Push specific validation trials
+  timeline.push(createValidationTrials([20, 40]));
+  timeline.push(createValidationTrials([40, 60]));
+  timeline.push(createValidationTrials([60, 80]));
 
   // Check if any condition failed more than twice
   timeline.push({
@@ -268,91 +271,91 @@ export async function run({
     },
   ];
 
-  // Common function for blocks
-  const createBlock = (blockName, randomDelay) => ({
-    timeline: [
-      // Alert before demo
-      {
-        type: HtmlKeyboardResponsePlugin,
-        stimulus: () => {
-          return `<p>The delay you experience in the demo will be the same in the next block of trials.</p><p>Press Enter to continue.</p>`;
-        },
-        choices: ['enter'],
+ // Common function for blocks
+const createBlock = (blockName, randomDelay, bounds) => ({
+  timeline: [
+    // Alert before demo
+    {
+      type: HtmlKeyboardResponsePlugin,
+      stimulus: () => {
+        return `<p>The delay you experience in the demo will be the same in the next block of trials.</p><p>Press Enter to continue.</p>`;
       },
-      // Demo trial
-      {
-        timeline: [
-          countdownStep,
-          {
-            type: ThermometerPlugin,
-            duration: TRIAL_DURATION,
-            showThermometer: true,
-            randomDelay,
-            bounds: randomBounds(),
-            autoIncreaseAmount: function () {
-              const averageTapsPart2 = jsPsych.data.get().values()[0].averageTapsPart2;
-              return 100 / averageTapsPart2;
-            },
+      choices: ['enter'],
+    },
+    // Demo trial
+    {
+      timeline: [
+        countdownStep,
+        {
+          type: ThermometerPlugin,
+          duration: TRIAL_DURATION,
+          showThermometer: true,
+          randomDelay,
+          bounds,
+          autoIncreaseAmount: function () {
+            const averageTapsPart2 = jsPsych.data.get().values()[0].averageTapsPart2;
+            return 100 / averageTapsPart2;
           },
-          releaseKeysStep,
-        ],
-        repetitions: 1,
-      },
-      // Likert scale survey after demo
-      {
-        type: surveyLikert,
-        questions: likertQuestions,
-        randomize_question_order: false,
-        preamble: '<p>Please answer the following questions about the demo trial.</p>',
-        button_label: 'Continue'
-      },
-      // Actual trials
-      {
-        type: HtmlKeyboardResponsePlugin,
-        stimulus: () => {
-          const reward = randomReward() / 100;
-          return `<p>Reward: $${reward.toFixed(2)}</p><p>Do you accept the trial? (Arrow Left = Yes, Arrow Right = No)</p>`;
         },
-        choices: ['arrowleft', 'arrowright'],
-        data: { block: blockName, phase: 'accept' },
+        releaseKeysStep,
+      ],
+      repetitions: 1,
+    },
+    // Likert scale survey after demo
+    {
+      type: surveyLikert,
+      questions: likertQuestions,
+      randomize_question_order: false,
+      preamble: '<p>Please answer the following questions about the demo trial.</p>',
+      button_label: 'Continue'
+    },
+    // Actual trials
+    {
+      type: HtmlKeyboardResponsePlugin,
+      stimulus: () => {
+        const reward = randomReward() / 100;
+        return `<p>Reward: $${reward.toFixed(2)}</p><p>Do you accept the trial? (Arrow Left = Yes, Arrow Right = No)</p>`;
       },
-      {
-        timeline: [
-          countdownStep,
-          {
-            type: ThermometerPlugin,
-            duration: TRIAL_DURATION,
-            showThermometer: true,
-            randomDelay,
-            bounds: randomBounds(),
-            autoIncreaseAmount: function () {
-              const averageTapsPart2 = jsPsych.data.get().values()[0].averageTapsPart2;
-              return 100 / averageTapsPart2;
-            },
+      choices: ['arrowleft', 'arrowright'],
+      data: { block: blockName, phase: 'accept' },
+    },
+    {
+      timeline: [
+        countdownStep,
+        {
+          type: ThermometerPlugin,
+          duration: TRIAL_DURATION,
+          showThermometer: true,
+          randomDelay,
+          bounds,
+          autoIncreaseAmount: function () {
+            const averageTapsPart2 = jsPsych.data.get().values()[0].averageTapsPart2;
+            return 100 / averageTapsPart2;
           },
-          releaseKeysStep,
-        ],
-        conditional_function: () => {
-          const lastResponse = jsPsych.data.get().last(1).values()[0].response;
-          return jsPsych.pluginAPI.compareKeys(lastResponse, 'arrowleft');
         },
-        data: { block: blockName, phase: 'perform' },
-        repetitions: 10,
+        releaseKeysStep,
+      ],
+      conditional_function: () => {
+        const lastResponse = jsPsych.data.get().last(1).values()[0].response;
+        return jsPsych.pluginAPI.compareKeys(lastResponse, 'arrowleft');
       },
-    ],
-  });
+      data: { block: blockName, phase: 'perform' },
+      repetitions: 10,
+    },
+  ],
+});
 
-  // Synchronous block
-  timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: blockWelcomeMessage('Synchronous Block') });
-  timeline.push(createBlock('Synchronous Block'));
+// Synchronous block
+timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: blockWelcomeMessage('Synchronous Block') });
+timeline.push(createBlock('Synchronous Block', [0, 0], randomBounds()));
 
-  // Narrow Asynchronous block
-  timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: blockWelcomeMessage('Narrow Asynchronous Block') });
-  timeline.push(createBlock('Narrow Asynchronous Block', [400, 600]));
+// Narrow Asynchronous block
+timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: blockWelcomeMessage('Narrow Asynchronous Block') });
+timeline.push(createBlock('Narrow Asynchronous Block', [400, 600], randomBounds()));
 
-  // Wide Asynchronous block
-  timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: blockWelcomeMessage('Wide Asynchronous Block') });
-  timeline.push(createBlock('Wide Asynchronous Block', [0, 1000]));
+// Wide Asynchronous block
+timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: blockWelcomeMessage('Wide Asynchronous Block') });
+timeline.push(createBlock('Wide Asynchronous Block', [0, 1000], randomBounds()));
 
   // Start
   timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: experimentWelcomeMessage });

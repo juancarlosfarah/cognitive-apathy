@@ -27,9 +27,9 @@ class ThermometerPlugin {
         type: ParameterType.INT,
         default: 5000,
       },
-      targetHeight: {
-        type: ParameterType.INT,
-        default: 50,
+      bounds: {
+        type: ParameterType.ARRAY,
+        default: [40, 60],
       },
       reward: {
         type: ParameterType.FLOAT,
@@ -61,12 +61,9 @@ class ThermometerPlugin {
     let isRunning = false;
     let trialEnded = false; // Flag to prevent multiple endings
 
-    // create variation in reward and stimulus
-    const targetVariation = 0; // Math.random() * 10 - 5;
-    const rewardVariation = 0; // Math.random() * 4 - 2;
-
-    const targetHeight = trial.targetHeight + targetVariation;
-    const reward = (trial.reward + rewardVariation) / 100;
+    const lowerBound = trial.bounds[0];
+    const upperBound = trial.bounds[1];
+    const reward = trial.reward / 100;
 
     const increaseMercury = (amount = trial.autoIncreaseAmount) => {
       mercuryHeight = Math.min(mercuryHeight + amount, 100);
@@ -82,8 +79,11 @@ class ThermometerPlugin {
       if (trial.showThermometer) {
         const mercuryElement = document.getElementById('mercury');
         if (mercuryElement) mercuryElement.style.height = `${mercuryHeight}%`;
-        const targetBarElement = document.getElementById('target-bar');
-        if (targetBarElement) targetBarElement.style.bottom = `${targetHeight}%`;
+        
+        const lowerBoundElement = document.getElementById('lower-bound');
+        const upperBoundElement = document.getElementById('upper-bound');
+        if (lowerBoundElement) lowerBoundElement.style.bottom = `${lowerBound}%`;
+        if (upperBoundElement) upperBoundElement.style.bottom = `${upperBound}%`;
       }
       const errorMessageElement = document.getElementById('error-message');
       if (errorMessageElement) {
@@ -175,7 +175,8 @@ class ThermometerPlugin {
       display_element.innerHTML = calibrationStimulus(
         trial.showThermometer,
         mercuryHeight,
-        targetHeight,
+        lowerBound,
+        upperBound,
         error,
         !errorFlag // Pass false if errorFlag is true
       );
@@ -197,7 +198,8 @@ class ThermometerPlugin {
     display_element.innerHTML = calibrationStimulus(
       trial.showThermometer,
       mercuryHeight,
-      targetHeight,
+      lowerBound,
+      upperBound,
       error
     );
 
@@ -216,7 +218,8 @@ class ThermometerPlugin {
         endTime,
         mercuryHeight,
         error,
-        targetHeight,
+        lowerBound,
+        upperBound,
         errorOccurred,
       };
 
