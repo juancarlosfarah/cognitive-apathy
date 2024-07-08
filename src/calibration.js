@@ -17,10 +17,6 @@ class CalibrationPlugin {
         type: ParameterType.INT,
         default: 10,
       },
-      reward: {
-        type: ParameterType.FLOAT,
-        default: 0.5,
-      },
       showThermometer: {
         type: ParameterType.BOOL,
         default: true,
@@ -99,23 +95,27 @@ class CalibrationPlugin {
     };
 
     const setAreKeysHeld = () => {
+      if (trialEnded) return; // Prevent the function from running if the trial has ended
+    
       const areKeysHeld = keysState.a && keysState.w && keysState.e;
       const holdKeysMessageElement = document.getElementById('hold-keys-message');
       const startMessageElement = document.getElementById('start-message');
-
+    
       if (holdKeysMessageElement) {
         holdKeysMessageElement.style.display = !areKeysHeld ? 'block' : 'none';
       }
       if (startMessageElement) {
         startMessageElement.style.display = areKeysHeld ? 'block' : 'none';
       }
-
-      if (!areKeysHeld && !trialEnded) {
+    
+      if (!areKeysHeld) {
         setError('You stopped holding the keys!');
         console.log("Keys not held, setting error and stopping trial.");
         stopRunning(true);
       }
     };
+    
+    
 
     const startRunning = () => {
       console.log("Starting trial run");
@@ -146,17 +146,27 @@ class CalibrationPlugin {
       timerRef = null;
       intervalRef = null;
       errorOccurred = errorFlag;
-            // Update the UI to remove the hold keys message if ending due to error
-            display_element.innerHTML = calibrationStimulus(
-              trial.showThermometer,
-              mercuryHeight,
-              trial.targetHeight,
-              error,
-              !errorFlag // Pass false if errorFlag is true
-            );
+    
+      // Hide the hold keys message immediately
+      const holdKeysMessageElement = document.getElementById('hold-keys-message');
+      if (holdKeysMessageElement) {
+        holdKeysMessageElement.style.display = 'none';
+      }
+    
+      // Update the UI to remove the hold keys message if ending due to error
+      display_element.innerHTML = calibrationStimulus(
+        trial.showThermometer,
+        mercuryHeight,
+        trial.targetHeight,
+        error,
+        !errorFlag // Pass false if errorFlag is true
+      );
+    
       end_trial();
       updateUI();
     };
+    
+    
 
     const decreaseMercury = () => {
       mercuryHeight = Math.max(mercuryHeight - trial.autoDecreaseAmount, 0);
@@ -168,7 +178,12 @@ class CalibrationPlugin {
       updateUI();
     };
 
-    display_element.innerHTML = calibrationStimulus(trial.showThermometer, mercuryHeight, trial.targetHeight, error);
+    display_element.innerHTML = calibrationStimulus(
+      trial.showThermometer,
+      mercuryHeight,
+      trial.targetHeight,
+      error
+    );
 
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
@@ -192,11 +207,11 @@ class CalibrationPlugin {
         };
 
         console.log("Finishing trial with data:", trial_data);
-        this.jsPsych.finishTrial(trial_data);
+        this.jsPsych.finishTrial(trial_data); // Use this.jsPsych
       }, 1000);
     };
 
-    trial.on_load = function () {
+    trial.on_load = () => {
       console.log("Trial loaded");
       setAreKeysHeld(); // Initial check to update the UI based on assumed key states
       startRunning(); // Start running as the trial loads

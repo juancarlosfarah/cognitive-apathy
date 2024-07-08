@@ -96,18 +96,30 @@ export async function run({
           duration: TRIAL_DURATION,
           showThermometer: showThermometer,
           targetHeight: targetHeight,
+          on_finish: function (data) {
+            if (data.errorOccurred) {
+              console.log("Skipping release keys step due to error during calibration");
+              jsPsych.data.addProperties({ skipReleaseKeysStep: true });
+            } else {
+              console.log("Including release keys step");
+              jsPsych.data.addProperties({ skipReleaseKeysStep: false });
+            }
+          },
         },
         {
           timeline: [releaseKeysStep],
           conditional_function: function () {
-            const lastTrialData = jsPsych.data.getLastTrialData().values()[0];
-            return !lastTrialData.errorOccurred;
+            const skipReleaseKeysStep = jsPsych.data.get().last(1).values()[0].skipReleaseKeysStep;
+            return !skipReleaseKeysStep;
           },
         },
       ],
       repetitions: NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
     };
   };
+  
+  
+  
 
   // Calibration trials without feedback
   const calibrationWithoutFeedback = createCalibrationTrial(false, 0);

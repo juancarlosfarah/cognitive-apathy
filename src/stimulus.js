@@ -38,7 +38,7 @@ export function calibrationStimulus(
   mercuryHeight,
   targetHeight,
   error,
-  showHoldKeysMessage = true, // Add a parameter to control the hold keys message
+  showHoldKeysMessage = true // Add a parameter to control the hold keys message
 ) {
   const target = targetHeight
     ? `<div
@@ -63,7 +63,7 @@ export function calibrationStimulus(
         ${target}
       </div>
     </div>`
-    : `<p style="font-size: 48px;">+</p>`;
+    : '<p style="font-size: 48px; position: absolute;">+</p>';
 
   const holdKeysMessage = showHoldKeysMessage
     ? `<p id="hold-keys-message">Hold the <b>A</b> key with pinky, <b>W</b> key with ring finger, and <b>E</b> key with middle finger!</p>`
@@ -71,15 +71,18 @@ export function calibrationStimulus(
 
   return `
     <div id="calibration-task" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
+        ${thermometer}
         ${holdKeysMessage}
         <p id="start-message" style="display: none;">Hit <b>Enter</b> to start! Then tap the <b>R</b> key with your index finger as fast as possible.</p>
-        ${thermometer}
-        <div id="status">
+        <div id="status" style="margin-top: 50px;"> <!-- Adjust margin-top to place error message lower -->
             <div id="error-message" style="color: red;">${error}</div>
         </div>
     </div>
   `;
 }
+
+
+
 
 
 export const calibrationPartIWelcomeMessage = `
