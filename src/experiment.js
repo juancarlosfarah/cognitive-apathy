@@ -9,7 +9,7 @@
 import FullscreenPlugin from '@jspsych/plugin-fullscreen';
 import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
 import PreloadPlugin from '@jspsych/plugin-preload';
-import SurveyLikertPlugin from '@jspsych/plugin-survey-likert';
+import surveyLikert from '@jspsych/plugin-survey-likert';
 import { ParameterType, initJsPsych } from 'jspsych';
 
 import '../styles/main.scss';
@@ -28,7 +28,11 @@ import {
   REWARD_OPTIONS,
   TARGET_OPTIONS,
   TRIAL_DURATION,
-  NUM_VALIDATION_TRIALS
+  NUM_VALIDATION_TRIALS,
+  EASY_BOUNDS,
+  MEDIUM_BOUNDS,
+  HARD_BOUNDS,
+  BOUND_OPTIONS
 } from './constants';
 import {
   blockWelcomeMessage,
@@ -45,6 +49,8 @@ import ReleaseKeysPlugin from './release-keys';
 import CountdownTrialPlugin from './countdown';
 import KeyHoldPlugin from './key-hold-plugin';
 
+const randomBounds = () => jsPsych.randomization.sampleWithReplacement(BOUND_OPTIONS, 1)[0];
+
 /**
  * This function will be executed by jsPsych Builder and is expected to run the jsPsych experiment
  *
@@ -60,7 +66,7 @@ export async function run({
   const jsPsych = initJsPsych();
 
   const randomReward = () => jsPsych.randomization.sampleWithReplacement(REWARD_OPTIONS, 1)[0];
-  const randomTargetHeight = () => jsPsych.randomization.sampleWithReplacement(TARGET_OPTIONS, 1)[0];
+  const randomBounds = () => jsPsych.randomization.sampleWithReplacement(BOUND_OPTIONS, 1)[0];
 
   const timeline = [];
 
@@ -83,14 +89,14 @@ export async function run({
   };
 
   // Function to dynamically create a timeline step based on the previous trial's outcome
-  const createCalibrationTrial = (showThermometer, targetHeight) => ({
+  const createCalibrationTrial = (showThermometer, bounds) => ({
     timeline: [
       countdownStep,
       {
         type: CalibrationPlugin,
         duration: TRIAL_DURATION,
         showThermometer,
-        targetHeight,
+        bounds,
       },
       {
         timeline: [releaseKeysStep],
@@ -101,7 +107,7 @@ export async function run({
   });
 
   // Calibration trials without feedback
-  const calibrationPart1 = createCalibrationTrial(false, 0);
+  const calibrationPart1 = createCalibrationTrial(false, randomBounds());
   timeline.push(calibrationPart1);
 
   // After calibration part 1, calculate the average taps and log it
@@ -125,7 +131,7 @@ export async function run({
         type: CalibrationPlugin,
         duration: TRIAL_DURATION,
         showThermometer: true,
-        targetHeight: 50,
+        bounds: [40,60],
         autoIncreaseAmount: function () {
           const averageTapsPart1 = jsPsych.data.get().values()[0].averageTapsPart1;
           return 50 / averageTapsPart1;
@@ -154,14 +160,14 @@ export async function run({
   });
 
   // Validation trials
-  const createValidationTrials = (targetHeight) => ({
+  const createValidationTrials = (bounds) => ({
     timeline: [
       countdownStep,
       {
         type: CalibrationPlugin,
         duration: TRIAL_DURATION,
         showThermometer: true,
-        targetHeight,
+        bounds,
         autoIncreaseAmount: function () {
           const averageTapsPart2 = jsPsych.data.get().values()[0].averageTapsPart2;
           return 100 / averageTapsPart2;
@@ -175,17 +181,17 @@ export async function run({
     repetitions: NUM_VALIDATION_TRIALS,
   });
 
-  timeline.push(...TARGET_OPTIONS.map(createValidationTrials));
+  timeline.push(...BOUND_OPTIONS.map(createValidationTrials));
 
   // Check if any condition failed more than twice
   timeline.push({
     type: HtmlKeyboardResponsePlugin,
     stimulus: () => {
       const trials = jsPsych.data.get().filter({ trial_type: 'calibration-task' }).values();
-      const failedConditions = TARGET_OPTIONS.filter(targetHeight =>
-        trials.filter(trial => trial.targetHeight === targetHeight).filter(trial => trial.tapCount < 2).length > 2
+      const failedConditions = BOUND_OPTIONS.filter(bounds =>
+        trials.filter(trial => trial.bounds[0] === bounds[0] && trial.bounds[1] === bounds[1])
+              .filter(trial => trial.tapCount < 2).length > 2
       );
-      jsPsych.data.addProperties({ failedConditions });
       return failedConditions.length > 0
         ? `<p>You failed one or more conditions more than twice. Press Enter to retry the 90% condition.</p>`
         : `<p>You passed the validation step. Press Enter to continue.</p>`;
@@ -193,19 +199,15 @@ export async function run({
     choices: ['enter'],
   });
 
-  // Additional validation for 90% condition, only if failedConditions exist
-  timeline.push({
-    conditional_function: () => {
-      const failedConditions = jsPsych.data.get().values()[0].failedConditions;
-      return failedConditions.length > 0;
-    },
+  // Additional validation for 90% condition
+  const additionalValidationTrials = {
     timeline: [
       countdownStep,
       {
         type: CalibrationPlugin,
         duration: TRIAL_DURATION,
         showThermometer: true,
-        targetHeight: 90,
+        bounds: [60, 80], // 90% condition equivalent bounds
         autoIncreaseAmount: function () {
           const averageTapsPart2 = jsPsych.data.get().values()[0].averageTapsPart2;
           return 100 / averageTapsPart2;
@@ -217,16 +219,18 @@ export async function run({
       },
     ],
     repetitions: 3,
-  });
+  };
+
+  timeline.push(additionalValidationTrials);
 
   // Final check if failed additional validation
   timeline.push({
     type: HtmlKeyboardResponsePlugin,
     stimulus: () => {
       const trials = jsPsych.data.get().filter({ trial_type: 'calibration-task' }).values();
-      const conditionTrials = trials.filter(trial => trial.targetHeight === 90);
-      const succeeded = conditionTrials.some(trial => trial.mercuryHeight >= trial.targetHeight);
-      const failed = conditionTrials.filter(trial => trial.mercuryHeight < trial.targetHeight).length >= 3;
+      const conditionTrials = trials.filter(trial => trial.bounds[0] === 60 && trial.bounds[1] === 80);
+      const succeeded = conditionTrials.some(trial => trial.mercuryHeight >= trial.bounds[0] && trial.mercuryHeight <= trial.bounds[1]);
+      const failed = conditionTrials.filter(trial => trial.mercuryHeight < trial.bounds[0] || trial.mercuryHeight > trial.bounds[1]).length >= 3;
       return failed
         ? `<p>You failed the additional validation. The experiment will now end.</p>`
         : `<p>You passed the validation step. Press Enter to continue.</p>`;
@@ -234,9 +238,9 @@ export async function run({
     choices: ['enter'],
     on_finish: (data) => {
       const trials = jsPsych.data.get().filter({ trial_type: 'calibration-task' }).values();
-      const conditionTrials = trials.filter(trial => trial.targetHeight === 90);
-      const succeeded = conditionTrials.some(trial => trial.mercuryHeight >= trial.targetHeight);
-      const failed = conditionTrials.filter(trial => trial.mercuryHeight < trial.targetHeight).length >= 3;
+      const conditionTrials = trials.filter(trial => trial.bounds[0] === 60 && trial.bounds[1] === 80);
+      const succeeded = conditionTrials.some(trial => trial.mercuryHeight >= trial.bounds[0] && trial.mercuryHeight <= trial.bounds[1]);
+      const failed = conditionTrials.filter(trial => trial.mercuryHeight < trial.bounds[0] || trial.mercuryHeight > trial.bounds[1]).length >= 3;
       if (failed) {
         jsPsych.endExperiment('You failed the validation step.');
       } else if (!succeeded) {
@@ -264,35 +268,6 @@ export async function run({
     },
   ];
 
-  // Additional Likert scale questions after each block
-  const additionalLikertQuestions = [
-    {
-      prompt: "Additional Placeholder question 1",
-      labels: ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
-      name: 'Q4'
-    },
-    {
-      prompt: "Additional Placeholder question 2",
-      labels: ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
-      name: 'Q5'
-    },
-    {
-      prompt: "Additional Placeholder question 3",
-      labels: ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
-      name: 'Q6'
-    },
-    {
-      prompt: "Additional Placeholder question 4",
-      labels: ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
-      name: 'Q7'
-    },
-    {
-      prompt: "Additional Placeholder question 5",
-      labels: ["Strongly Disagree", "Disagree", "Neutral", "Agree", "Strongly Agree"],
-      name: 'Q8'
-    },
-  ];
-
   // Common function for blocks
   const createBlock = (blockName, randomDelay) => ({
     timeline: [
@@ -313,7 +288,7 @@ export async function run({
             duration: TRIAL_DURATION,
             showThermometer: true,
             randomDelay,
-            targetHeight: randomTargetHeight,
+            bounds: randomBounds(),
             autoIncreaseAmount: function () {
               const averageTapsPart2 = jsPsych.data.get().values()[0].averageTapsPart2;
               return 100 / averageTapsPart2;
@@ -325,7 +300,7 @@ export async function run({
       },
       // Likert scale survey after demo
       {
-        type: SurveyLikertPlugin,
+        type: surveyLikert,
         questions: likertQuestions,
         randomize_question_order: false,
         preamble: '<p>Please answer the following questions about the demo trial.</p>',
@@ -349,7 +324,7 @@ export async function run({
             duration: TRIAL_DURATION,
             showThermometer: true,
             randomDelay,
-            targetHeight: randomTargetHeight,
+            bounds: randomBounds(),
             autoIncreaseAmount: function () {
               const averageTapsPart2 = jsPsych.data.get().values()[0].averageTapsPart2;
               return 100 / averageTapsPart2;
@@ -363,14 +338,6 @@ export async function run({
         },
         data: { block: blockName, phase: 'perform' },
         repetitions: 10,
-      },
-      // Additional Likert scale questions after block
-      {
-        type: SurveyLikertPlugin,
-        questions: additionalLikertQuestions,
-        randomize_question_order: false,
-        preamble: '<p>Please answer the following questions about the trials you just completed.</p>',
-        button_label: 'Continue'
       },
     ],
   });

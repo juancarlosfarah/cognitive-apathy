@@ -1,8 +1,8 @@
-
 export function generateStimulus(
   isAcceptStep,
   reward,
-  targetHeight,
+  lowerBound,
+  upperBound,
   mercuryHeight,
   error,
 ) {
@@ -24,7 +24,8 @@ export function generateStimulus(
         <div id="thermometer-container" style="display: flex; justify-content: center; align-items: center; height: 300px; width: 100px; border: 1px solid #000;">
             <div id="thermometer" style="position: relative; width: 100%; height: 100%; background-color: #e0e0e0;">
                 <div id="mercury" style="height: ${mercuryHeight}%; background-color: red;"></div>
-                <div id="target-bar" style="position: absolute; bottom: ${targetHeight}%; width: 100%; height: 2px; background-color: black;"></div>
+                <div id="lower-bound" style="position: absolute; bottom: ${lowerBound}%; width: 100%; height: 2px; background-color: black;"></div>
+                <div id="upper-bound" style="position: absolute; bottom: ${upperBound}%; width: 100%; height: 2px; background-color: black;"></div>
             </div>
         </div>
         <div id="status">
@@ -33,19 +34,25 @@ export function generateStimulus(
     </div>
   `;
 }
+
 export function calibrationStimulus(
   showThermometer,
   mercuryHeight,
-  targetHeight,
+  lowerBound,
+  upperBound,
   error,
   showHoldKeysMessage = true // Add a parameter to control the hold keys message
 ) {
-  const target = targetHeight
-    ? `<div
-          id="target-bar"
-          style="position: absolute; bottom: ${targetHeight}%; width: 100%; height: 2px; background-color: black;"
-        ></div>`
-    : '';
+  const bounds = `
+    <div
+      id="lower-bound"
+      style="position: absolute; bottom: ${lowerBound}%; width: 100%; height: 2px; background-color: black;"
+    ></div>
+    <div
+      id="upper-bound"
+      style="position: absolute; bottom: ${upperBound}%; width: 100%; height: 2px; background-color: black;"
+    ></div>
+  `;
 
   const thermometer = showThermometer
     ? `<div
@@ -60,7 +67,7 @@ export function calibrationStimulus(
           id="mercury"
           style="height: ${mercuryHeight}%; background-color: red;"
         ></div>
-        ${target}
+        ${bounds}
       </div>
     </div>`
     : '<p style="font-size: 48px; position: absolute;">+</p>';
@@ -80,10 +87,6 @@ export function calibrationStimulus(
     </div>
   `;
 }
-
-
-
-
 
 export const calibrationPartIWelcomeMessage = `
 <h2>Calibration I</h2>

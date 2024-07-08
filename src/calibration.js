@@ -1,5 +1,6 @@
 import { ParameterType } from 'jspsych';
 import { calibrationStimulus } from './stimulus';
+import { BOUND_OPTIONS } from './constants';
 
 class CalibrationPlugin {
   static info = {
@@ -21,9 +22,9 @@ class CalibrationPlugin {
         type: ParameterType.BOOL,
         default: true,
       },
-      targetHeight: {
-        type: ParameterType.INT,
-        default: 50,
+      bounds: {
+        type: ParameterType.ARRAY,
+        default: [20, 40],
       },
       duration: {
         type: ParameterType.INT,
@@ -61,9 +62,11 @@ class CalibrationPlugin {
         const mercuryElement = document.getElementById('mercury');
         if (mercuryElement) mercuryElement.style.height = `${mercuryHeight}%`;
       }
-      if (trial.targetHeight) {
-        const targetBarElement = document.getElementById('target-bar');
-        if (targetBarElement) targetBarElement.style.bottom = `${trial.targetHeight}%`;
+      if (trial.bounds) {
+        const lowerBoundElement = document.getElementById('lower-bound');
+        if (lowerBoundElement) lowerBoundElement.style.bottom = `${trial.bounds[0]}%`;
+        const upperBoundElement = document.getElementById('upper-bound');
+        if (upperBoundElement) upperBoundElement.style.bottom = `${trial.bounds[1]}%`;
       }
       const errorMessageElement = document.getElementById('error-message');
       if (errorMessageElement) {
@@ -73,18 +76,18 @@ class CalibrationPlugin {
 
     const setAreKeysHeld = () => {
       if (trialEnded) return; // Prevent the function from running if the trial has ended
-    
+
       const areKeysHeld = keysState.a && keysState.w && keysState.e;
       const holdKeysMessageElement = document.getElementById('hold-keys-message');
       const startMessageElement = document.getElementById('start-message');
-    
+
       if (holdKeysMessageElement) {
         holdKeysMessageElement.style.display = !areKeysHeld ? 'block' : 'none';
       }
       if (startMessageElement) {
         startMessageElement.style.display = areKeysHeld ? 'block' : 'none';
       }
-    
+
       if (!areKeysHeld) {
         setError('You stopped holding the keys!');
         console.log("Keys not held, setting error and stopping trial.");
@@ -144,22 +147,23 @@ class CalibrationPlugin {
       timerRef = null;
       intervalRef = null;
       errorOccurred = errorFlag;
-    
+
       // Hide the hold keys message immediately
       const holdKeysMessageElement = document.getElementById('hold-keys-message');
       if (holdKeysMessageElement) {
         holdKeysMessageElement.style.display = 'none';
       }
-    
+
       // Update the UI to remove the hold keys message if ending due to error
       display_element.innerHTML = calibrationStimulus(
         trial.showThermometer,
         mercuryHeight,
-        trial.targetHeight,
+        trial.bounds[0],
+        trial.bounds[1],
         error,
         !errorFlag // Pass false if errorFlag is true
       );
-    
+
       end_trial();
       updateUI();
     };
@@ -177,7 +181,8 @@ class CalibrationPlugin {
     display_element.innerHTML = calibrationStimulus(
       trial.showThermometer,
       mercuryHeight,
-      trial.targetHeight,
+      trial.bounds[0],
+      trial.bounds[1],
       error
     );
 
@@ -196,7 +201,7 @@ class CalibrationPlugin {
         endTime,
         mercuryHeight,
         error,
-        targetHeight: trial.targetHeight,
+        bounds: trial.bounds,
         errorOccurred,
       };
 
