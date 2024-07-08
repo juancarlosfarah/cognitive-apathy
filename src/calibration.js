@@ -146,6 +146,14 @@ class CalibrationPlugin {
       timerRef = null;
       intervalRef = null;
       errorOccurred = errorFlag;
+            // Update the UI to remove the hold keys message if ending due to error
+            display_element.innerHTML = calibrationStimulus(
+              trial.showThermometer,
+              mercuryHeight,
+              trial.targetHeight,
+              error,
+              !errorFlag // Pass false if errorFlag is true
+            );
       end_trial();
       updateUI();
     };

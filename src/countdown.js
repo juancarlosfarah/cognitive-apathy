@@ -12,7 +12,7 @@ class CountdownTrialPlugin {
       },
       message: {
         type: ParameterType.HTML_STRING,
-        default: '<p>Hold the keys</p>',
+        default: '<p>Hold the <b>A</b>, <b>W</b>, and <b>E</b> keys!</p>',
       },
       waitTime: {
         type: ParameterType.INT,
