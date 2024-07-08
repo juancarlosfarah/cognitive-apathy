@@ -7,11 +7,11 @@ class CalibrationPlugin {
     parameters: {
       autoDecreaseAmount: {
         type: ParameterType.FLOAT,
-        default: 1,
+        default: 0,
       },
       autoDecreaseRate: {
         type: ParameterType.INT,
-        default: 100,
+        default: 0,
       },
       autoIncreaseAmount: {
         type: ParameterType.INT,

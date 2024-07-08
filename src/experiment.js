@@ -160,6 +160,10 @@ export async function run({
         duration: TRIAL_DURATION,
         showThermometer: true,
         targetHeight,
+        autoIncreaseAmount: function () {
+          const averageTapsPart2 = jsPsych.data.get().values()[0].averageTapsPart2;
+          return 100 / averageTapsPart2;
+        },
       },
       {
         timeline: [releaseKeysStep],
@@ -195,6 +199,10 @@ export async function run({
         duration: TRIAL_DURATION,
         showThermometer: true,
         targetHeight: 90,
+        autoIncreaseAmount: function () {
+          const averageTapsPart2 = jsPsych.data.get().values()[0].averageTapsPart2;
+          return 100 / averageTapsPart2;
+        },
       },
       {
         timeline: [releaseKeysStep],
@@ -202,12 +210,6 @@ export async function run({
       },
     ],
     repetitions: 3,
-    conditional_function: () => {
-      const trials = jsPsych.data.get().filter({ trial_type: 'calibration-task' }).values();
-      return TARGET_OPTIONS.some(targetHeight =>
-        trials.filter(trial => trial.targetHeight === targetHeight).filter(trial => trial.tapCount < 2).length > 2
-      );
-    },
   };
 
   timeline.push(additionalValidationTrials);
@@ -218,7 +220,8 @@ export async function run({
     stimulus: () => {
       const trials = jsPsych.data.get().filter({ trial_type: 'calibration-task' }).values();
       const conditionTrials = trials.filter(trial => trial.targetHeight === 90);
-      const failed = conditionTrials.filter(trial => trial.tapCount < 2).length >= 3;
+      const succeeded = conditionTrials.some(trial => trial.mercuryHeight >= trial.targetHeight);
+      const failed = conditionTrials.filter(trial => trial.mercuryHeight < trial.targetHeight).length >= 3;
       return failed
         ? `<p>You failed the additional validation. The experiment will now end.</p>`
         : `<p>You passed the validation step. Press Enter to continue.</p>`;
@@ -227,9 +230,12 @@ export async function run({
     on_finish: (data) => {
       const trials = jsPsych.data.get().filter({ trial_type: 'calibration-task' }).values();
       const conditionTrials = trials.filter(trial => trial.targetHeight === 90);
-      const failed = conditionTrials.filter(trial => trial.tapCount < 2).length >= 3;
+      const succeeded = conditionTrials.some(trial => trial.mercuryHeight >= trial.targetHeight);
+      const failed = conditionTrials.filter(trial => trial.mercuryHeight < trial.targetHeight).length >= 3;
       if (failed) {
         jsPsych.endExperiment('You failed the validation step.');
+      } else if (!succeeded) {
+        jsPsych.endExperiment('You must pass at least one 90% validation trial.');
       }
     },
   });
