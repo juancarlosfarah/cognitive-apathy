@@ -54,10 +54,7 @@ class CountdownTrialPlugin {
         setError('You stopped holding the keys!');
         displayElement.innerHTML = trial.message; // Reset the display message
         if (trial.keysReleasedFlag) {
-          const warningElement = document.createElement('p');
-          warningElement.style.color = 'red';
-          warningElement.innerHTML = 'Warning: Keys were released prematurely during the last trial!';
-          displayElement.appendChild(warningElement);
+          displayWarning(displayElement);
         }
       }
     };
@@ -121,17 +118,20 @@ class CountdownTrialPlugin {
       console.error(message);
     };
 
+    const displayWarning = (element) => {
+      const warningElement = document.createElement('p');
+      warningElement.style.color = 'red';
+      warningElement.innerHTML = 'Warning: Keys were released prematurely during the last trial!';
+      element.appendChild(warningElement);
+    };
+
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
 
     // Initial UI setup
     displayElement.innerHTML = trial.message;
-    if (trial.keysReleasedFlag) {
-      const warningElement = document.createElement('p');
-      warningElement.style.color = 'red';
-      warningElement.innerHTML = 'Warning: Keys were released prematurely during the last trial!';
-      displayElement.appendChild(warningElement);
-    }
+
+    // Check the flag from the last trial and display the warning if needed
   }
 }
 

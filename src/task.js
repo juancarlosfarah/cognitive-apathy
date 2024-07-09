@@ -47,6 +47,10 @@ class TaskPlugin {
         type: ParameterType.FLOAT,
         default: 0.5,
       },
+      accepted: {
+        type: ParameterType.BOOL,
+        default: false,
+      },
     },
   };
 
@@ -113,6 +117,7 @@ class TaskPlugin {
         setError('You stopped holding the keys!');
         console.log("Keys not held, setting error and stopping trial.");
         trial.keysReleasedFlag = true; // Set the flag
+        console.log("Inside task.js - keysReleasedFlag:", trial.keysReleasedFlag);
         stopRunning(true);
       }
     };
@@ -194,6 +199,7 @@ class TaskPlugin {
       updateUI();
     };
 
+
     const decreaseMercury = () => {
       mercuryHeight = Math.max(mercuryHeight - trial.autoDecreaseAmount, 0);
       updateUI();
@@ -202,6 +208,11 @@ class TaskPlugin {
     const setError = (message) => {
       error = message;
       updateUI();
+    };
+
+    // Was trial successful 
+    const isSuccess = () => {
+      return mercuryHeight >= trial.bounds[0] && mercuryHeight <= trial.bounds[1];
     };
 
     display_element.innerHTML = calibrationStimulus(
@@ -230,6 +241,9 @@ class TaskPlugin {
         bounds: trial.bounds,
         errorOccurred,
         keysReleasedFlag: trial.keysReleasedFlag,
+        reward: trial.reward,
+        accepted: trial.accepted,
+        success: isSuccess()
       };
 
       console.log("Finishing trial with data:", trial_data);
