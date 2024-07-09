@@ -2,10 +2,14 @@ import { ParameterType } from 'jspsych';
 import { calibrationStimulus } from './stimulus';
 import { BOUND_OPTIONS } from './constants';
 
-class CalibrationPlugin {
+class TaskPlugin {
   static info = {
-    name: 'calibration-task',
+    name: 'task-plugin',
     parameters: {
+      taskType: {
+        type: ParameterType.STRING,
+        default: 'calibration', // 'calibration' or 'thermometer'
+      },
       autoDecreaseAmount: {
         type: ParameterType.FLOAT,
         default: 0,
@@ -34,6 +38,15 @@ class CalibrationPlugin {
         type: ParameterType.BOOL,
         default: false,
       },
+      randomDelay: {
+        type: ParameterType.INT,
+        array: true,
+        default: [0, 0],
+      },
+      reward: {
+        type: ParameterType.FLOAT,
+        default: 0.5,
+      },
     },
   };
 
@@ -61,15 +74,19 @@ class CalibrationPlugin {
       updateUI();
     };
 
+    const getRandomDelay = () => {
+      const [min, max] = trial.randomDelay;
+      return Math.random() * (max - min) + min;
+    };
+
     const updateUI = () => {
       if (trial.showThermometer) {
         const mercuryElement = document.getElementById('mercury');
         if (mercuryElement) mercuryElement.style.height = `${mercuryHeight}%`;
-      }
-      if (trial.bounds) {
+        
         const lowerBoundElement = document.getElementById('lower-bound');
-        if (lowerBoundElement) lowerBoundElement.style.bottom = `${trial.bounds[0]}%`;
         const upperBoundElement = document.getElementById('upper-bound');
+        if (lowerBoundElement) lowerBoundElement.style.bottom = `${trial.bounds[0]}%`;
         if (upperBoundElement) upperBoundElement.style.bottom = `${trial.bounds[1]}%`;
       }
       const errorMessageElement = document.getElementById('error-message');
@@ -107,7 +124,11 @@ class CalibrationPlugin {
         setAreKeysHeld();
       } else if (key === 'r' && isRunning) {
         tapCount++;
-        increaseMercury();
+        if (trial.taskType === 'thermometer') {
+          setTimeout(() => increaseMercury(), getRandomDelay());
+        } else {
+          increaseMercury();
+        }
       }
     };
 
@@ -228,4 +249,4 @@ class CalibrationPlugin {
   }
 }
 
-export default CalibrationPlugin;
+export default TaskPlugin;
