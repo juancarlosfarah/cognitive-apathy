@@ -30,6 +30,10 @@ class CalibrationPlugin {
         type: ParameterType.INT,
         default: 5000,
       },
+      keysReleasedFlag: {
+        type: ParameterType.BOOL,
+        default: false,
+      },
     },
   };
 
@@ -91,6 +95,7 @@ class CalibrationPlugin {
       if (!areKeysHeld) {
         setError('You stopped holding the keys!');
         console.log("Keys not held, setting error and stopping trial.");
+        trial.keysReleasedFlag = true; // Set the flag
         stopRunning(true);
       }
     };
@@ -203,6 +208,7 @@ class CalibrationPlugin {
         error,
         bounds: trial.bounds,
         errorOccurred,
+        keysReleasedFlag: trial.keysReleasedFlag,
       };
 
       console.log("Finishing trial with data:", trial_data);

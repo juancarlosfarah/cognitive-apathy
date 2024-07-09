@@ -124,28 +124,34 @@ export async function run({
     },
   });
 
-  // Calibration trials with feedback
-  const calibrationPart2 = {
-    timeline: [
-      countdownStep,
-      {
-        type: CalibrationPlugin,
-        duration: TRIAL_DURATION,
-        showThermometer: true,
-        bounds: [40, 60],
-        autoIncreaseAmount: function () {
-          const averageTapsPart1 = jsPsych.data.get().values()[0].averageTapsPart1;
-          return 50 / averageTapsPart1;
-        },
+// Calibration trials with feedback
+const calibrationPart2 = {
+  timeline: [
+    {
+      type: CountdownTrialPlugin,
+      keysReleasedFlag: function() {
+        const lastCalibrationData = jsPsych.data.get().filter({ trial_type: 'calibration-task' }).last(1).values()[0];
+        return lastCalibrationData ? lastCalibrationData.keysReleasedFlag : false;
       },
-      {
-        timeline: [releaseKeysStep],
-        conditional_function: () => !jsPsych.data.get().last(1).values()[0].skipReleaseKeysStep,
+    },
+    {
+      type: CalibrationPlugin,
+      duration: TRIAL_DURATION,
+      showThermometer: true,
+      bounds: [40, 60],
+      autoIncreaseAmount: function () {
+        const averageTapsPart1 = jsPsych.data.get().filter({ trial_type: 'calibration-task' }).values()[0].averageTapsPart1;
+        return 50 / averageTapsPart1;
       },
-    ],
-    repetitions: NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
-  };
-  timeline.push(calibrationPart2);
+    },
+    {
+      timeline: [releaseKeysStep],
+      conditional_function: () => !jsPsych.data.get().last(1).values()[0].skipReleaseKeysStep,
+    },
+  ],
+  repetitions: NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
+};
+timeline.push(calibrationPart2);
 
   // After calibration part 2, calculate the average taps and log it
   timeline.push({
