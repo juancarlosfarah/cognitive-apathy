@@ -454,6 +454,16 @@ export async function run({ assetPaths, input = {}, environment, title, version 
   timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: blockWelcomeMessage('Synchronous Block') });
   timeline.push(createBlock('Synchronous Block', [0, 0], randomBounds()));
   timeline.push(createActualBlock('Synchronous Block', [0, 0], randomBounds()));
+
+  // Narrow Asynchronous block
+  timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: blockWelcomeMessage('Narrow Asynchronous Block') });
+  timeline.push(createBlock('Narrow Asynchronous Block', [400, 600], randomBounds()));
+  timeline.push(createActualBlock('Narrow Asynchronous Block', [400, 600]));
+
+  // Wide Asynchronous block
+  timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: blockWelcomeMessage('Wide Asynchronous Block') });
+  timeline.push(createBlock('Wide Asynchronous Block', [0, 1000], randomBounds()));
+  timeline.push(createActualBlock('Wide Asynchronous Block', [0, 1000]));
   
   // Calculate total reward at the end of the experiment
   timeline.push({
@@ -474,56 +484,12 @@ export async function run({ assetPaths, input = {}, environment, title, version 
               Press Enter to finish.</p>`;
     }
   });
-  
-
-
-  // Synchronous block
-  timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: blockWelcomeMessage('Synchronous Block') });
-  timeline.push(createBlock('Synchronous Block', [0, 0], randomBounds()));
-  timeline.push(createActualBlock('Synchronous Block', [0, 0], randomBounds()));
-
-/*   // Narrow Asynchronous block
-  timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: blockWelcomeMessage('Narrow Asynchronous Block') });
-  timeline.push(createBlock('Narrow Asynchronous Block', [400, 600], randomBounds()));
-  timeline.push(createActualBlock('Narrow Asynchronous Block', [400, 600]));
-
-  // Wide Asynchronous block
-  timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: blockWelcomeMessage('Wide Asynchronous Block') });
-  timeline.push(createBlock('Wide Asynchronous Block', [0, 1000], randomBounds()));
-  timeline.push(createActualBlock('Wide Asynchronous Block', [0, 1000])); */
 
   // Start
   timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: experimentWelcomeMessage });
 
   // Switch to fullscreen
   timeline.push({ type: FullscreenPlugin, fullscreen_mode: true });
-
-  // Calculate total reward at the end of the experiment
-  timeline.push({
-    type: HtmlKeyboardResponsePlugin,
-    choices: ['enter'],
-    stimulus: function() {
-      // Filter trials that are accepted
-      const trials = jsPsych.data.get().values()[0].filter(task === 'block');
-      console.log(trials);
-      const trials2 = jsPsych.data.get().values()[0]
-      console.log(trials2)
-
-
-/*       // Calculate total reward for accepted trials
-      const totalReward = trials.reduce((sum, trial) => sum + trial.reward, 0);
-  
-      // Filter trials that are successful
-      const successfulTrials = trials.filter(trial => trial.success === true);
-      console.log(successfulTrials);
-      // Calculate total reward for successful trials
-      const totalSuccessfulReward = successfulTrials.reduce((sum, trial) => sum + trial.reward, 0);
-  
-      return `<p>Your total reward is: $${totalReward.toFixed(2)}. 
-              Total reward for successful trials is: $${totalSuccessfulReward.toFixed(2)}. 
-              Press Enter to finish.</p>`; */
-    }
-  });
   
 
 
