@@ -11,33 +11,33 @@ export const EXPECTED_MAXIMUM_PERCENTAGE = 100; // where should participants end
 export const EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION = 50; // where should participants end up if they tap at their maximum rate
 export const TARGET_OPTIONS = [50, 70, 90];
 export const REWARD_OPTIONS = [1, 10, 20];
-
+export const EASY_BOUNDS = [20,40]
+export const MEDIUM_BOUNDS = [40,60]
+export const HARD_BOUNDS = [60,80]
+export const BOUND_OPTIONS = [[20,40], [40,60], [60,80]];
 export const PARAMETER_COMBINATIONS = fastCartesian([
   REWARD_OPTIONS,
-  TARGET_OPTIONS,
-]).map(([reward, targetHeight]) => ({
+  BOUND_OPTIONS,
+]).map(([reward, bounds]) => ({
   reward,
-  targetHeight,
+  bounds,
 }));
 
-export const NUM_TRIALS = 3; // NUM_TRIALS_PER_BLOCK
+export const NUM_TRIALS = 63; // NUM_TRIALS_PER_BLOCK
 // error checking
 // round up to the nearest multiple of PARAMETER_COMBINATIONS.length //63 trials
-export const PARAMETER_COMBINATIONS_TOTAL = PARAMETER_COMBINATIONS * (NUM_TRIALS / PARAMETER_COMBINATIONS.length)
+export const PARAMETER_COMBINATIONS_TOTAL = Math.floor(PARAMETER_COMBINATIONS * (NUM_TRIALS / PARAMETER_COMBINATIONS.length))
 //
 
-export const NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS = 3;
-export const NUM_CALIBRATION_WITH_FEEDBACK_TRIALS = 3;
+export const NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS = 1;
+export const NUM_CALIBRATION_WITH_FEEDBACK_TRIALS = 1;
 export const NUM_CALIBRATION_TRIALS =
   NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS +
   NUM_CALIBRATION_WITH_FEEDBACK_TRIALS;
 export const NUM_VALIDATION_TRIALS = 1
 
 export const NUM_DEMO_TRIALS = 0
-export const EASY_BOUNDS = [20,40]
-export const MEDIUM_BOUNDS = [40,60]
-export const HARD_BOUNDS = [60,80]
-export const BOUND_OPTIONS = [EASY_BOUNDS, MEDIUM_BOUNDS, HARD_BOUNDS];
+
 
 
 

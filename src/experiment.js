@@ -45,6 +45,7 @@ import {
   BOUND_OPTIONS,
   NUM_TRIALS,
   NUM_DEMO_TRIALS,
+  PARAMETER_COMBINATIONS_TOTAL,
 } from './constants';
 
 import {
@@ -364,87 +365,96 @@ export async function run({ assetPaths, input = {}, environment, title, version 
     ],
   });
 
-  // Common function for actual block trials
-  const createActualBlock = (blockName, randomDelay) => {
-    const numRewardOptions = REWARD_OPTIONS.length;
-    const numTrialsPerReward = Math.floor(NUM_TRIALS / numRewardOptions);
+// Common function for actual block trials
+const createActualBlock = (blockName, randomDelay) => {
+  const numTrialsPerCombination = Math.floor(NUM_TRIALS / PARAMETER_COMBINATIONS.length);
   
-    // Create an array with each reward option repeated numTrialsPerReward times
-    const trials = REWARD_OPTIONS.flatMap(reward => 
-      Array(numTrialsPerReward).fill().map(() => ({
-        reward: reward,
-        accepted: false, // Initially set to false, will be updated in the trial
-        randomDelay: randomDelay,
-        bounds: randomBounds()
-      }))
-    );
-  
-    // Shuffle the trials to randomize their order
-    const shuffledTrials = jsPsych.randomization.shuffle(trials);
-  
-    // Define the block timeline
-    return {
-      timeline: [
-        {
-          timeline: shuffledTrials.map(trialData => ({
-            timeline: [
-              {
-                type: HtmlKeyboardResponsePlugin,
-                stimulus: function() {
-                  return `<p>Reward: $${(trialData.reward / 100).toFixed(2)}</p><p>Do you accept the trial? (Arrow Left = Yes, Arrow Right = No)</p>`;
-                },
-                choices: ['arrowleft', 'arrowright'],
-                data: {
-                  block: blockName,
-                  phase: 'accept',
-                  reward: trialData.reward / 100
-                },
-                on_finish: (data) => {
-                  data.accepted = jsPsych.pluginAPI.compareKeys(data.response, 'arrowleft');
-                  trialData.accepted = data.accepted; // Update the acceptance status in the trial data
-                },
+  // Create an array with each parameter combination repeated numTrialsPerCombination times
+  const trials = PARAMETER_COMBINATIONS.flatMap(combination => 
+    Array(numTrialsPerCombination).fill().map(() => ({
+      reward: combination.reward,
+      accepted: false, // Initially set to false, will be updated in the trial
+      randomDelay: randomDelay,
+      bounds: combination.bounds
+    }))
+  );
+  console.log(trials)
+
+  const randomTrials = jsPsych.randomization.shuffle(trials);
+  // Ensure sample size does not exceed the number of available trials
+
+  // Define the block timeline
+  return {
+    timeline: [
+      {
+        timeline: randomTrials.map(trialData => ({
+          timeline: [
+            // Acceptance Phase
+            {
+              type: HtmlKeyboardResponsePlugin,
+              stimulus: function() {
+                return `<p>Reward: $${(trialData.reward / 100).toFixed(2)}</p><p>Do you accept the trial? (Arrow Left = Yes, Arrow Right = No)</p>`;
               },
-              {
-                timeline: [
-                  countdownStep,
-                  {
-                    type: TaskPlugin,
-                    taskType: 'thermometer',
-                    duration: TRIAL_DURATION,
-                    showThermometer: true,
-                    randomDelay: trialData.randomDelay,
-                    bounds: trialData.bounds,
-                    autoIncreaseAmount: function () {
-                      const medianTaps = jsPsych.data.get().values()[0].medianTaps;
-                      console.log(medianTaps)
-                      return 100 / medianTaps;
-                    },
-                    data: {
-                      task: 'thermometer',
-                      randomDelay: trialData.randomDelay,
-                      reward: trialData.reward / 100
-                    }
+              choices: ['arrowleft', 'arrowright'],
+              data: {
+                block: blockName,
+                phase: 'accept',
+                reward: trialData.reward / 100
+              },
+              on_finish: (data) => {
+                data.accepted = jsPsych.pluginAPI.compareKeys(data.response, 'arrowleft');
+                trialData.accepted = data.accepted; // Update the acceptance status in the trial data
+              },
+            },
+            // Task Performance Phase (only if accepted)
+            {
+              timeline: [
+                countdownStep,
+                {
+                  type: TaskPlugin,
+                  taskType: 'thermometer',
+                  duration: TRIAL_DURATION,
+                  showThermometer: true,
+                  randomDelay: trialData.randomDelay,
+                  bounds: trialData.bounds,
+                  reward: trialData.reward,
+                  autoIncreaseAmount: function () {
+                    const medianTaps = jsPsych.data.get().values()[0].medianTaps;
+                    return 100 / medianTaps;
                   },
-                  releaseKeysStep,
-                ],
-                conditional_function: () => trialData.accepted,
-                data: { block: blockName, phase: 'perform' },
-              }
-            ]
-          })),
-          repetitions: NUM_TRIALS,
-        },
-        // Likert scale survey after block
-        {
-          type: surveyLikert,
-          questions: likertQuestions,
-          randomize_question_order: false,
-          preamble: '<p>Please answer the following questions about the block.</p>',
-          button_label: 'Continue'
+                  data: {
+                    task: 'thermometer',
+                    randomDelay: trialData.randomDelay,
+                    reward: trialData.reward / 100
+                  }
+                },
+                releaseKeysStep,
+              ],
+              conditional_function: () => trialData.accepted, // Only run if accepted
+              data: { block: blockName, phase: 'perform' },
+            }
+          ]
+        })),
+        sample: {
+          type: 'without-replacement',
+          size: trials
         }
-      ]
-    };
+      },
+      // Likert scale survey after block
+      {
+        type: surveyLikert,
+        questions: likertQuestions,
+        randomize_question_order: false,
+        preamble: '<p>Please answer the following questions about the block.</p>',
+        button_label: 'Continue'
+      }
+    ]
   };
+};
+
+
+
+
   
   
   // Synchronous block
@@ -455,12 +465,12 @@ export async function run({ assetPaths, input = {}, environment, title, version 
   // Narrow Asynchronous block
   timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: blockWelcomeMessage('Narrow Asynchronous Block') });
   timeline.push(createBlock('Narrow Asynchronous Block', [400, 600], randomBounds()));
-  timeline.push(createActualBlock('Narrow Asynchronous Block', [400, 600], randomBounds()));
+  timeline.push(createActualBlock('Narrow Asynchronous Block', [400, 600]));
 
   // Wide Asynchronous block
   timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: blockWelcomeMessage('Wide Asynchronous Block') });
   timeline.push(createBlock('Wide Asynchronous Block', [0, 1000], randomBounds()));
-  timeline.push(createActualBlock('Wide Asynchronous Block', [0, 1000], randomBounds()));
+  timeline.push(createActualBlock('Wide Asynchronous Block', [0, 1000]));
 
   // Start
   timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: experimentWelcomeMessage });
