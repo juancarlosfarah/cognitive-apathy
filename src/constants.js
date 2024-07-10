@@ -20,13 +20,19 @@ export const PARAMETER_COMBINATIONS = fastCartesian([
   targetHeight,
 }));
 
+export const NUM_TRIALS = 3; // NUM_TRIALS_PER_BLOCK
+// error checking
+// round up to the nearest multiple of PARAMETER_COMBINATIONS.length //63 trials
+export const PARAMETER_COMBINATIONS_TOTAL = PARAMETER_COMBINATIONS * (NUM_TRIALS / PARAMETER_COMBINATIONS.length)
+//
+
 export const NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS = 1;
 export const NUM_CALIBRATION_WITH_FEEDBACK_TRIALS = 1;
 export const NUM_CALIBRATION_TRIALS =
   NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS +
   NUM_CALIBRATION_WITH_FEEDBACK_TRIALS;
 export const NUM_VALIDATION_TRIALS = 1
-export const NUM_TRIALS = 3
+
 export const NUM_DEMO_TRIALS = 0
 export const EASY_BOUNDS = [20,40]
 export const MEDIUM_BOUNDS = [40,60]

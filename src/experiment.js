@@ -164,110 +164,145 @@ export async function run({ assetPaths, input = {}, environment, title, version 
     },
   });
 
-  // Validation trials
-  const createValidationTrials = (bounds) => ({
+  const validationResults = {
+    easy: 0,
+    medium: 0,
+    hard: 0,
+    extraValidation: 0
+  };
+
+  const extraValidationLogic = () => {
+    return () => {
+      for (let i = 0; i < 3; i++) {
+        const levels = ['easy', 'medium', 'hard'];
+        if (validationResults[levels[i]] > 0) {
+          return true;
+        }
+      }
+      return false;
+    };
+  };
+
+  const validationTrials = (bounds, difficultyLevel) => ({
     timeline: [
       countdownStep,
       {
         type: TaskPlugin,
-        taskType: 'calibration',
         duration: TRIAL_DURATION,
         showThermometer: true,
         bounds,
         autoIncreaseAmount: function () {
-          const averageTapsPart2 = jsPsych.data.get().values()[0].averageTapsPart2;
-          return 100 / averageTapsPart2;
+          const averageTapsPart1 = jsPsych.data.get().values()[0].averageTapsPart1;
+          return 50 / averageTapsPart1;
+        },
+        on_finish: function(data) {
+          if (!data.success) {
+            console.log('activated');
+            console.log(data.success);
+            validationResults[difficultyLevel]++;
+            console.log('failures for:', [difficultyLevel], ' ', validationResults[difficultyLevel])
+          }
         },
         data: {
-          task: 'calibration',
+          showThermometer: true,
+          bounds: bounds
+        },
+      },
+      {
+      timeline: [releaseKeysStep],
+      conditional_function: () => !jsPsych.data.getLastTrialData().values()[0].skipReleaseKeysStep,
+      }
+    ],
+    repetitions: NUM_VALIDATION_TRIALS
+  });
+
+
+  
+timeline.push(validationTrials(EASY_BOUNDS, 'easy'))
+timeline.push(validationTrials(MEDIUM_BOUNDS, 'medium'))
+timeline.push(validationTrials(HARD_BOUNDS, 'hard'))
+
+  const extraValidationTrials = (bounds, difficultyLevel) => ({
+    timeline: [
+      countdownStep,
+      {
+        type: TaskPlugin,
+        duration: TRIAL_DURATION,
+        showThermometer: true,
+        bounds,
+        autoIncreaseAmount: function () {
+          const averageTapsPart1 = jsPsych.data.get().values()[0].averageTapsPart1;
+          return 50 / averageTapsPart1;
+        },
+        on_finish: function(data) {
+          if (!data.success) {
+            console.log('activated');
+            console.log(data.success);
+            validationResults[difficultyLevel]++;
+            console.log('failures for:', [difficultyLevel], ' ', validationResults[difficultyLevel])
+          }
+        },
+        data: {
           showThermometer: true,
           bounds: bounds
         }
       },
       {
-        timeline: [releaseKeysStep],
-        conditional_function: () => !jsPsych.data.getLastTrialData().values()[0].skipReleaseKeysStep,
-      },
+      timeline: [releaseKeysStep],
+      conditional_function: () => !jsPsych.data.getLastTrialData().values()[0].skipReleaseKeysStep,
+      }
     ],
-    repetitions: NUM_VALIDATION_TRIALS,
+    repetitions: 3
   });
 
-  // Push specific validation trials
-  timeline.push(createValidationTrials([20, 40]));
-  timeline.push(createValidationTrials([40, 60]));
-  timeline.push(createValidationTrials([60, 80]));
 
-  // Check if any condition failed more than twice
-  timeline.push({
+  const extraValidationNode = {
+    timeline: [extraValidationTrials(HARD_BOUNDS, 'extraValidation')],
+    conditional_function: extraValidationLogic()
+  };
+  
+  timeline.push(extraValidationNode);
+  const getMessages = () => {
+    if (validationResults.extraValidation <= 2) {
+      return {
+        message: 'Congratulations! You passed the extra validation trials.',
+        endExperiment: false
+      };
+    } else {
+      return {
+        message: 'You did not pass the extra validation trials. Experiment now ending.',
+        endExperiment: true
+      };
+    }
+  };
+  
+  const messageStep = {
     type: HtmlKeyboardResponsePlugin,
-    stimulus: () => {
-      const trials = jsPsych.data.get().filter({task: 'calibration'}).values();
-      const failedConditions = BOUND_OPTIONS.filter(bounds =>
-        trials.filter(trial => trial.bounds[0] === bounds[0] && trial.bounds[1] === bounds[1])
-              .filter(trial => trial.tapCount < 2).length > 2
-      );
-      return failedConditions.length > 0
-        ? `<p>You failed one or more conditions more than twice. Press Enter to retry the 90% condition.</p>`
-        : `<p>You passed the validation step. Press Enter to continue.</p>`;
+    stimulus: function() {
+      const result = getMessages();
+      return result.message;
     },
-    choices: ['enter'],
-  });
-
-  // Additional validation for 90% condition
-  const additionalValidationTrials = {
-    timeline: [
-      countdownStep,
-      {
-        type: TaskPlugin,
-        taskType: 'calibration',
-        duration: TRIAL_DURATION,
-        showThermometer: true,
-        bounds: [60, 80], // 90% condition equivalent bounds
-        autoIncreaseAmount: function () {
-          const averageTapsPart2 = jsPsych.data.get().values()[0].averageTapsPart2;
-          return 100 / averageTapsPart2;
-        },
-        data: {
-          task: 'calibration',
-          showThermometer: true,
-          bounds: [60, 80]
-        }
-      },
-      {
-        timeline: [releaseKeysStep],
-        conditional_function: () => !jsPsych.data.getLastTrialData().values()[0].skipReleaseKeysStep,
-      },
-    ],
-    repetitions: 3,
+    choices: ['Enter'],
+    on_finish: function(data) {
+      const result = getMessages();
+      if (result.endExperiment) {
+        jsPsych.endExperiment(result.message);
+      }
+    }
   };
 
-  timeline.push(additionalValidationTrials);
+  timeline.push(messageStep);
 
-  // Final check if failed additional validation
-  timeline.push({
-    type: HtmlKeyboardResponsePlugin,
-    stimulus: () => {
-      const trials = jsPsych.data.get().filter({task: 'calibration'}).values();
-      const conditionTrials = trials.filter(trial => trial.bounds[0] === 60 && trial.bounds[1] === 80);
-      const succeeded = conditionTrials.some(trial => trial.mercuryHeight >= trial.bounds[0] && trial.mercuryHeight <= trial.bounds[1]);
-      const failed = conditionTrials.filter(trial => trial.mercuryHeight < trial.bounds[0] || trial.mercuryHeight > trial.bounds[1]).length >= 3;
-      return failed
-        ? `<p>You failed the additional validation. The experiment will now end.</p>`
-        : `<p>You passed the validation step. Press Enter to continue.</p>`;
-    },
-    choices: ['enter'],
-    on_finish: (data) => {
-      const trials = jsPsych.data.get().filter({task: 'calibration'}).values();
-      const conditionTrials = trials.filter(trial => trial.bounds[0] === 60 && trial.bounds[1] === 80);
-      const succeeded = conditionTrials.some(trial => trial.mercuryHeight >= trial.bounds[0] && trial.mercuryHeight <= trial.bounds[1]);
-      const failed = conditionTrials.filter(trial => trial.mercuryHeight < trial.bounds[0] || trial.bounds[1] > trial.bounds[1]).length >= 3;
-      if (failed) {
-        jsPsych.endExperiment('You failed the validation step.');
-      } else if (!succeeded) {
-        jsPsych.endExperiment('You must pass at least one 90% validation trial.');
-      }
-    },
-  });
+
+  
+
+
+  // Check if any condition failed more than twice
+
+  
+  // Define additional validation trials for the last bound condition
+
+
 
   // Placeholder Likert scale questions
   const likertQuestions = [

@@ -8,7 +8,7 @@ class TaskPlugin {
     parameters: {
       taskType: {
         type: ParameterType.STRING,
-        default: 'calibration', // 'calibration' or 'thermometer'
+        default: 'calibration', // 'calibration' or 'thermometer' or 'validation'
       },
       autoDecreaseAmount: {
         type: ParameterType.FLOAT,
