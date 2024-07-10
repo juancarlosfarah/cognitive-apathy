@@ -72,6 +72,7 @@ class TaskPlugin {
     let errorOccurred = false;
     let isRunning = false;
     let trialEnded = false; // Flag to prevent multiple endings
+    let mainBlock = false;
 
     const increaseMercury = (amount = trial.autoIncreaseAmount) => {
       mercuryHeight = Math.min(mercuryHeight + amount, 100);
@@ -212,7 +213,7 @@ class TaskPlugin {
 
     // Was trial successful 
     const isSuccess = () => {
-      return mercuryHeight >= trial.bounds[0] && mercuryHeight <= trial.bounds[1];
+      return mercuryHeight >= trial.bounds[0] && mercuryHeight <= trial.bounds[1] && !trial.keysReleasedFlag;
     };
 
     display_element.innerHTML = calibrationStimulus(
@@ -239,9 +240,10 @@ class TaskPlugin {
         mercuryHeight,
         error,
         bounds: trial.bounds,
+        reward: trial.reward,
+        task: trial.task,
         errorOccurred,
         keysReleasedFlag: trial.keysReleasedFlag,
-        reward: trial.reward,
         accepted: trial.accepted,
         success: isSuccess()
       };

@@ -119,7 +119,6 @@ export async function run({ assetPaths, input = {}, environment, title, version 
       countdownStep,
       {
         type: TaskPlugin,
-        taskType: 'calibration',
         duration: TRIAL_DURATION,
         showThermometer,
         bounds,
@@ -158,7 +157,6 @@ export async function run({ assetPaths, input = {}, environment, title, version 
       countdownStep,
       {
         type: TaskPlugin,
-        taskType: 'calibration',
         duration: TRIAL_DURATION,
         showThermometer: true,
         bounds: [40, 60],
@@ -281,11 +279,11 @@ export async function run({ assetPaths, input = {}, environment, title, version 
   };
 
   //Push Validation Trials
-  timeline.push(validationTrials(EASY_BOUNDS, 'easy'))
+/*   timeline.push(validationTrials(EASY_BOUNDS, 'easy'))
   timeline.push(validationTrials(MEDIUM_BOUNDS, 'medium'))
   timeline.push(validationTrials(HARD_BOUNDS, 'hard'))
   timeline.push(extraValidationNode);
-  timeline.push(messageStep);
+  timeline.push(messageStep); */
 
 
   
@@ -316,7 +314,6 @@ export async function run({ assetPaths, input = {}, environment, title, version 
       name: 'Q3'
     },
   ];
-
   // Common function for blocks
   const createBlock = (blockName, randomDelay, bounds) => ({
     timeline: [
@@ -334,7 +331,6 @@ export async function run({ assetPaths, input = {}, environment, title, version 
           countdownStep,
           {
             type: TaskPlugin,
-            taskType: 'thermometer',
             duration: TRIAL_DURATION,
             showThermometer: true,
             randomDelay,
@@ -365,104 +361,128 @@ export async function run({ assetPaths, input = {}, environment, title, version 
     ],
   });
 
-// Common function for actual block trials
-const createActualBlock = (blockName, randomDelay) => {
-  const numTrialsPerCombination = Math.floor(NUM_TRIALS / PARAMETER_COMBINATIONS.length);
+
+
+  const createActualBlock = (blockName, randomDelay) => {
+    const numTrialsPerCombination = Math.floor(NUM_TRIALS / PARAMETER_COMBINATIONS.length);
   
-  // Create an array with each parameter combination repeated numTrialsPerCombination times
-  const trials = PARAMETER_COMBINATIONS.flatMap(combination => 
-    Array(numTrialsPerCombination).fill().map(() => ({
-      reward: combination.reward,
-      accepted: false, // Initially set to false, will be updated in the trial
-      randomDelay: randomDelay,
-      bounds: combination.bounds
-    }))
-  );
-  console.log(trials)
-
-  const randomTrials = jsPsych.randomization.shuffle(trials);
-  // Ensure sample size does not exceed the number of available trials
-
-  // Define the block timeline
-  return {
-    timeline: [
-      {
-        timeline: randomTrials.map(trialData => ({
-          timeline: [
-            // Acceptance Phase
-            {
-              type: HtmlKeyboardResponsePlugin,
-              stimulus: function() {
-                return `<p>Reward: $${(trialData.reward / 100).toFixed(2)}</p><p>Do you accept the trial? (Arrow Left = Yes, Arrow Right = No)</p>`;
-              },
-              choices: ['arrowleft', 'arrowright'],
-              data: {
-                block: blockName,
-                phase: 'accept',
-                reward: trialData.reward / 100
-              },
-              on_finish: (data) => {
-                data.accepted = jsPsych.pluginAPI.compareKeys(data.response, 'arrowleft');
-                trialData.accepted = data.accepted; // Update the acceptance status in the trial data
-              },
-            },
-            // Task Performance Phase (only if accepted)
-            {
-              timeline: [
-                countdownStep,
-                {
-                  type: TaskPlugin,
-                  taskType: 'thermometer',
-                  duration: TRIAL_DURATION,
-                  showThermometer: true,
-                  randomDelay: trialData.randomDelay,
-                  bounds: trialData.bounds,
-                  reward: trialData.reward,
-                  autoIncreaseAmount: function () {
-                    const medianTaps = jsPsych.data.get().values()[0].medianTaps;
-                    return 100 / medianTaps;
-                  },
-                  data: {
-                    task: 'thermometer',
-                    randomDelay: trialData.randomDelay,
-                    reward: trialData.reward / 100
-                  }
+    // Create an array with each parameter combination repeated numTrialsPerCombination times
+    let trials = PARAMETER_COMBINATIONS.flatMap(combination => 
+      Array(numTrialsPerCombination).fill().map(() => ({
+        reward: combination.reward,
+        accepted: false, // Initially set to false, will be updated in the trial
+        success: false, // Initially set to false, will be updated in the trial
+        randomDelay: randomDelay,
+        bounds: combination.bounds
+      }))
+    );
+  
+    // Shuffle the trials to randomize their order
+    trials = jsPsych.randomization.shuffle(trials);
+  
+    // Define the block timeline
+    return {
+      timeline: [
+        {
+          timeline: trials.map(trialData => ({
+            timeline: [
+              // Acceptance Phase
+              {
+                type: HtmlKeyboardResponsePlugin,
+                stimulus: function() {
+                  return `<p>Reward: $${(trialData.reward / 100).toFixed(2)}</p><p>Do you accept the trial? (Arrow Left = Yes, Arrow Right = No)</p>`;
                 },
-                releaseKeysStep,
-              ],
-              conditional_function: () => trialData.accepted, // Only run if accepted
-              data: { block: blockName, phase: 'perform' },
-            }
-          ]
-        })),
-        sample: {
-          type: 'without-replacement',
-          size: trials
+                choices: ['arrowleft', 'arrowright'],
+                data: {
+                  task: 'block', // Add the task name here
+                  block: blockName, // Add the block name here
+                  phase: 'accept',
+                  reward: trialData.reward / 100,
+                },
+                on_finish: (data) => {
+                  data.accepted = jsPsych.pluginAPI.compareKeys(data.response, 'arrowleft');
+                  trialData.accepted = data.accepted; // Update the acceptance status in the trial data
+                },
+              },
+              // Task Performance Phase (only if accepted)
+              {
+                timeline: [
+                  countdownStep,
+                  {
+                    type: TaskPlugin,
+                    duration: TRIAL_DURATION,
+                    showThermometer: true,
+                    randomDelay: trialData.randomDelay,
+                    bounds: trialData.bounds,
+                    reward: trialData.reward / 100,
+                    autoIncreaseAmount: function () {
+                      const medianTaps = jsPsych.data.get().values()[0].medianTaps;
+                      return 100 / medianTaps;
+                    },
+                    on_finish: (data) => {
+                      console.log('trial successful?:' , data.success);
+                    },
+                    data: {
+                      task: 'block', // Add the task name here
+                      block: blockName, // Add the block name here
+                    }
+                  },
+                  releaseKeysStep,
+                ],
+                conditional_function: () => trialData.accepted, // Only run if accepted
+              }
+            ]
+          })),
+          sample: {
+            type: 'without-replacement',
+            size: trials
+          }
+        },
+        // Likert scale survey after block
+        {
+          type: surveyLikert,
+          questions: likertQuestions,
+          randomize_question_order: false,
+          preamble: '<p>Please answer the following questions about the block.</p>',
+          button_label: 'Continue'
         }
-      },
-      // Likert scale survey after block
-      {
-        type: surveyLikert,
-        questions: likertQuestions,
-        randomize_question_order: false,
-        preamble: '<p>Please answer the following questions about the block.</p>',
-        button_label: 'Continue'
-      }
-    ]
+      ]
+    };
   };
-};
-
-
-
-
-  
   
   // Synchronous block
   timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: blockWelcomeMessage('Synchronous Block') });
   timeline.push(createBlock('Synchronous Block', [0, 0], randomBounds()));
   timeline.push(createActualBlock('Synchronous Block', [0, 0], randomBounds()));
+  
+  // Calculate total reward at the end of the experiment
+  timeline.push({
+    type: HtmlKeyboardResponsePlugin,
+    choices: ['enter'],
+    stimulus: function() {
+      // Filter trials that are part of the blocks
+      const blockTrials = jsPsych.data.get().filter({task: 'block'}).values();
+      console.log(blockTrials);
 
-  // Narrow Asynchronous block
+      // Filter trials that are successful
+      const successfulTrials = blockTrials.filter(trial => trial.success === true);
+      console.log(successfulTrials);
+      // Calculate total reward for successful trials
+      const totalSuccessfulReward = successfulTrials.reduce((sum, trial) => sum + trial.reward, 0);
+    
+      return `<p>  Total reward for successful trials is: $${totalSuccessfulReward.toFixed(2)}. 
+              Press Enter to finish.</p>`;
+    }
+  });
+  
+
+
+  // Synchronous block
+  timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: blockWelcomeMessage('Synchronous Block') });
+  timeline.push(createBlock('Synchronous Block', [0, 0], randomBounds()));
+  timeline.push(createActualBlock('Synchronous Block', [0, 0], randomBounds()));
+
+/*   // Narrow Asynchronous block
   timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: blockWelcomeMessage('Narrow Asynchronous Block') });
   timeline.push(createBlock('Narrow Asynchronous Block', [400, 600], randomBounds()));
   timeline.push(createActualBlock('Narrow Asynchronous Block', [400, 600]));
@@ -470,7 +490,7 @@ const createActualBlock = (blockName, randomDelay) => {
   // Wide Asynchronous block
   timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: blockWelcomeMessage('Wide Asynchronous Block') });
   timeline.push(createBlock('Wide Asynchronous Block', [0, 1000], randomBounds()));
-  timeline.push(createActualBlock('Wide Asynchronous Block', [0, 1000]));
+  timeline.push(createActualBlock('Wide Asynchronous Block', [0, 1000])); */
 
   // Start
   timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: experimentWelcomeMessage });
@@ -484,29 +504,32 @@ const createActualBlock = (blockName, randomDelay) => {
     choices: ['enter'],
     stimulus: function() {
       // Filter trials that are accepted
-      const acceptedTrials = jsPsych.data.get().filterCustom(trial => trial.accepted).values();
-      console.log(acceptedTrials);
-  
-      // Calculate total reward for accepted trials
-      const totalReward = acceptedTrials.reduce((sum, trial) => sum + trial.reward, 0);
+      const trials = jsPsych.data.get().values()[0].filter(task === 'block');
+      console.log(trials);
+      const trials2 = jsPsych.data.get().values()[0]
+      console.log(trials2)
+
+
+/*       // Calculate total reward for accepted trials
+      const totalReward = trials.reduce((sum, trial) => sum + trial.reward, 0);
   
       // Filter trials that are successful
-      const successfulTrials = acceptedTrials.filter(trial => trial.success);
+      const successfulTrials = trials.filter(trial => trial.success === true);
       console.log(successfulTrials);
-  
       // Calculate total reward for successful trials
       const totalSuccessfulReward = successfulTrials.reduce((sum, trial) => sum + trial.reward, 0);
   
       return `<p>Your total reward is: $${totalReward.toFixed(2)}. 
               Total reward for successful trials is: $${totalSuccessfulReward.toFixed(2)}. 
-              Press Enter to finish.</p>`;
+              Press Enter to finish.</p>`; */
     }
   });
   
+
 
   await jsPsych.run(timeline);
 
   // Return the jsPsych instance so jsPsych Builder can access the experiment results (remove this
   // if you handle results yourself, be it here or in on_finish())
   return jsPsych;
-}
+}``
