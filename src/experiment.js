@@ -59,12 +59,10 @@ import {
   validationWelcomeMessage,
 } from './stimulus';
 
-const randomBounds = () => jsPsych.randomization.sampleWithReplacement(BOUND_OPTIONS, 1)[0];
 
 export async function run({ assetPaths, input = {}, environment, title, version }) {
   const jsPsych = initJsPsych();
 
-  const randomReward = () => jsPsych.randomization.sampleWithReplacement(REWARD_OPTIONS, 1)[0];
   const randomBounds = () => jsPsych.randomization.sampleWithReplacement(BOUND_OPTIONS, 1)[0];
 
   const timeline = [];
@@ -81,7 +79,11 @@ export async function run({ assetPaths, input = {}, environment, title, version 
     type: ReleaseKeysPlugin,
     stimulus: `<p>Release the Keys</p>`,
     valid_responses: ['a', 'w', 'e'],
+    conditional_function: function(){
+      return jsPsych.data.get().last(1).values()[0].keysReleasedFlag;  
+    },
   };
+  
 
   const countdownStep = {
     type: CountdownTrialPlugin,
@@ -128,7 +130,6 @@ export async function run({ assetPaths, input = {}, environment, title, version 
       },
       {
         timeline: [releaseKeysStep],
-        conditional_function: () => !jsPsych.data.getLastTrialData().values()[0].skipReleaseKeysStep,
       },
     ],
     repetitions: NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
@@ -171,14 +172,11 @@ export async function run({ assetPaths, input = {}, environment, title, version 
         }
       },
       {
-        timeline: [releaseKeysStep],
-        conditional_function: () => !jsPsych.data.getLastTrialData().values()[0].skipReleaseKeysStep,
-      },
+        timeline: [releaseKeysStep]      },
     ],
     repetitions: NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
   };
   timeline.push(calibrationPart2);
-
   // After calibration part 2, calculate the average taps and log it
   timeline.push({
     type: HtmlKeyboardResponsePlugin,
@@ -257,6 +255,7 @@ export async function run({ assetPaths, input = {}, environment, title, version 
     ],
     repetitions: 3
   });
+
   //Failed or Succeeded Validation
   const messageStep = {
     type: HtmlKeyboardResponsePlugin,
@@ -279,24 +278,15 @@ export async function run({ assetPaths, input = {}, environment, title, version 
   };
 
   //Push Validation Trials
-/*   timeline.push(validationTrials(EASY_BOUNDS, 'easy'))
+  timeline.push(validationTrials(EASY_BOUNDS, 'easy'))
   timeline.push(validationTrials(MEDIUM_BOUNDS, 'medium'))
   timeline.push(validationTrials(HARD_BOUNDS, 'hard'))
   timeline.push(extraValidationNode);
-  timeline.push(messageStep); */
-
-
-  
-
-
-  // Check if any condition failed more than twice
-
-  
-  // Define additional validation trials for the last bound condition
+  timeline.push(messageStep);
 
 
 
-  // Placeholder Likert scale questions
+  // Placeholder Likert scale questions after demo
   const likertQuestions = [
     {
       prompt: "Placeholder question 1",
@@ -314,8 +304,9 @@ export async function run({ assetPaths, input = {}, environment, title, version 
       name: 'Q3'
     },
   ];
+
   // Common function for blocks
-  const createBlock = (blockName, randomDelay, bounds) => ({
+  const createBlock = (randomDelay, bounds) => ({
     timeline: [
       // Alert before demo
       {
@@ -370,7 +361,6 @@ export async function run({ assetPaths, input = {}, environment, title, version 
     let trials = PARAMETER_COMBINATIONS.flatMap(combination => 
       Array(numTrialsPerCombination).fill().map(() => ({
         reward: combination.reward,
-        accepted: false, // Initially set to false, will be updated in the trial
         success: false, // Initially set to false, will be updated in the trial
         randomDelay: randomDelay,
         bounds: combination.bounds
@@ -395,7 +385,6 @@ export async function run({ assetPaths, input = {}, environment, title, version 
                 choices: ['arrowleft', 'arrowright'],
                 data: {
                   task: 'block', // Add the task name here
-                  block: blockName, // Add the block name here
                   phase: 'accept',
                   reward: trialData.reward / 100,
                 },
@@ -424,7 +413,6 @@ export async function run({ assetPaths, input = {}, environment, title, version 
                     },
                     data: {
                       task: 'block', // Add the task name here
-                      block: blockName, // Add the block name here
                     }
                   },
                   releaseKeysStep,
@@ -466,6 +454,7 @@ export async function run({ assetPaths, input = {}, environment, title, version 
   timeline.push(createActualBlock('Wide Asynchronous Block', [0, 1000]));
   
   // Calculate total reward at the end of the experiment
+
   timeline.push({
     type: HtmlKeyboardResponsePlugin,
     choices: ['enter'],

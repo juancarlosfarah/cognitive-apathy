@@ -131,7 +131,6 @@ class CountdownTrialPlugin {
     // Initial UI setup
     displayElement.innerHTML = trial.message;
 
-    // Check the flag from the last trial and display the warning if needed
   }
 }
 

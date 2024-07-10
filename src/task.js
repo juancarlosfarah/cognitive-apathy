@@ -47,10 +47,6 @@ class TaskPlugin {
         type: ParameterType.FLOAT,
         default: 0.5,
       },
-      accepted: {
-        type: ParameterType.BOOL,
-        default: false,
-      },
     },
   };
 
@@ -119,7 +115,8 @@ class TaskPlugin {
         console.log("Keys not held, setting error and stopping trial.");
         trial.keysReleasedFlag = true; // Set the flag
         console.log("Inside task.js - keysReleasedFlag:", trial.keysReleasedFlag);
-        stopRunning(true);
+        setTimeout(() => stopRunning(true), 1000);
+
       }
     };
 
@@ -145,7 +142,6 @@ class TaskPlugin {
         setAreKeysHeld();
         if (!keysState.a && !keysState.w && !keysState.e && !trialEnded) {
           console.log("All keys released, ending trial.");
-          stopRunning(true);
         }
       }
     };
@@ -244,7 +240,6 @@ class TaskPlugin {
         task: trial.task,
         errorOccurred,
         keysReleasedFlag: trial.keysReleasedFlag,
-        accepted: trial.accepted,
         success: isSuccess()
       };
 
