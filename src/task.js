@@ -257,10 +257,10 @@ class TaskPlugin {
     };
   }
 
-  static calculateAverageTaps(data) {
+/*   static calculateAverageTaps(data) {
     const tapCounts = data.map((trial) => trial.tapCount);
     return tapCounts.reduce((a, b) => a + b, 0) / tapCounts.length;
-  }
+  } */
 }
 
 export default TaskPlugin;

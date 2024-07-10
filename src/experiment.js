@@ -18,6 +18,13 @@ import CountdownTrialPlugin from './countdown';
 import ReleaseKeysPlugin from './release-keys';
 
 import {
+  validationResults,
+  extraValidationLogic,
+  getMessages,
+  messageStep
+} from './validation'
+
+import {
   MINIMUM_AUTO_DECREASE_AMOUNT,
   AUTO_DECREASE_RATE,
   EXPECTED_MAXIMUM_PERCENTAGE,
@@ -83,6 +90,28 @@ export async function run({ assetPaths, input = {}, environment, title, version 
     }
   };
 
+  function calculateMedianTapCount(taskType, numTrials) {
+    const trials = jsPsych.data.get().filter({task: taskType}).last(numTrials).values()
+    const filteredTrials = trials.filter(trial => !trial.keysReleasedFlag);
+    console.log("Filtered Trials:", filteredTrials); // Log the filtered trials
+    let tapCounts = filteredTrials.map(trial => trial.tapCount);
+    tapCounts.sort((a, b) => a - b); // Sort the tap counts in ascending order
+    console.log("Sorted Tap Counts:", tapCounts); // Log the sorted tap counts
+
+    let medianTaps;
+    const middle = Math.floor(tapCounts.length / 2);
+
+    if (tapCounts.length % 2 === 0) {
+      // If even, average the two middle numbers
+      medianTaps = (tapCounts[middle - 1] + tapCounts[middle]) / 2;
+    } else {
+      // If odd, take the middle number
+      medianTaps = tapCounts[middle];
+    }
+
+    return medianTaps;
+  }
+
   // Function to dynamically create a timeline step based on the previous trial's outcome
   const createCalibrationTrial = (showThermometer, bounds) => ({
     timeline: [
@@ -109,18 +138,18 @@ export async function run({ assetPaths, input = {}, environment, title, version 
   const calibrationPart1 = createCalibrationTrial(false, randomBounds());
   timeline.push(calibrationPart1);
 
-  // After calibration part 1, calculate the average taps and log it
+  // After calibration part 1, calculate the median taps and log it
   timeline.push({
     type: HtmlKeyboardResponsePlugin,
     choices: ['enter'],
     stimulus: function () {
-      const trials = jsPsych.data.get().filterCustom(trial => trial.task === 'calibration' && !trial.showThermometer).values();
-      const averageTapsPart1 = trials.reduce((sum, trial) => sum + trial.tapCount, 0) / trials.length;
-      jsPsych.data.addProperties({ averageTapsPart1 });
-      console.log(`Average Tap Count from Calibration Part 1: ${averageTapsPart1}`);
+      const medianTaps = calculateMedianTapCount('calibration', NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS);
+      jsPsych.data.addProperties({ medianTaps });
+      console.log(`Median Tap Count from Calibration Part 1: ${medianTaps}`);
       return `<p>Press "Enter" to continue.</p>`;
     },
   });
+  
 
   // Calibration trials with feedback
   const calibrationPart2 = {
@@ -133,8 +162,8 @@ export async function run({ assetPaths, input = {}, environment, title, version 
         showThermometer: true,
         bounds: [40, 60],
         autoIncreaseAmount: function () {
-          const averageTapsPart1 = jsPsych.data.get().values()[0].averageTapsPart1;
-          return 50 / averageTapsPart1;
+          const medianTaps = jsPsych.data.get().values()[0].medianTaps;
+          return 50 / medianTaps;
         },
         data: {
           task: 'calibration',
@@ -156,33 +185,15 @@ export async function run({ assetPaths, input = {}, environment, title, version 
     type: HtmlKeyboardResponsePlugin,
     choices: ['enter'],
     stimulus: function () {
-      const trials = jsPsych.data.get().filterCustom(trial => trial.task === 'calibration' && trial.showThermometer).values();
-      const averageTapsPart2 = trials.reduce((sum, trial) => sum + trial.tapCount, 0) / trials.length;
-      jsPsych.data.addProperties({ averageTapsPart2 });
-      console.log(`Average Tap Count from Calibration Part 2: ${averageTapsPart2}`);
+      const medianTaps = calculateMedianTapCount('calibration', NUM_CALIBRATION_WITH_FEEDBACK_TRIALS);
+      jsPsych.data.addProperties({ medianTaps });
+      console.log(`Median Tap Count from Calibration Part 2: ${medianTaps}`);
       return `<p>Press "Enter" to continue.</p>`;
     },
   });
 
-  const validationResults = {
-    easy: 0,
-    medium: 0,
-    hard: 0,
-    extraValidation: 0
-  };
 
-  const extraValidationLogic = () => {
-    return () => {
-      for (let i = 0; i < 3; i++) {
-        const levels = ['easy', 'medium', 'hard'];
-        if (validationResults[levels[i]] > 0) {
-          return true;
-        }
-      }
-      return false;
-    };
-  };
-
+  //Validation Trial Creation
   const validationTrials = (bounds, difficultyLevel) => ({
     timeline: [
       countdownStep,
@@ -192,8 +203,9 @@ export async function run({ assetPaths, input = {}, environment, title, version 
         showThermometer: true,
         bounds,
         autoIncreaseAmount: function () {
-          const averageTapsPart1 = jsPsych.data.get().values()[0].averageTapsPart1;
-          return 50 / averageTapsPart1;
+          const medianTaps = jsPsych.data.get().values()[0].medianTaps;
+          console.log(medianTaps)
+          return 100 / medianTaps;
         },
         on_finish: function(data) {
           if (!data.success) {
@@ -202,10 +214,6 @@ export async function run({ assetPaths, input = {}, environment, title, version 
             validationResults[difficultyLevel]++;
             console.log('failures for:', [difficultyLevel], ' ', validationResults[difficultyLevel])
           }
-        },
-        data: {
-          showThermometer: true,
-          bounds: bounds
         },
       },
       {
@@ -216,12 +224,7 @@ export async function run({ assetPaths, input = {}, environment, title, version 
     repetitions: NUM_VALIDATION_TRIALS
   });
 
-
-  
-timeline.push(validationTrials(EASY_BOUNDS, 'easy'))
-timeline.push(validationTrials(MEDIUM_BOUNDS, 'medium'))
-timeline.push(validationTrials(HARD_BOUNDS, 'hard'))
-
+  //Extra validation step (if user failed 2 or more in any of the levels in first validation step)
   const extraValidationTrials = (bounds, difficultyLevel) => ({
     timeline: [
       countdownStep,
@@ -231,8 +234,9 @@ timeline.push(validationTrials(HARD_BOUNDS, 'hard'))
         showThermometer: true,
         bounds,
         autoIncreaseAmount: function () {
-          const averageTapsPart1 = jsPsych.data.get().values()[0].averageTapsPart1;
-          return 50 / averageTapsPart1;
+          const medianTaps = jsPsych.data.get().values()[0].medianTaps;
+          console.log(medianTaps)
+          return 100 / medianTaps;
         },
         on_finish: function(data) {
           if (!data.success) {
@@ -254,28 +258,7 @@ timeline.push(validationTrials(HARD_BOUNDS, 'hard'))
     ],
     repetitions: 3
   });
-
-
-  const extraValidationNode = {
-    timeline: [extraValidationTrials(HARD_BOUNDS, 'extraValidation')],
-    conditional_function: extraValidationLogic()
-  };
-  
-  timeline.push(extraValidationNode);
-  const getMessages = () => {
-    if (validationResults.extraValidation <= 2) {
-      return {
-        message: 'Congratulations! You passed the extra validation trials.',
-        endExperiment: false
-      };
-    } else {
-      return {
-        message: 'You did not pass the extra validation trials. Experiment now ending.',
-        endExperiment: true
-      };
-    }
-  };
-  
+  //Failed or Succeeded Validation
   const messageStep = {
     type: HtmlKeyboardResponsePlugin,
     stimulus: function() {
@@ -291,6 +274,16 @@ timeline.push(validationTrials(HARD_BOUNDS, 'hard'))
     }
   };
 
+  const extraValidationNode = {
+    timeline: [extraValidationTrials(HARD_BOUNDS, 'extraValidation')],
+    conditional_function: extraValidationLogic()
+  };
+
+  //Push Validation Trials
+  timeline.push(validationTrials(EASY_BOUNDS, 'easy'))
+  timeline.push(validationTrials(MEDIUM_BOUNDS, 'medium'))
+  timeline.push(validationTrials(HARD_BOUNDS, 'hard'))
+  timeline.push(extraValidationNode);
   timeline.push(messageStep);
 
 
@@ -346,8 +339,9 @@ timeline.push(validationTrials(HARD_BOUNDS, 'hard'))
             randomDelay,
             bounds,
             autoIncreaseAmount: function () {
-              const averageTapsPart2 = jsPsych.data.get().values()[0].averageTapsPart2;
-              return 100 / averageTapsPart2;
+              const medianTaps = jsPsych.data.get().values()[0].medianTaps;
+              console.log(medianTaps)
+              return 100 / medianTaps;
             },
             data: {
               task: 'thermometer',
@@ -421,8 +415,9 @@ timeline.push(validationTrials(HARD_BOUNDS, 'hard'))
                     randomDelay: trialData.randomDelay,
                     bounds: trialData.bounds,
                     autoIncreaseAmount: function () {
-                      const averageTapsPart2 = jsPsych.data.get().values()[0].averageTapsPart2;
-                      return 100 / averageTapsPart2;
+                      const medianTaps = jsPsych.data.get().values()[0].medianTaps;
+                      console.log(medianTaps)
+                      return 100 / medianTaps;
                     },
                     data: {
                       task: 'thermometer',
