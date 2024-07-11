@@ -1,6 +1,6 @@
 import { ParameterType } from 'jspsych';
 import { calibrationStimulus } from './stimulus';
-import { BOUND_OPTIONS, PREMATURE_KEY_RELEASE_ERROR_TIME, PREMATURE_KEY_RELEASE_ERROR_MESSAGE, KEYS_TO_HOLD, KEY_TO_PRESS} from './constants';
+import { BOUND_OPTIONS, PREMATURE_KEY_RELEASE_ERROR_TIME, PREMATURE_KEY_RELEASE_ERROR_MESSAGE, KEYS_TO_HOLD, KEY_TO_PRESS, AUTO_DECREASE_AMOUNT, AUTO_DECREASE_RATE} from './constants';
 
 class TaskPlugin {
   static info = {
@@ -12,11 +12,11 @@ class TaskPlugin {
       },
       autoDecreaseAmount: {
         type: ParameterType.FLOAT,
-        default: 0,
+        default: AUTO_DECREASE_AMOUNT,
       },
       autoDecreaseRate: {
         type: ParameterType.INT,
-        default: 0,
+        default: AUTO_DECREASE_RATE,
       },
       autoIncreaseAmount: {
         type: ParameterType.INT,
@@ -51,12 +51,13 @@ class TaskPlugin {
   };
 
   constructor(jsPsych) {
-    this.jsPsych = jsPsych;
+    this.jsPsych = jsPsych; 
+    this.mercuryHeight = 0;
   }
 
   trial(display_element, trial) {
 
-    let mercuryHeight = 0;
+
     let tapCount = 0;
     let startTime = 0;
     let endTime = 0;
@@ -70,7 +71,7 @@ class TaskPlugin {
     let mainBlock = false;
 
     const increaseMercury = (amount = trial.autoIncreaseAmount) => {
-      mercuryHeight = Math.min(mercuryHeight + amount, 100);
+      this.mercuryHeight = Math.min(this.mercuryHeight + amount, 100);
       updateUI();
     };
 
@@ -82,7 +83,7 @@ class TaskPlugin {
     const updateUI = () => {
       if (trial.showThermometer) {
         const mercuryElement = document.getElementById('mercury');
-        if (mercuryElement) mercuryElement.style.height = `${mercuryHeight}%`;
+        if (mercuryElement) mercuryElement.style.height = `${this.mercuryHeight}%`;
         
         const lowerBoundElement = document.getElementById('lower-bound');
         const upperBoundElement = document.getElementById('upper-bound');
@@ -143,7 +144,7 @@ class TaskPlugin {
       const startMessageElement = document.getElementById('start-message');
       if (startMessageElement) startMessageElement.style.visibility = 'hidden';
       tapCount = 0;
-      mercuryHeight = 0;
+      this.mercuryHeight = 0;
       error = '';
       updateUI();
 
@@ -169,7 +170,7 @@ class TaskPlugin {
       // Update the UI to remove the hold keys message if ending due to error
       display_element.innerHTML = calibrationStimulus(
         trial.showThermometer,
-        mercuryHeight,
+        this.mercuryHeight,
         trial.bounds[0],
         trial.bounds[1],
         error,
@@ -182,7 +183,8 @@ class TaskPlugin {
 
 
     const decreaseMercury = () => {
-      mercuryHeight = Math.max(mercuryHeight - trial.autoDecreaseAmount, 0);
+/*       mercuryHeight = Math.max(mercuryHeight - trial.autoDecreaseAmount, 0);
+ */      this.mercuryHeight = this.mercuryHeight - trial.autoDecreaseAmount;
       updateUI();
     };
 
@@ -193,12 +195,12 @@ class TaskPlugin {
 
     // Was trial successful 
     const isSuccess = () => {
-      return mercuryHeight >= trial.bounds[0] && mercuryHeight <= trial.bounds[1] && !trial.keysReleasedFlag;
+      return this.mercuryHeight >= trial.bounds[0] && this.mercuryHeight <= trial.bounds[1] && !trial.keysReleasedFlag;
     };
 
     display_element.innerHTML = calibrationStimulus(
       trial.showThermometer,
-      mercuryHeight,
+      this.mercuryHeight,
       trial.bounds[0],
       trial.bounds[1],
       error
@@ -216,7 +218,7 @@ class TaskPlugin {
         tapCount,
         startTime,
         endTime,
-        mercuryHeight,
+        mercuryHeight: this.mercuryHeight,
         error,
         bounds: trial.bounds,
         reward: trial.reward,

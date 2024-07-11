@@ -3,17 +3,17 @@ import fastCartesian from 'fast-cartesian';
 // constants
 export const TRIAL_DURATION = 5000; // how long does a trial last (ms)
 export const COUNTDOWN_TIME = 3 // how long the countdown is after "A", "W," and "E" are pressed before trial starts (s)
-export const MINIMUM_AUTO_DECREASE_AMOUNT = 0;
-export const AUTO_DECREASE_RATE = 0; // how often do we decrease the thermometer (ms)
+export const AUTO_DECREASE_AMOUNT = 2;
+export const AUTO_DECREASE_RATE = 100; // how often do we decrease the thermometer (ms)
 export const AUTO_INCREASE_AMOUNT = 10; // how much increase we see in the thermometer with each tap (%)
 export const MAXIMUM_THERMOMETER_HEIGHT = 100; // maximum thermometer height (%)
 export const EXPECTED_MAXIMUM_PERCENTAGE = 100; // where should participants end up if they tap at their maximum rate
 export const EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION = 50; // where should participants end up if they tap at their maximum rate
 export const TARGET_OPTIONS = [50, 70, 90];
 export const REWARD_OPTIONS = [1, 10, 20];
-export const EASY_BOUNDS = [20,40]
-export const MEDIUM_BOUNDS = [40,60]
-export const HARD_BOUNDS = [60,80]
+export const EASY_BOUNDS = [30,50]
+export const MEDIUM_BOUNDS = [50,70]
+export const HARD_BOUNDS = [70,90]
 export const BOUND_OPTIONS = [[20,40], [40,60], [60,80]];
 export const PARAMETER_COMBINATIONS = fastCartesian([
   REWARD_OPTIONS,

@@ -39,6 +39,10 @@ import {
   CALIBRATION_PART_1_DIRECTIONS,
   VALIDATION_DIRECTIONS,
   KEYS_TO_HOLD,
+  AUTO_DECREASE_AMOUNT,
+  EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
+  AUTO_DECREASE_RATE,
+  AUTO_INCREASE_AMOUNT,
 } from './constants';
 
 import {
@@ -179,6 +183,7 @@ export async function run({ assetPaths, input = {}, environment, title, version 
     }
   });
 
+  
   // Calibration trials with feedback
   const calibrationPart2 = {
     timeline: [
@@ -187,9 +192,10 @@ export async function run({ assetPaths, input = {}, environment, title, version 
         type: TaskPlugin,
         duration: TRIAL_DURATION,
         showThermometer: true,
-        bounds: [40, 60],
+        bounds: [EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION],
         autoIncreaseAmount: function() {
-          return 50 / medianTaps;
+          console.log()
+          return (EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION + (TRIAL_DURATION/AUTO_DECREASE_RATE)*AUTO_DECREASE_AMOUNT)/medianTaps;
         },
         data: {
           task: 'calibration',
@@ -224,7 +230,8 @@ export async function run({ assetPaths, input = {}, environment, title, version 
         showThermometer: true,
         bounds,
         autoIncreaseAmount: function() {
-          return 100 / medianTaps;
+          console.log()
+          return (EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION + (TRIAL_DURATION/AUTO_DECREASE_RATE)*AUTO_DECREASE_AMOUNT)/medianTaps;
         },
         on_finish: function(data) {
           if (!data.success) {
@@ -259,7 +266,8 @@ export async function run({ assetPaths, input = {}, environment, title, version 
         showThermometer: true,
         bounds,
         autoIncreaseAmount: function() {
-          return 100 / medianTaps;
+          console.log()
+          return (EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION + (TRIAL_DURATION/AUTO_DECREASE_RATE)*AUTO_DECREASE_AMOUNT)/medianTaps;
         },
         on_finish: function(data) {
           if (!data.success) {
@@ -371,7 +379,8 @@ const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo = false,
             randomDelay,
             bounds,
             autoIncreaseAmount: function() {
-              return 100 / medianTaps;
+              console.log()
+              return (EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION + (TRIAL_DURATION/AUTO_DECREASE_RATE)*AUTO_DECREASE_AMOUNT)/medianTaps;
             },
             data: {
               task: 'demo',
@@ -446,7 +455,8 @@ const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo = false,
                   bounds: trialData.bounds,
                   reward: trialData.reward / 100,
                   autoIncreaseAmount: function() {
-                    return 100 / medianTaps;
+                    console.log()
+                    return (EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION + (TRIAL_DURATION/AUTO_DECREASE_RATE)*AUTO_DECREASE_AMOUNT)/medianTaps;
                   },
                   data: {
                     task: 'block',
