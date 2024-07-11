@@ -1,4 +1,5 @@
 import { ParameterType } from 'jspsych';
+import { KEYS_TO_HOLD } from './constants';
 
 class ReleaseKeysPlugin {
   static info = {
@@ -11,7 +12,7 @@ class ReleaseKeysPlugin {
       valid_responses: {
         type: ParameterType.KEYS,
         array: true,
-        default: ['a', 'w', 'e'],
+        default: KEYS_TO_HOLD,
       },
       stimulus_duration: {
         type: ParameterType.INT,
@@ -41,7 +42,7 @@ class ReleaseKeysPlugin {
 
     // Handle key up events
     const handleKeyUp = (event) => {
-      if (['a', 'w', 'e'].includes(event.key.toLowerCase())) {
+      if (KEYS_TO_HOLD.includes(event.key.toLowerCase())) {
         keysState[event.key.toLowerCase()] = true;
         setAreKeysHeld();
       }
@@ -49,7 +50,7 @@ class ReleaseKeysPlugin {
 
     // Handle key down events
     const handleKeyDown = (event) => {
-      if (['a', 'w', 'e'].includes(event.key.toLowerCase())) {
+      if (KEYS_TO_HOLD.includes(event.key.toLowerCase())) {
         keysState[event.key.toLowerCase()] = false;
       }
     };

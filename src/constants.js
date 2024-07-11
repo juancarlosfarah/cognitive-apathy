@@ -41,7 +41,8 @@ export const NUM_DEMO_TRIALS = 0
 
 
 
-
+export const KEYS_TO_HOLD = ['a', 'w', 'e']
+export const KEY_TO_PRESS = 'r'
 export const PREMATURE_KEY_RELEASE_ERROR_TIME = 1000
 export const RELEASE_KEYS_STIMULUS_DURATION = 2000;
 export const RELEASE_KEYS_TRIAL_DURATION = 3000; // should be 30000

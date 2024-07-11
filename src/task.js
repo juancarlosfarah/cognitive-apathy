@@ -1,6 +1,6 @@
 import { ParameterType } from 'jspsych';
 import { calibrationStimulus } from './stimulus';
-import { BOUND_OPTIONS, PREMATURE_KEY_RELEASE_ERROR_TIME, PREMATURE_KEY_RELEASE_ERROR_MESSAGE } from './constants';
+import { BOUND_OPTIONS, PREMATURE_KEY_RELEASE_ERROR_TIME, PREMATURE_KEY_RELEASE_ERROR_MESSAGE, KEYS_TO_HOLD, KEY_TO_PRESS} from './constants';
 
 class TaskPlugin {
   static info = {
@@ -114,12 +114,12 @@ class TaskPlugin {
 
     const handleKeyDown = (event) => {
       const key = event.key.toLowerCase();
-      if (['a', 'w', 'e'].includes(key)) {
+      if (KEYS_TO_HOLD.includes(key)) {
         keysState[key] = true;
         setAreKeysHeld();
-      } else if (key === 'r' && isRunning) {
+      } else if (key === KEY_TO_PRESS && isRunning) {
         tapCount++;
-        if (trial.taskType === 'thermometer') {
+        if (trial.task === 'demo' || 'block') {
           setTimeout(() => increaseMercury(), getRandomDelay());
         } else {
           increaseMercury();
@@ -129,7 +129,7 @@ class TaskPlugin {
 
     const handleKeyUp = (event) => {
       const key = event.key.toLowerCase();
-      if (['a', 'w', 'e'].includes(key)) {
+      if (KEYS_TO_HOLD.includes(key)) {
         keysState[key] = false;
         setAreKeysHeld();
         if (!keysState.a && !keysState.w && !keysState.e && !trialEnded) {

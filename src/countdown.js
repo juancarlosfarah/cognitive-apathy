@@ -1,5 +1,5 @@
 import { ParameterType } from 'jspsych';
-import { COUNTDOWN_TIME } from './constants';
+import { COUNTDOWN_TIME, KEYS_TO_HOLD } from './constants';
 
 class CountdownTrialPlugin {
   static info = {
@@ -8,7 +8,7 @@ class CountdownTrialPlugin {
       keys: {
         type: ParameterType.STRING,
         array: true,
-        default: ['a', 'w', 'e'],
+        default: KEYS_TO_HOLD,
       },
       message: {
         type: ParameterType.HTML_STRING,
