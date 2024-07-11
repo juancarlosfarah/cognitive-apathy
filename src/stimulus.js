@@ -86,3 +86,21 @@ export function calibrationStimulus(
 
 export const blockWelcomeMessage = (name) =>
   `<h2>${name}</h2><p><b>Please press "Enter" to start the experiment.</b></p>`;
+
+/**
+ * @function videoStimulus
+ * @description Generate HTML for a message with an optional video
+ * @param {string} message - The message to display
+ * @param {string} [video] - Optional video URL to display
+ * @returns {string} - HTML string for the stimulus
+ */
+export const videoStimulus = (message, video) => {
+  let stimulusHTML = `<p>${message}</p>`;
+  if (video) {
+    stimulusHTML += `<video width="600" controls>
+                       <source src="${video}" type="video/mp4">
+                       Your browser does not support the video tag.
+                     </video>`;
+  }
+  return stimulusHTML;
+};
