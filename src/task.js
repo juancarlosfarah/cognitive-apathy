@@ -55,7 +55,6 @@ class TaskPlugin {
   }
 
   trial(display_element, trial) {
-    console.log("Trial started");
 
     let mercuryHeight = 0;
     let tapCount = 0;
@@ -107,9 +106,7 @@ class TaskPlugin {
       }
       if (!areKeysHeld) {
         setError('You stopped holding the keys!');
-        console.log("Keys not held, setting error and stopping trial.");
         trial.keysReleasedFlag = true; // Set the flag
-        console.log("Inside task.js - keysReleasedFlag:", trial.keysReleasedFlag);
         setTimeout(() => stopRunning(true), 1000);
 
       }
@@ -136,13 +133,11 @@ class TaskPlugin {
         keysState[key] = false;
         setAreKeysHeld();
         if (!keysState.a && !keysState.w && !keysState.e && !trialEnded) {
-          console.log("All keys released, ending trial.");
         }
       }
     };
 
     const startRunning = () => {
-      console.log("Starting trial run");
       isRunning = true;
       startTime = this.jsPsych.getTotalTime();
       const startMessageElement = document.getElementById('start-message');
@@ -154,14 +149,12 @@ class TaskPlugin {
 
       intervalRef = setInterval(decreaseMercury, trial.autoDecreaseRate);
       timerRef = setTimeout(() => {
-        console.log("Trial duration ended, stopping trial.");
         stopRunning();
       }, trial.duration);
     };
 
     const stopRunning = (errorFlag = false) => {
       if (trialEnded) return; // Prevent multiple stops
-      console.log("Stopping trial run");
       trialEnded = true; // Set the flag to true
       endTime = this.jsPsych.getTotalTime();
       isRunning = false;
@@ -215,7 +208,6 @@ class TaskPlugin {
     document.addEventListener('keyup', handleKeyUp);
 
     const end_trial = () => {
-      console.log("Ending trial");
       document.removeEventListener('keydown', handleKeyDown);
       document.removeEventListener('keyup', handleKeyUp);
       display_element.innerHTML = '';
@@ -234,12 +226,9 @@ class TaskPlugin {
         success: isSuccess()
       };
 
-      console.log("Finishing trial with data:", trial_data);
-      this.jsPsych.finishTrial(trial_data); // Use this.jsPsych
     };
 
     trial.on_load = () => {
-      console.log("Trial loaded");
       setAreKeysHeld(); // Initial check to update the UI based on assumed key states
       startRunning(); // Start running as the trial loads
     };
