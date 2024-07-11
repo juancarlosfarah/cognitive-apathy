@@ -11,7 +11,7 @@ export const extraValidationLogic = () => {
   return () => {
     for (let i = 0; i < 3; i++) {
       const levels = ['easy', 'medium', 'hard'];
-      if (validationResults[levels[i]] > 0) {
+      if (validationResults[levels[i]] > 2) {
         return true;
       }
     }

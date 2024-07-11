@@ -37,6 +37,7 @@ import {
   NUM_DEMO_TRIALS,
   CALIBRATION_PART_2_DIRECTIONS,
   CALIBRATION_PART_1_DIRECTIONS,
+  VALIDATION_DIRECTIONS,
 } from './constants';
 
 import {
@@ -132,7 +133,7 @@ export async function run({ assetPaths, input = {}, environment, title, version 
 
   
 
-const medianTaps = null;
+let medianTaps = null;
   // After calibration part 1, calculate the median taps and log it
 // After calibration part 1, calculate the median taps and log it
 const calculateTapsStep = (message) => ({
@@ -145,7 +146,7 @@ const calculateTapsStep = (message) => ({
     }
   },
   stimulus: function () {
-    globalMedianTaps = calculateMedianTapCount('calibration', NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS);
+    medianTaps = calculateMedianTapCount('calibration', NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS);
     return `<p>${CALIBRATION_PART_2_DIRECTIONS}</p>`;
   }
 });
@@ -179,7 +180,7 @@ const calculateTapsStep = (message) => ({
 
 
 
-
+``
   //Validation Trial Creation
   const validationTrials = (bounds, difficultyLevel) => ({
     timeline: [
@@ -398,6 +399,8 @@ const calculateTapsStep = (message) => ({
                       blockType: blockName,
                       accept: () => {
                         // Retrieve the acceptance data from jsPsych data
+                        console.log(jsPsych.data.get().filter({task: 'accept'}))
+                        console.log(jsPsych.data.get().filter({task: 'accept'}).last(1))
                         var acceptanceData = jsPsych.data.get().filter({task: 'accept'}).last(1).values()[0];
                         return acceptanceData ? acceptanceData.accepted : null;
                       }

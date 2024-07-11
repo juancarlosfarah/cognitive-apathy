@@ -226,9 +226,11 @@ class TaskPlugin {
         success: isSuccess()
       };
 
+      this.jsPsych.finishTrial(trial_data); // Use this.jsPsych
     };
 
     trial.on_load = () => {
+      console.log("Trial loaded");
       setAreKeysHeld(); // Initial check to update the UI based on assumed key states
       startRunning(); // Start running as the trial loads
     };
