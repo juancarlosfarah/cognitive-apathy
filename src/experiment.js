@@ -64,9 +64,6 @@ export async function run({ assetPaths, input = {}, environment, title, version 
     type: ReleaseKeysPlugin,
     stimulus: `<p>Release the Keys</p>`,
     valid_responses: ['a', 'w', 'e'],
-    conditional_function: function(){
-      return jsPsych.data.get().last(1).values()[0].keysReleasedFlag;  
-    },
   };
   
 
@@ -122,7 +119,11 @@ export async function run({ assetPaths, input = {}, environment, title, version 
       },
       {
         timeline: [releaseKeysStep],
-      },
+        conditional_function: function() {
+            const lastTrialData = jsPsych.data.get().last(1).values()[0];
+            return !lastTrialData.keysReleasedFlag;
+        }
+    }
     ],
     repetitions: NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
   });
@@ -170,9 +171,14 @@ const calculateTapsStep = (message) => ({
           showThermometer: true,
           bounds: [40, 60]
         }
-      },
+      },      
       {
-        timeline: [releaseKeysStep]      },
+        timeline: [releaseKeysStep],
+        conditional_function: function() {
+            const lastTrialData = jsPsych.data.get().last(1).values()[0];
+            return !lastTrialData.keysReleasedFlag;
+        }
+    }
     ],
     repetitions: NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
   };
@@ -200,9 +206,13 @@ const calculateTapsStep = (message) => ({
         },
       },
       {
-      timeline: [releaseKeysStep],
-      conditional_function: () => !jsPsych.data.getLastTrialData().values()[0].skipReleaseKeysStep,
-      }
+        timeline: [releaseKeysStep],
+        conditional_function: function() {
+            const lastTrialData = jsPsych.data.get().last(1).values()[0];
+            return !lastTrialData.keysReleasedFlag;
+        }
+    }
+      
     ],
     repetitions: NUM_VALIDATION_TRIALS
   });
@@ -232,9 +242,12 @@ const calculateTapsStep = (message) => ({
         }
       },
       {
-      timeline: [releaseKeysStep],
-      conditional_function: () => !jsPsych.data.getLastTrialData().values()[0].skipReleaseKeysStep,
-      }
+        timeline: [releaseKeysStep],
+        conditional_function: function() {
+            const lastTrialData = jsPsych.data.get().last(1).values()[0];
+            return !lastTrialData.keysReleasedFlag;
+        }
+    }
     ],
     repetitions: 3
   });
@@ -325,7 +338,13 @@ const calculateTapsStep = (message) => ({
               bounds: bounds
             }
           },
-          releaseKeysStep,
+          {
+            timeline: [releaseKeysStep],
+            conditional_function: function() {
+                const lastTrialData = jsPsych.data.get().last(1).values()[0];
+                return !lastTrialData.keysReleasedFlag;
+            }
+        },
         ],
         repetitions: NUM_DEMO_TRIALS,
       },
@@ -399,14 +418,18 @@ const calculateTapsStep = (message) => ({
                       blockType: blockName,
                       accept: () => {
                         // Retrieve the acceptance data from jsPsych data
-                        console.log(jsPsych.data.get().filter({task: 'accept'}))
-                        console.log(jsPsych.data.get().filter({task: 'accept'}).last(1))
                         var acceptanceData = jsPsych.data.get().filter({task: 'accept'}).last(1).values()[0];
                         return acceptanceData ? acceptanceData.accepted : null;
                       }
                     } 
                   },
-                  releaseKeysStep,
+                  {
+                    timeline: [releaseKeysStep],
+                    conditional_function: function() {
+                        const lastTrialData = jsPsych.data.get().last(1).values()[0];
+                        return !lastTrialData.keysReleasedFlag;
+                    }
+                },
                 ],
                 conditional_function: () => trialData.accepted, // Only run if accepted
               }

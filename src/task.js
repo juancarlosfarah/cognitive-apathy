@@ -1,6 +1,6 @@
 import { ParameterType } from 'jspsych';
 import { calibrationStimulus } from './stimulus';
-import { BOUND_OPTIONS } from './constants';
+import { BOUND_OPTIONS, PREMATURE_KEY_RELEASE_ERROR_TIME, PREMATURE_KEY_RELEASE_ERROR_MESSAGE } from './constants';
 
 class TaskPlugin {
   static info = {
@@ -105,9 +105,9 @@ class TaskPlugin {
         startMessageElement.style.display = areKeysHeld ? 'block' : 'none';
       }
       if (!areKeysHeld) {
-        setError('You stopped holding the keys!');
+        setError(`${PREMATURE_KEY_RELEASE_ERROR_MESSAGE}`);
         trial.keysReleasedFlag = true; // Set the flag
-        setTimeout(() => stopRunning(true), 1000);
+        setTimeout(() => stopRunning(true), PREMATURE_KEY_RELEASE_ERROR_TIME);
 
       }
     };
