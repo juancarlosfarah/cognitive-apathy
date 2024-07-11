@@ -41,7 +41,6 @@ export function calibrationStimulus(
   lowerBound,
   upperBound,
   error,
-  showHoldKeysMessage = true // Add a parameter to control the hold keys message
 ) {
   const bounds = `
     <div
@@ -72,14 +71,10 @@ export function calibrationStimulus(
     </div>`
     : '<p style="font-size: 48px; position: absolute;">+</p>';
 
-  const holdKeysMessage = showHoldKeysMessage
-    ? `<p id="hold-keys-message">Hold the <b>A</b> key with pinky, <b>W</b> key with ring finger, and <b>E</b> key with middle finger!</p>`
-    : '';
 
   return `
     <div id="calibration-task" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
         ${thermometer}
-        ${holdKeysMessage}
         <p id="start-message" style="display: none;">Hit <b>Enter</b> to start! Then tap the <b>R</b> key with your index finger as fast as possible.</p>
         <div id="status" style="margin-top: 50px;"> <!-- Adjust margin-top to place error message lower -->
             <div id="error-message" style="color: red;">${error}</div>
@@ -88,29 +83,6 @@ export function calibrationStimulus(
   `;
 }
 
-export const calibrationPartIWelcomeMessage = `
-<h2>Calibration I</h2>
-        
-<p>Welcome to the first part of the calibration procedure!<p/>
-   <p>Your goal is to tap as fast as possible.</p>
-   <p><b>Please press "Enter" to start.</b></p>`;
-
-export const calibrationPartIIWelcomeMessage = `
-<h2>Calibration II</h2>
-<p>Welcome to the second part of the calibration procedure!<p/>
-     <p>You will be shown a target height at the middle of the bar.</p>
-     <p>Your goal is to tap as fast as possible and finish above the target height at the end of each trial.</p>
-     <p><b>Please press "Enter" to start.</b></p>`;
-
-export const validationWelcomeMessage = `
-<h2>Validation</h2>
-<p>Welcome to the validation part of the calibration procedure!<p/>
-     <p>You will be shown a target at different heights of the bar.</p>
-     <p>Your goal is to finish above the target height at the end of each trial.</p>
-     <p><b>Please press "Enter" start.</b></p>`;
-
-export const experimentWelcomeMessage = `<p>Welcome to the Cognitive Apathy Experiment!<p/>
-<p><b>Please press "Enter" to start the experiment.</b></p>`;
 
 export const blockWelcomeMessage = (name) =>
   `<h2>${name}</h2><p><b>Please press "Enter" to start the experiment.</b></p>`;

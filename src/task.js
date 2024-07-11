@@ -100,16 +100,11 @@ class TaskPlugin {
       if (trialEnded) return; // Prevent the function from running if the trial has ended
 
       const areKeysHeld = keysState.a && keysState.w && keysState.e;
-      const holdKeysMessageElement = document.getElementById('hold-keys-message');
       const startMessageElement = document.getElementById('start-message');
 
-      if (holdKeysMessageElement) {
-        holdKeysMessageElement.style.display = !areKeysHeld ? 'block' : 'none';
-      }
       if (startMessageElement) {
         startMessageElement.style.display = areKeysHeld ? 'block' : 'none';
       }
-
       if (!areKeysHeld) {
         setError('You stopped holding the keys!');
         console.log("Keys not held, setting error and stopping trial.");
@@ -176,11 +171,7 @@ class TaskPlugin {
       intervalRef = null;
       errorOccurred = errorFlag;
 
-      // Hide the hold keys message immediately
-      const holdKeysMessageElement = document.getElementById('hold-keys-message');
-      if (holdKeysMessageElement) {
-        holdKeysMessageElement.style.display = 'none';
-      }
+
 
       // Update the UI to remove the hold keys message if ending due to error
       display_element.innerHTML = calibrationStimulus(

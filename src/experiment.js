@@ -8,10 +8,11 @@
 
 import FullscreenPlugin from '@jspsych/plugin-fullscreen';
 import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
+import jsPsychCallFunction from '@jspsych/plugin-call-function';
 import PreloadPlugin from '@jspsych/plugin-preload';
 import surveyLikert from '@jspsych/plugin-survey-likert';
 import { ParameterType, initJsPsych } from 'jspsych';
-
+import { saveAs } from 'file-saver';
 import '../styles/main.scss';
 import TaskPlugin from './task';
 import CountdownTrialPlugin from './countdown';
@@ -21,7 +22,6 @@ import {
   validationResults,
   extraValidationLogic,
   getMessages,
-  messageStep
 } from './validation'
 
 import {
@@ -46,17 +46,13 @@ import {
   NUM_TRIALS,
   NUM_DEMO_TRIALS,
   PARAMETER_COMBINATIONS_TOTAL,
+  CALIBRATION_PART_2_DIRECTIONS,
+  CALIBRATION_PART_1_DIRECTIONS,
+  VALIDATION_DIRECTIONS,
 } from './constants';
 
 import {
   blockWelcomeMessage,
-  calibrationPartIIWelcomeMessage,
-  calibrationPartIWelcomeMessage,
-  calibrationWelcomeMessage,
-  experimentWelcomeMessage,
-  generateStimulus,
-  synchronousBlockWelcomeMessage,
-  validationWelcomeMessage,
 } from './stimulus';
 
 
@@ -115,6 +111,15 @@ export async function run({ assetPaths, input = {}, environment, title, version 
     return medianTaps;
   }
 
+  const directionTrial = (message, video) => ({
+    type: HtmlKeyboardResponsePlugin,
+    choices: ['Enter'],
+    stimulus: function() {
+        return `<p>${message}</p>`;
+    }
+});
+
+  
   // Function to dynamically create a timeline step based on the previous trial's outcome
   const createCalibrationTrial = (showThermometer, bounds) => ({
     timeline: [
@@ -137,17 +142,19 @@ export async function run({ assetPaths, input = {}, environment, title, version 
 
   // Calibration trials without feedback
   const calibrationPart1 = createCalibrationTrial(false, randomBounds());
-  timeline.push(calibrationPart1);
+
+
+  
+
 
   // After calibration part 1, calculate the median taps and log it
-  timeline.push({
+  const calculateTapsStep = (message) => ({
     type: HtmlKeyboardResponsePlugin,
     choices: ['enter'],
     stimulus: function () {
       const medianTaps = calculateMedianTapCount('calibration', NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS);
       jsPsych.data.addProperties({ medianTaps });
-      console.log(`Median Tap Count from Calibration Part 1: ${medianTaps}`);
-      return `<p>Press "Enter" to continue.</p>`;
+      return `<p>(${CALIBRATION_PART_2_DIRECTIONS});</p>`;
     },
   });
   
@@ -176,18 +183,9 @@ export async function run({ assetPaths, input = {}, environment, title, version 
     ],
     repetitions: NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
   };
-  timeline.push(calibrationPart2);
-  // After calibration part 2, calculate the average taps and log it
-  timeline.push({
-    type: HtmlKeyboardResponsePlugin,
-    choices: ['enter'],
-    stimulus: function () {
-      const medianTaps = calculateMedianTapCount('calibration', NUM_CALIBRATION_WITH_FEEDBACK_TRIALS);
-      jsPsych.data.addProperties({ medianTaps });
-      console.log(`Median Tap Count from Calibration Part 2: ${medianTaps}`);
-      return `<p>Press "Enter" to continue.</p>`;
-    },
-  });
+
+
+
 
 
   //Validation Trial Creation
@@ -220,6 +218,8 @@ export async function run({ assetPaths, input = {}, environment, title, version 
     ],
     repetitions: NUM_VALIDATION_TRIALS
   });
+
+
 
   //Extra validation step (if user failed 2 or more in any of the levels in first validation step)
   const extraValidationTrials = (bounds, difficultyLevel) => ({
@@ -257,7 +257,7 @@ export async function run({ assetPaths, input = {}, environment, title, version 
   });
 
   //Failed or Succeeded Validation
-  const messageStep = {
+  const validationSucesss = {
     type: HtmlKeyboardResponsePlugin,
     stimulus: function() {
       const result = getMessages();
@@ -277,12 +277,19 @@ export async function run({ assetPaths, input = {}, environment, title, version 
     conditional_function: extraValidationLogic()
   };
 
-  //Push Validation Trials
+  //Push All Trials
+  timeline.push(directionTrial(CALIBRATION_PART_1_DIRECTIONS))
+  timeline.push(calibrationPart1);
+  timeline.push(calculateTapsStep(CALIBRATION_PART_2_DIRECTIONS))
+  timeline.push(calibrationPart2);
+/*   timeline.push(directionTrial(VALIDATION_DIRECTIONS))
   timeline.push(validationTrials(EASY_BOUNDS, 'easy'))
   timeline.push(validationTrials(MEDIUM_BOUNDS, 'medium'))
   timeline.push(validationTrials(HARD_BOUNDS, 'hard'))
   timeline.push(extraValidationNode);
-  timeline.push(messageStep);
+  timeline.push(validationSucesss); */
+
+
 
 
 
@@ -440,47 +447,48 @@ export async function run({ assetPaths, input = {}, environment, title, version 
   
   // Synchronous block
   timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: blockWelcomeMessage('Synchronous Block') });
-  timeline.push(createBlock('Synchronous Block', [0, 0], randomBounds()));
+  timeline.push(createBlock([0, 0], [60,80]));
   timeline.push(createActualBlock('Synchronous Block', [0, 0], randomBounds()));
 
   // Narrow Asynchronous block
   timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: blockWelcomeMessage('Narrow Asynchronous Block') });
-  timeline.push(createBlock('Narrow Asynchronous Block', [400, 600], randomBounds()));
+  timeline.push(createBlock([400, 600], [60,80]));
   timeline.push(createActualBlock('Narrow Asynchronous Block', [400, 600]));
 
   // Wide Asynchronous block
   timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: blockWelcomeMessage('Wide Asynchronous Block') });
-  timeline.push(createBlock('Wide Asynchronous Block', [0, 1000], randomBounds()));
+  timeline.push(createBlock([0, 1000], [60,80]));
   timeline.push(createActualBlock('Wide Asynchronous Block', [0, 1000]));
   
   // Calculate total reward at the end of the experiment
 
-  timeline.push({
-    type: HtmlKeyboardResponsePlugin,
-    choices: ['enter'],
-    stimulus: function() {
+
+  const saveData = {
+    type: jsPsychCallFunction,
+    async: true,
+    func: function(done) {
       // Filter trials that are part of the blocks
       const blockTrials = jsPsych.data.get().filter({task: 'block'}).values();
       console.log(blockTrials);
-
+      
       // Filter trials that are successful
       const successfulTrials = blockTrials.filter(trial => trial.success === true);
       console.log(successfulTrials);
+      
       // Calculate total reward for successful trials
       const totalSuccessfulReward = successfulTrials.reduce((sum, trial) => sum + trial.reward, 0);
-    
-      return `<p>  Total reward for successful trials is: $${totalSuccessfulReward.toFixed(2)}. 
-              Press Enter to finish.</p>`;
+      jsPsych.data.addProperties({ total_successful_reward: totalSuccessfulReward });
+      
+      done();  // Indicate that the asynchronous operation is complete
     }
-  });
-
-  // Start
-  timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: experimentWelcomeMessage });
-
-  // Switch to fullscreen
-  timeline.push({ type: FullscreenPlugin, fullscreen_mode: true });
+  };
   
+  timeline.push(saveData);
+  
+  // Start
 
+/*   // Switch to fullscreen
+  timeline.push({ type: FullscreenPlugin, fullscreen_mode: true }); */
 
   await jsPsych.run(timeline);
 

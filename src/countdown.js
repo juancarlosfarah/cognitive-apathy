@@ -53,9 +53,6 @@ class CountdownTrialPlugin {
         interval = null;
         setError('You stopped holding the keys!');
         displayElement.innerHTML = trial.message; // Reset the display message
-        if (trial.keysReleasedFlag) {
-          displayWarning(displayElement);
-        }
       }
     };
 
@@ -118,12 +115,6 @@ class CountdownTrialPlugin {
       console.error(message);
     };
 
-    const displayWarning = (element) => {
-      const warningElement = document.createElement('p');
-      warningElement.style.color = 'red';
-      warningElement.innerHTML = 'Warning: Keys were released prematurely during the last trial!';
-      element.appendChild(warningElement);
-    };
 
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
