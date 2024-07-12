@@ -41,6 +41,7 @@ import {
   KEYS_TO_HOLD,
   AUTO_DECREASE_AMOUNT,
   EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
+  EXPECTED_MAXIMUM_PERCENTAGE,
   AUTO_DECREASE_RATE,
   AUTO_INCREASE_AMOUNT,
 } from './constants';
@@ -50,6 +51,9 @@ import {
   videoStimulus
 } from './stimulus';
 
+import {
+  randomNumberBm
+} from './utils';
 /**
  * @function run
  * @description Main function to run the experiment
@@ -57,8 +61,6 @@ import {
  */
 export async function run({ assetPaths, input = {}, environment, title, version }) {
   const jsPsych = initJsPsych();
-
-  const randomBounds = () => jsPsych.randomization.sampleWithReplacement(BOUND_OPTIONS, 1)[0];
 
   const timeline = [];
 
@@ -160,7 +162,7 @@ export async function run({ assetPaths, input = {}, environment, title, version 
     repetitions: NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
   });
 
-  const calibrationPart1 = createCalibrationTrial(false, randomBounds());
+  const calibrationPart1 = createCalibrationTrial(false, [EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION]);
 
   /**
    * @function calculateTapsStep
@@ -194,13 +196,12 @@ export async function run({ assetPaths, input = {}, environment, title, version 
         showThermometer: true,
         bounds: [EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION],
         autoIncreaseAmount: function() {
-          console.log()
           return (EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION + (TRIAL_DURATION/AUTO_DECREASE_RATE)*AUTO_DECREASE_AMOUNT)/medianTaps;
         },
         data: {
           task: 'calibration',
           showThermometer: true,
-          bounds: [40, 60]
+          bounds: [EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION]
         }
       },
       {
@@ -267,7 +268,7 @@ export async function run({ assetPaths, input = {}, environment, title, version 
         bounds,
         autoIncreaseAmount: function() {
           console.log()
-          return (EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION + (TRIAL_DURATION/AUTO_DECREASE_RATE)*AUTO_DECREASE_AMOUNT)/medianTaps;
+          return (EXPECTED_MAXIMUM_PERCENTAGE + (TRIAL_DURATION/AUTO_DECREASE_RATE)*AUTO_DECREASE_AMOUNT)/medianTaps;
         },
         on_finish: function(data) {
           if (!data.success) {
@@ -343,7 +344,7 @@ export async function run({ assetPaths, input = {}, environment, title, version 
       name: 'Q3'
     },
   ];
-
+let randomSkew = null;
 /**
  * @function createTrialBlock
  * @description Create a block of trials with optional demo, Likert questions, acceptance phase, and task performance phase
@@ -380,7 +381,7 @@ const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo = false,
             bounds,
             autoIncreaseAmount: function() {
               console.log()
-              return (EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION + (TRIAL_DURATION/AUTO_DECREASE_RATE)*AUTO_DECREASE_AMOUNT)/medianTaps;
+              return (EXPECTED_MAXIMUM_PERCENTAGE + (TRIAL_DURATION/AUTO_DECREASE_RATE)*AUTO_DECREASE_AMOUNT)/medianTaps;
             },
             data: {
               task: 'demo',
@@ -420,9 +421,11 @@ const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo = false,
         bounds: combination.bounds
       }))
     );
+    for(let i = 0; i < trials.length; i++){
+      trials[i].reward += randomNumberBm(1,10);
+    }
 
     trials = jsPsych.randomization.shuffle(trials);
-
     timeline.push(
       {
         timeline: trials.map(trialData => ({
@@ -431,12 +434,12 @@ const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo = false,
             {
               type: HtmlKeyboardResponsePlugin,
               stimulus: function() {
-                return `<p>Reward: $${(trialData.reward / 100).toFixed(2)}</p><p>Do you accept the trial? (Arrow Left = Yes, Arrow Right = No)</p>`;
+                return `<p>Reward: $${((trialData.reward)/100).toFixed(2)}</p><p>Do you accept the trial? (Arrow Left = Yes, Arrow Right = No)</p>`;
               },
               choices: ['arrowleft', 'arrowright'],
               data: {
                 task: 'accept',
-                reward: trialData.reward / 100,
+                reward: (trialData.reward) / 100,
               },
               on_finish: (data) => {
                 data.accepted = jsPsych.pluginAPI.compareKeys(data.response, 'arrowleft');
@@ -456,7 +459,7 @@ const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo = false,
                   reward: trialData.reward / 100,
                   autoIncreaseAmount: function() {
                     console.log()
-                    return (EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION + (TRIAL_DURATION/AUTO_DECREASE_RATE)*AUTO_DECREASE_AMOUNT)/medianTaps;
+                    return (EXPECTED_MAXIMUM_PERCENTAGE + (TRIAL_DURATION/AUTO_DECREASE_RATE)*AUTO_DECREASE_AMOUNT)/medianTaps;
                   },
                   data: {
                     task: 'block',
@@ -501,15 +504,15 @@ const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo = false,
 // Adding blocks to the timeline
 timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: blockWelcomeMessage('Synchronous Block') });
 timeline.push(createTrialBlock({ randomDelay: [0, 0], bounds: [60, 80], includeDemo: true, numDemoTrials: NUM_DEMO_TRIALS }));
-timeline.push(createTrialBlock({ blockName: 'Synchronous Block', randomDelay: [0, 0], bounds: randomBounds() }));
+timeline.push(createTrialBlock({ blockName: 'Synchronous Block', randomDelay: [0, 0]}));
 
 timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: blockWelcomeMessage('Narrow Asynchronous Block') });
 timeline.push(createTrialBlock({ randomDelay: [400, 600], bounds: [60, 80], includeDemo: true, numDemoTrials: NUM_DEMO_TRIALS }));
-timeline.push(createTrialBlock({ blockName: 'Narrow Asynchronous Block', randomDelay: [400, 600], bounds: randomBounds() }));
+timeline.push(createTrialBlock({ blockName: 'Narrow Asynchronous Block', randomDelay: [400, 600]}));
 
 timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: blockWelcomeMessage('Wide Asynchronous Block') });
 timeline.push(createTrialBlock({ randomDelay: [0, 1000], bounds: [60, 80], includeDemo: true, numDemoTrials: NUM_DEMO_TRIALS }));
-timeline.push(createTrialBlock({ blockName: 'Wide Asynchronous Block', randomDelay: [0, 1000], bounds: randomBounds() }));
+timeline.push(createTrialBlock({ blockName: 'Wide Asynchronous Block', randomDelay: [0, 1000]}));
 
 // Final step to calculate total reward at the end of the experiment
 const finishExperiment = {

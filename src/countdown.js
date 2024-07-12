@@ -83,9 +83,10 @@ class CountdownTrialPlugin {
       interval = setInterval(() => {
         const timeLeft = waitTime - (performance.now() - startTime);
         if (timeLeft <= 0) {
+          console.log('hello')
           clearInterval(interval);
           interval = null;
-          clockElement.innerHTML = "0:00";
+          clockElement.innerHTML = '<span style="color: green;">GO</span>';
           endTrial();
         } else {
           clockElement.innerHTML = formatTime(timeLeft);
