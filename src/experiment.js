@@ -422,7 +422,7 @@ const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo = false,
       }))
     );
     for(let i = 0; i < trials.length; i++){
-      trials[i].reward += randomNumberBm(1,10);
+      trials[i].reward = ((trials[i].reward + randomNumberBm(1,10))/100);
     }
 
     trials = jsPsych.randomization.shuffle(trials);
@@ -434,13 +434,14 @@ const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo = false,
             {
               type: HtmlKeyboardResponsePlugin,
               stimulus: function() {
-                return `<p>Reward: $${((trialData.reward)/100).toFixed(2)}</p><p>Do you accept the trial? (Arrow Left = Yes, Arrow Right = No)</p>`;
+                return `<p>Reward: $${(trialData.reward.toFixed(2))}</p><p>Do you accept the trial? (Arrow Left = Yes, Arrow Right = No)</p>`;
               },
               choices: ['arrowleft', 'arrowright'],
               data: {
                 task: 'accept',
-                reward: (trialData.reward) / 100,
+                reward: (trialData.reward),
               },
+
               on_finish: (data) => {
                 data.accepted = jsPsych.pluginAPI.compareKeys(data.response, 'arrowleft');
                 trialData.accepted = data.accepted;
@@ -456,7 +457,10 @@ const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo = false,
                   showThermometer: true,
                   randomDelay: trialData.randomDelay,
                   bounds: trialData.bounds,
-                  reward: trialData.reward / 100,
+                  reward: trialData.reward,
+                  on_start: function() {
+                    console.log(`Task Performance Phase reward: $${trialData.reward.toFixed(2)}`); // Logging reward in TaskPlugin step
+                  },
                   autoIncreaseAmount: function() {
                     console.log()
                     return (EXPECTED_MAXIMUM_PERCENTAGE + (TRIAL_DURATION/AUTO_DECREASE_RATE)*AUTO_DECREASE_AMOUNT)/medianTaps;
@@ -501,18 +505,70 @@ const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo = false,
   return { timeline };
 };
 
-// Adding blocks to the timeline
-timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: blockWelcomeMessage('Synchronous Block') });
-timeline.push(createTrialBlock({ randomDelay: [0, 0], bounds: [60, 80], includeDemo: true, numDemoTrials: NUM_DEMO_TRIALS }));
-timeline.push(createTrialBlock({ blockName: 'Synchronous Block', randomDelay: [0, 0]}));
+// Store the block trial data once
+let blockTrialData = [];
 
-timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: blockWelcomeMessage('Narrow Asynchronous Block') });
-timeline.push(createTrialBlock({ randomDelay: [400, 600], bounds: [60, 80], includeDemo: true, numDemoTrials: NUM_DEMO_TRIALS }));
-timeline.push(createTrialBlock({ blockName: 'Narrow Asynchronous Block', randomDelay: [400, 600]}));
+// Function to update block trial data
+function updateBlockTrialData() {
+  blockTrialData = jsPsych.data.get().filter({ task: 'block' }).values();
+}
 
-timeline.push({ type: HtmlKeyboardResponsePlugin, choices: ['enter'], stimulus: blockWelcomeMessage('Wide Asynchronous Block') });
-timeline.push(createTrialBlock({ randomDelay: [0, 1000], bounds: [60, 80], includeDemo: true, numDemoTrials: NUM_DEMO_TRIALS }));
-timeline.push(createTrialBlock({ blockName: 'Wide Asynchronous Block', randomDelay: [0, 1000]}));
+// Function to calculate total successful reward
+function calculateTotalSuccessfulReward() {
+  const successfulTrials = blockTrialData.filter(trial => trial.success === true);
+  const totalSuccessfulReward = successfulTrials.reduce((sum, trial) => sum + trial.reward, 0);
+  return totalSuccessfulReward;
+}
+
+
+
+function createRewardDisplayTrial() {
+  return {
+    type: HtmlKeyboardResponsePlugin,
+    choices: ['enter'],
+    stimulus: function() {
+      const blockTrials = jsPsych.data.get().filter({ task: 'block' }).values();
+      const successfulTrials = blockTrials.filter(trial => trial.success === true);
+      const totalSuccessfulReward = successfulTrials.reduce((sum, trial) => sum + trial.reward, 0);
+      return `<p>The block has ended. Total reward for successful trials is: $${totalSuccessfulReward.toFixed(2)}. Press Enter to continue.</p>`;
+    },
+    data: {
+      task: 'display_reward'
+    },
+    on_start: function() {
+      // Ensure block trial data is updated before calculating reward
+      const blockTrials = jsPsych.data.get().filter({ task: 'block' }).values();
+      blockTrialData = blockTrials;
+    },
+    on_finish: function(data) {
+      const blockTrials = jsPsych.data.get().filter({ task: 'block' }).values();
+      const successfulTrials = blockTrials.filter(trial => trial.success === true);
+      const totalSuccessfulReward = successfulTrials.reduce((sum, trial) => sum + trial.reward, 0);
+      data.totalReward = totalSuccessfulReward;
+    }
+  };
+}
+
+const trialsArray = [
+  [createTrialBlock({ randomDelay: [0, 0], bounds: [0, 0], includeDemo: true, numDemoTrials: NUM_DEMO_TRIALS }), createTrialBlock({ blockName: 'Synchronous Block', randomDelay: [0, 0]}), createRewardDisplayTrial()],
+  [createTrialBlock({ randomDelay: [0, 0], bounds: [0, 0], includeDemo: true, numDemoTrials: NUM_DEMO_TRIALS }), createTrialBlock({ blockName: 'Synchronous Block', randomDelay: [0, 0]}), createRewardDisplayTrial()],
+  [createTrialBlock({ randomDelay: [400, 600], bounds: [0, 0], includeDemo: true, numDemoTrials: NUM_DEMO_TRIALS }), createTrialBlock({ blockName: 'Narrow Asynchronous Block', randomDelay: [400, 600]}), createRewardDisplayTrial()],
+  [createTrialBlock({ randomDelay: [400, 600], bounds: [0, 0], includeDemo: true, numDemoTrials: NUM_DEMO_TRIALS }), createTrialBlock({ blockName: 'Narrow Asynchronous Block', randomDelay: [400, 600]}), createRewardDisplayTrial()],
+  [createTrialBlock({ randomDelay: [0, 1000], bounds: [0, 0], includeDemo: true, numDemoTrials: NUM_DEMO_TRIALS }), (createTrialBlock({ blockName: 'Wide Asynchronous Block', randomDelay: [0, 1000]})), createRewardDisplayTrial()],
+  [createTrialBlock({ randomDelay: [0, 1000], bounds: [0, 0], includeDemo: true, numDemoTrials: NUM_DEMO_TRIALS }), (createTrialBlock({ blockName: 'Wide Asynchronous Block', randomDelay: [0, 1000]})), createRewardDisplayTrial()],
+]
+
+const sampledArray = jsPsych.randomization.sampleWithoutReplacement(trialsArray, 6);
+//NOTE: SAMPLING IS NOT EVENLY DISTRIBUTED LIKE HUMMEL LAB
+
+// Push each array of trial blocks to the timeline
+sampledArray.forEach(sampledArray => {
+  timeline.push(sampledArray[0])
+  timeline.push(sampledArray[1])
+  timeline.push(sampledArray[2])
+});
+
+
 
 // Final step to calculate total reward at the end of the experiment
 const finishExperiment = {
@@ -527,6 +583,11 @@ const finishExperiment = {
   data: {
     task: 'finish_experiment'
   },
+  on_start: function() {
+    // Ensure block trial data is updated before calculating reward
+    const blockTrials = jsPsych.data.get().filter({ task: 'block' }).values();
+    blockTrialData = blockTrials;
+  },
   on_finish: function(data) {
     const blockTrials = jsPsych.data.get().filter({ task: 'block' }).values();
     const successfulTrials = blockTrials.filter(trial => trial.success === true);
@@ -538,6 +599,7 @@ const finishExperiment = {
     saveAs(blob, `experiment_data_${new Date().toISOString()}.json`);
   }
 };
+
 
 timeline.push(finishExperiment);
 
