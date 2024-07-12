@@ -50,7 +50,8 @@ import {
   blockWelcomeMessage,
   thermometer,
   showThermometer,
-  videoStimulus
+  videoStimulus,
+  acceptanceThermometer,
 } from './stimulus';
 
 import {
@@ -141,7 +142,9 @@ export async function run({ assetPaths, input = {}, environment, title, version 
    * @param {Array} bounds - The bounds for the calibration task
    * @returns {Object} - jsPsych trial object
    */
-  const createCalibrationTrial = (showThermometer, bounds) => ({
+
+  let calibrationPart1Failures = 0;
+  const createCalibrationTrialPart1 = (showThermometer, bounds, repetitions) => ({
     timeline: [
       countdownStep,
       {
@@ -150,7 +153,15 @@ export async function run({ assetPaths, input = {}, environment, title, version 
         showThermometer,
         bounds,
         data: {
-          task: 'calibration',
+          task: 'calibrationPart1',
+        },
+        on_finish: function(data) {
+          // Check if the keysReleasedFlag was not activated and increment the failure count
+          if (data.keysReleasedFlag) {
+            calibrationPart1Failures++;
+            console.log(calibrationPart1Failures)
+
+          }
         }
       },
       {
@@ -158,38 +169,46 @@ export async function run({ assetPaths, input = {}, environment, title, version 
         conditional_function: function() {
           const lastTrialData = jsPsych.data.get().last(1).values()[0];
           return !lastTrialData.keysReleasedFlag;
-        }
+        },
       }
     ],
-    repetitions: NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
+    repetitions: repetitions,
   });
 
-  const calibrationPart1 = createCalibrationTrial(false, [EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION]);
 
+
+  const calibrationPart1 = createCalibrationTrialPart1(false, [EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION],NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS );
+
+  
   /**
    * @function calculateTapsStep
    * @description Create a step to calculate the median taps and display a message
    * @param {string} message - The message to display
    * @returns {Object} - jsPsych trial object
    */
-  const calculateTapsStep = (message) => ({
+  const calculateTapsStep = (message, calibrationPart, numTrials) => ({
     type: HtmlKeyboardResponsePlugin,
     choices: ['enter'],
     data: {
-      task: 'median',
+      task: `${calibrationPart}Median`,
       medianTaps: function() {
-        return calculateMedianTapCount('calibration', NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS);
+        let medianTapCount = calculateMedianTapCount(calibrationPart, numTrials);
+        console.log(medianTapCount)
+        return calculateMedianTapCount(calibrationPart, numTrials);
+
+        
       }
     },
     stimulus: function() {
-      medianTaps = calculateMedianTapCount('calibration', NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS);
+      medianTaps = calculateMedianTapCount(calibrationPart, numTrials);
       return `<p>${CALIBRATION_PART_2_DIRECTIONS}</p>`;
     }
   });
 
   
   // Calibration trials with feedback
-  const calibrationPart2 = {
+  let calibrationPart2Failures = 0;
+  const createCalibrationPart2 = (repetitions) => ({
     timeline: [
       countdownStep,
       {
@@ -201,9 +220,15 @@ export async function run({ assetPaths, input = {}, environment, title, version 
           return (EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION + (TRIAL_DURATION/AUTO_DECREASE_RATE)*AUTO_DECREASE_AMOUNT)/medianTaps;
         },
         data: {
-          task: 'calibration',
+          task: 'calibrationPart2',
           showThermometer: true,
           bounds: [EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION]
+        },
+        on_finish: function(data) {
+          // Check if the keysReleasedFlag was not activated and increment the failure count
+          if (data.keysReleasedFlag) {
+            calibrationPart2Failures++;
+          }
         }
       },
       {
@@ -214,8 +239,11 @@ export async function run({ assetPaths, input = {}, environment, title, version 
         }
       }
     ],
-    repetitions: NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
-  };
+    repetitions: repetitions,
+  });
+
+  const calibrationPart2 = createCalibrationPart2(NUM_CALIBRATION_WITH_FEEDBACK_TRIALS);
+  const calibrationPart2Extras = createCalibrationPart2(calibrationPart2Failures)
 
   /**
    * @function validationTrials
@@ -318,8 +346,15 @@ export async function run({ assetPaths, input = {}, environment, title, version 
   // Add trials to the timeline
   timeline.push(videoDemo(CALIBRATION_PART_1_DIRECTIONS, ))
   timeline.push(calibrationPart1);
-  timeline.push(calculateTapsStep(CALIBRATION_PART_2_DIRECTIONS));
+  timeline.push({
+    timeline: [createCalibrationTrialPart1(false, [EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION], calibrationPart1Failures)],
+    conditional_function: () => calibrationPart1Failures > 0,
+  });  
+  timeline.push(calculateTapsStep(CALIBRATION_PART_2_DIRECTIONS, 'calibrationPart1', (NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS+calibrationPart1Failures)));
   timeline.push(calibrationPart2);
+  calibrationPart2Failures > 0 ? timeline.push(calibrationPart2Extras) : null
+  timeline.push(calculateTapsStep(CALIBRATION_PART_2_DIRECTIONS, 'calibrationPart2', (NUM_CALIBRATION_WITH_FEEDBACK_TRIALS+calibrationPart2Failures)));
+
   /*   timeline.push(directionTrial(VALIDATION_DIRECTIONS))
   timeline.push(validationTrials(EASY_BOUNDS, 'easy'))
   timeline.push(validationTrials(MEDIUM_BOUNDS, 'medium'))
@@ -423,8 +458,12 @@ const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo = false,
         bounds: combination.bounds
       }))
     );
-    for(let i = 0; i < trials.length; i++){
-      trials[i].reward = ((trials[i].reward + randomNumberBm(1,10))/100);
+    //min is trials[i].reward - 10% and max is +10%
+    // increase to .fixed(4)
+    // change constants to actual rewards and remove /100
+ 
+   for(let i = 0; i < trials.length; i++){
+      trials[i].reward = ((trials[i].reward + randomNumberBm(trials[i].reward,10))/100);
     }
 
     trials = jsPsych.randomization.shuffle(trials);
@@ -437,33 +476,8 @@ const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo = false,
               type: HtmlKeyboardResponsePlugin,
               stimulus: function() {
                 // Generate the thermometer HTML with bounds from trialData
-                const thermometerHTML = `
-                  <div
-                    id="thermometer-container"
-                    style="display: flex; justify-content: center; align-items: center; height: 300px; width: 100px; border: 1px solid #000;"
-                  >
-                    <div
-                      id="thermometer"
-                      style="position: relative; width: 100%; height: 100%; background-color: #e0e0e0;"
-                    >
-                      <div
-                        id="mercury"
-                        style="height: 0%; background-color: red;"
-                      ></div>
-                      <div
-                        id="lower-bound"
-                        style="position: absolute; bottom: ${trialData.bounds[0]}%; width: 100%; height: 2px; background-color: black;"
-                      ></div>
-                      <div
-                        id="upper-bound"
-                        style="position: absolute; bottom: ${trialData.bounds[1]}%; width: 100%; height: 2px; background-color: black;"
-                      ></div>
-                    </div>
-                  </div>
-                `;
-    
                 return `
-                  ${thermometerHTML}
+                  ${acceptanceThermometer(trialData.bounds)}
                   <p>Reward: $${trialData.reward.toFixed(2)}</p>
                   <p>Do you accept the trial? (Arrow Left = Yes, Arrow Right = No)</p>
                 `;

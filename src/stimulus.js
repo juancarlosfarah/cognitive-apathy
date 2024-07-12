@@ -48,6 +48,28 @@ export function stimulus(
 }
 
 
+export const acceptanceThermometer = (bounds) => `
+<div
+  id="thermometer-container"
+  style="display: flex; justify-content: center; align-items: center; height: 300px; width: 100px; border: 1px solid #000;"
+>
+  <div
+    id="thermometer"
+    style="position: relative; width: 100%; height: 100%; background-color: #e0e0e0;"
+  >
+    <div
+      id="lower-bound"
+      style="position: absolute; bottom: ${bounds[0]}%; width: 100%; height: 2px; background-color: black;"
+    ></div>
+    <div
+      id="upper-bound"
+      style="position: absolute; bottom: ${bounds[1]}%; width: 100%; height: 2px; background-color: black;"
+    ></div>
+  </div>
+</div>
+`;
+
+
 export const blockWelcomeMessage = (name) =>
   `<h2>${name}</h2><p><b>Please press "Enter" to start the experiment.</b></p>`;
 

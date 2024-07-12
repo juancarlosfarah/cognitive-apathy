@@ -14,9 +14,6 @@ export function randomNumberBm(min, max, skew = 1) {
     num *= max - min; // Stretch to fill range
     num += min; // offset to min
   }
-  if (Math.random() < 0.5) {
-    num = -num;
-  }
   return num;
 }
 
