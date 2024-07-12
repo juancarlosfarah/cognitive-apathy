@@ -1,5 +1,5 @@
 import { ParameterType } from 'jspsych';
-import { calibrationStimulus } from './stimulus';
+import { stimulus } from './stimulus';
 import { BOUND_OPTIONS, PREMATURE_KEY_RELEASE_ERROR_TIME, PREMATURE_KEY_RELEASE_ERROR_MESSAGE, KEYS_TO_HOLD, KEY_TO_PRESS, AUTO_DECREASE_AMOUNT, AUTO_DECREASE_RATE} from './constants';
 
 class TaskPlugin {
@@ -158,6 +158,7 @@ class TaskPlugin {
       if (trialEnded) return; // Prevent multiple stops
       trialEnded = true; // Set the flag to true
       endTime = this.jsPsych.getTotalTime();
+      this.mercuryHeight = 0;
       isRunning = false;
       clearInterval(timerRef);
       clearInterval(intervalRef);
@@ -168,7 +169,7 @@ class TaskPlugin {
 
 
       // Update the UI to remove the hold keys message if ending due to error
-      display_element.innerHTML = calibrationStimulus(
+      display_element.innerHTML = stimulus(
         trial.showThermometer,
         this.mercuryHeight,
         trial.bounds[0],
@@ -198,7 +199,7 @@ class TaskPlugin {
       return this.mercuryHeight >= trial.bounds[0] && this.mercuryHeight <= trial.bounds[1] && !trial.keysReleasedFlag;
     };
 
-    display_element.innerHTML = calibrationStimulus(
+    display_element.innerHTML = stimulus(
       trial.showThermometer,
       this.mercuryHeight,
       trial.bounds[0],

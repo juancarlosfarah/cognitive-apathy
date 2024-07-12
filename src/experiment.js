@@ -48,6 +48,8 @@ import {
 
 import {
   blockWelcomeMessage,
+  thermometer,
+  showThermometer,
   videoStimulus
 } from './stimulus';
 
@@ -434,7 +436,37 @@ const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo = false,
             {
               type: HtmlKeyboardResponsePlugin,
               stimulus: function() {
-                return `<p>Reward: $${(trialData.reward.toFixed(2))}</p><p>Do you accept the trial? (Arrow Left = Yes, Arrow Right = No)</p>`;
+                // Generate the thermometer HTML with bounds from trialData
+                const thermometerHTML = `
+                  <div
+                    id="thermometer-container"
+                    style="display: flex; justify-content: center; align-items: center; height: 300px; width: 100px; border: 1px solid #000;"
+                  >
+                    <div
+                      id="thermometer"
+                      style="position: relative; width: 100%; height: 100%; background-color: #e0e0e0;"
+                    >
+                      <div
+                        id="mercury"
+                        style="height: 0%; background-color: red;"
+                      ></div>
+                      <div
+                        id="lower-bound"
+                        style="position: absolute; bottom: ${trialData.bounds[0]}%; width: 100%; height: 2px; background-color: black;"
+                      ></div>
+                      <div
+                        id="upper-bound"
+                        style="position: absolute; bottom: ${trialData.bounds[1]}%; width: 100%; height: 2px; background-color: black;"
+                      ></div>
+                    </div>
+                  </div>
+                `;
+    
+                return `
+                  ${thermometerHTML}
+                  <p>Reward: $${trialData.reward.toFixed(2)}</p>
+                  <p>Do you accept the trial? (Arrow Left = Yes, Arrow Right = No)</p>
+                `;
               },
               choices: ['arrowleft', 'arrowright'],
               data: {
