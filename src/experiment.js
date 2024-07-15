@@ -36,6 +36,7 @@ import {
   SUCCESS_SCREEN_DURATION,
   TRIAL_DURATION,
   VALIDATION_DIRECTIONS,
+  LOADING_BAR_SPEED
 } from './constants';
 import CountdownTrialPlugin from './countdown';
 import ReleaseKeysPlugin from './release-keys';
@@ -113,9 +114,10 @@ export async function run({
         let percentageValue = +percentage.textContent;
         let progress = document.querySelector('.progress');
 
-        let increment = Math.ceil(Math.random() * 5);
-        percentage.textContent = percentageValue + increment;
-        progress.setAttribute('style', `width:${percentageValue + increment}%`);
+        let increment = Math.ceil(Math.random() * LOADING_BAR_SPEED);
+        let newPercentageValue = Math.min(percentageValue + increment, 100); // Ensure it does not exceed 100
+        percentage.textContent = newPercentageValue;
+        progress.setAttribute('style', `width:${newPercentageValue}%`);
 
         check_percentage();
       }
