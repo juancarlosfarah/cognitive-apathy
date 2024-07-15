@@ -520,7 +520,10 @@ const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo = false,
                       var acceptanceData = jsPsych.data.get().filter({ task: 'accept' }).last(1).values()[0];
                       return acceptanceData ? acceptanceData.accepted : null;
                     },
-                  } 
+                  },
+                  on_finish: function(data){
+                    console.log(data)
+                  }
                 },
                 {
                   timeline: [releaseKeysStep],

@@ -46,7 +46,7 @@ class TaskPlugin {
       reward: {
         type: ParameterType.FLOAT,
         default: 0.5,
-      }
+      },
     },
   };
 
@@ -120,7 +120,7 @@ class TaskPlugin {
         setAreKeysHeld();
       } else if (key === KEY_TO_PRESS && isRunning) {
         tapCount++;
-        if (trial.task === 'demo' || 'block') {
+        if (trial.data.task === 'demo' || trial.data.task === 'block') {
           setTimeout(() => increaseMercury(), getRandomDelay());
         } else {
           increaseMercury();
@@ -158,14 +158,12 @@ class TaskPlugin {
       if (trialEnded) return; // Prevent multiple stops
       trialEnded = true; // Set the flag to true
       endTime = this.jsPsych.getTotalTime();
-      this.mercuryHeight = 0;
       isRunning = false;
       clearInterval(timerRef);
       clearInterval(intervalRef);
       timerRef = null;
       intervalRef = null;
       errorOccurred = errorFlag;
-
 
 
       // Update the UI to remove the hold keys message if ending due to error
@@ -185,7 +183,7 @@ class TaskPlugin {
 
     const decreaseMercury = () => {
 /*       mercuryHeight = Math.max(mercuryHeight - trial.autoDecreaseAmount, 0);
- */      this.mercuryHeight = this.mercuryHeight - trial.autoDecreaseAmount;
+ */      this.mercuryHeight = (this.mercuryHeight - trial.autoDecreaseAmount);
       updateUI();
     };
 
@@ -230,6 +228,7 @@ class TaskPlugin {
       };
 
       this.jsPsych.finishTrial(trial_data); // Use this.jsPsych
+      console.log(trial_data);
     };
 
     trial.on_load = () => {
