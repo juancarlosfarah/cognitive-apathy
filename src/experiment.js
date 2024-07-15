@@ -110,17 +110,19 @@ export async function run({ assetPaths, input = {}, environment, title, version 
    * @returns {number} - The median tap count
    */
   let medianTaps;
-  function calculateMedianTapCount(taskType, numTrials) {
-    const trials = jsPsych.data.get().filter({ task: taskType }).last(numTrials).values();
+  function calculateMedianTapCount(allTrials, taskType, numTrials) {
+    const trials = allTrials.filter(trial => trial.task === taskType).slice(-numTrials);
     const filteredTrials = trials.filter(trial => !trial.keysReleasedFlag);
     let tapCounts = filteredTrials.map(trial => trial.tapCount);
     tapCounts.sort((a, b) => a - b);
-
+  
     const middle = Math.floor(tapCounts.length / 2);
     return tapCounts.length % 2 === 0
       ? (tapCounts[middle - 1] + tapCounts[middle]) / 2
       : tapCounts[middle];
   }
+  
+  
 
   /**
    * @function directionTrial
@@ -154,24 +156,27 @@ export async function run({ assetPaths, input = {}, environment, title, version 
    * @param {string} message - The message to display
    * @returns {Object} - jsPsych trial object
    */
-  const calculateTapsStep = (message, calibrationPart, numTrials) => ({
-    type: HtmlKeyboardResponsePlugin,
-    choices: ['enter'],
-    data: {
-      task: `${calibrationPart}Median`,
-      medianTaps: function() {
-        let medianTapCount = calculateMedianTapCount(calibrationPart, numTrials);
-        console.log(medianTapCount)
-        return calculateMedianTapCount(calibrationPart, numTrials);
-
-        
+  const calculateTapsStep = (message, calibrationPart, numTrials) => {
+    const allTrials = jsPsych.data.get().values(); // Get all trials once
+  
+    return {
+      type: HtmlKeyboardResponsePlugin,
+      choices: ['enter'],
+      data: {
+        task: `${calibrationPart}Median`,
+        medianTaps: function() {
+          let medianTapCount = calculateMedianTapCount(allTrials, calibrationPart, numTrials);
+          console.log(medianTapCount);
+          return medianTapCount;
+        }
+      },
+      stimulus: function() {
+        medianTaps = calculateMedianTapCount(allTrials, calibrationPart, numTrials);
+        return `<p>${message}</p>`;
       }
-    },
-    stimulus: function() {
-      medianTaps = calculateMedianTapCount(calibrationPart, numTrials);
-      return `<p>${CALIBRATION_PART_2_DIRECTIONS}</p>`;
-    }
-  });
+    };
+  }
+  
 
   const incrementCalibrationPart1Successes = () => { calibrationPart1Successes++; };
   const incrementCalibrationPart2Successes = () => { calibrationPart2Successes++; };
@@ -205,7 +210,8 @@ export async function run({ assetPaths, input = {}, environment, title, version 
       {
         timeline: [releaseKeysStep],
         conditional_function: function() {
-          const lastTrialData = jsPsych.data.get().last(1).values()[0];
+          const allTrials = jsPsych.data.get().values(); // Get all trials once
+          const lastTrialData = allTrials.slice(-1)[0]; // Use the stored trials data
           return !lastTrialData.keysReleasedFlag;
         }
       }
@@ -224,6 +230,8 @@ export async function run({ assetPaths, input = {}, environment, title, version 
       return remainingSuccesses > 0; // Repeat the timeline if more successes are needed
     }
   });
+  
+  
   
   
 
@@ -569,30 +577,36 @@ const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo = false,
   return { timeline };
 };
 
-function calculateTotalReward() {
-  const blockTrials = jsPsych.data.get().filter({ task: 'block' }).values();
+function calculateTotalReward(allTrials) {
+  const blockTrials = allTrials.filter(trial => trial.task === 'block');
   const successfulTrials = blockTrials.filter(trial => trial.success === true);
   return successfulTrials.reduce((sum, trial) => sum + trial.reward, 0);
 }
 
 
+
+
 function createRewardDisplayTrial() {
+  const allTrials = jsPsych.data.get().values(); // Get all trials once
+
   return {
     type: HtmlKeyboardResponsePlugin,
     choices: ['enter'],
     stimulus: function() {
-      const totalSuccessfulReward = calculateTotalReward();
+      const totalSuccessfulReward = calculateTotalReward(allTrials);
       return `<p>The block has ended. Total reward for successful trials is: $${totalSuccessfulReward.toFixed(2)}. Press Enter to continue.</p>`;
     },
     data: {
       task: 'display_reward'
     },
     on_finish: function(data) {
-      const totalSuccessfulReward = calculateTotalReward();
+      const totalSuccessfulReward = calculateTotalReward(allTrials);
       data.totalReward = totalSuccessfulReward;
     }
   };
 }
+
+
 
 
 
@@ -623,19 +637,20 @@ const finishExperiment = {
   type: HtmlKeyboardResponsePlugin,
   choices: ['enter'],
   stimulus: function() {
-    const totalSuccessfulReward = calculateTotalReward();
+    const allTrials = jsPsych.data.get().values(); // Get all trials once
+    const totalSuccessfulReward = calculateTotalReward(allTrials);
     return `<p>The experiment has now ended. Total reward for successful trials is: $${totalSuccessfulReward.toFixed(4)}. Press Enter to finish and then please let the experimenter know.</p>`;
   },
   data: {
     task: 'finish_experiment'
   },
   on_start: function() {
-    // Ensure block trial data is updated before calculating reward
-    const blockTrials = jsPsych.data.get().filter({ task: 'block' }).values();
-    blockTrialData = blockTrials;
+    const allTrials = jsPsych.data.get().values(); // Get all trials once
+    blockTrialData = allTrials.filter(trial => trial.task === 'block');
   },
   on_finish: function(data) {
-    const totalSuccessfulReward = calculateTotalReward();
+    const allTrials = jsPsych.data.get().values(); // Get all trials once
+    const totalSuccessfulReward = calculateTotalReward(allTrials);
     data.totalReward = totalSuccessfulReward;
 
     const allData = jsPsych.data.get().json();
@@ -643,6 +658,8 @@ const finishExperiment = {
     saveAs(blob, `experiment_data_${new Date().toISOString()}.json`);
   }
 };
+
+
 
 
 timeline.push(finishExperiment);
