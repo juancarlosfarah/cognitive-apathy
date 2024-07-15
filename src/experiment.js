@@ -383,7 +383,7 @@ export async function run({ assetPaths, input = {}, environment, title, version 
       {
         type: HtmlKeyboardResponsePlugin,
         stimulus: function() {
-          const previousTrial = jsPsych.data.get().last(2).values()[0]; // Get the trial 2 steps ago
+          const previousTrial = jsPsych.data.get().last(1).values()[0]; // Get the trial 1 steps ago
           if (previousTrial.success) {
             return '<p style="color: green; font-size: 48px;">Trial Succeeded</p>';
           } else {
@@ -544,14 +544,14 @@ const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo = false,
                   }
                 },
                 {
+                  timeline: [successScreen]
+                  },
+                {
                   timeline: [releaseKeysStep],
                   conditional_function: function() {
-                    const lastTrialData = jsPsych.data.get().last(1).values()[0];
+                    const lastTrialData = jsPsych.data.get().last(2).values()[0];
                     return !lastTrialData.keysReleasedFlag;
                   },
-                },
-                {
-                timeline: [successScreen]
                 },
               ],
               conditional_function: () => trialData.accepted,
