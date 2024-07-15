@@ -1,4 +1,3 @@
-
 export function stimulus(
   showThermometer,
   mercuryHeight,
@@ -17,7 +16,7 @@ export function stimulus(
     ></div>
   `;
 
-   const thermometer = showThermometer
+  const thermometer = showThermometer
     ? `<div
       id="thermometer-container"
       style="display: flex; justify-content: center; align-items: center; height: 300px; width: 100px; border: 1px solid #000;"
@@ -35,7 +34,6 @@ export function stimulus(
     </div>`
     : '<p style="font-size: 48px; position: absolute;">+</p>';
 
-
   return `
     <div id="calibration-task" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
         ${thermometer}
@@ -46,7 +44,6 @@ export function stimulus(
     </div>
   `;
 }
-
 
 export const acceptanceThermometer = (bounds) => `
 <div
@@ -69,7 +66,6 @@ export const acceptanceThermometer = (bounds) => `
 </div>
 `;
 
-
 export const blockWelcomeMessage = (name) =>
   `<h2>${name}</h2><p><b>Please press "Enter" to start the experiment.</b></p>`;
 
@@ -90,3 +86,14 @@ export const videoStimulus = (message, video) => {
   }
   return stimulusHTML;
 };
+
+export const loadingBar = () => `
+  <h1>Loading...</h1>
+  <br>
+  <div class="bar">
+    <div class="progress"></div>
+  </div>
+  <div class="percentage">0</div>
+  <link rel="stylesheet" type="text/css" href="import '../styles/main.scss';
+  >
+`;
