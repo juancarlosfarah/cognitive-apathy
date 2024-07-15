@@ -2,6 +2,8 @@ import fastCartesian from 'fast-cartesian';
 
 // constants
 export const TRIAL_DURATION = 5000; // how long does a trial last (ms)
+export const GO_DURATION = 500;
+export const SUCCESS_SCREEN_DURATION = 500;
 export const COUNTDOWN_TIME = 3 // how long the countdown is after "A", "W," and "E" are pressed before trial starts (s)
 export const AUTO_DECREASE_AMOUNT = 2;
 export const AUTO_DECREASE_RATE = 100; // how often do we decrease the thermometer (ms)
