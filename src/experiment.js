@@ -146,49 +146,6 @@ export async function run({ assetPaths, input = {}, environment, title, version 
     }
   });
 
-  /**
-   * @function createCalibrationTrial
-   * @description Create a calibration trial with optional thermometer display and specified bounds
-   * @param {boolean} showThermometer - Whether to show the thermometer
-   * @param {Array} bounds - The bounds for the calibration task
-   * @returns {Object} - jsPsych trial object
-   */
-
-  let calibrationPart1Failures = 0;
-  const createCalibrationTrialPart1 = (showThermometer, bounds, repetitions) => ({
-    timeline: [
-      countdownStep,
-      {
-        type: TaskPlugin,
-        duration: TRIAL_DURATION,
-        showThermometer,
-        bounds,
-        data: {
-          task: 'calibrationPart1',
-        },
-        on_finish: function(data) {
-          // Check if the keysReleasedFlag was not activated and increment the failure count
-          if (data.keysReleasedFlag) {
-            calibrationPart1Failures++;
-            console.log(calibrationPart1Failures)
-
-          }
-        }
-      },
-      {
-        timeline: [releaseKeysStep],
-        conditional_function: function() {
-          const lastTrialData = jsPsych.data.get().last(1).values()[0];
-          return !lastTrialData.keysReleasedFlag;
-        },
-      }
-    ],
-    repetitions: repetitions,
-  });
-
-
-
-  const calibrationPart1 = createCalibrationTrialPart1(false, [EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION],NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS );
 
   
   /**
@@ -216,29 +173,32 @@ export async function run({ assetPaths, input = {}, environment, title, version 
     }
   });
 
+  const incrementCalibrationPart1Successes = () => { calibrationPart1Successes++; };
+  const incrementCalibrationPart2Successes = () => { calibrationPart2Successes++; };
+  const getCalibrationPart1Successes = () => calibrationPart1Successes;
+  const getCalibrationPart2Successes = () => calibrationPart2Successes;
+  let calibrationPart1Successes = 0;
+  let calibrationPart2Successes = 0;
   
-  // Calibration trials with feedback
-  let calibrationPart2Failures = 0;
-
-  const createCalibrationTrialPart2 = (repetitions) => ({
+  const createCalibrationTrial = (showThermometer, bounds, repetitions, calibrationPart) => ({
     timeline: [
       countdownStep,
       {
         type: TaskPlugin,
         duration: TRIAL_DURATION,
-        showThermometer: true,
-        bounds: [EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION],
+        showThermometer,
+        bounds,
         autoIncreaseAmount: function() {
-          return (EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION + (TRIAL_DURATION/AUTO_DECREASE_RATE)*AUTO_DECREASE_AMOUNT) / medianTaps;
+          return (EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION + (TRIAL_DURATION / AUTO_DECREASE_RATE) * AUTO_DECREASE_AMOUNT) / medianTaps;
         },
         data: {
-          task: 'calibrationPart2',
-          showThermometer: true,
-          bounds: [EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION]
+          task: calibrationPart,
+          showThermometer,
+          bounds
         },
         on_finish: function(data) {
-          if (data.keysReleasedFlag) {
-            calibrationPart2Failures++;
+          if (!data.keysReleasedFlag) {
+            calibrationPart === 'calibrationPart1' ? calibrationPart1Successes++ : calibrationPart2Successes++;
           }
         }
       },
@@ -251,18 +211,23 @@ export async function run({ assetPaths, input = {}, environment, title, version 
       }
     ],
     repetitions: repetitions,
-    loop_function: function(data) {
-      if (calibrationPart2Failures > 0) {
-        repetitions = calibrationPart2Failures; // Set repetitions to the number of failures
-        calibrationPart2Failures = 0; // Reset failures for the next iteration
-        return true; // Repeat the timeline
-      }
-      return false; // Stop repeating if no failures
+    loop_function: function() {
+      const requiredSuccesses = calibrationPart === 'calibrationPart1' 
+        ? NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS 
+        : NUM_CALIBRATION_WITH_FEEDBACK_TRIALS;
+  
+      const currentSuccesses = calibrationPart === 'calibrationPart1' 
+        ? calibrationPart1Successes 
+        : calibrationPart2Successes;
+  
+      const remainingSuccesses = requiredSuccesses - currentSuccesses;
+      return remainingSuccesses > 0; // Repeat the timeline if more successes are needed
     }
   });
+  
+  
 
-  const calibrationPart2 = createCalibrationTrialPart2(NUM_CALIBRATION_WITH_FEEDBACK_TRIALS);
-
+  
   /**
    * @function validationTrials
    * @description Create validation trials with specified bounds and difficulty level
@@ -361,17 +326,22 @@ export async function run({ assetPaths, input = {}, environment, title, version 
   };
 
   // Add trials to the timeline
-  timeline.push(videoDemo(CALIBRATION_PART_1_DIRECTIONS, ))
-  timeline.push(calibrationPart1);
-  timeline.push({
-    timeline: [createCalibrationTrialPart1(false, [EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION], calibrationPart1Failures)],
-    conditional_function: () => calibrationPart1Failures > 0,
-  });  
-  timeline.push(calculateTapsStep(CALIBRATION_PART_2_DIRECTIONS, 'calibrationPart1', (NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS+calibrationPart1Failures)));
-  timeline.push(calibrationPart2);
-  timeline.push(createCalibrationTrialPart2(calibrationPart2Failures)); // Add the initial calibration trials with repetitions 
-  timeline.push(calculateTapsStep(CALIBRATION_PART_2_DIRECTIONS, 'calibrationPart2', (NUM_CALIBRATION_WITH_FEEDBACK_TRIALS+calibrationPart2Failures)));
-
+  timeline.push(videoDemo(CALIBRATION_PART_1_DIRECTIONS));
+  timeline.push(createCalibrationTrial(
+    false,
+    [EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION],
+    NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
+    'calibrationPart1'
+  ));
+  timeline.push(calculateTapsStep(CALIBRATION_PART_2_DIRECTIONS, 'calibrationPart1', NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS));
+  timeline.push(createCalibrationTrial(
+    true,
+    [EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION],
+    NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
+    'calibrationPart2'
+  ));
+  timeline.push(calculateTapsStep(CALIBRATION_PART_2_DIRECTIONS, 'calibrationPart2', NUM_CALIBRATION_WITH_FEEDBACK_TRIALS));
+  
   /*   timeline.push(directionTrial(VALIDATION_DIRECTIONS))
   timeline.push(validationTrials(EASY_BOUNDS, 'easy'))
   timeline.push(validationTrials(MEDIUM_BOUNDS, 'medium'))
