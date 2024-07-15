@@ -1,6 +1,6 @@
 import { ParameterType } from 'jspsych';
 import { stimulus } from './stimulus';
-import { BOUND_OPTIONS, PREMATURE_KEY_RELEASE_ERROR_TIME, PREMATURE_KEY_RELEASE_ERROR_MESSAGE, KEYS_TO_HOLD, KEY_TO_PRESS, AUTO_DECREASE_AMOUNT, AUTO_DECREASE_RATE} from './constants';
+import { BOUND_OPTIONS, PREMATURE_KEY_RELEASE_ERROR_TIME, PREMATURE_KEY_RELEASE_ERROR_MESSAGE, KEYS_TO_HOLD, KEY_TO_PRESS, AUTO_DECREASE_AMOUNT, AUTO_DECREASE_RATE } from './constants';
 
 class TaskPlugin {
   static info = {
@@ -51,13 +51,12 @@ class TaskPlugin {
   };
 
   constructor(jsPsych) {
-    this.jsPsych = jsPsych; 
+    this.jsPsych = jsPsych;
     this.mercuryHeight = 0;
+    this.isKeyDown = false;
   }
 
   trial(display_element, trial) {
-
-
     let tapCount = 0;
     let startTime = 0;
     let endTime = 0;
@@ -84,7 +83,7 @@ class TaskPlugin {
       if (trial.showThermometer) {
         const mercuryElement = document.getElementById('mercury');
         if (mercuryElement) mercuryElement.style.height = `${this.mercuryHeight}%`;
-        
+
         const lowerBoundElement = document.getElementById('lower-bound');
         const upperBoundElement = document.getElementById('upper-bound');
         if (lowerBoundElement) lowerBoundElement.style.bottom = `${trial.bounds[0]}%`;
@@ -109,7 +108,6 @@ class TaskPlugin {
         setError(`${PREMATURE_KEY_RELEASE_ERROR_MESSAGE}`);
         trial.keysReleasedFlag = true; // Set the flag
         setTimeout(() => stopRunning(true), PREMATURE_KEY_RELEASE_ERROR_TIME);
-
       }
     };
 
@@ -118,13 +116,8 @@ class TaskPlugin {
       if (KEYS_TO_HOLD.includes(key)) {
         keysState[key] = true;
         setAreKeysHeld();
-      } else if (key === KEY_TO_PRESS && isRunning) {
-        tapCount++;
-        if (trial.data.task === 'demo' || trial.data.task === 'block') {
-          setTimeout(() => increaseMercury(), getRandomDelay());
-        } else {
-          increaseMercury();
-        }
+      } else if (key === KEY_TO_PRESS && isRunning && !this.isKeyDown) {
+        this.isKeyDown = true; // Prevent repeated increase while key is held down
       }
     };
 
@@ -133,7 +126,13 @@ class TaskPlugin {
       if (KEYS_TO_HOLD.includes(key)) {
         keysState[key] = false;
         setAreKeysHeld();
-        if (!keysState.a && !keysState.w && !keysState.e && !trialEnded) {
+      } else if (key === KEY_TO_PRESS && isRunning) {
+        this.isKeyDown = false; // Allow increase on next key press
+        tapCount++;
+        if (trial.data.task === 'demo' || trial.data.task === 'block') {
+          setTimeout(() => increaseMercury(), getRandomDelay());
+        } else {
+          increaseMercury();
         }
       }
     };
@@ -165,7 +164,6 @@ class TaskPlugin {
       intervalRef = null;
       errorOccurred = errorFlag;
 
-
       // Update the UI to remove the hold keys message if ending due to error
       display_element.innerHTML = stimulus(
         trial.showThermometer,
@@ -180,10 +178,8 @@ class TaskPlugin {
       updateUI();
     };
 
-
     const decreaseMercury = () => {
-/*       mercuryHeight = Math.max(mercuryHeight - trial.autoDecreaseAmount, 0);
- */      this.mercuryHeight = (this.mercuryHeight - trial.autoDecreaseAmount);
+      this.mercuryHeight = Math.max(this.mercuryHeight - trial.autoDecreaseAmount, 0);
       updateUI();
     };
 
@@ -237,11 +233,6 @@ class TaskPlugin {
       startRunning(); // Start running as the trial loads
     };
   }
-
-/*   static calculateAverageTaps(data) {
-    const tapCounts = data.map((trial) => trial.tapCount);
-    return tapCounts.reduce((a, b) => a + b, 0) / tapCounts.length;
-  } */
 }
 
 export default TaskPlugin;
