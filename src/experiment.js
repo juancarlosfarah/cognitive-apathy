@@ -36,7 +36,8 @@ import {
   SUCCESS_SCREEN_DURATION,
   TRIAL_DURATION,
   VALIDATION_DIRECTIONS,
-  LOADING_BAR_SPEED
+  LOADING_BAR_SPEED_YES,
+  LOADING_BAR_SPEED_NO
 } from './constants';
 import CountdownTrialPlugin from './countdown';
 import ReleaseKeysPlugin from './release-keys';
@@ -87,7 +88,7 @@ export async function run({
     valid_responses: KEYS_TO_HOLD,
   };
 
-  const loadingBarTrial = {
+  const loadingBarTrial = (acceptance) => ({
     type: HtmlKeyboardResponsePlugin,
     stimulus: loadingBar,
     choices: 'NO_KEYS',
@@ -113,8 +114,8 @@ export async function run({
         let percentage = document.querySelector('.percentage');
         let percentageValue = +percentage.textContent;
         let progress = document.querySelector('.progress');
-
-        let increment = Math.ceil(Math.random() * LOADING_BAR_SPEED);
+        let increment;
+        acceptance ? increment = Math.ceil(Math.random() * LOADING_BAR_SPEED_YES): increment = Math.ceil(Math.random() * LOADING_BAR_SPEED_NO);
         let newPercentageValue = Math.min(percentageValue + increment, 100); // Ensure it does not exceed 100
         percentage.textContent = newPercentageValue;
         progress.setAttribute('style', `width:${newPercentageValue}%`);
@@ -124,7 +125,7 @@ export async function run({
 
       check_percentage();
     },
-  };
+  });
 
   // Countdown step with `key `release flag check
   const countdownStep = {
@@ -692,9 +693,14 @@ export async function run({
                 conditional_function: () => trialData.accepted,
               },
               {
-                timeline: [loadingBarTrial],
+                timeline: [loadingBarTrial(false)],
                 conditional_function: () => !trialData.accepted,
               },
+                {
+                  timeline: [loadingBarTrial(true)],
+                  conditional_function: () => trialData.accepted,
+
+                },
             ],
           })),
           sample: {

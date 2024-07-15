@@ -4,7 +4,8 @@ import fastCartesian from 'fast-cartesian';
 export const TRIAL_DURATION = 5000; // how long does a trial last (ms)
 export const GO_DURATION = 500; // how long does the "GO" screen last (ms)
 export const SUCCESS_SCREEN_DURATION = 500; // How long does the "SUCCESS" or "FAILURE" screen last (ms)
-export const LOADING_BAR_SPEED = 50; // How fast does the loading bar increment (between 2 and 50). Multiplied with a random number for design sake.
+export const LOADING_BAR_SPEED_NO = 50; // How fast does the loading bar increment (between 2 and 50) after the declines a trial. Multiplied with a random number for design sake.
+export const LOADING_BAR_SPEED_YES = 5; // How fast does the loading bar increment (between 2 and 50) after a user completes a trial. Multiplied with a random number for design sake.
 export const COUNTDOWN_TIME = 3 // how long the countdown is after "A", "W," and "E" are pressed before trial starts (s)
 export const AUTO_DECREASE_AMOUNT = 2;
 export const AUTO_DECREASE_RATE = 100; // how often do we decrease the thermometer (ms)

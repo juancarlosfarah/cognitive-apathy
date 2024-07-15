@@ -105,8 +105,13 @@ class TaskPlugin {
         startMessageElement.style.display = areKeysHeld ? 'block' : 'none';
       }
       if (!areKeysHeld) {
+
         setError(`${PREMATURE_KEY_RELEASE_ERROR_MESSAGE}`);
-        trial.keysReleasedFlag = true; // Set the flag
+        display_element.innerHTML = `
+          <div id="status" style="margin-top: 50px;">
+            <div id="error-message" style="color: red;">${PREMATURE_KEY_RELEASE_ERROR_MESSAGE}</div>
+          </div>
+        `;        trial.keysReleasedFlag = true; // Set the flag
         setTimeout(() => stopRunning(true), PREMATURE_KEY_RELEASE_ERROR_TIME);
       }
     };
