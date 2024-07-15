@@ -503,7 +503,8 @@ export async function run({
     ],
   };
 
-  let randomSkew = null;
+  let demoTrialSuccesses = 0;
+
   /**
    * @function createTrialBlock
    * @description Create a block of trials with optional demo, Likert questions, acceptance phase, and task performance phase
@@ -512,7 +513,6 @@ export async function run({
    * @param {Array} options.randomDelay - The delay range for the demo and block trials
    * @param {Array} options.bounds - The bounds for the thermometer task
    * @param {boolean} [options.includeDemo=false] - Whether to include the demo trials
-   * @param {number} [options.numDemoTrials=0] - Number of demo trials to include if includeDemo is true
    * @returns {Object} - jsPsych trial object
    */
   const createTrialBlock = ({
@@ -520,11 +520,12 @@ export async function run({
     randomDelay,
     bounds,
     includeDemo = false,
-    numDemoTrials = 0,
   }) => {
     const timeline = [];
-
+  
     if (includeDemo) {
+      demoTrialSuccesses = 0; // Reset demo successes before starting
+  
       timeline.push(
         // Alert before demo
         {
@@ -545,11 +546,9 @@ export async function run({
               randomDelay,
               bounds,
               autoIncreaseAmount: function () {
-                console.log();
                 return (
                   (EXPECTED_MAXIMUM_PERCENTAGE +
-                    (TRIAL_DURATION / AUTO_DECREASE_RATE) *
-                      AUTO_DECREASE_AMOUNT) /
+                    (TRIAL_DURATION / AUTO_DECREASE_RATE) * AUTO_DECREASE_AMOUNT) /
                   medianTaps
                 );
               },
@@ -557,6 +556,13 @@ export async function run({
                 task: 'demo',
                 randomDelay: randomDelay,
                 bounds: bounds,
+
+              },
+              on_finish: function (data) {
+                if (!data.keysReleasedFlag) {
+                  demoTrialSuccesses++;
+                  console.log(demoTrialSuccesses)
+                }
               },
             },
             {
@@ -566,8 +572,17 @@ export async function run({
                 return !lastTrialData.keysReleasedFlag;
               },
             },
+            {
+              timeline: [loadingBarTrial(true)]
+            }
           ],
-          repetitions: numDemoTrials,
+          loop_function: function () {
+            const remainingSuccesses = NUM_DEMO_TRIALS - demoTrialSuccesses;
+            if (remainingSuccesses > 0) {
+              return true; // Repeat the timeline if more successes are needed
+            }
+            return false;
+          },
         },
         // Likert scale survey after demo
         {
@@ -757,7 +772,6 @@ export async function run({
         randomDelay: [0, 0],
         bounds: [0, 0],
         includeDemo: true,
-        numDemoTrials: NUM_DEMO_TRIALS,
       }),
       createTrialBlock({ blockName: 'Synchronous Block', randomDelay: [0, 0] }),
       createRewardDisplayTrial(),
@@ -767,7 +781,6 @@ export async function run({
         randomDelay: [0, 0],
         bounds: [0, 0],
         includeDemo: true,
-        numDemoTrials: NUM_DEMO_TRIALS,
       }),
       createTrialBlock({ blockName: 'Synchronous Block', randomDelay: [0, 0] }),
       createRewardDisplayTrial(),
@@ -777,7 +790,6 @@ export async function run({
         randomDelay: [400, 600],
         bounds: [0, 0],
         includeDemo: true,
-        numDemoTrials: NUM_DEMO_TRIALS,
       }),
       createTrialBlock({
         blockName: 'Narrow Asynchronous Block',
@@ -790,7 +802,6 @@ export async function run({
         randomDelay: [400, 600],
         bounds: [0, 0],
         includeDemo: true,
-        numDemoTrials: NUM_DEMO_TRIALS,
       }),
       createTrialBlock({
         blockName: 'Narrow Asynchronous Block',
@@ -803,7 +814,6 @@ export async function run({
         randomDelay: [0, 1000],
         bounds: [0, 0],
         includeDemo: true,
-        numDemoTrials: NUM_DEMO_TRIALS,
       }),
       createTrialBlock({
         blockName: 'Wide Asynchronous Block',
@@ -816,7 +826,6 @@ export async function run({
         randomDelay: [0, 1000],
         bounds: [0, 0],
         includeDemo: true,
-        numDemoTrials: NUM_DEMO_TRIALS,
       }),
       createTrialBlock({
         blockName: 'Wide Asynchronous Block',

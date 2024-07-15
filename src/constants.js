@@ -40,7 +40,7 @@ export const NUM_CALIBRATION_TRIALS =
   NUM_CALIBRATION_WITH_FEEDBACK_TRIALS;
 export const NUM_VALIDATION_TRIALS = 1
 
-export const NUM_DEMO_TRIALS = 0
+export const NUM_DEMO_TRIALS = 2;
 
 
 
