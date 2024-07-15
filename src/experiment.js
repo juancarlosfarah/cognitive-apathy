@@ -556,26 +556,26 @@ const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo = false,
   return { timeline };
 };
 
+function calculateTotalReward() {
+  const blockTrials = jsPsych.data.get().filter({ task: 'block' }).values();
+  const successfulTrials = blockTrials.filter(trial => trial.success === true);
+  return successfulTrials.reduce((sum, trial) => sum + trial.reward, 0);
+}
+
 
 function createRewardDisplayTrial() {
   return {
     type: HtmlKeyboardResponsePlugin,
     choices: ['enter'],
     stimulus: function() {
-      const blockTrials = jsPsych.data.get().filter({ task: 'block' }).values();
-      console.log(blockTrials)
-      const successfulTrials = blockTrials.filter(trial => trial.success === true);
-      console.log(successfulTrials)
-      const totalSuccessfulReward = successfulTrials.reduce((sum, trial) => sum + trial.reward, 0);
+      const totalSuccessfulReward = calculateTotalReward();
       return `<p>The block has ended. Total reward for successful trials is: $${totalSuccessfulReward.toFixed(2)}. Press Enter to continue.</p>`;
     },
     data: {
       task: 'display_reward'
     },
     on_finish: function(data) {
-      const blockTrials = jsPsych.data.get().filter({ task: 'block' }).values();
-      const successfulTrials = blockTrials.filter(trial => trial.success === true);
-      const totalSuccessfulReward = successfulTrials.reduce((sum, trial) => sum + trial.reward, 0);
+      const totalSuccessfulReward = calculateTotalReward();
       data.totalReward = totalSuccessfulReward;
     }
   };
@@ -610,9 +610,7 @@ const finishExperiment = {
   type: HtmlKeyboardResponsePlugin,
   choices: ['enter'],
   stimulus: function() {
-    const blockTrials = jsPsych.data.get().filter({ task: 'block' }).values();
-    const successfulTrials = blockTrials.filter(trial => trial.success === true);
-    const totalSuccessfulReward = successfulTrials.reduce((sum, trial) => sum + trial.reward, 0);
+    const totalSuccessfulReward = calculateTotalReward();
     return `<p>The experiment has now ended. Total reward for successful trials is: $${totalSuccessfulReward.toFixed(4)}. Press Enter to finish and then please let the experimenter know.</p>`;
   },
   data: {
@@ -624,9 +622,7 @@ const finishExperiment = {
     blockTrialData = blockTrials;
   },
   on_finish: function(data) {
-    const blockTrials = jsPsych.data.get().filter({ task: 'block' }).values();
-    const successfulTrials = blockTrials.filter(trial => trial.success === true);
-    const totalSuccessfulReward = successfulTrials.reduce((sum, trial) => sum + trial.reward, 0);
+    const totalSuccessfulReward = calculateTotalReward();
     data.totalReward = totalSuccessfulReward;
 
     const allData = jsPsych.data.get().json();
