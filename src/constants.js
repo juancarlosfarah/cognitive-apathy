@@ -10,7 +10,7 @@ export const MAXIMUM_THERMOMETER_HEIGHT = 100; // maximum thermometer height (%)
 export const EXPECTED_MAXIMUM_PERCENTAGE = 100; // where should participants end up if they tap at their maximum rate
 export const EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION = 50; // where should participants end up if they tap at their maximum rate
 export const TARGET_OPTIONS = [50, 70, 90];
-export const REWARD_OPTIONS = [1, 10, 20];
+export const REWARD_OPTIONS = [.01, .10, .20];
 export const EASY_BOUNDS = [30,50]
 export const MEDIUM_BOUNDS = [50,70]
 export const HARD_BOUNDS = [70,90]
@@ -29,8 +29,8 @@ export const NUM_TRIALS = 63; // NUM_TRIALS_PER_BLOCK
 export const PARAMETER_COMBINATIONS_TOTAL = Math.floor(PARAMETER_COMBINATIONS * (NUM_TRIALS / PARAMETER_COMBINATIONS.length))
 //
 
-export const NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS = 3;
-export const NUM_CALIBRATION_WITH_FEEDBACK_TRIALS = 3;
+export const NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS = 1;
+export const NUM_CALIBRATION_WITH_FEEDBACK_TRIALS = 1;
 export const NUM_CALIBRATION_TRIALS =
   NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS +
   NUM_CALIBRATION_WITH_FEEDBACK_TRIALS;

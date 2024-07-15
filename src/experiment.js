@@ -82,7 +82,7 @@ export async function run({ assetPaths, input = {}, environment, title, version 
     valid_responses: KEYS_TO_HOLD,
   };
 
-  // Countdown step with key release flag check
+  // Countdown step with `key `release flag check
   const countdownStep = {
     type: CountdownTrialPlugin,
     keysReleasedFlag: function() {
@@ -453,18 +453,20 @@ const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo = false,
     let trials = PARAMETER_COMBINATIONS.flatMap(combination => 
       Array(numTrialsPerCombination).fill().map(() => ({
         reward: combination.reward,
-        success: false,
         randomDelay: randomDelay,
-        bounds: combination.bounds
+        bounds: combination.bounds,
       }))
     );
     //min is trials[i].reward - 10% and max is +10%
     // increase to .fixed(4)
     // change constants to actual rewards and remove /100
- 
-   for(let i = 0; i < trials.length; i++){
-      trials[i].reward = ((trials[i].reward + randomNumberBm(trials[i].reward,10))/100);
-    }
+    
+    for (let i = 0; i < trials.length; i++) {
+      let min = trials[i].reward - 0.1 * trials[i].reward;
+      let max = trials[i].reward + 0.1 * trials[i].reward;
+      trials[i].reward = randomNumberBm(min, max);
+  }
+  
 
     trials = jsPsych.randomization.shuffle(trials);
     timeline.push(
@@ -478,7 +480,7 @@ const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo = false,
                 // Generate the thermometer HTML with bounds from trialData
                 return `
                   ${acceptanceThermometer(trialData.bounds)}
-                  <p>Reward: $${trialData.reward.toFixed(2)}</p>
+                  <p>Reward: $${trialData.reward.toFixed(4)}</p>
                   <p>Do you accept the trial? (Arrow Left = Yes, Arrow Right = No)</p>
                 `;
               },
@@ -505,7 +507,7 @@ const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo = false,
                   bounds: trialData.bounds,
                   reward: trialData.reward,
                   on_start: function() {
-                    console.log(`Task Performance Phase reward: $${trialData.reward.toFixed(2)}`); // Logging reward in TaskPlugin step
+                    console.log(`Task Performance Phase reward: $${trialData.reward.toFixed(4)}`); // Logging reward in TaskPlugin step
                   },
                   autoIncreaseAmount: function() {
                     console.log()
@@ -517,7 +519,7 @@ const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo = false,
                     accept: () => {
                       var acceptanceData = jsPsych.data.get().filter({ task: 'accept' }).last(1).values()[0];
                       return acceptanceData ? acceptanceData.accepted : null;
-                    }
+                    },
                   } 
                 },
                 {
@@ -551,22 +553,6 @@ const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo = false,
   return { timeline };
 };
 
-// Store the block trial data once
-let blockTrialData = [];
-
-// Function to update block trial data
-function updateBlockTrialData() {
-  blockTrialData = jsPsych.data.get().filter({ task: 'block' }).values();
-}
-
-// Function to calculate total successful reward
-function calculateTotalSuccessfulReward() {
-  const successfulTrials = blockTrialData.filter(trial => trial.success === true);
-  const totalSuccessfulReward = successfulTrials.reduce((sum, trial) => sum + trial.reward, 0);
-  return totalSuccessfulReward;
-}
-
-
 
 function createRewardDisplayTrial() {
   return {
@@ -574,17 +560,14 @@ function createRewardDisplayTrial() {
     choices: ['enter'],
     stimulus: function() {
       const blockTrials = jsPsych.data.get().filter({ task: 'block' }).values();
+      console.log(blockTrials)
       const successfulTrials = blockTrials.filter(trial => trial.success === true);
+      console.log(successfulTrials)
       const totalSuccessfulReward = successfulTrials.reduce((sum, trial) => sum + trial.reward, 0);
       return `<p>The block has ended. Total reward for successful trials is: $${totalSuccessfulReward.toFixed(2)}. Press Enter to continue.</p>`;
     },
     data: {
       task: 'display_reward'
-    },
-    on_start: function() {
-      // Ensure block trial data is updated before calculating reward
-      const blockTrials = jsPsych.data.get().filter({ task: 'block' }).values();
-      blockTrialData = blockTrials;
     },
     on_finish: function(data) {
       const blockTrials = jsPsych.data.get().filter({ task: 'block' }).values();
@@ -594,6 +577,9 @@ function createRewardDisplayTrial() {
     }
   };
 }
+
+
+
 
 const trialsArray = [
   [createTrialBlock({ randomDelay: [0, 0], bounds: [0, 0], includeDemo: true, numDemoTrials: NUM_DEMO_TRIALS }), createTrialBlock({ blockName: 'Synchronous Block', randomDelay: [0, 0]}), createRewardDisplayTrial()],
@@ -624,7 +610,7 @@ const finishExperiment = {
     const blockTrials = jsPsych.data.get().filter({ task: 'block' }).values();
     const successfulTrials = blockTrials.filter(trial => trial.success === true);
     const totalSuccessfulReward = successfulTrials.reduce((sum, trial) => sum + trial.reward, 0);
-    return `<p>The experiment has now ended. Total reward for successful trials is: $${totalSuccessfulReward.toFixed(2)}. Press Enter to finish and then please let the experimenter know.</p>`;
+    return `<p>The experiment has now ended. Total reward for successful trials is: $${totalSuccessfulReward.toFixed(4)}. Press Enter to finish and then please let the experimenter know.</p>`;
   },
   data: {
     task: 'finish_experiment'

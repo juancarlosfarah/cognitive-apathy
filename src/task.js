@@ -46,7 +46,7 @@ class TaskPlugin {
       reward: {
         type: ParameterType.FLOAT,
         default: 0.5,
-      },
+      }
     },
   };
 
