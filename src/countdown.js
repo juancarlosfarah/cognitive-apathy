@@ -1,18 +1,23 @@
 import { ParameterType } from 'jspsych';
-import { COUNTDOWN_TIME, KEYS_TO_HOLD } from './constants';
+import { COUNTDOWN_TIME, KEYS_TO_HOLD, KEY_TO_PRESS, HOLD_KEYS_MESSAGE } from './constants';
 
 class CountdownTrialPlugin {
   static info = {
     name: 'countdown-trial',
     parameters: {
-      keys: {
+      keystoHold: {
         type: ParameterType.STRING,
         array: true,
         default: KEYS_TO_HOLD,
       },
+      keyToPress: {
+        type: ParameterType.STRING,
+        array: false,
+        default: KEY_TO_PRESS,
+      },
       message: {
         type: ParameterType.HTML_STRING,
-        default: '<p>Hold the <b>A</b>, <b>W</b>, and <b>E</b> keys!</p>',
+        default: HOLD_KEYS_MESSAGE,
       },
       waitTime: {
         type: ParameterType.INT,
@@ -26,7 +31,7 @@ class CountdownTrialPlugin {
         type: ParameterType.BOOL,
         default: true,
       },
-      keysReleasedFlag: {
+      keyTappedEarlyFlag: {
         type: ParameterType.BOOL,
         default: false,
       },
@@ -39,13 +44,13 @@ class CountdownTrialPlugin {
 
   trial(displayElement, trial) {
     let keysState = {};
-    (trial.keys || []).forEach(key => keysState[key] = false);
+    (trial.keystoHold || []).forEach(key => keysState[key.toLowerCase()] = false);
 
     let areKeysHeld = false;
     let interval = null;
 
     const setAreKeysHeld = () => {
-      areKeysHeld = (trial.keys || []).every(key => keysState[key]);
+      areKeysHeld = (trial.keystoHold || []).every(key => keysState[key.toLowerCase()]);
       if (areKeysHeld && !interval) {
         startCountdown();
       } else if (!areKeysHeld && interval) {
@@ -57,15 +62,20 @@ class CountdownTrialPlugin {
     };
 
     const handleKeyDown = (event) => {
-      if ((trial.keys || []).includes(event.key.toLowerCase())) {
-        keysState[event.key.toLowerCase()] = true;
+      const key = event.key.toLowerCase();
+      if ((trial.keystoHold || []).includes(key)) {
+        keysState[key] = true;
         setAreKeysHeld();
+      }
+      if (key === trial.keyToPress.toLowerCase()) {
+        trial.keyTappedEarlyFlag = true;
       }
     };
 
     const handleKeyUp = (event) => {
-      if ((trial.keys || []).includes(event.key.toLowerCase())) {
-        keysState[event.key.toLowerCase()] = false;
+      const key = event.key.toLowerCase();
+      if ((trial.keystoHold || []).includes(key)) {
+        keysState[key] = false;
         setAreKeysHeld();
       }
     };
@@ -104,6 +114,7 @@ class CountdownTrialPlugin {
 
       const trial_data = {
         keys_held: areKeysHeld,
+        keyTappedEarlyFlag: trial.keyTappedEarlyFlag
       };
 
       displayElement.innerHTML = '';
@@ -114,13 +125,11 @@ class CountdownTrialPlugin {
       console.error(message);
     };
 
-
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
 
     // Initial UI setup
     displayElement.innerHTML = trial.message;
-
   }
 }
 

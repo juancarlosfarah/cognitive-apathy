@@ -147,6 +147,12 @@ export async function run({
     timeline: [
       {
         type: CountdownTrialPlugin,
+        data: {
+          task: 'countdown'
+        },
+        on_finish: function (data) {
+          console.log(data.keyTappedEarlyFlag)
+        }
       },
       {
         type: HtmlKeyboardResponsePlugin,
@@ -248,61 +254,72 @@ export async function run({
     bounds,
     repetitions,
     calibrationPart,
-  ) => ({
-    timeline: [
-      countdownStep,
-      {
-        type: TaskPlugin,
-        duration: TRIAL_DURATION,
-        showThermometer,
-        bounds,
-        autoIncreaseAmount: function () {
-          return (
-            (EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION +
-              (TRIAL_DURATION / AUTO_DECREASE_RATE) * AUTO_DECREASE_AMOUNT) /
-            medianTaps
-          );
-        },
-        data: {
-          task: calibrationPart,
+  ) => {
+    // Get the last countdown trial data, if it exists
+    return {
+      timeline: [
+        countdownStep,
+        {
+          type: TaskPlugin,
+          duration: TRIAL_DURATION,
           showThermometer,
           bounds,
+          autoIncreaseAmount: function () {
+            return (
+              (EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION +
+                (TRIAL_DURATION / AUTO_DECREASE_RATE) * AUTO_DECREASE_AMOUNT) /
+              medianTaps
+            );
+          },
+          data: {
+            task: calibrationPart,
+            showThermometer,
+            bounds,
+          },
+          on_start: function (trial) {
+            const lastCountdownData = jsPsych.data.get().filter({ task: 'countdown' }).last(1).values()[0];
+            const keyTappedEarlyFlag = lastCountdownData ? lastCountdownData.keyTappedEarlyFlag : false;
+    
+            // Update the trial parameters with keyTappedEarlyFlag
+            trial.keyTappedEarlyFlag = keyTappedEarlyFlag;
+          },
+          on_finish: function (data) {
+            if (!data.keysReleasedFlag && !data.keyTappedEarlyFlag) {
+              calibrationPart === 'calibrationPart1'
+                ? calibrationPart1Successes++
+                : calibrationPart2Successes++;
+            }
+          },
         },
-        on_finish: function (data) {
-          if (!data.keysReleasedFlag) {
-            calibrationPart === 'calibrationPart1'
-              ? calibrationPart1Successes++
-              : calibrationPart2Successes++;
-          }
+        {
+          timeline: [releaseKeysStep],
+          conditional_function: function () {
+            const lastTrialData = jsPsych.data.get().filter({ task: calibrationPart }).last(1).values()[0];
+            return lastTrialData ? !lastTrialData.keysReleasedFlag : true;
+          },
         },
-      },
-      {
-        timeline: [releaseKeysStep],
-        conditional_function: function () {
-          const lastTrialData = jsPsych.data.get().last(1).values()[0]; // Get all trials once
-          return !lastTrialData.keysReleasedFlag;
+        {
+          timeline: [loadingBarTrial(true)]
         },
+      ],
+      repetitions: repetitions,
+      loop_function: function () {
+        const requiredSuccesses =
+          calibrationPart === 'calibrationPart1'
+            ? NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS
+            : NUM_CALIBRATION_WITH_FEEDBACK_TRIALS;
+  
+        const currentSuccesses =
+          calibrationPart === 'calibrationPart1'
+            ? calibrationPart1Successes
+            : calibrationPart2Successes;
+  
+        const remainingSuccesses = requiredSuccesses - currentSuccesses;
+        return remainingSuccesses > 0; // Repeat the timeline if more successes are needed
       },
-      {
-      timeline: [loadingBarTrial(true)]
-      },
-    ],
-    repetitions: repetitions,
-    loop_function: function () {
-      const requiredSuccesses =
-        calibrationPart === 'calibrationPart1'
-          ? NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS
-          : NUM_CALIBRATION_WITH_FEEDBACK_TRIALS;
-
-      const currentSuccesses =
-        calibrationPart === 'calibrationPart1'
-          ? calibrationPart1Successes
-          : calibrationPart2Successes;
-
-      const remainingSuccesses = requiredSuccesses - currentSuccesses;
-      return remainingSuccesses > 0; // Repeat the timeline if more successes are needed
-    },
-  });
+    };
+  };
+  
 
   /**
    * @function validationTrials
@@ -314,6 +331,7 @@ export async function run({
   const validationTrials = (bounds, difficultyLevel) => ({
     timeline: [
       countdownStep,
+      
       {
         type: TaskPlugin,
         duration: TRIAL_DURATION,

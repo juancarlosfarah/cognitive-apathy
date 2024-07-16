@@ -52,6 +52,7 @@ export const MINIMUM_DEMO_TAPS = 4;
 export const KEYS_TO_HOLD = ['a', 'w', 'e']
 export const KEY_TO_PRESS = 'r'
 export const PREMATURE_KEY_RELEASE_ERROR_TIME = 1000
+export const KEY_TAPPED_EARLY_ERROR_TIME = 3000
 export const FAILED_MINIMUM_DEMO_TAPS_DURATION = 1000 // How long the error appears on the screen when minimum taps was not reached (ms)
 
 //Messsages 
@@ -64,5 +65,7 @@ export const VALIDATION_DIRECTIONS = 'INSERT VALIDATION DIRECTIONS HERE'
 export const PREMATURE_KEY_RELEASE_ERROR_MESSAGE = 'You released the keys early!'
 export const LIKERT_PREAMBLE = 'Please answer the question below.'
 export const FAILED_MINIMUM_DEMO_TAPS_MESSAGE = 'You did not tap enough during the last practice trial. Please try again.'
+export const HOLD_KEYS_MESSAGE = `<p>Hold the <b>${KEYS_TO_HOLD[0].toUpperCase()}</b>, <b>${KEYS_TO_HOLD[1].toUpperCase()}</b>, and <b>${KEYS_TO_HOLD[2].toUpperCase()}</b> keys!</p>`
+export const KEY_TAPPED_EARLY_MESSAGE = "Key was tapped too early. Please wait for the appropriate time to press the key.";
 
 

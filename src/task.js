@@ -1,6 +1,6 @@
 import { ParameterType } from 'jspsych';
 import { stimulus } from './stimulus';
-import { BOUND_OPTIONS, PREMATURE_KEY_RELEASE_ERROR_TIME, PREMATURE_KEY_RELEASE_ERROR_MESSAGE, KEYS_TO_HOLD, KEY_TO_PRESS, AUTO_DECREASE_AMOUNT, AUTO_DECREASE_RATE } from './constants';
+import { BOUND_OPTIONS, PREMATURE_KEY_RELEASE_ERROR_TIME, PREMATURE_KEY_RELEASE_ERROR_MESSAGE, KEYS_TO_HOLD, KEY_TO_PRESS, AUTO_DECREASE_AMOUNT, AUTO_DECREASE_RATE, KEY_TAPPED_EARLY_MESSAGE, KEY_TAPPED_EARLY_ERROR_TIME} from './constants';
 
 class TaskPlugin {
   static info = {
@@ -47,6 +47,10 @@ class TaskPlugin {
         type: ParameterType.FLOAT,
         default: 0.5,
       },
+      keyTappedEarlyFlag: {
+        type: ParameterType.BOOL,
+        default: false
+      }
     },
   };
 
@@ -69,10 +73,7 @@ class TaskPlugin {
     let trialEnded = false; // Flag to prevent multiple endings
     let mainBlock = false;
 
-    const increaseMercury = (amount = trial.autoIncreaseAmount) => {
-      this.mercuryHeight = Math.min(this.mercuryHeight + amount, 100);
-      updateUI();
-    };
+
 
     const getRandomDelay = () => {
       const [min, max] = trial.randomDelay;
@@ -116,6 +117,11 @@ class TaskPlugin {
       }
     };
 
+    const increaseMercury = (amount = trial.autoIncreaseAmount) => {
+      this.mercuryHeight = Math.min(this.mercuryHeight + amount, 100);
+      updateUI();
+    };
+    
     const handleKeyDown = (event) => {
       const key = event.key.toLowerCase();
       if (KEYS_TO_HOLD.includes(key)) {
@@ -195,8 +201,30 @@ class TaskPlugin {
 
     // Was trial successful 
     const isSuccess = () => {
-      return this.mercuryHeight >= trial.bounds[0] && this.mercuryHeight <= trial.bounds[1] && !trial.keysReleasedFlag;
+      return this.mercuryHeight >= trial.bounds[0] && this.mercuryHeight <= trial.bounds[1] && !trial.keysReleasedFlag & !trial.keyTappedEarlyFlag;
     };
+
+    if (trial.keyTappedEarlyFlag) {
+
+      // Clear the DOM
+      display_element.innerHTML = `
+        <div id="status" style="margin-top: 50px;">
+          <div id="error-message" style="color: red;">${KEY_TAPPED_EARLY_MESSAGE}</div>
+        </div>
+      `;
+
+      // Set a timeout to end the trial after showing the error message
+      setTimeout(() => {
+        this.jsPsych.finishTrial({
+          task: trial.taskType,
+          keyTappedEarlyFlag: true,
+          keysReleasedFlag: false,
+          success: isSuccess()
+        });
+      }, KEY_TAPPED_EARLY_ERROR_TIME);
+      
+      return;
+    }
 
     display_element.innerHTML = stimulus(
       trial.showThermometer,
@@ -225,7 +253,8 @@ class TaskPlugin {
         task: trial.task,
         errorOccurred,
         keysReleasedFlag: trial.keysReleasedFlag,
-        success: isSuccess()
+        success: isSuccess(),
+        keyTappedEarlyFlag: false,
       };
 
       this.jsPsych.finishTrial(trial_data); // Use this.jsPsych
