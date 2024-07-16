@@ -11,7 +11,7 @@ import PreloadPlugin from '@jspsych/plugin-preload';
 import surveyLikert from '@jspsych/plugin-survey-likert';
 import { saveAs } from 'file-saver';
 import { initJsPsych } from 'jspsych';
-
+import { likertQuestions1, likertQuestions2} from './likert';
 import '../styles/main.scss';
 import {
   AUTO_DECREASE_AMOUNT,
@@ -37,7 +37,8 @@ import {
   TRIAL_DURATION,
   VALIDATION_DIRECTIONS,
   LOADING_BAR_SPEED_YES,
-  LOADING_BAR_SPEED_NO
+  LOADING_BAR_SPEED_NO,
+  LIKERT_PREAMBLE
 } from './constants';
 import CountdownTrialPlugin from './countdown';
 import ReleaseKeysPlugin from './release-keys';
@@ -445,42 +446,10 @@ export async function run({
   timeline.push(extraValidationNode);
   timeline.push(validationSucesss); */
 
-  // Placeholder Likert scale questions after demo
-  const likertQuestions = [
-    {
-      prompt: 'Placeholder question 1',
-      labels: [
-        'Strongly Disagree',
-        'Disagree',
-        'Neutral',
-        'Agree',
-        'Strongly Agree',
-      ],
-      name: 'Q1',
-    },
-    {
-      prompt: 'Placeholder question 2',
-      labels: [
-        'Strongly Disagree',
-        'Disagree',
-        'Neutral',
-        'Agree',
-        'Strongly Agree',
-      ],
-      name: 'Q2',
-    },
-    {
-      prompt: 'Placeholder question 3',
-      labels: [
-        'Strongly Disagree',
-        'Disagree',
-        'Neutral',
-        'Agree',
-        'Strongly Agree',
-      ],
-      name: 'Q3',
-    },
-  ];
+
+
+
+
 
   const successScreen = {
     timeline: [
@@ -585,14 +554,7 @@ export async function run({
           },
         },
         // Likert scale survey after demo
-        {
-          type: surveyLikert,
-          questions: likertQuestions,
-          randomize_question_order: false,
-          preamble:
-            '<p>Please answer the following questions about the demo trial.</p>',
-          button_label: 'Continue',
-        },
+        ...likertQuestions1
       );
     }
 
@@ -631,9 +593,7 @@ export async function run({
                 stimulus: function () {
                   // Generate the thermometer HTML with bounds from trialData
                   return `
-                  ${acceptanceThermometer(trialData.bounds)}
-                  <p>Reward: $${trialData.reward.toFixed(4)}</p>
-                  <p>Do you accept the trial? (Arrow Left = Yes, Arrow Right = No)</p>
+                  ${acceptanceThermometer(trialData.bounds,trialData.reward.toFixed(4))}
                 `;
                 },
                 choices: ['arrowleft', 'arrowright'],
@@ -724,14 +684,7 @@ export async function run({
           },
         },
         // Likert scale survey after block
-        {
-          type: surveyLikert,
-          questions: likertQuestions,
-          randomize_question_order: false,
-          preamble:
-            '<p>Please answer the following questions about the block.</p>',
-          button_label: 'Continue',
-        },
+        ...likertQuestions2
       );
     }
 
