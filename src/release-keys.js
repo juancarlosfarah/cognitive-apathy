@@ -34,7 +34,10 @@ class ReleaseKeysPlugin {
   }
 
   trial(display_element, trial) {
-    let keysState = { a: false, w: false, e: false };
+    let keysState = {};
+    trial.valid_responses.forEach(key => {
+      keysState[key.toLowerCase()] = false;
+    });
     let errorOccurred = false;
 
     // Display the stimulus
@@ -42,23 +45,23 @@ class ReleaseKeysPlugin {
 
     // Handle key up events
     const handleKeyUp = (event) => {
-      if (KEYS_TO_HOLD.includes(event.key.toLowerCase())) {
-        keysState[event.key.toLowerCase()] = true;
-        setAreKeysHeld();
+      if (trial.valid_responses.includes(event.key.toLowerCase())) {
+        keysState[event.key.toLowerCase()] = false;
+        checkIfAllKeysReleased();
       }
     };
 
     // Handle key down events
     const handleKeyDown = (event) => {
-      if (KEYS_TO_HOLD.includes(event.key.toLowerCase())) {
-        keysState[event.key.toLowerCase()] = false;
+      if (trial.valid_responses.includes(event.key.toLowerCase())) {
+        keysState[event.key.toLowerCase()] = true;
       }
     };
 
     // Check if all specified keys are released
-    const setAreKeysHeld = () => {
-      const areKeysHeld = keysState.a || keysState.w || keysState.e;
-      if (areKeysHeld) {
+    const checkIfAllKeysReleased = () => {
+      const allReleased = !Object.values(keysState).includes(true);
+      if (allReleased) {
         endTrial();
       }
     };

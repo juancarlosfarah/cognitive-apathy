@@ -41,7 +41,8 @@ import {
   VALIDATION_DIRECTIONS,
   MINIMUM_DEMO_TAPS,
   FAILED_MINIMUM_DEMO_TAPS_MESSAGE,
-  FAILED_MINIMUM_DEMO_TAPS_DURATION
+  FAILED_MINIMUM_DEMO_TAPS_DURATION,
+  CALIBRATION_FINISHED_DIRECTIONS
 } from './constants';
 import CountdownTrialPlugin from './countdown';
 import { likertQuestions1, likertQuestions2 } from './likert';
@@ -282,6 +283,9 @@ export async function run({
           return !lastTrialData.keysReleasedFlag;
         },
       },
+      {
+      timeline: [loadingBarTrial(true)]
+      },
     ],
     repetitions: repetitions,
     loop_function: function () {
@@ -438,7 +442,7 @@ export async function run({
   );
   timeline.push(
     calculateTapsStep(
-      CALIBRATION_PART_2_DIRECTIONS,
+      CALIBRATION_FINISHED_DIRECTIONS,
       'calibrationPart2',
       NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
     ),

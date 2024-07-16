@@ -59,6 +59,7 @@ export const PASSED_VALIDATION_MESSAGE = 'Congratulations! You passed the extra 
 export const FAILED_VALIDATION_MESSAGE = 'You did not pass the extra validation trials. Experiment now ending.'
 export const CALIBRATION_PART_1_DIRECTIONS = 'INSERT CALIBRATION PART 1 DIRECTIONS HERE'
 export const CALIBRATION_PART_2_DIRECTIONS = 'INSERT CALIBRATION PART 2 DIRECTIONS HERE'
+export const CALIBRATION_FINISHED_DIRECTIONS = 'You have finished the first set of trials... INSERT MORE HERE'
 export const VALIDATION_DIRECTIONS = 'INSERT VALIDATION DIRECTIONS HERE'
 export const PREMATURE_KEY_RELEASE_ERROR_MESSAGE = 'You released the keys early!'
 export const LIKERT_PREAMBLE = 'Please answer the question below.'
