@@ -45,15 +45,14 @@ export const NUM_CALIBRATION_TRIALS =
 export const NUM_VALIDATION_TRIALS = 1
 
 export const NUM_DEMO_TRIALS = 1;
-
+export const MINIMUM_DEMO_TAPS = 4;
 
 
 
 export const KEYS_TO_HOLD = ['a', 'w', 'e']
 export const KEY_TO_PRESS = 'r'
 export const PREMATURE_KEY_RELEASE_ERROR_TIME = 1000
-export const RELEASE_KEYS_STIMULUS_DURATION = 2000;
-export const RELEASE_KEYS_TRIAL_DURATION = 3000; // should be 30000
+export const FAILED_MINIMUM_DEMO_TAPS_DURATION = 1000 // How long the error appears on the screen when minimum taps was not reached (ms)
 
 //Messsages 
 export const PASSED_VALIDATION_MESSAGE = 'Congratulations! You passed the extra validation trials.'
@@ -63,5 +62,6 @@ export const CALIBRATION_PART_2_DIRECTIONS = 'INSERT CALIBRATION PART 2 DIRECTIO
 export const VALIDATION_DIRECTIONS = 'INSERT VALIDATION DIRECTIONS HERE'
 export const PREMATURE_KEY_RELEASE_ERROR_MESSAGE = 'You released the keys early!'
 export const LIKERT_PREAMBLE = 'Please answer the question below.'
+export const FAILED_MINIMUM_DEMO_TAPS_MESSAGE = 'You did not tap enough during the last practice trial. Please try again.'
 
 

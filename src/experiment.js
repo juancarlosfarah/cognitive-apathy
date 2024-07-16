@@ -39,6 +39,9 @@ import {
   SUCCESS_SCREEN_DURATION,
   TRIAL_DURATION,
   VALIDATION_DIRECTIONS,
+  MINIMUM_DEMO_TAPS,
+  FAILED_MINIMUM_DEMO_TAPS_MESSAGE,
+  FAILED_MINIMUM_DEMO_TAPS_DURATION
 } from './constants';
 import CountdownTrialPlugin from './countdown';
 import { likertQuestions1, likertQuestions2 } from './likert';
@@ -130,6 +133,13 @@ export async function run({
       check_percentage();
     },
   });
+
+  const failedMinimumDemoTapsTrial = {
+    type: HtmlKeyboardResponsePlugin,
+    stimulus: `<p style="color: red;">${FAILED_MINIMUM_DEMO_TAPS_MESSAGE}</p>`,
+    choices: ['NO_KEYS'],
+    trial_duration: FAILED_MINIMUM_DEMO_TAPS_DURATION
+  };
 
   // Countdown step with `key `release flag check
   const countdownStep = {
@@ -268,8 +278,7 @@ export async function run({
       {
         timeline: [releaseKeysStep],
         conditional_function: function () {
-          const allTrials = jsPsych.data.get().values(); // Get all trials once
-          const lastTrialData = allTrials.slice(-1)[0]; // Use the stored trials data
+          const lastTrialData = jsPsych.data.get().last(1).values()[0]; // Get all trials once
           return !lastTrialData.keysReleasedFlag;
         },
       },
@@ -517,12 +526,18 @@ export async function run({
                 task: 'demo',
                 randomDelay: randomDelay,
                 bounds: bounds,
+                minimumTapsReached: false,
               },
               on_finish: function (data) {
-                if (!data.keysReleasedFlag) {
+                //check if minimum taps was reached
+                if (data.tapCount > MINIMUM_DEMO_TAPS){
+                  data.minimumTapsReached = true
+                } 
+                //
+                if (!data.keysReleasedFlag && data.minimumTapsReached) {
                   demoTrialSuccesses++;
-                  console.log(demoTrialSuccesses);
                 }
+ 
               },
             },
             {
@@ -530,6 +545,15 @@ export async function run({
               conditional_function: function () {
                 const lastTrialData = jsPsych.data.get().last(1).values()[0];
                 return !lastTrialData.keysReleasedFlag;
+              },
+            },
+            {
+              timeline: [failedMinimumDemoTapsTrial],
+              //Check if minimum taps was reached in last trial to determine whether 'failedMinimumDemoTapsTrial' should display
+              conditional_function: function () {
+                const lastTrialData = jsPsych.data.get().filter({ task: 'demo' }).last(1).values()[0]
+                console.log(lastTrialData)
+                return !lastTrialData.minimumTapsReached;
               },
             },
             {
@@ -563,11 +587,6 @@ export async function run({
             bounds: combination.bounds,
           })),
       );
-      console.log('Generated Trials:');
-      trials.forEach((trial, index) => {
-      console.log(`Trial ${index + 1}: Reward - ${trial.reward}, RandomDelay - ${trial.randomDelay}, Bounds - ${trial.bounds}`);
-      });
-
 
 /*       for (let i = 0; i < trials.length; i++) {
         let min = trials[i].reward - 0.1 * trials[i].reward;
