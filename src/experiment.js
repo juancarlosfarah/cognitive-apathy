@@ -513,10 +513,10 @@ export async function run({
     includeDemo = false,
   }) => {
     const timeline = [];
-
+  
     if (includeDemo) {
       demoTrialSuccesses = 0; // Reset demo successes before starting
-
+  
       timeline.push(
         // Alert before demo
         {
@@ -550,16 +550,20 @@ export async function run({
                 bounds: bounds,
                 minimumTapsReached: false,
               },
+              on_start: function (trial) {
+                const lastCountdownData = jsPsych.data.get().filter({ task: 'countdown' }).last(1).values()[0];
+                const keyTappedEarlyFlag = lastCountdownData ? lastCountdownData.keyTappedEarlyFlag : false;
+                // Update the trial parameters with keyTappedEarlyFlag
+                trial.keyTappedEarlyFlag = keyTappedEarlyFlag;
+              },
               on_finish: function (data) {
-                //check if minimum taps was reached
+                // Check if minimum taps was reached
                 if (data.tapCount > MINIMUM_DEMO_TAPS){
-                  data.minimumTapsReached = true
-                } 
-                //
+                  data.minimumTapsReached = true;
+                }
                 if (!data.keysReleasedFlag && data.minimumTapsReached) {
                   demoTrialSuccesses++;
                 }
- 
               },
             },
             {
@@ -571,10 +575,9 @@ export async function run({
             },
             {
               timeline: [failedMinimumDemoTapsTrial],
-              //Check if minimum taps was reached in last trial to determine whether 'failedMinimumDemoTapsTrial' should display
+              // Check if minimum taps was reached in last trial to determine whether 'failedMinimumDemoTapsTrial' should display
               conditional_function: function () {
-                const lastTrialData = jsPsych.data.get().filter({ task: 'demo' }).last(1).values()[0]
-                console.log(lastTrialData)
+                const lastTrialData = jsPsych.data.get().filter({ task: 'demo' }).last(1).values()[0];
                 return !lastTrialData.minimumTapsReached;
               },
             },
@@ -584,10 +587,7 @@ export async function run({
           ],
           loop_function: function () {
             const remainingSuccesses = NUM_DEMO_TRIALS - demoTrialSuccesses;
-            if (remainingSuccesses > 0) {
-              return true; // Repeat the timeline if more successes are needed
-            }
-            return false;
+            return remainingSuccesses > 0; // Repeat the timeline if more successes are needed
           },
         },
         // Likert scale survey after demo
@@ -595,11 +595,18 @@ export async function run({
       );
     }
 
+  /*       for (let i = 0; i < trials.length; i++) {
+        let min = trials[i].reward - 0.1 * trials[i].reward;
+        let max = trials[i].reward + 0.1 * trials[i].reward;
+        trials[i].reward = randomNumberBm(min, max);
+      } */
+
+      
     if (blockName) {
       const numTrialsPerCombination = Math.floor(
         NUM_TRIALS / PARAMETER_COMBINATIONS.length,
       );
-
+  
       let trials = PARAMETER_COMBINATIONS.flatMap((combination) =>
         Array(numTrialsPerCombination)
           .fill()
@@ -609,13 +616,7 @@ export async function run({
             bounds: combination.bounds,
           })),
       );
-
-/*       for (let i = 0; i < trials.length; i++) {
-        let min = trials[i].reward - 0.1 * trials[i].reward;
-        let max = trials[i].reward + 0.1 * trials[i].reward;
-        trials[i].reward = randomNumberBm(min, max);
-      } */
-
+  
       trials = jsPsych.randomization.shuffle(trials);
       timeline.push(
         {
@@ -625,17 +626,13 @@ export async function run({
               {
                 type: HtmlKeyboardResponsePlugin,
                 stimulus: function () {
-                  // Generate the thermometer HTML with bounds from trialData
-                  return `
-                  ${acceptanceThermometer(trialData.bounds, trialData.reward)}
-                `;
+                  return `${acceptanceThermometer(trialData.bounds, trialData.reward)}`;
                 },
                 choices: ['arrowleft', 'arrowright'],
                 data: {
                   task: 'accept',
                   reward: trialData.reward,
                 },
-
                 on_finish: (data) => {
                   data.accepted = jsPsych.pluginAPI.compareKeys(
                     data.response,
@@ -655,13 +652,7 @@ export async function run({
                     randomDelay: trialData.randomDelay,
                     bounds: trialData.bounds,
                     reward: trialData.reward,
-                    on_start: function () {
-                      console.log(
-                        `Task Performance Phase reward: $${trialData.reward}`,
-                      ); // Logging reward in TaskPlugin step
-                    },
                     autoIncreaseAmount: function () {
-                      console.log();
                       return (
                         (EXPECTED_MAXIMUM_PERCENTAGE +
                           (TRIAL_DURATION / AUTO_DECREASE_RATE) *
@@ -680,6 +671,12 @@ export async function run({
                           .values()[0];
                         return acceptanceData ? acceptanceData.accepted : null;
                       },
+                    },
+                    on_start: function (trial) {
+                      const lastCountdownData = jsPsych.data.get().filter({ task: 'countdown' }).last(1).values()[0];
+                      const keyTappedEarlyFlag = lastCountdownData ? lastCountdownData.keyTappedEarlyFlag : false;
+                      // Update the trial parameters with keyTappedEarlyFlag
+                      trial.keyTappedEarlyFlag = keyTappedEarlyFlag;
                     },
                     on_finish: function (data) {
                       console.log(data);
@@ -720,9 +717,10 @@ export async function run({
         ...likertQuestions2,
       );
     }
-
+  
     return { timeline };
   };
+  
 
   function calculateTotalReward(allTrials) {
     const blockTrials = allTrials.filter((trial) => trial.task === 'block');
