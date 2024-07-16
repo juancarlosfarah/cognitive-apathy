@@ -11,7 +11,7 @@ import PreloadPlugin from '@jspsych/plugin-preload';
 import surveyLikert from '@jspsych/plugin-survey-likert';
 import { saveAs } from 'file-saver';
 import { initJsPsych } from 'jspsych';
-import { likertQuestions1, likertQuestions2} from './likert';
+
 import '../styles/main.scss';
 import {
   AUTO_DECREASE_AMOUNT,
@@ -26,6 +26,9 @@ import {
   GO_DURATION,
   HARD_BOUNDS,
   KEYS_TO_HOLD,
+  LIKERT_PREAMBLE,
+  LOADING_BAR_SPEED_NO,
+  LOADING_BAR_SPEED_YES,
   MEDIUM_BOUNDS,
   NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
   NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
@@ -36,11 +39,9 @@ import {
   SUCCESS_SCREEN_DURATION,
   TRIAL_DURATION,
   VALIDATION_DIRECTIONS,
-  LOADING_BAR_SPEED_YES,
-  LOADING_BAR_SPEED_NO,
-  LIKERT_PREAMBLE
 } from './constants';
 import CountdownTrialPlugin from './countdown';
+import { likertQuestions1, likertQuestions2 } from './likert';
 import ReleaseKeysPlugin from './release-keys';
 import {
   acceptanceThermometer,
@@ -116,7 +117,9 @@ export async function run({
         let percentageValue = +percentage.textContent;
         let progress = document.querySelector('.progress');
         let increment;
-        acceptance ? increment = Math.ceil(Math.random() * LOADING_BAR_SPEED_YES): increment = Math.ceil(Math.random() * LOADING_BAR_SPEED_NO);
+        acceptance
+          ? (increment = Math.ceil(Math.random() * LOADING_BAR_SPEED_YES))
+          : (increment = Math.ceil(Math.random() * LOADING_BAR_SPEED_NO));
         let newPercentageValue = Math.min(percentageValue + increment, 100); // Ensure it does not exceed 100
         percentage.textContent = newPercentageValue;
         progress.setAttribute('style', `width:${newPercentageValue}%`);
@@ -225,14 +228,7 @@ export async function run({
     };
   };
 
-  const incrementCalibrationPart1Successes = () => {
-    calibrationPart1Successes++;
-  };
-  const incrementCalibrationPart2Successes = () => {
-    calibrationPart2Successes++;
-  };
-  const getCalibrationPart1Successes = () => calibrationPart1Successes;
-  const getCalibrationPart2Successes = () => calibrationPart2Successes;
+
   let calibrationPart1Successes = 0;
   let calibrationPart2Successes = 0;
 
@@ -446,11 +442,6 @@ export async function run({
   timeline.push(extraValidationNode);
   timeline.push(validationSucesss); */
 
-
-
-
-
-
   const successScreen = {
     timeline: [
       {
@@ -491,10 +482,10 @@ export async function run({
     includeDemo = false,
   }) => {
     const timeline = [];
-  
+
     if (includeDemo) {
       demoTrialSuccesses = 0; // Reset demo successes before starting
-  
+
       timeline.push(
         // Alert before demo
         {
@@ -517,7 +508,8 @@ export async function run({
               autoIncreaseAmount: function () {
                 return (
                   (EXPECTED_MAXIMUM_PERCENTAGE +
-                    (TRIAL_DURATION / AUTO_DECREASE_RATE) * AUTO_DECREASE_AMOUNT) /
+                    (TRIAL_DURATION / AUTO_DECREASE_RATE) *
+                      AUTO_DECREASE_AMOUNT) /
                   medianTaps
                 );
               },
@@ -525,12 +517,11 @@ export async function run({
                 task: 'demo',
                 randomDelay: randomDelay,
                 bounds: bounds,
-
               },
               on_finish: function (data) {
                 if (!data.keysReleasedFlag) {
                   demoTrialSuccesses++;
-                  console.log(demoTrialSuccesses)
+                  console.log(demoTrialSuccesses);
                 }
               },
             },
@@ -542,8 +533,8 @@ export async function run({
               },
             },
             {
-              timeline: [loadingBarTrial(true)]
-            }
+              timeline: [loadingBarTrial(true)],
+            },
           ],
           loop_function: function () {
             const remainingSuccesses = NUM_DEMO_TRIALS - demoTrialSuccesses;
@@ -554,7 +545,7 @@ export async function run({
           },
         },
         // Likert scale survey after demo
-        ...likertQuestions1
+        ...likertQuestions1,
       );
     }
 
@@ -567,20 +558,22 @@ export async function run({
         Array(numTrialsPerCombination)
           .fill()
           .map(() => ({
-            reward: combination.reward,
+            reward: jsPsych.randomization.sampleWithReplacement(combination.reward,1)[0],
             randomDelay: randomDelay,
             bounds: combination.bounds,
           })),
       );
-      //min is trials[i].reward - 10% and max is +10%
-      // increase to .fixed(4)
-      // change constants to actual rewards and remove /100
+      console.log('Generated Trials:');
+      trials.forEach((trial, index) => {
+      console.log(`Trial ${index + 1}: Reward - ${trial.reward}, RandomDelay - ${trial.randomDelay}, Bounds - ${trial.bounds}`);
+      });
 
-      for (let i = 0; i < trials.length; i++) {
+
+/*       for (let i = 0; i < trials.length; i++) {
         let min = trials[i].reward - 0.1 * trials[i].reward;
         let max = trials[i].reward + 0.1 * trials[i].reward;
         trials[i].reward = randomNumberBm(min, max);
-      }
+      } */
 
       trials = jsPsych.randomization.shuffle(trials);
       timeline.push(
@@ -593,7 +586,7 @@ export async function run({
                 stimulus: function () {
                   // Generate the thermometer HTML with bounds from trialData
                   return `
-                  ${acceptanceThermometer(trialData.bounds,trialData.reward.toFixed(4))}
+                  ${acceptanceThermometer(trialData.bounds, trialData.reward)}
                 `;
                 },
                 choices: ['arrowleft', 'arrowright'],
@@ -623,7 +616,7 @@ export async function run({
                     reward: trialData.reward,
                     on_start: function () {
                       console.log(
-                        `Task Performance Phase reward: $${trialData.reward.toFixed(4)}`,
+                        `Task Performance Phase reward: $${trialData.reward}`,
                       ); // Logging reward in TaskPlugin step
                     },
                     autoIncreaseAmount: function () {
@@ -671,11 +664,10 @@ export async function run({
                 timeline: [loadingBarTrial(false)],
                 conditional_function: () => !trialData.accepted,
               },
-                {
-                  timeline: [loadingBarTrial(true)],
-                  conditional_function: () => trialData.accepted,
-
-                },
+              {
+                timeline: [loadingBarTrial(true)],
+                conditional_function: () => trialData.accepted,
+              },
             ],
           })),
           sample: {
@@ -684,7 +676,7 @@ export async function run({
           },
         },
         // Likert scale survey after block
-        ...likertQuestions2
+        ...likertQuestions2,
       );
     }
 
@@ -707,7 +699,7 @@ export async function run({
       choices: ['enter'],
       stimulus: function () {
         const totalSuccessfulReward = calculateTotalReward(allTrials);
-        return `<p>The block has ended. Total reward for successful trials is: $${totalSuccessfulReward.toFixed(2)}. Press Enter to continue.</p>`;
+        return `<p>The block has ended. Total reward for successful trials is: $${totalSuccessfulReward}. Press Enter to continue.</p>`;
       },
       data: {
         task: 'display_reward',
@@ -808,7 +800,7 @@ export async function run({
     stimulus: function () {
       const allTrials = jsPsych.data.get().values(); // Get all trials once
       const totalSuccessfulReward = calculateTotalReward(allTrials);
-      return `<p>The experiment has now ended. Total reward for successful trials is: $${totalSuccessfulReward.toFixed(4)}. Press Enter to finish and then please let the experimenter know.</p>`;
+      return `<p>The experiment has now ended. Total reward for successful trials is: $${totalSuccessfulReward}. Press Enter to finish and then please let the experimenter know.</p>`;
     },
     data: {
       task: 'finish_experiment',

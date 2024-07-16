@@ -14,13 +14,17 @@ export const MAXIMUM_THERMOMETER_HEIGHT = 100; // maximum thermometer height (%)
 export const EXPECTED_MAXIMUM_PERCENTAGE = 100; // where should participants end up if they tap at their maximum rate
 export const EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION = 50; // where should participants end up if they tap at their maximum rate
 export const TARGET_OPTIONS = [50, 70, 90];
+export const LOW_REWARDS = [.01,.02,.03]
+export const MEDIUM_REWARDS = [0.08, 0.09, 0.10, 0.11, 0.12]
+export const HIGH_REWARDS = [0.17, 0.18, 0.19, 0.20, 0.21, 0.22, 0.23]
 export const REWARD_OPTIONS = [.01, .10, .20];
+export const NEW_REWARD_OPTIONS = [LOW_REWARDS, MEDIUM_REWARDS, HIGH_REWARDS]
 export const EASY_BOUNDS = [30,50]
 export const MEDIUM_BOUNDS = [50,70]
 export const HARD_BOUNDS = [70,90]
 export const BOUND_OPTIONS = [[20,40], [40,60], [60,80]];
 export const PARAMETER_COMBINATIONS = fastCartesian([
-  REWARD_OPTIONS,
+  NEW_REWARD_OPTIONS,
   BOUND_OPTIONS,
 ]).map(([reward, bounds]) => ({
   reward,
