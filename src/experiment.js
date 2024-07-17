@@ -43,10 +43,10 @@ import {
   NUM_VALIDATION_TRIALS,
   PARAMETER_COMBINATIONS,
   PASSED_VALIDATION_MESSAGE,
+  REWARD_TOTAL_MESSAGE,
   SUCCESS_SCREEN_DURATION,
   TRIAL_DURATION,
   VALIDATION_DIRECTIONS,
-  REWARD_TOTAL_MESSAGE
 } from './constants';
 import CountdownTrialPlugin from './countdown';
 import { likertQuestions1, likertQuestions2 } from './likert';
@@ -60,7 +60,7 @@ import {
   videoStimulus,
 } from './stimulus';
 import TaskPlugin from './task';
-import { randomNumberBm, autoIncreaseAmount} from './utils';
+import { autoIncreaseAmount, randomNumberBm } from './utils';
 import { handleValidationFinish, validationFailures } from './validation';
 
 /**
@@ -270,7 +270,7 @@ export async function run({
               TRIAL_DURATION,
               AUTO_DECREASE_RATE,
               AUTO_DECREASE_AMOUNT,
-              medianTaps
+              medianTaps,
             );
           },
           data: {
@@ -377,7 +377,7 @@ export async function run({
             TRIAL_DURATION,
             AUTO_DECREASE_RATE,
             AUTO_DECREASE_AMOUNT,
-            medianTaps
+            medianTaps,
           );
         },
         data: {
@@ -561,7 +561,7 @@ export async function run({
                   TRIAL_DURATION,
                   AUTO_DECREASE_RATE,
                   AUTO_DECREASE_AMOUNT,
-                  medianTaps
+                  medianTaps,
                 );
               },
               data: {
@@ -690,7 +690,7 @@ export async function run({
                         TRIAL_DURATION,
                         AUTO_DECREASE_RATE,
                         AUTO_DECREASE_AMOUNT,
-                        medianTaps
+                        medianTaps,
                       );
                     },
                     data: {
