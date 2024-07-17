@@ -17,9 +17,9 @@ class TaskPlugin {
   static info = {
     name: 'task-plugin',
     parameters: {
-      taskType: {
+      task: {
         type: ParameterType.STRING,
-        default: 'calibration', // 'calibration' or 'thermometer' or 'validation'
+        default: '',
       },
       autoDecreaseAmount: {
         type: ParameterType.FLOAT,
@@ -234,7 +234,6 @@ class TaskPlugin {
       // Set a timeout to end the trial after showing the error message
       setTimeout(() => {
         this.jsPsych.finishTrial({
-          task: trial.taskType,
           keyTappedEarlyFlag: true,
           keysReleasedFlag: false,
           success: isSuccess(),

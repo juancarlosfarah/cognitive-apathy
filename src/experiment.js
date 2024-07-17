@@ -26,6 +26,7 @@ import {
   EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
   FAILED_MINIMUM_DEMO_TAPS_DURATION,
   FAILED_MINIMUM_DEMO_TAPS_MESSAGE,
+  FAILED_VALIDATION_MESSAGE,
   GO_DURATION,
   HARD_BOUNDS,
   KEYS_TO_HOLD,
@@ -37,9 +38,11 @@ import {
   NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
   NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
   NUM_DEMO_TRIALS,
+  NUM_EXTRA_VALIDATION_TRIALS,
   NUM_TRIALS,
   NUM_VALIDATION_TRIALS,
   PARAMETER_COMBINATIONS,
+  PASSED_VALIDATION_MESSAGE,
   SUCCESS_SCREEN_DURATION,
   TRIAL_DURATION,
   VALIDATION_DIRECTIONS,
@@ -57,11 +60,7 @@ import {
 } from './stimulus';
 import TaskPlugin from './task';
 import { randomNumberBm } from './utils';
-import {
-  extraValidationLogic,
-  getMessages,
-  validationResults,
-} from './validation';
+import { handleValidationFinish, validationFailures } from './validation';
 
 /**
  * @function run
@@ -260,6 +259,7 @@ export async function run({
         countdownStep,
         {
           type: TaskPlugin,
+          task: calibrationPart,
           duration: TRIAL_DURATION,
           showThermometer,
           bounds,
@@ -328,7 +328,26 @@ export async function run({
       },
     };
   };
-
+  const successScreen = {
+    timeline: [
+      {
+        type: HtmlKeyboardResponsePlugin,
+        stimulus: function () {
+          const previousTrial = jsPsych.data.get().last(1).values()[0]; // Get the trial 1 steps ago
+          if (previousTrial.success) {
+            return '<p style="color: green; font-size: 48px;">Trial Succeeded</p>';
+          } else {
+            return '<p style="color: red; font-size: 48px;">Trial Failed</p>';
+          }
+        },
+        choices: 'NO_KEYS',
+        trial_duration: SUCCESS_SCREEN_DURATION,
+        data: {
+          task: 'success_screen',
+        },
+      },
+    ],
+  };
   /**
    * @function validationTrials
    * @description Create validation trials with specified bounds and difficulty level
@@ -336,15 +355,19 @@ export async function run({
    * @param {string} difficultyLevel - The difficulty level
    * @returns {Object} - jsPsych trial object
    */
-  const validationTrials = (bounds, difficultyLevel) => ({
+  let validationSuccess = false;
+  let extraValidationRequired = false;
+  let validationExtraFailures = 0; // Declare here
+
+  const createValidationTrial = (bounds, validationName, repetitions) => ({
     timeline: [
       countdownStep,
-
       {
         type: TaskPlugin,
+        task: validationName,
         duration: TRIAL_DURATION,
         showThermometer: true,
-        bounds,
+        bounds: bounds,
         autoIncreaseAmount: function () {
           return (
             (EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION +
@@ -352,88 +375,96 @@ export async function run({
             medianTaps
           );
         },
-        on_finish: function (data) {
-          if (!data.success) {
-            validationResults[difficultyLevel]++;
-          }
-        },
-      },
-      {
-        timeline: [releaseKeysStep],
-        conditional_function: function () {
-          const lastTrialData = jsPsych.data.get().last(1).values()[0];
-          return !lastTrialData.keysReleasedFlag;
-        },
-      },
-    ],
-    repetitions: NUM_VALIDATION_TRIALS,
-  });
-
-  /**
-   * @function extraValidationTrials
-   * @description Create extra validation trials if the user failed 2 or more in any of the levels in the first validation step
-   * @param {Array} bounds - The bounds for the validation task
-   * @param {string} difficultyLevel - The difficulty level
-   * @returns {Object} - jsPsych trial object
-   */
-  const extraValidationTrials = (bounds, difficultyLevel) => ({
-    timeline: [
-      countdownStep,
-      {
-        type: TaskPlugin,
-        duration: TRIAL_DURATION,
-        showThermometer: true,
-        bounds,
-        autoIncreaseAmount: function () {
-          console.log();
-          return (
-            (EXPECTED_MAXIMUM_PERCENTAGE +
-              (TRIAL_DURATION / AUTO_DECREASE_RATE) * AUTO_DECREASE_AMOUNT) /
-            medianTaps
-          );
-        },
-        on_finish: function (data) {
-          if (!data.success) {
-            validationResults[difficultyLevel]++;
-          }
-        },
         data: {
-          showThermometer: true,
-          bounds: bounds,
+          task: validationName, // Ensure task is correctly set
         },
+        on_finish: function (data) {
+          data.task = validationName;
+          const validationExtraCount = jsPsych.data
+            .get()
+            .filter({ task: 'validationExtra' })
+            .values();
+
+          const result = handleValidationFinish(
+            data,
+            validationName,
+            bounds,
+            validationFailures,
+            validationExtraCount,
+            validationExtraFailures, // Pass the variable
+          );
+
+          extraValidationRequired = result.extraValidationRequired;
+          validationSuccess = result.validationSuccess;
+          validationExtraFailures = result.validationExtraFailures; // Update the variable
+        },
+      },
+      {
+        timeline: [successScreen],
       },
       {
         timeline: [releaseKeysStep],
         conditional_function: function () {
-          const lastTrialData = jsPsych.data.get().last(1).values()[0];
+          const lastTrialData = jsPsych.data.get().last(2).values()[0];
           return !lastTrialData.keysReleasedFlag;
         },
       },
+      {
+        timeline: [loadingBarTrial(true)],
+      },
     ],
-    repetitions: 3,
+    repetitions: repetitions,
   });
 
-  // Failed or succeeded validation message
-  const validationSuccess = {
+  // Screen to display validation success
+  const validationResultScreen = {
     type: HtmlKeyboardResponsePlugin,
+    choices: ['enter'],
     stimulus: function () {
-      const result = getMessages();
-      return result.message;
+      return validationSuccess
+        ? PASSED_VALIDATION_MESSAGE
+        : FAILED_VALIDATION_MESSAGE;
     },
-    choices: ['Enter'],
-    on_finish: function (data) {
-      const result = getMessages();
-      if (result.endExperiment) {
-        jsPsych.endExperiment(result.message);
+    on_finish: function () {
+      if (!validationSuccess) {
+        jsPsych.endExperiment(FAILED_VALIDATION_MESSAGE);
       }
     },
   };
 
-  // Conditional extra validation node
-  const extraValidationNode = {
-    timeline: [extraValidationTrials(HARD_BOUNDS, 'extraValidation')],
-    conditional_function: extraValidationLogic(),
-  };
+  const validationTrialEasy = createValidationTrial(
+    [30, 50],
+    'validationEasy',
+    NUM_VALIDATION_TRIALS,
+  );
+  const validationTrialMedium = createValidationTrial(
+    [50, 70],
+    'validationMedium',
+    NUM_VALIDATION_TRIALS,
+  );
+  const validationTrialHard = createValidationTrial(
+    [70, 90],
+    'validationHard',
+    NUM_VALIDATION_TRIALS,
+  );
+  const validationTrialExtra = createValidationTrial(
+    [70, 90],
+    'validationExtra',
+    NUM_EXTRA_VALIDATION_TRIALS,
+  );
+
+  const validationTrials = [
+    validationTrialEasy,
+    validationTrialMedium,
+    validationTrialHard,
+    {
+      timeline: [validationTrialExtra],
+      conditional_function: function () {
+        return extraValidationRequired;
+      },
+    },
+    validationResultScreen,
+  ];
 
   // Add trials to the timeline
   timeline.push(videoDemo(CALIBRATION_PART_1_DIRECTIONS));
@@ -474,33 +505,7 @@ export async function run({
     ),
   );
 
-  /*   timeline.push(directionTrial(VALIDATION_DIRECTIONS))
-  timeline.push(validationTrials(EASY_BOUNDS, 'easy'))
-  timeline.push(validationTrials(MEDIUM_BOUNDS, 'medium'))
-  timeline.push(validationTrials(HARD_BOUNDS, 'hard'))
-  timeline.push(extraValidationNode);
-  timeline.push(validationSucesss); */
-
-  const successScreen = {
-    timeline: [
-      {
-        type: HtmlKeyboardResponsePlugin,
-        stimulus: function () {
-          const previousTrial = jsPsych.data.get().last(1).values()[0]; // Get the trial 1 steps ago
-          if (previousTrial.success) {
-            return '<p style="color: green; font-size: 48px;">Trial Succeeded</p>';
-          } else {
-            return '<p style="color: red; font-size: 48px;">Trial Failed</p>';
-          }
-        },
-        choices: 'NO_KEYS',
-        trial_duration: SUCCESS_SCREEN_DURATION,
-        data: {
-          task: 'success_screen',
-        },
-      },
-    ],
-  };
+  timeline.push(...validationTrials);
 
   let demoTrialSuccesses = 0;
 
@@ -540,6 +545,7 @@ export async function run({
             countdownStep,
             {
               type: TaskPlugin,
+              task: blockName,
               duration: TRIAL_DURATION,
               showThermometer: true,
               randomDelay,

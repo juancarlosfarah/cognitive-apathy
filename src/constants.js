@@ -20,11 +20,7 @@ export const REWARD_OPTIONS = [LOW_REWARDS, MEDIUM_REWARDS, HIGH_REWARDS];
 export const EASY_BOUNDS = [30, 50];
 export const MEDIUM_BOUNDS = [50, 70];
 export const HARD_BOUNDS = [70, 90];
-export const BOUND_OPTIONS = [
-  EASY_BOUNDS,
-  MEDIUM_BOUNDS,
-  HARD_BOUNDS,
-];
+export const BOUND_OPTIONS = [EASY_BOUNDS, MEDIUM_BOUNDS, HARD_BOUNDS];
 export const PARAMETER_COMBINATIONS = fastCartesian([
   REWARD_OPTIONS,
   BOUND_OPTIONS,
@@ -44,8 +40,8 @@ export const NUM_CALIBRATION_WITH_FEEDBACK_TRIALS = 1;
 export const NUM_CALIBRATION_TRIALS =
   NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS +
   NUM_CALIBRATION_WITH_FEEDBACK_TRIALS;
-export const NUM_VALIDATION_TRIALS = 1;
-
+export const NUM_VALIDATION_TRIALS = 3; // Number of validation trials per difficulty level (BOUND_OPTIONS)
+export const NUM_EXTRA_VALIDATION_TRIALS = 3;
 export const NUM_DEMO_TRIALS = 1;
 export const MINIMUM_DEMO_TAPS = 4;
 
@@ -75,5 +71,4 @@ export const FAILED_MINIMUM_DEMO_TAPS_MESSAGE =
 export const HOLD_KEYS_MESSAGE = `<p>Hold the <b>${KEYS_TO_HOLD[0].toUpperCase()}</b>, <b>${KEYS_TO_HOLD[1].toUpperCase()}</b>, and <b>${KEYS_TO_HOLD[2].toUpperCase()}</b> keys!</p>`;
 export const KEY_TAPPED_EARLY_MESSAGE =
   'Key was tapped too early. Please wait for the appropriate time to press the key.';
-export const RELEASE_KEYS_MESSAGE = 
-  'Release the Keys';
+export const RELEASE_KEYS_MESSAGE = 'Release the Keys';
