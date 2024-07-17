@@ -1,6 +1,17 @@
 import { ParameterType } from 'jspsych';
+
+import {
+  AUTO_DECREASE_AMOUNT,
+  AUTO_DECREASE_RATE,
+  BOUND_OPTIONS,
+  KEYS_TO_HOLD,
+  KEY_TAPPED_EARLY_ERROR_TIME,
+  KEY_TAPPED_EARLY_MESSAGE,
+  KEY_TO_PRESS,
+  PREMATURE_KEY_RELEASE_ERROR_MESSAGE,
+  PREMATURE_KEY_RELEASE_ERROR_TIME,
+} from './constants';
 import { stimulus } from './stimulus';
-import { BOUND_OPTIONS, PREMATURE_KEY_RELEASE_ERROR_TIME, PREMATURE_KEY_RELEASE_ERROR_MESSAGE, KEYS_TO_HOLD, KEY_TO_PRESS, AUTO_DECREASE_AMOUNT, AUTO_DECREASE_RATE, KEY_TAPPED_EARLY_MESSAGE, KEY_TAPPED_EARLY_ERROR_TIME} from './constants';
 
 class TaskPlugin {
   static info = {
@@ -49,8 +60,8 @@ class TaskPlugin {
       },
       keyTappedEarlyFlag: {
         type: ParameterType.BOOL,
-        default: false
-      }
+        default: false,
+      },
     },
   };
 
@@ -73,8 +84,6 @@ class TaskPlugin {
     let trialEnded = false; // Flag to prevent multiple endings
     let mainBlock = false;
 
-
-
     const getRandomDelay = () => {
       const [min, max] = trial.randomDelay;
       return Math.random() * (max - min) + min;
@@ -83,12 +92,15 @@ class TaskPlugin {
     const updateUI = () => {
       if (trial.showThermometer) {
         const mercuryElement = document.getElementById('mercury');
-        if (mercuryElement) mercuryElement.style.height = `${this.mercuryHeight}%`;
+        if (mercuryElement)
+          mercuryElement.style.height = `${this.mercuryHeight}%`;
 
         const lowerBoundElement = document.getElementById('lower-bound');
         const upperBoundElement = document.getElementById('upper-bound');
-        if (lowerBoundElement) lowerBoundElement.style.bottom = `${trial.bounds[0]}%`;
-        if (upperBoundElement) upperBoundElement.style.bottom = `${trial.bounds[1]}%`;
+        if (lowerBoundElement)
+          lowerBoundElement.style.bottom = `${trial.bounds[0]}%`;
+        if (upperBoundElement)
+          upperBoundElement.style.bottom = `${trial.bounds[1]}%`;
       }
       const errorMessageElement = document.getElementById('error-message');
       if (errorMessageElement) {
@@ -106,13 +118,13 @@ class TaskPlugin {
         startMessageElement.style.display = areKeysHeld ? 'block' : 'none';
       }
       if (!areKeysHeld) {
-
         setError(`${PREMATURE_KEY_RELEASE_ERROR_MESSAGE}`);
         display_element.innerHTML = `
           <div id="status" style="margin-top: 50px;">
             <div id="error-message" style="color: red;">${PREMATURE_KEY_RELEASE_ERROR_MESSAGE}</div>
           </div>
-        `;        trial.keysReleasedFlag = true; // Set the flag
+        `;
+        trial.keysReleasedFlag = true; // Set the flag
         setTimeout(() => stopRunning(true), PREMATURE_KEY_RELEASE_ERROR_TIME);
       }
     };
@@ -121,7 +133,7 @@ class TaskPlugin {
       this.mercuryHeight = Math.min(this.mercuryHeight + amount, 100);
       updateUI();
     };
-    
+
     const handleKeyDown = (event) => {
       const key = event.key.toLowerCase();
       if (KEYS_TO_HOLD.includes(key)) {
@@ -182,7 +194,7 @@ class TaskPlugin {
         trial.bounds[0],
         trial.bounds[1],
         error,
-        !errorFlag // Pass false if errorFlag is true
+        !errorFlag, // Pass false if errorFlag is true
       );
 
       end_trial();
@@ -190,7 +202,10 @@ class TaskPlugin {
     };
 
     const decreaseMercury = () => {
-      this.mercuryHeight = Math.max(this.mercuryHeight - trial.autoDecreaseAmount, 0);
+      this.mercuryHeight = Math.max(
+        this.mercuryHeight - trial.autoDecreaseAmount,
+        0,
+      );
       updateUI();
     };
 
@@ -199,13 +214,16 @@ class TaskPlugin {
       updateUI();
     };
 
-    // Was trial successful 
+    // Was trial successful
     const isSuccess = () => {
-      return this.mercuryHeight >= trial.bounds[0] && this.mercuryHeight <= trial.bounds[1] && !trial.keysReleasedFlag & !trial.keyTappedEarlyFlag;
+      return (
+        this.mercuryHeight >= trial.bounds[0] &&
+        this.mercuryHeight <= trial.bounds[1] &&
+        !trial.keysReleasedFlag & !trial.keyTappedEarlyFlag
+      );
     };
 
     if (trial.keyTappedEarlyFlag) {
-
       // Clear the DOM
       display_element.innerHTML = `
         <div id="status" style="margin-top: 50px;">
@@ -219,10 +237,10 @@ class TaskPlugin {
           task: trial.taskType,
           keyTappedEarlyFlag: true,
           keysReleasedFlag: false,
-          success: isSuccess()
+          success: isSuccess(),
         });
       }, KEY_TAPPED_EARLY_ERROR_TIME);
-      
+
       return;
     }
 
@@ -231,7 +249,7 @@ class TaskPlugin {
       this.mercuryHeight,
       trial.bounds[0],
       trial.bounds[1],
-      error
+      error,
     );
 
     document.addEventListener('keydown', handleKeyDown);
@@ -242,7 +260,7 @@ class TaskPlugin {
       document.removeEventListener('keyup', handleKeyUp);
       display_element.innerHTML = '';
 
-      const trial_data = {
+      const trialData = {
         tapCount,
         startTime,
         endTime,
@@ -257,12 +275,12 @@ class TaskPlugin {
         keyTappedEarlyFlag: false,
       };
 
-      this.jsPsych.finishTrial(trial_data); // Use this.jsPsych
-      console.log(trial_data);
+      this.jsPsych.finishTrial(trialData); // Use this.jsPsych
+      console.log(trialData);
     };
 
     trial.on_load = () => {
-      console.log("Trial loaded");
+      console.log('Trial loaded');
       setAreKeysHeld(); // Initial check to update the UI based on assumed key states
       startRunning(); // Start running as the trial loads
     };

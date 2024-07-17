@@ -18,11 +18,14 @@ import {
   AUTO_DECREASE_RATE,
   AUTO_INCREASE_AMOUNT,
   BOUND_OPTIONS,
+  CALIBRATION_FINISHED_DIRECTIONS,
   CALIBRATION_PART_1_DIRECTIONS,
   CALIBRATION_PART_2_DIRECTIONS,
   EASY_BOUNDS,
   EXPECTED_MAXIMUM_PERCENTAGE,
   EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
+  FAILED_MINIMUM_DEMO_TAPS_DURATION,
+  FAILED_MINIMUM_DEMO_TAPS_MESSAGE,
   GO_DURATION,
   HARD_BOUNDS,
   KEYS_TO_HOLD,
@@ -30,6 +33,7 @@ import {
   LOADING_BAR_SPEED_NO,
   LOADING_BAR_SPEED_YES,
   MEDIUM_BOUNDS,
+  MINIMUM_DEMO_TAPS,
   NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
   NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
   NUM_DEMO_TRIALS,
@@ -39,10 +43,6 @@ import {
   SUCCESS_SCREEN_DURATION,
   TRIAL_DURATION,
   VALIDATION_DIRECTIONS,
-  MINIMUM_DEMO_TAPS,
-  FAILED_MINIMUM_DEMO_TAPS_MESSAGE,
-  FAILED_MINIMUM_DEMO_TAPS_DURATION,
-  CALIBRATION_FINISHED_DIRECTIONS
 } from './constants';
 import CountdownTrialPlugin from './countdown';
 import { likertQuestions1, likertQuestions2 } from './likert';
@@ -139,7 +139,7 @@ export async function run({
     type: HtmlKeyboardResponsePlugin,
     stimulus: `<p style="color: red;">${FAILED_MINIMUM_DEMO_TAPS_MESSAGE}</p>`,
     choices: ['NO_KEYS'],
-    trial_duration: FAILED_MINIMUM_DEMO_TAPS_DURATION
+    trial_duration: FAILED_MINIMUM_DEMO_TAPS_DURATION,
   };
 
   // Countdown step with `key `release flag check
@@ -148,11 +148,11 @@ export async function run({
       {
         type: CountdownTrialPlugin,
         data: {
-          task: 'countdown'
+          task: 'countdown',
         },
         on_finish: function (data) {
-          console.log(data.keyTappedEarlyFlag)
-        }
+          console.log(data.keyTappedEarlyFlag);
+        },
       },
       {
         type: HtmlKeyboardResponsePlugin,
@@ -245,7 +245,6 @@ export async function run({
     };
   };
 
-
   let calibrationPart1Successes = 0;
   let calibrationPart2Successes = 0;
 
@@ -277,9 +276,15 @@ export async function run({
             bounds,
           },
           on_start: function (trial) {
-            const lastCountdownData = jsPsych.data.get().filter({ task: 'countdown' }).last(1).values()[0];
-            const keyTappedEarlyFlag = lastCountdownData ? lastCountdownData.keyTappedEarlyFlag : false;
-    
+            const lastCountdownData = jsPsych.data
+              .get()
+              .filter({ task: 'countdown' })
+              .last(1)
+              .values()[0];
+            const keyTappedEarlyFlag = lastCountdownData
+              ? lastCountdownData.keyTappedEarlyFlag
+              : false;
+
             // Update the trial parameters with keyTappedEarlyFlag
             trial.keyTappedEarlyFlag = keyTappedEarlyFlag;
           },
@@ -294,12 +299,16 @@ export async function run({
         {
           timeline: [releaseKeysStep],
           conditional_function: function () {
-            const lastTrialData = jsPsych.data.get().filter({ task: calibrationPart }).last(1).values()[0];
+            const lastTrialData = jsPsych.data
+              .get()
+              .filter({ task: calibrationPart })
+              .last(1)
+              .values()[0];
             return lastTrialData ? !lastTrialData.keysReleasedFlag : true;
           },
         },
         {
-          timeline: [loadingBarTrial(true)]
+          timeline: [loadingBarTrial(true)],
         },
       ],
       repetitions: repetitions,
@@ -308,18 +317,17 @@ export async function run({
           calibrationPart === 'calibrationPart1'
             ? NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS
             : NUM_CALIBRATION_WITH_FEEDBACK_TRIALS;
-  
+
         const currentSuccesses =
           calibrationPart === 'calibrationPart1'
             ? calibrationPart1Successes
             : calibrationPart2Successes;
-  
+
         const remainingSuccesses = requiredSuccesses - currentSuccesses;
         return remainingSuccesses > 0; // Repeat the timeline if more successes are needed
       },
     };
   };
-  
 
   /**
    * @function validationTrials
@@ -331,7 +339,7 @@ export async function run({
   const validationTrials = (bounds, difficultyLevel) => ({
     timeline: [
       countdownStep,
-      
+
       {
         type: TaskPlugin,
         duration: TRIAL_DURATION,
@@ -513,10 +521,10 @@ export async function run({
     includeDemo = false,
   }) => {
     const timeline = [];
-  
+
     if (includeDemo) {
       demoTrialSuccesses = 0; // Reset demo successes before starting
-  
+
       timeline.push(
         // Alert before demo
         {
@@ -551,14 +559,20 @@ export async function run({
                 minimumTapsReached: false,
               },
               on_start: function (trial) {
-                const lastCountdownData = jsPsych.data.get().filter({ task: 'countdown' }).last(1).values()[0];
-                const keyTappedEarlyFlag = lastCountdownData ? lastCountdownData.keyTappedEarlyFlag : false;
+                const lastCountdownData = jsPsych.data
+                  .get()
+                  .filter({ task: 'countdown' })
+                  .last(1)
+                  .values()[0];
+                const keyTappedEarlyFlag = lastCountdownData
+                  ? lastCountdownData.keyTappedEarlyFlag
+                  : false;
                 // Update the trial parameters with keyTappedEarlyFlag
                 trial.keyTappedEarlyFlag = keyTappedEarlyFlag;
               },
               on_finish: function (data) {
                 // Check if minimum taps was reached
-                if (data.tapCount > MINIMUM_DEMO_TAPS){
+                if (data.tapCount > MINIMUM_DEMO_TAPS) {
                   data.minimumTapsReached = true;
                 }
                 if (!data.keysReleasedFlag && data.minimumTapsReached) {
@@ -577,7 +591,11 @@ export async function run({
               timeline: [failedMinimumDemoTapsTrial],
               // Check if minimum taps was reached in last trial to determine whether 'failedMinimumDemoTapsTrial' should display
               conditional_function: function () {
-                const lastTrialData = jsPsych.data.get().filter({ task: 'demo' }).last(1).values()[0];
+                const lastTrialData = jsPsych.data
+                  .get()
+                  .filter({ task: 'demo' })
+                  .last(1)
+                  .values()[0];
                 return !lastTrialData.minimumTapsReached;
               },
             },
@@ -595,28 +613,30 @@ export async function run({
       );
     }
 
-  /*       for (let i = 0; i < trials.length; i++) {
+    /*       for (let i = 0; i < trials.length; i++) {
         let min = trials[i].reward - 0.1 * trials[i].reward;
         let max = trials[i].reward + 0.1 * trials[i].reward;
         trials[i].reward = randomNumberBm(min, max);
       } */
 
-      
     if (blockName) {
       const numTrialsPerCombination = Math.floor(
         NUM_TRIALS / PARAMETER_COMBINATIONS.length,
       );
-  
+
       let trials = PARAMETER_COMBINATIONS.flatMap((combination) =>
         Array(numTrialsPerCombination)
           .fill()
           .map(() => ({
-            reward: jsPsych.randomization.sampleWithReplacement(combination.reward,1)[0],
+            reward: jsPsych.randomization.sampleWithReplacement(
+              combination.reward,
+              1,
+            )[0],
             randomDelay: randomDelay,
             bounds: combination.bounds,
           })),
       );
-  
+
       trials = jsPsych.randomization.shuffle(trials);
       timeline.push(
         {
@@ -673,8 +693,14 @@ export async function run({
                       },
                     },
                     on_start: function (trial) {
-                      const lastCountdownData = jsPsych.data.get().filter({ task: 'countdown' }).last(1).values()[0];
-                      const keyTappedEarlyFlag = lastCountdownData ? lastCountdownData.keyTappedEarlyFlag : false;
+                      const lastCountdownData = jsPsych.data
+                        .get()
+                        .filter({ task: 'countdown' })
+                        .last(1)
+                        .values()[0];
+                      const keyTappedEarlyFlag = lastCountdownData
+                        ? lastCountdownData.keyTappedEarlyFlag
+                        : false;
                       // Update the trial parameters with keyTappedEarlyFlag
                       trial.keyTappedEarlyFlag = keyTappedEarlyFlag;
                     },
@@ -717,10 +743,9 @@ export async function run({
         ...likertQuestions2,
       );
     }
-  
+
     return { timeline };
   };
-  
 
   function calculateTotalReward(allTrials) {
     const blockTrials = allTrials.filter((trial) => trial.task === 'block');

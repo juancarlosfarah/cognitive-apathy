@@ -16,4 +16,3 @@ export function randomNumberBm(min, max, skew = 1) {
   }
   return num;
 }
-

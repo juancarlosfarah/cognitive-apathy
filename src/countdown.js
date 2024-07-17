@@ -1,5 +1,11 @@
 import { ParameterType } from 'jspsych';
-import { COUNTDOWN_TIME, KEYS_TO_HOLD, KEY_TO_PRESS, HOLD_KEYS_MESSAGE } from './constants';
+
+import {
+  COUNTDOWN_TIME,
+  HOLD_KEYS_MESSAGE,
+  KEYS_TO_HOLD,
+  KEY_TO_PRESS,
+} from './constants';
 
 class CountdownTrialPlugin {
   static info = {
@@ -44,13 +50,17 @@ class CountdownTrialPlugin {
 
   trial(displayElement, trial) {
     let keysState = {};
-    (trial.keystoHold || []).forEach(key => keysState[key.toLowerCase()] = false);
+    (trial.keystoHold || []).forEach(
+      (key) => (keysState[key.toLowerCase()] = false),
+    );
 
     let areKeysHeld = false;
     let interval = null;
 
     const setAreKeysHeld = () => {
-      areKeysHeld = (trial.keystoHold || []).every(key => keysState[key.toLowerCase()]);
+      areKeysHeld = (trial.keystoHold || []).every(
+        (key) => keysState[key.toLowerCase()],
+      );
       if (areKeysHeld && !interval) {
         startCountdown();
       } else if (!areKeysHeld && interval) {
@@ -112,13 +122,13 @@ class CountdownTrialPlugin {
       document.removeEventListener('keydown', handleKeyDown);
       document.removeEventListener('keyup', handleKeyUp);
 
-      const trial_data = {
+      const trialData = {
         keys_held: areKeysHeld,
-        keyTappedEarlyFlag: trial.keyTappedEarlyFlag
+        keyTappedEarlyFlag: trial.keyTappedEarlyFlag,
       };
 
       displayElement.innerHTML = '';
-      this.jsPsych.finishTrial(trial_data);
+      this.jsPsych.finishTrial(trialData);
     };
 
     const setError = (message) => {

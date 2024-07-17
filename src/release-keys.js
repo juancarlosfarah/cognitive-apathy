@@ -1,5 +1,6 @@
 import { ParameterType } from 'jspsych';
-import { KEYS_TO_HOLD } from './constants';
+
+import { KEYS_TO_HOLD, RELEASE_KEYS_MESSAGE } from './constants';
 
 class ReleaseKeysPlugin {
   static info = {
@@ -7,7 +8,7 @@ class ReleaseKeysPlugin {
     parameters: {
       stimulus: {
         type: ParameterType.HTML_STRING,
-        default: '<p>Release the Keys</p>',
+        default: `<p>${RELEASE_KEYS_MESSAGE}</p>`,
       },
       valid_responses: {
         type: ParameterType.KEYS,
@@ -35,7 +36,7 @@ class ReleaseKeysPlugin {
 
   trial(display_element, trial) {
     let keysState = {};
-    trial.valid_responses.forEach(key => {
+    trial.valid_responses.forEach((key) => {
       keysState[key.toLowerCase()] = false;
     });
     let errorOccurred = false;

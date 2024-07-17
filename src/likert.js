@@ -1,6 +1,6 @@
 import surveyLikert from '@jspsych/plugin-survey-likert';
-import { LIKERT_PREAMBLE } from './constants';
 
+import { LIKERT_PREAMBLE } from './constants';
 
 export const likertQuestions1 = [
   {
@@ -58,7 +58,6 @@ export const likertQuestions1 = [
     button_label: 'Continue',
   },
 ];
-
 
 export const likertQuestions2 = [
   {
