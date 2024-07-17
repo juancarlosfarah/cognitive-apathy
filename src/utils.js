@@ -16,3 +16,11 @@ export function randomNumberBm(min, max, skew = 1) {
   }
   return num;
 }
+
+export function autoIncreaseAmount(EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, TRIAL_DURATION, AUTO_DECREASE_RATE, AUTO_DECREASE_AMOUNT, medianTaps) {
+  return (
+    (EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION +
+      (TRIAL_DURATION / AUTO_DECREASE_RATE) * AUTO_DECREASE_AMOUNT) /
+    medianTaps
+  );
+}

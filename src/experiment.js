@@ -46,6 +46,7 @@ import {
   SUCCESS_SCREEN_DURATION,
   TRIAL_DURATION,
   VALIDATION_DIRECTIONS,
+  REWARD_TOTAL_MESSAGE
 } from './constants';
 import CountdownTrialPlugin from './countdown';
 import { likertQuestions1, likertQuestions2 } from './likert';
@@ -59,7 +60,7 @@ import {
   videoStimulus,
 } from './stimulus';
 import TaskPlugin from './task';
-import { randomNumberBm } from './utils';
+import { randomNumberBm, autoIncreaseAmount} from './utils';
 import { handleValidationFinish, validationFailures } from './validation';
 
 /**
@@ -264,9 +265,11 @@ export async function run({
           showThermometer,
           bounds,
           autoIncreaseAmount: function () {
-            return (
-              (EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION +
-                (TRIAL_DURATION / AUTO_DECREASE_RATE) * AUTO_DECREASE_AMOUNT) /
+            return autoIncreaseAmount(
+              EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
+              TRIAL_DURATION,
+              AUTO_DECREASE_RATE,
+              AUTO_DECREASE_AMOUNT,
               medianTaps
             );
           },
@@ -369,9 +372,11 @@ export async function run({
         showThermometer: true,
         bounds: bounds,
         autoIncreaseAmount: function () {
-          return (
-            (EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION +
-              (TRIAL_DURATION / AUTO_DECREASE_RATE) * AUTO_DECREASE_AMOUNT) /
+          return autoIncreaseAmount(
+            EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
+            TRIAL_DURATION,
+            AUTO_DECREASE_RATE,
+            AUTO_DECREASE_AMOUNT,
             medianTaps
           );
         },
@@ -551,10 +556,11 @@ export async function run({
               randomDelay,
               bounds,
               autoIncreaseAmount: function () {
-                return (
-                  (EXPECTED_MAXIMUM_PERCENTAGE +
-                    (TRIAL_DURATION / AUTO_DECREASE_RATE) *
-                      AUTO_DECREASE_AMOUNT) /
+                return autoIncreaseAmount(
+                  EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
+                  TRIAL_DURATION,
+                  AUTO_DECREASE_RATE,
+                  AUTO_DECREASE_AMOUNT,
                   medianTaps
                 );
               },
@@ -679,10 +685,11 @@ export async function run({
                     bounds: trialData.bounds,
                     reward: trialData.reward,
                     autoIncreaseAmount: function () {
-                      return (
-                        (EXPECTED_MAXIMUM_PERCENTAGE +
-                          (TRIAL_DURATION / AUTO_DECREASE_RATE) *
-                            AUTO_DECREASE_AMOUNT) /
+                      return autoIncreaseAmount(
+                        EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
+                        TRIAL_DURATION,
+                        AUTO_DECREASE_RATE,
+                        AUTO_DECREASE_AMOUNT,
                         medianTaps
                       );
                     },
@@ -769,7 +776,7 @@ export async function run({
       choices: ['enter'],
       stimulus: function () {
         const totalSuccessfulReward = calculateTotalReward(allTrials);
-        return `<p>The block has ended. Total reward for successful trials is: $${totalSuccessfulReward}. Press Enter to continue.</p>`;
+        return `<p>${REWARD_TOTAL_MESSAGE(totalSuccessfulReward)}</p>`;
       },
       data: {
         task: 'display_reward',
@@ -870,7 +877,7 @@ export async function run({
     stimulus: function () {
       const allTrials = jsPsych.data.get().values(); // Get all trials once
       const totalSuccessfulReward = calculateTotalReward(allTrials);
-      return `<p>The experiment has now ended. Total reward for successful trials is: $${totalSuccessfulReward}. Press Enter to finish and then please let the experimenter know.</p>`;
+      return `<p>${REWARD_TOTAL_MESSAGE(REWARD_TOTAL_MESSAGE)}</p>`;
     },
     data: {
       task: 'finish_experiment',

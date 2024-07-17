@@ -72,3 +72,4 @@ export const HOLD_KEYS_MESSAGE = `<p>Hold the <b>${KEYS_TO_HOLD[0].toUpperCase()
 export const KEY_TAPPED_EARLY_MESSAGE =
   'Key was tapped too early. Please wait for the appropriate time to press the key.';
 export const RELEASE_KEYS_MESSAGE = 'Release the Keys';
+export const REWARD_TOTAL_MESSAGE = (totalSuccessfulReward) => `Total reward for successful trials is: $${totalSuccessfulReward}. Press Enter to continue.`
