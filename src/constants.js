@@ -26,8 +26,8 @@ export const HARD_BOUNDS = [70, 90];
 export const BOUND_OPTIONS = [EASY_BOUNDS, MEDIUM_BOUNDS, HARD_BOUNDS];
 
 // CALIBRATION CONSTANTS
-export const NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS = 1; // Number of calibration trials without stimuli
-export const NUM_CALIBRATION_WITH_FEEDBACK_TRIALS = 1; // Number of calibration trials with stimuli
+export const NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS = 2; // Number of calibration trials without stimuli
+export const NUM_CALIBRATION_WITH_FEEDBACK_TRIALS = 2; // Number of calibration trials with stimuli
 export const NUM_CALIBRATION_TRIALS =
   NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS +
   NUM_CALIBRATION_WITH_FEEDBACK_TRIALS;

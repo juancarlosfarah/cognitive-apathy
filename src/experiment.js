@@ -255,12 +255,17 @@ const createCalibrationTrial = (
         showThermometer,
         bounds,
         autoIncreaseAmount: function () {
+          // Determine which median to use for Part 2
+          let medianToUse = medianTaps;
+          if (calibrationPart === 'calibrationPart2') {
+            medianToUse = medianTapsPart1 >= MINIMUM_CALIBRATION_MEDIAN ? medianTapsPart1 : conditionalMedianTapsPart1;
+          }
           return autoIncreaseAmount(
             EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
             TRIAL_DURATION,
             AUTO_DECREASE_RATE,
             AUTO_DECREASE_AMOUNT,
-            medianTaps,
+            medianToUse,
           );
         },
         data: {
