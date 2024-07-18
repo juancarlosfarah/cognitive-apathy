@@ -1,9 +1,36 @@
 @import '~jspsych/css/jspsych.css';
-
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
 .jspsych-display-element {
   background-color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
+.jspsych-content-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+}
+
+.jspsych-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
 #thermometer {
   width: 200px;
   height: 400px;
@@ -19,4 +46,39 @@
   position: absolute;
   bottom: 0;
   transition: height 0.1s linear;
+}
+
+body {
+  font-family: tahoma, 'sans-serif';
+  font-size: 22px;
+  margin: auto;
+  padding: 50px;
+  width: 500px;
+}
+
+.bar {
+  background: silver;
+  border-radius: 30px;
+  margin: 0 0 10px;
+  width: 100%;
+  height: 2px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress {
+  background: #568259;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  transition: 0.1s;
+}
+
+.percentage {
+  font-size: 12px;
+}
+
+.percentage:after {
+  content: '%';
 }
