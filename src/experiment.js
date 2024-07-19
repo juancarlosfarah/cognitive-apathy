@@ -11,7 +11,7 @@ import PreloadPlugin from '@jspsych/plugin-preload';
 import surveyLikert from '@jspsych/plugin-survey-likert';
 import { saveAs } from 'file-saver';
 import { initJsPsych } from 'jspsych';
-import { videoTrial1, videoDemo, interactiveCountdown } from './tutorial';
+import { videoTrial1, videoDemo, instructionalCountdownSte, interactiveCountdown } from './tutorial';
 import '../styles/main.scss';
 import {
   AUTO_DECREASE_AMOUNT,
@@ -512,9 +512,20 @@ const validationTrials = [
 
 
 // Add trials to the timeline
-timeline.push(interactiveCountdown),
 timeline.push(videoDemo(TUTORIAL_MESSAGE_1))
-timeline.push(...videoTrial1),
+// INCLUDE TUTORIAL VIDEO (DOM NOT CLEARING RIGHT NOW ASK JC)
+timeline.push(interactiveCountdown)
+timeline.push({
+  type: HtmlKeyboardResponsePlugin,
+  stimulus: '<p style="color: green; font-size: 48px;">GO</p>',
+  choices: 'NO_KEYS',
+  trial_duration: GO_DURATION, // Display "GO" for 1 second
+  data: {
+    task: 'go_screen',
+  },
+}),
+
+
 timeline.push(videoDemo(CALIBRATION_PART_1_DIRECTIONS));
 timeline.push({
   timeline: [

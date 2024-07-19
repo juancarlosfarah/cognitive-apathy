@@ -97,5 +97,8 @@ export const VIDEO_TUTORIAL_MESSAGE =
 <br> You will place your pinky on the <b>${KEYS_TO_HOLD[0].toUpperCase()}</b> key, place your ring finger on the <b>${KEYS_TO_HOLD[1].toUpperCase()}</b> key, and place your middle finger on the <b>${KEYS_TO_HOLD[2].toUpperCase()}</b> key.
 <br> While still holding down with these fingers, when you see the <b>GO!</b>, tap the <b>${KEY_TO_PRESS.toUpperCase()}</b> with your index finger as fast as you can!`
 export const INTERACTIVE_KEYBOARD_TUTORIAL_MESSAGE =  
-`<br> Place your pinky on the <b>${KEYS_TO_HOLD[0].toUpperCase()}</b> key, place your ring finger on the <b>${KEYS_TO_HOLD[1].toUpperCase()}</b> key, and place your middle finger on the <b>${KEYS_TO_HOLD[2].toUpperCase()}</b> key.
+`<br> On your physical keyboard:
+<br>Place your <b>pinky finger</b> on the <b>${KEYS_TO_HOLD[0].toUpperCase()}</b> key, place your <b>ring finger</b> on the <b>${KEYS_TO_HOLD[1].toUpperCase()}</b> key, and place your <b>middle finger</b> on the <b>${KEYS_TO_HOLD[2].toUpperCase()}</b> key.
 <br> While still holding down with these fingers, when you see the <b>GO!</b>, tap the <b>${KEY_TO_PRESS.toUpperCase()}</b> with your index finger as fast as you can!`
+export const COUNTDOWN_DIRECTIONS = `Keep on holding with these fingers! 
+<br>While still holding with your other fingers, when you see the <b>GO!</b>, tap the <b>${KEY_TO_PRESS.toUpperCase()}</b> with your index finger as fast as you can!`

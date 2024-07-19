@@ -62,6 +62,10 @@ class TaskPlugin {
         type: ParameterType.BOOL,
         default: false,
       },
+      showKeyboard: {
+        type: ParameterType.BOOL,
+        default: false,
+      }
     },
   };
 

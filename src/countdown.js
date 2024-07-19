@@ -6,6 +6,7 @@ import {
   HOLD_KEYS_MESSAGE,
   KEYS_TO_HOLD,
   KEY_TO_PRESS,
+  COUNTDOWN_DIRECTIONS, // Import the new constant
 } from './constants';
 
 class CountdownTrialPlugin {
@@ -72,6 +73,14 @@ class CountdownTrialPlugin {
     messageContainer.innerHTML = trial.message;
     displayElement.appendChild(messageContainer);
 
+    const directionsContainer = document.createElement('div');
+    directionsContainer.id = 'directions-container';
+    displayElement.appendChild(directionsContainer);
+
+    const timerContainer = document.createElement('div');
+    timerContainer.id = 'timer-container';
+    displayElement.appendChild(timerContainer);
+
     if (trial.showKeyboard) {
       console.log('Setting up keyboard...');
       const { keyboard, keyboardDiv } = createKeyboard(displayElement);
@@ -83,7 +92,7 @@ class CountdownTrialPlugin {
       inputElement.style.top = '-9999px';
       document.body.appendChild(inputElement);
       console.log('Keyboard setup complete.');
-    
+
       // Event listeners to sync physical keyboard with on-screen keyboard
       document.addEventListener('keydown', (event) => {
         const key = event.key.toLowerCase();
@@ -92,12 +101,10 @@ class CountdownTrialPlugin {
           const button = keyboardDiv.querySelector(`[data-skbtn="${key}"]`);
           if (button) {
             button.classList.add('hg-activeButton');
-            button.style.backgroundColor = '#008000'; // Apply inline style
-            button.style.color = '#ffffff'; // Optional: Change text color
           }
         }
       });
-    
+
       document.addEventListener('keyup', (event) => {
         const key = event.key.toLowerCase();
         const button = keyboardDiv.querySelector(`[data-skbtn="${key}"]`);
@@ -107,7 +114,7 @@ class CountdownTrialPlugin {
           button.style.color = ''; // Remove inline style
         }
       });
-    
+
       // Event listener for input changes
       inputElement.addEventListener('input', (event) => {
         keyboardInstance.setInput(event.target.value);
@@ -119,12 +126,16 @@ class CountdownTrialPlugin {
         (key) => keysState[key.toLowerCase()],
       );
       if (areKeysHeld && !interval) {
+        messageContainer.innerHTML = ''; // Hide the initial message
+        directionsContainer.innerHTML = `<p>${COUNTDOWN_DIRECTIONS}</p>`;
         startCountdown();
       } else if (!areKeysHeld && interval) {
         clearInterval(interval);
         interval = null;
         setError('You stopped holding the keys!');
         messageContainer.innerHTML = trial.message; // Reset the display message
+        directionsContainer.innerHTML = ''; // Clear the directions
+        timerContainer.innerHTML = ''; // Clear the timer
       }
     };
 
@@ -154,9 +165,10 @@ class CountdownTrialPlugin {
       const initialText = trial.initialText;
       const startTime = performance.now();
 
-      messageContainer.innerHTML = `
+      timerContainer.innerHTML = `
         <p>${initialText}<span id="clock">${formatTime(waitTime)}</span></p>
       `;
+
       const clockElement = document.getElementById('clock');
 
       interval = setInterval(() => {
@@ -186,7 +198,7 @@ class CountdownTrialPlugin {
         keyTappedEarlyFlag: trial.keyTappedEarlyFlag,
       };
 
-      displayElement.innerHTML = '';
+      displayElement.innerHTML = ''; // Clear the DOM
       this.jsPsych.finishTrial(trialData);
       console.log('Trial ended with data:', trialData);
     };
