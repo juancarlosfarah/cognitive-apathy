@@ -133,8 +133,6 @@ export async function run({
             update_percentage();
           } else {
             percentage.textContent = 100;
-            title.textContent = 'Done!';
-            title.style.color = '#568259';
             jsPsych.finishTrial(); // Finish the trial when loading is complete
           }
         }, 100);
@@ -157,6 +155,12 @@ export async function run({
 
       check_percentage();
     },
+    on_finish: function() {
+      const loadingBarContainer = document.querySelector('.loading-bar-container');
+      if (loadingBarContainer) {
+        loadingBarContainer.remove();
+      }  
+    }
   });
 
   const failedMinimumDemoTapsTrial = {

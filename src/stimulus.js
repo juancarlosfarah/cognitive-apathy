@@ -94,12 +94,14 @@ export const videoStimulus = (message, video) => {
   return stimulusHTML;
 };
 export const loadingBar = () => `
-  <h1>Loading...</h1>
-  <br>
-  <div class="bar">
-    <div class="progress"></div>
+  <div class="loading-bar-container">
+    <h1>Loading...</h1>
+    <br>
+    <div class="bar">
+      <div class="progress"></div>
+    </div>
+    <div class="percentage">0</div>
+    <link rel="stylesheet" type="text/css" href="import '../styles/main.scss';">
   </div>
-  <div class="percentage">0</div>
-  <link rel="stylesheet" type="text/css" href="import '../styles/main.scss';
-  >
 `;
+

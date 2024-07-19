@@ -1,6 +1,5 @@
 import { ParameterType } from 'jspsych';
 import { createKeyboard } from './keyboard';
-
 import {
   COUNTDOWN_TIME,
   HOLD_KEYS_MESSAGE,
@@ -56,6 +55,7 @@ class CountdownTrialPlugin {
 
   trial(displayElement, trial) {
     console.log('Trial started with parameters:', trial);
+    
 
     let keysState = {};
     (trial.keystoHold || []).forEach(
