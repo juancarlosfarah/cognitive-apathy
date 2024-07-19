@@ -11,7 +11,7 @@ import PreloadPlugin from '@jspsych/plugin-preload';
 import surveyLikert from '@jspsych/plugin-survey-likert';
 import { saveAs } from 'file-saver';
 import { initJsPsych } from 'jspsych';
-import { videoTrial1, videoDemo } from './tutorial';
+import { videoTrial1, videoDemo, interactiveCountdown } from './tutorial';
 import '../styles/main.scss';
 import {
   AUTO_DECREASE_AMOUNT,
@@ -64,7 +64,7 @@ import {
 import TaskPlugin from './task';
 import { autoIncreaseAmount, randomNumberBm } from './utils';
 import { handleValidationFinish, validationFailures } from './validation';
-
+import {KeyboardInteractionPlugin} from './keyboard'
 /**
  * @function run
  * @description Main function to run the experiment
@@ -512,6 +512,7 @@ const validationTrials = [
 
 
 // Add trials to the timeline
+timeline.push(interactiveCountdown),
 timeline.push(videoDemo(TUTORIAL_MESSAGE_1))
 timeline.push(...videoTrial1),
 timeline.push(videoDemo(CALIBRATION_PART_1_DIRECTIONS));

@@ -1,8 +1,16 @@
 import videoButtonResponse from '@jspsych/plugin-video-button-response';
 import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
 import { videoStimulus } from './stimulus';
-import { VIDEO_TUTORIAL_MESSAGE } from './constants';
+import { VIDEO_TUTORIAL_MESSAGE, KEYS_TO_HOLD, HOLD_KEYS_MESSAGE, HOLD} from './constants';
+import {KeyboardInteractionPlugin} from './keyboard';
+import CountdownTrialPlugin from './countdown';
 
+
+
+export const interactiveCountdown = {
+  type: CountdownTrialPlugin,
+  showKeyboard: true
+}
 
 export const videoDemo = (message, video) => ({
   type: HtmlKeyboardResponsePlugin,

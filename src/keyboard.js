@@ -1,127 +1,62 @@
-import { ParameterType } from 'jspsych';
 import Keyboard from 'simple-keyboard';
 import 'simple-keyboard/build/css/index.css';
 
-class KeyboardInteractionPlugin {
-  static info = {
-    name: 'keyboard-interaction',
-    parameters: {
-      message: {
-        type: ParameterType.HTML_STRING,
-        default: 'Type the following text using the on-screen keyboard:',
-      },
-      targetText: {
-        type: ParameterType.STRING,
-        default: '',
-      },
-      allowInput: {
-        type: ParameterType.BOOL,
-        default: true,
-      },
-    },
-  };
 
-  constructor(jsPsych) {
-    this.jsPsych = jsPsych;
-  }
+export function createKeyboard(displayElement) {
+  console.log('Creating keyboard...');
 
-  trial(displayElement, trial) {
-    // Create a div for the message
-    const messageDiv = document.createElement('div');
-    messageDiv.innerHTML = trial.message;
-    displayElement.appendChild(messageDiv);
+  // Create a container for the keyboard
+  const keyboardContainer = document.createElement('div');
+  keyboardContainer.id = 'keyboard-container';
+  keyboardContainer.style.position = 'fixed';
+  keyboardContainer.style.bottom = '0';
+  keyboardContainer.style.width = '50%';
+  keyboardContainer.style.backgroundColor = '#fff';
+  keyboardContainer.style.zIndex = '1000';
+  displayElement.appendChild(keyboardContainer);
 
-    // Create an input element for displaying the typed text
-    const inputElement = document.createElement('input');
-    inputElement.type = 'text';
-    inputElement.className = 'input';
-    inputElement.readOnly = !trial.allowInput;
-    displayElement.appendChild(inputElement);
+  console.log('Keyboard container created and appended.');
 
-    // Create a div for the keyboard
-    const keyboardDiv = document.createElement('div');
-    keyboardDiv.className = 'simple-keyboard';
-    displayElement.appendChild(keyboardDiv);
+  // Create a div for the keyboard
+  const keyboardDiv = document.createElement('div');
+  keyboardDiv.className = 'simple-keyboard';
+  keyboardDiv.style.width = '100%';
+  keyboardDiv.style.boxSizing = 'border-box';
+  keyboardDiv.style.minHeight = '100px'; // Ensure some height for visibility
+  keyboardDiv.style.backgroundColor = 'lightgray'; // Set a background color
+  keyboardContainer.appendChild(keyboardDiv);
 
-    // Initialize the keyboard
-    const keyboard = new Keyboard({
-      onChange: (input) => this.onChange(input, inputElement),
-      onKeyPress: (button) => this.onKeyPress(button, keyboard),
-    });
+  console.log('Keyboard div created and appended.');
 
-    // Function to handle input change
-    this.onChange = (input, inputElement) => {
-      inputElement.value = input;
+  // Initialize the keyboard
+  const keyboard = new Keyboard(keyboardDiv, {
+    onChange: input => {
+      document.querySelector('.input').value = input;
       console.log('Input changed', input);
-      checkCompletion();
-    };
-
-    // Function to handle key press
-    this.onKeyPress = (button, keyboard) => {
+    },
+    onKeyPress: button => {
       console.log('Button pressed', button);
 
       // Handle shift and caps lock
-      if (button === '{shift}' || button === '{lock}') this.handleShift(keyboard);
-    };
+      if (button === '{shift}' || button === '{lock}') handleShift(keyboard);
+    },
+    theme: 'hg-theme-default hg-layout-default myTheme',
+  });
 
-    // Function to handle shift and caps lock
-    this.handleShift = (keyboard) => {
-      let currentLayout = keyboard.options.layoutName;
-      let shiftToggle = currentLayout === 'default' ? 'shift' : 'default';
+  console.log('Keyboard initialized.');
 
-      keyboard.setOptions({
-        layoutName: shiftToggle,
-      });
-    };
 
-    // End the trial when the target text is matched
-    const checkCompletion = () => {
-      if (inputElement.value === trial.targetText) {
-        endTrial();
-      }
-    };
+  // Function to handle shift and caps lock
+  const handleShift = (keyboard) => {
+    let currentLayout = keyboard.options.layoutName;
+    let shiftToggle = currentLayout === 'default' ? 'shift' : 'default';
 
-    // Store the trial start time
-    const startTime = performance.now();
-
-    // Function to handle keyboard response
-    const afterResponse = (info) => {
-      const responseTime = performance.now() - startTime;
-      console.log(`Key pressed: ${info.key} at ${responseTime}ms`);
-
-      // Check if the pressed key matches the target text
-      if (jsPsych.pluginAPI.compareKeys(info.key, trial.targetText)) {
-        endTrial();
-      }
-    };
-
-    // Setup keyboard listener
-    const keyboardListener = jsPsych.pluginAPI.getKeyboardResponse({
-      callback_function: afterResponse,
-      valid_responses: 'ALL_KEYS',
-      rt_method: 'performance',
-      persist: true,
-      allow_held_key: false,
+    keyboard.setOptions({
+      layoutName: shiftToggle,
     });
+  };
 
-    // End the trial and save data
-    const endTrial = () => {
-      cleanup();
-      displayElement.innerHTML = '';
-      this.jsPsych.finishTrial({
-        typed_text: inputElement.value,
-      });
-    };
+  console.log('Keyboard setup complete.');
 
-    // Cleanup function to remove event listeners
-    const cleanup = () => {
-      jsPsych.pluginAPI.cancelKeyboardResponse(keyboardListener);
-      inputElement.removeEventListener('input', checkCompletion);
-    };
-
-    // Setup event listener for input changes
-    inputElement.addEventListener('input', checkCompletion);
-  }
+  return { keyboard, keyboardDiv };
 }
-
-export default KeyboardInteractionPlugin;
