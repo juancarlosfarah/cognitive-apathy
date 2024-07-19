@@ -10,7 +10,7 @@ export function createKeyboard(displayElement) {
   keyboardContainer.id = 'keyboard-container';
   keyboardContainer.style.position = 'fixed';
   keyboardContainer.style.bottom = '0';
-  keyboardContainer.style.width = '50%';
+  keyboardContainer.style.width = '75%';
   keyboardContainer.style.backgroundColor = '#fff';
   keyboardContainer.style.zIndex = '1000';
   displayElement.appendChild(keyboardContainer);

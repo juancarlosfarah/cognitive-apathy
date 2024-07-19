@@ -1,5 +1,5 @@
 import { ParameterType } from 'jspsych';
-
+import { createKeyboard } from './keyboard'; // Assuming you have a function to create the keyboard
 import {
   AUTO_DECREASE_AMOUNT,
   AUTO_DECREASE_RATE,
@@ -87,6 +87,8 @@ class TaskPlugin {
     let isRunning = false;
     let trialEnded = false; // Flag to prevent multiple endings
     let mainBlock = false;
+    let keyboardInstance;
+    let inputElement;
 
     const getRandomDelay = () => {
       const [min, max] = trial.randomDelay;
@@ -254,6 +256,44 @@ class TaskPlugin {
       trial.bounds[1],
       error,
     );
+
+    if (trial.showKeyboard) {
+      const { keyboard, keyboardDiv } = createKeyboard(display_element);
+      keyboardInstance = keyboard;
+      inputElement = document.createElement('input');
+      inputElement.type = 'text';
+      inputElement.className = 'input';
+      inputElement.style.position = 'absolute';
+      inputElement.style.top = '-9999px';
+      document.body.appendChild(inputElement);
+
+      // Event listeners to sync physical keyboard with on-screen keyboard
+      document.addEventListener('keydown', (event) => {
+        const key = event.key.toLowerCase();
+        if (KEYS_TO_HOLD.includes(key) || key === KEY_TO_PRESS) {
+          keyboardInstance.setInput(inputElement.value + key);
+          const button = keyboardDiv.querySelector(`[data-skbtn="${key}"]`);
+          if (button) {
+            button.classList.add('hg-activeButton');
+          }
+        }
+      });
+
+      document.addEventListener('keyup', (event) => {
+        const key = event.key.toLowerCase();
+        const button = keyboardDiv.querySelector(`[data-skbtn="${key}"]`);
+        if (button) {
+          button.classList.remove('hg-activeButton');
+          button.style.backgroundColor = ''; // Remove inline style
+          button.style.color = ''; // Remove inline style
+        }
+      });
+
+      // Event listener for input changes
+      inputElement.addEventListener('input', (event) => {
+        keyboardInstance.setInput(event.target.value);
+      });
+    }
 
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);

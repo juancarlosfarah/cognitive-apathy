@@ -12,6 +12,7 @@ import surveyLikert from '@jspsych/plugin-survey-likert';
 import { saveAs } from 'file-saver';
 import { initJsPsych } from 'jspsych';
 import { videoTrial1, videoDemo, instructionalCountdownSte, interactiveCountdown } from './tutorial';
+import videoButtonResponse from '@jspsych/plugin-video-button-response';
 import '../styles/main.scss';
 import {
   AUTO_DECREASE_AMOUNT,
@@ -49,6 +50,7 @@ import {
   TRIAL_DURATION,
   TUTORIAL_MESSAGE_1,
   VALIDATION_DIRECTIONS,
+  VIDEO_TUTORIAL_MESSAGE
 } from './constants';
 import CountdownTrialPlugin from './countdown';
 import { likertQuestions1, likertQuestions2 } from './likert';
@@ -516,9 +518,18 @@ const validationTrials = [
 
 
 // Add trials to the timeline
-timeline.push(videoDemo(TUTORIAL_MESSAGE_1))
-// INCLUDE TUTORIAL VIDEO (DOM NOT CLEARING RIGHT NOW ASK JC)
-timeline.push(interactiveCountdown)
+timeline.push({
+  timeline: [videoTrial1],
+      on_finish: function() {
+        // Clear the display element
+        jsPsych.getDisplayElement().innerHTML = '';
+    }
+  
+});
+
+timeline.push(
+  interactiveCountdown,
+);
 timeline.push({
   type: HtmlKeyboardResponsePlugin,
   stimulus: '<p style="color: green; font-size: 48px;">GO</p>',
@@ -528,6 +539,7 @@ timeline.push({
     task: 'go_screen',
   },
 }),
+
 
 
 timeline.push(videoDemo(CALIBRATION_PART_1_DIRECTIONS));

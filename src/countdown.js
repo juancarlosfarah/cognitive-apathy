@@ -82,7 +82,6 @@ class CountdownTrialPlugin {
     displayElement.appendChild(timerContainer);
 
     if (trial.showKeyboard) {
-      console.log('Setting up keyboard...');
       const { keyboard, keyboardDiv } = createKeyboard(displayElement);
       keyboardInstance = keyboard;
       inputElement = document.createElement('input');
@@ -91,7 +90,6 @@ class CountdownTrialPlugin {
       inputElement.style.position = 'absolute';
       inputElement.style.top = '-9999px';
       document.body.appendChild(inputElement);
-      console.log('Keyboard setup complete.');
 
       // Event listeners to sync physical keyboard with on-screen keyboard
       document.addEventListener('keydown', (event) => {
@@ -141,7 +139,6 @@ class CountdownTrialPlugin {
 
     const handleKeyDown = (event) => {
       const key = event.key.toLowerCase();
-      console.log('Key down:', key);
       if ((trial.keystoHold || []).includes(key)) {
         keysState[key] = true;
         setAreKeysHeld();
@@ -153,7 +150,6 @@ class CountdownTrialPlugin {
 
     const handleKeyUp = (event) => {
       const key = event.key.toLowerCase();
-      console.log('Key up:', key);
       if ((trial.keystoHold || []).includes(key)) {
         keysState[key] = false;
         setAreKeysHeld();

@@ -1,3 +1,4 @@
+import { VIDEO_TUTORIAL_MESSAGE } from "./constants";
 export function stimulus(
   showThermometer,
   mercuryHeight,
@@ -104,4 +105,17 @@ export const loadingBar = () => `
     <link rel="stylesheet" type="text/css" href="import '../styles/main.scss';">
   </div>
 `;
-
+export const videoTutorial = `
+<div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+  <video
+    id="videoTutorial"
+    title="Tutorial Video"
+    style="background-color: rgb(255, 255, 255); width: 640px; height: 200px;"
+    src="../assets/videos/temporary_keyboard_tutorial.mp4"
+    autoplay
+    muted
+  ></video>
+  <p style=font-size: 18px; color: #333; max-width: 80%; line-height: 1.5;">
+    ${VIDEO_TUTORIAL_MESSAGE}
+  </p>
+</div>`
