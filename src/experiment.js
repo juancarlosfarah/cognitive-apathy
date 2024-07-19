@@ -11,7 +11,7 @@ import PreloadPlugin from '@jspsych/plugin-preload';
 import surveyLikert from '@jspsych/plugin-survey-likert';
 import { saveAs } from 'file-saver';
 import { initJsPsych } from 'jspsych';
-
+import { videoTrial1, videoDemo } from './tutorial';
 import '../styles/main.scss';
 import {
   AUTO_DECREASE_AMOUNT,
@@ -47,6 +47,7 @@ import {
   REWARD_TOTAL_MESSAGE,
   SUCCESS_SCREEN_DURATION,
   TRIAL_DURATION,
+  TUTORIAL_MESSAGE_1,
   VALIDATION_DIRECTIONS,
 } from './constants';
 import CountdownTrialPlugin from './countdown';
@@ -83,9 +84,8 @@ export async function run({
   // Preload assets
   timeline.push({
     type: PreloadPlugin,
-    images: assetPaths.images,
     audio: assetPaths.audio,
-    video: assetPaths.video,
+    video: '../assets/videos',
   });
 
   // Release keys step
@@ -95,13 +95,7 @@ export async function run({
     valid_responses: KEYS_TO_HOLD,
   };
 
-  const videoDemo = (message, video) => ({
-    type: HtmlKeyboardResponsePlugin,
-    choices: ['Enter'],
-    stimulus: function () {
-      return videoStimulus(message, video);
-    },
-  });
+
 
   const successScreen = {
     timeline: [
@@ -339,6 +333,9 @@ const createCalibrationTrial = (
  * @param {number} numTrials - The number of trials to consider
  * @returns {Object} - jsPsych trial object
  */
+
+
+
 const createConditionalCalibrationTrial = (calibrationPart, numTrials) => {
   return {
     timeline: [
@@ -513,7 +510,10 @@ const validationTrials = [
   validationResultScreen,
 ];
 
+
 // Add trials to the timeline
+timeline.push(videoDemo(TUTORIAL_MESSAGE_1))
+timeline.push(...videoTrial1),
 timeline.push(videoDemo(CALIBRATION_PART_1_DIRECTIONS));
 timeline.push({
   timeline: [

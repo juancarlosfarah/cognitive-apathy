@@ -88,3 +88,10 @@ export const KEY_TAPPED_EARLY_MESSAGE =
 export const RELEASE_KEYS_MESSAGE = 'Release the Keys';
 export const REWARD_TOTAL_MESSAGE = (totalSuccessfulReward) =>
   `Total reward for successful trials is: $${totalSuccessfulReward}. Press Enter to continue.`;
+export const TUTORIAL_MESSAGE_1 = 'Welcome to the experiment. Please follow the directions. Press <b>Enter</b> to begin.'
+export const VIDEO_TUTORIAL_MESSAGE = 
+`The video above demonstrates how the experiment will be performed.
+<br>
+<br>After clicking the <b>Continue</b> button, you will have the opportunity to practice before the experiment begins.
+<br> You will place your pinky on the <b>${KEYS_TO_HOLD[0].toUpperCase()}</b> key, place your ring finger on the <b>${KEYS_TO_HOLD[1].toUpperCase()}</b> key, and place your middle finger on the <b>${KEYS_TO_HOLD[2].toUpperCase()}</b> key.
+<br> While still holding down with these fingers, when you see the <b>GO!</b>, tap the <b>${KEY_TO_PRESS.toUpperCase()}</b> with your index finger as fast as you can!`
