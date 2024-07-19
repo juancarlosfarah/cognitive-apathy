@@ -36,7 +36,7 @@ class ReleaseKeysPlugin {
 
   trial(display_element, trial) {
     let keysState = {};
-    trial.valid_responses.forEach((key) => {
+    KEYS_TO_HOLD.forEach((key) => {
       keysState[key.toLowerCase()] = false;
     });
     let errorOccurred = false;
@@ -46,7 +46,7 @@ class ReleaseKeysPlugin {
 
     // Handle key up events
     const handleKeyUp = (event) => {
-      if (trial.valid_responses.includes(event.key.toLowerCase())) {
+      if (KEYS_TO_HOLD.includes(event.key.toLowerCase())) {
         keysState[event.key.toLowerCase()] = false;
         checkIfAllKeysReleased();
       }
@@ -54,7 +54,7 @@ class ReleaseKeysPlugin {
 
     // Handle key down events
     const handleKeyDown = (event) => {
-      if (trial.valid_responses.includes(event.key.toLowerCase())) {
+      if (KEYS_TO_HOLD.includes(event.key.toLowerCase())) {
         keysState[event.key.toLowerCase()] = true;
       }
     };

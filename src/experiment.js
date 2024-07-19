@@ -516,31 +516,54 @@ const validationTrials = [
   validationResultScreen,
 ];
 
+const practiceTrial = {
+  timeline: [
+    {
+      type: TaskPlugin,
+      showThermometer: false,
+      data: {
+        task: 'practice',
+      }
+    },
+    {
+      timeline: [releaseKeysStep],
+      conditional_function: function () {
+        const lastTrialData = jsPsych.data.get().last(1).values()[0];
+        return !lastTrialData.keysReleasedFlag;
+      },
+    }
+  ]
+};
 
-// Add trials to the timeline
-timeline.push({
-  timeline: [videoTrial1],
+
+const practiceLoop = {
+  timeline: [
+    {
+      timeline: [videoTrial1],
       on_finish: function() {
         // Clear the display element
         jsPsych.getDisplayElement().innerHTML = '';
     }
-  
-});
-
-timeline.push(
-  interactiveCountdown,
-);
-timeline.push({
-  type: HtmlKeyboardResponsePlugin,
-  stimulus: '<p style="color: green; font-size: 48px;">GO</p>',
-  choices: 'NO_KEYS',
-  trial_duration: GO_DURATION, // Display "GO" for 1 second
-  data: {
-    task: 'go_screen',
+    },
+    interactiveCountdown,
+    {
+      type: HtmlKeyboardResponsePlugin,
+      stimulus: '<p style="color: green; font-size: 48px;">GO</p>',
+      choices: 'NO_KEYS',
+      trial_duration: GO_DURATION, // Display "GO" for 1 second
+      data: {
+        task: 'go_screen',
+      },
+    },
+    practiceTrial,
+  ],
+  loop_function: function () {
+    const lastPracticeData = jsPsych.data.get().filter({ task: 'practice' }).last(1).values()[0];
+    return lastPracticeData.keysReleasedFlag || lastPracticeData.keyTappedEarlyFlag;
   },
-}),
+};
 
-
+timeline.push(practiceLoop)
 
 timeline.push(videoDemo(CALIBRATION_PART_1_DIRECTIONS));
 timeline.push({
