@@ -1,4 +1,5 @@
-import { VIDEO_TUTORIAL_MESSAGE } from "./constants";
+import { VIDEO_TUTORIAL_MESSAGE } from './constants';
+
 export function stimulus(
   showThermometer,
   mercuryHeight,
@@ -118,4 +119,4 @@ export const videoTutorial = `
   <p style=font-size: 18px; color: #333; max-width: 80%; line-height: 1.5;">
     ${VIDEO_TUTORIAL_MESSAGE}
   </p>
-</div>`
+</div>`;

@@ -1,5 +1,6 @@
 import { ParameterType } from 'jspsych';
-import { createKeyboard } from './keyboard'; // Assuming you have a function to create the keyboard
+
+// Assuming you have a function to create the keyboard
 import {
   AUTO_DECREASE_AMOUNT,
   AUTO_DECREASE_RATE,
@@ -11,6 +12,7 @@ import {
   PREMATURE_KEY_RELEASE_ERROR_MESSAGE,
   PREMATURE_KEY_RELEASE_ERROR_TIME,
 } from './constants';
+import { createKeyboard } from './keyboard';
 import { stimulus } from './stimulus';
 
 class TaskPlugin {
@@ -65,7 +67,7 @@ class TaskPlugin {
       showKeyboard: {
         type: ParameterType.BOOL,
         default: false,
-      }
+      },
     },
   };
 

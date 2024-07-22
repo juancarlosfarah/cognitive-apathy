@@ -37,7 +37,7 @@ class ReleaseKeysPlugin {
   trial(display_element, trial) {
     let keysState = {};
     KEYS_TO_HOLD.forEach((key) => {
-      keysState[key.toLowerCase()] = false;
+      keysState[key.toLowerCase()] = true;
     });
     let errorOccurred = false;
 
@@ -72,7 +72,7 @@ class ReleaseKeysPlugin {
       display_element.innerHTML = '';
       this.jsPsych.finishTrial({ errorOccurred });
     };
-    checkIfAllKeysReleased()
+    checkIfAllKeysReleased();
     // Add event listeners
     document.addEventListener('keyup', handleKeyUp);
     document.addEventListener('keydown', handleKeyDown);

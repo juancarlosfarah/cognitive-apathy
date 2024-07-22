@@ -64,7 +64,7 @@ export const SUCCESS_SCREEN_DURATION = 500; // How long does the "SUCCESS" or "F
 export const COUNTDOWN_TIME = 3; // how long the countdown is after "A", "W," and "E" are pressed before trial starts (s)
 export const PREMATURE_KEY_RELEASE_ERROR_TIME = 1000; // how long does the premature release error appear (ms)
 export const KEY_TAPPED_EARLY_ERROR_TIME = 3000; //how long does the key tapped early error appear (ms)
-export const KEYBOARD_LAYOUT = '' //https://github.com/simple-keyboard/simple-keyboard-layouts/tree/master/src/lib/layouts
+export const KEYBOARD_LAYOUT = ''; //https://github.com/simple-keyboard/simple-keyboard-layouts/tree/master/src/lib/layouts
 
 // MESSAGES
 export const PASSED_VALIDATION_MESSAGE =
@@ -89,16 +89,15 @@ export const KEY_TAPPED_EARLY_MESSAGE =
 export const RELEASE_KEYS_MESSAGE = 'Release the Keys';
 export const REWARD_TOTAL_MESSAGE = (totalSuccessfulReward) =>
   `Total reward for successful trials is: $${totalSuccessfulReward}. Press Enter to continue.`;
-export const TUTORIAL_MESSAGE_1 = 'Welcome to the experiment. Please follow the directions. Press <b>Enter</b> to begin.'
-export const VIDEO_TUTORIAL_MESSAGE = 
-`The video above demonstrates how the experiment will be performed.
+export const TUTORIAL_MESSAGE_1 =
+  'Welcome to the experiment. Please follow the directions. Press <b>Enter</b> to begin.';
+export const VIDEO_TUTORIAL_MESSAGE = `The video above demonstrates how the experiment will be performed.
 <br>
 <br>After clicking the <b>Continue</b> button, you will have the opportunity to practice before the experiment begins.
 <br> You will place your pinky on the <b>${KEYS_TO_HOLD[0].toUpperCase()}</b> key, place your ring finger on the <b>${KEYS_TO_HOLD[1].toUpperCase()}</b> key, and place your middle finger on the <b>${KEYS_TO_HOLD[2].toUpperCase()}</b> key.
-<br> While still holding down with these fingers, when you see the <b>GO!</b>, tap the <b>${KEY_TO_PRESS.toUpperCase()}</b> with your index finger as fast as you can!`
-export const INTERACTIVE_KEYBOARD_TUTORIAL_MESSAGE =  
-`<br> On your physical keyboard:
+<br> While still holding down with these fingers, when you see the <b>GO!</b>, tap the <b>${KEY_TO_PRESS.toUpperCase()}</b> with your index finger as fast as you can!`;
+export const INTERACTIVE_KEYBOARD_TUTORIAL_MESSAGE = `<br> On your physical keyboard:
 <br>Place your <b>pinky finger</b> on the <b>${KEYS_TO_HOLD[0].toUpperCase()}</b> key, place your <b>ring finger</b> on the <b>${KEYS_TO_HOLD[1].toUpperCase()}</b> key, and place your <b>middle finger</b> on the <b>${KEYS_TO_HOLD[2].toUpperCase()}</b> key.
-<br> While still holding down with these fingers, when you see the <b>GO!</b>, tap the <b>${KEY_TO_PRESS.toUpperCase()}</b> with your index finger as fast as you can!`
+<br> While still holding down with these fingers, when you see the <b>GO!</b>, tap the <b>${KEY_TO_PRESS.toUpperCase()}</b> with your index finger as fast as you can!`;
 export const COUNTDOWN_DIRECTIONS = `Keep on holding with these fingers! 
-<br>While still holding with your other fingers, when you see the <b>GO!</b>, tap the <b>${KEY_TO_PRESS.toUpperCase()}</b> with your index finger as fast as you can!`
+<br>While still holding with your other fingers, when you see the <b>GO!</b>, tap the <b>${KEY_TO_PRESS.toUpperCase()}</b> with your index finger as fast as you can!`;

@@ -1,7 +1,6 @@
 import Keyboard from 'simple-keyboard';
 import 'simple-keyboard/build/css/index.css';
 
-
 export function createKeyboard(displayElement) {
   console.log('Creating keyboard...');
 
@@ -30,11 +29,11 @@ export function createKeyboard(displayElement) {
 
   // Initialize the keyboard
   const keyboard = new Keyboard(keyboardDiv, {
-    onChange: input => {
+    onChange: (input) => {
       document.querySelector('.input').value = input;
       console.log('Input changed', input);
     },
-    onKeyPress: button => {
+    onKeyPress: (button) => {
       console.log('Button pressed', button);
 
       // Handle shift and caps lock
@@ -44,7 +43,6 @@ export function createKeyboard(displayElement) {
   });
 
   console.log('Keyboard initialized.');
-
 
   // Function to handle shift and caps lock
   const handleShift = (keyboard) => {

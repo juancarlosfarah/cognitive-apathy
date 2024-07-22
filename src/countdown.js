@@ -1,12 +1,13 @@
 import { ParameterType } from 'jspsych';
-import { createKeyboard } from './keyboard';
+
 import {
+  COUNTDOWN_DIRECTIONS, // Import the new constant
   COUNTDOWN_TIME,
   HOLD_KEYS_MESSAGE,
   KEYS_TO_HOLD,
   KEY_TO_PRESS,
-  COUNTDOWN_DIRECTIONS, // Import the new constant
 } from './constants';
+import { createKeyboard } from './keyboard';
 
 class CountdownTrialPlugin {
   static info = {
@@ -55,7 +56,6 @@ class CountdownTrialPlugin {
 
   trial(displayElement, trial) {
     console.log('Trial started with parameters:', trial);
-    
 
     let keysState = {};
     (trial.keystoHold || []).forEach(
@@ -192,7 +192,7 @@ class CountdownTrialPlugin {
       const trialData = {
         keys_held: areKeysHeld,
         keyTappedEarlyFlag: trial.keyTappedEarlyFlag,
-        task: 'countdown'
+        task: 'countdown',
       };
 
       displayElement.innerHTML = ''; // Clear the DOM
