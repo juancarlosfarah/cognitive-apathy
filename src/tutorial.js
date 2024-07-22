@@ -9,6 +9,7 @@ import {
   INTERACTIVE_KEYBOARD_TUTORIAL_MESSAGE,
   KEYS_TO_HOLD,
   VIDEO_TUTORIAL_MESSAGE,
+  DOMINANT_HAND_MESSAGE
 } from './constants';
 import CountdownTrialPlugin from './countdown';
 import {
@@ -27,13 +28,31 @@ export const interactiveCountdown = {
   },
 };
 
-export const videoDemo = (message, video) => ({
+export const instructionalTrial = (message, video) => ({
   type: HtmlKeyboardResponsePlugin,
   choices: ['Enter'],
   stimulus: function () {
     return videoStimulus(message, video);
   },
 });
+
+export let DOMINANT_HAND = 'right'
+export const dominantHand = {
+  type: htmlButtonResponse,
+  stimulus: DOMINANT_HAND_MESSAGE,
+  choices: ['Left handed', 'Right handed'],
+  data: {
+    task: 'dominant-hand'
+  },
+  on_finish: function(data) {
+    if(data.response === 0) {
+      DOMINANT_HAND = 'left';
+    } else {
+      DOMINANT_HAND = 'right';
+    }
+  }
+};
+
 
 export const noStimuliVideoTutorial = {
   type: htmlButtonResponse,

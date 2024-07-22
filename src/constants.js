@@ -175,3 +175,10 @@ export const ACCEPTANCE_TRIAL_MESSAGE = `
 <br>Press the <b>Left Arrow</b> on your keyboard to accept the trial
 <br>Or
 <br>Press the <b>Right Arrow</b> on your keyboard to deny the trial`;
+
+export const DOMINANT_HAND_MESSAGE = `
+Select your dominant hand.
+`
+export const TRIAL_FAILED = 'Trial Failed'
+
+export const TRIAL_SUCCEEDED = 'Trial Succeeded'

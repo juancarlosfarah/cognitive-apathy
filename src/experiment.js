@@ -56,6 +56,8 @@ import {
   TUTORIAL_MESSAGE_1,
   VALIDATION_DIRECTIONS,
   VIDEO_TUTORIAL_MESSAGE,
+  TRIAL_SUCCEEDED,
+  TRIAL_FAILED,
 } from './constants';
 import CountdownTrialPlugin from './countdown';
 import { KeyboardInteractionPlugin } from './keyboard';
@@ -76,7 +78,9 @@ import {
   noStimuliVideoTutorial,
   stimuliVideoTutorial,
   validationVideoTutorial,
-  videoDemo,
+  instructionalTrial,
+  dominantHand,
+  DOMINANT_HAND
 } from './tutorial';
 import { autoIncreaseAmount, randomNumberBm } from './utils';
 import { handleValidationFinish, validationFailures } from './validation';
@@ -103,6 +107,14 @@ export async function run({
     audio: assetPaths.audio,
     video: '../assets/videos',
   });
+  
+/*   timeline.push(
+    {timeline: 
+    [dominantHand],
+  on_finish: function(){
+    this.jsPsych.getDisplayElement().innerHTML = '';
+  }}
+  ) */
 
   // Release keys step
   const releaseKeysStep = {
@@ -111,6 +123,7 @@ export async function run({
     valid_responses: KEYS_TO_HOLD,
   };
 
+  // Did 
   const successScreen = {
     timeline: [
       {
@@ -118,9 +131,9 @@ export async function run({
         stimulus: function () {
           const previousTrial = jsPsych.data.get().last(1).values()[0];
           if (previousTrial.success) {
-            return '<p style="color: green; font-size: 48px;">Trial Succeeded</p>';
+            return `<p style="color: green; font-size: 48px;">${TRIAL_SUCCEEDED}</p>`;
           } else {
-            return '<p style="color: red; font-size: 48px;">Trial Failed</p>';
+            return `<p style="color: red; font-size: 48px;">${TRIAL_FAILED}</p>`;
           }
         },
         choices: 'NO_KEYS',
@@ -334,6 +347,7 @@ export async function run({
         },
       ],
       repetitions: repetitions,
+      // Repeat until the user has completed minimum number of calibration trials without releasing keys early or tapping early
       loop_function: function () {
         const requiredSuccesses =
           calibrationPart === 'calibrationPart1'
@@ -602,6 +616,7 @@ export async function run({
       practiceTrial,
       loadingBarTrial(true),
     ],
+    // Repeat if the keys were released early or if user tapped before go.
     loop_function: function () {
       const lastPracticeData = jsPsych.data
         .get()
@@ -614,6 +629,7 @@ export async function run({
     },
   };
 
+  // Video + instructions for 
   timeline.push({
     timeline: [noStimuliVideoTutorial],
     on_finish: function () {
@@ -621,8 +637,11 @@ export async function run({
       jsPsych.getDisplayElement().innerHTML = '';
     },
   });
+
   timeline.push(practiceLoop);
-  timeline.push(videoDemo(CALIBRATION_PART_1_DIRECTIONS));
+
+  timeline.push(instructionalTrial(CALIBRATION_PART_1_DIRECTIONS));
+  
   timeline.push({
     timeline: [
       createCalibrationTrial(
@@ -714,7 +733,7 @@ export async function run({
   timeline.push(...validationTrials);
 
   let demoTrialSuccesses = 0;
-  timeline.push(videoDemo(TRIAL_BLOCKS_DIRECTIONS));
+  timeline.push(instructionalTrial(TRIAL_BLOCKS_DIRECTIONS));
 
   /**
    * @function createTrialBlock
@@ -827,7 +846,7 @@ export async function run({
       );
     }
 
-    if (blockName) {
+    if (blockName) { 
       const numTrialsPerCombination = Math.floor(
         NUM_TRIALS / PARAMETER_COMBINATIONS.length,
       );
@@ -1071,20 +1090,18 @@ export async function run({
     type: HtmlKeyboardResponsePlugin,
     choices: ['enter'],
     stimulus: function () {
-      const allTrials = jsPsych.data.get().values(); // Get all trials once
-      const totalSuccessfulReward = calculateTotalReward(allTrials);
-      return `<p>${REWARD_TOTAL_MESSAGE(REWARD_TOTAL_MESSAGE)}</p>`;
+      const totalSuccessfulReward = calculateTotalReward();
+      return `<p>${REWARD_TOTAL_MESSAGE(totalSuccessfulReward)}</p>`;
     },
     data: {
       task: 'finish_experiment',
     },
     on_start: function () {
       const allTrials = jsPsych.data.get().values(); // Get all trials once
-      blockTrialData = allTrials.filter((trial) => trial.task === 'block');
+      blockTrialData = allTrials.filter({task: 'block'});
     },
     on_finish: function (data) {
-      const allTrials = jsPsych.data.get().values(); // Get all trials once
-      const totalSuccessfulReward = calculateTotalReward(allTrials);
+      const totalSuccessfulReward = calculateTotalReward();
       data.totalReward = totalSuccessfulReward;
 
       const allData = jsPsych.data.get().json();
