@@ -192,6 +192,7 @@ class CountdownTrialPlugin {
       const trialData = {
         keys_held: areKeysHeld,
         keyTappedEarlyFlag: trial.keyTappedEarlyFlag,
+        task: 'countdown'
       };
 
       displayElement.innerHTML = ''; // Clear the DOM

@@ -523,8 +523,21 @@ const practiceTrial = {
       showThermometer: false,
       data: {
         task: 'practice',
-      }
+      },
+                  on_start: function (trial) {
+              const lastCountdownData = jsPsych.data
+                .get()
+                .filter({ task: 'countdown' })
+                .last(1)
+                .values()[0];
+              const keyTappedEarlyFlag = lastCountdownData
+                ? lastCountdownData.keyTappedEarlyFlag
+                : false;
+              // Update the trial parameters with keyTappedEarlyFlag
+              trial.keyTappedEarlyFlag = keyTappedEarlyFlag;
+            },
     },
+    
     {
       timeline: [releaseKeysStep],
       conditional_function: function () {
@@ -545,7 +558,7 @@ const practiceLoop = {
         jsPsych.getDisplayElement().innerHTML = '';
     }
     },
-    interactiveCountdown,
+      interactiveCountdown,
     {
       type: HtmlKeyboardResponsePlugin,
       stimulus: '<p style="color: green; font-size: 48px;">GO</p>',

@@ -10,7 +10,10 @@ import CountdownTrialPlugin from './countdown';
 export const interactiveCountdown = {
   type: CountdownTrialPlugin,
   message: INTERACTIVE_KEYBOARD_TUTORIAL_MESSAGE,
-  showKeyboard: true
+  showKeyboard: true,
+  data:{
+    task: 'countdown',
+    },
 };
 
 export const videoDemo = (message, video) => ({
