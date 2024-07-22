@@ -1,4 +1,4 @@
-import { VIDEO_TUTORIAL_MESSAGE } from './constants';
+import { NO_STIMULI_VIDEO_TUTORIAL_MESSAGE, STIMULI_VIDEO_TUTORIAL_MESSAGE, VALIDATION_VIDEO_TUTORIAL_MESSAGE, ACCEPTANCE_TRIAL_MESSAGE} from './constants';
 
 export function stimulus(
   showThermometer,
@@ -69,7 +69,7 @@ export const acceptanceThermometer = (bounds, reward) => `
     </div>
   </div>
   <p style="text-align: center;">Reward: $${reward}</p>
-  <p style="text-align: center;">Do you accept the trial? (Arrow Left = Yes, Arrow Right = No)</p>
+  <p style="text-align: center;">${ACCEPTANCE_TRIAL_MESSAGE}</p>
 </div>
 `;
 
@@ -106,17 +106,53 @@ export const loadingBar = () => `
     <link rel="stylesheet" type="text/css" href="import '../styles/main.scss';">
   </div>
 `;
-export const videoTutorial = `
+export const noStimuliVideo = `
 <div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+<p style=font-size: 18px; color: #333; max-width: 80%; line-height: 1.5;">
+${NO_STIMULI_VIDEO_TUTORIAL_MESSAGE}
+</p>
   <video
     id="videoTutorial"
     title="Tutorial Video"
     style="background-color: rgb(255, 255, 255); width: 640px; height: 200px;"
-    src="../assets/videos/temporary_keyboard_tutorial.mp4"
+    src="../assets/videos/calibration-1-video.mp4"
     autoplay
     muted
+    loop
   ></video>
-  <p style=font-size: 18px; color: #333; max-width: 80%; line-height: 1.5;">
-    ${VIDEO_TUTORIAL_MESSAGE}
-  </p>
+
+</div>`;
+
+
+export const stimuliVideo = `
+<div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+<p style=font-size: 18px; color: #333; max-width: 80%; line-height: 1.5;">
+${STIMULI_VIDEO_TUTORIAL_MESSAGE}
+</p>
+  <video
+    id="videoTutorial"
+    title="Tutorial Video"
+    style="background-color: rgb(255, 255, 255); width: 640px; height: 400px;"
+    src="../assets/videos/calibration-2-video.mp4"
+    autoplay
+    muted
+    loop
+  ></video>
+</div>`;
+
+export const validationVideo = `
+<div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+<p style=font-size: 18px; color: #333; max-width: 80%; line-height: 1.5;">
+${VALIDATION_VIDEO_TUTORIAL_MESSAGE}
+</p>
+  <video
+    id="videoTutorial"
+    title="Tutorial Video"
+    style="background-color: rgb(255, 255, 255); width: 640px; height: 400px;"
+    src="../assets/videos/validation-video.mp4"
+    autoplay
+    muted
+    loop
+  ></video>
+
 </div>`;

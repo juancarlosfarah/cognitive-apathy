@@ -51,6 +51,11 @@ import {
   TUTORIAL_MESSAGE_1,
   VALIDATION_DIRECTIONS,
   VIDEO_TUTORIAL_MESSAGE,
+  ADDITIONAL_CALIBRATION_PART_1_DIRECTIONS,
+  CALIBRATION_PART_1_ENDING_MESSAGE,
+  CALIBRATION_PART_2_ENDING_MESSAGE,
+  TRIAL_BLOCKS_DIRECTIONS,
+  DEMO_TRIAL_MESSAGE
 } from './constants';
 import CountdownTrialPlugin from './countdown';
 import { KeyboardInteractionPlugin } from './keyboard';
@@ -69,7 +74,9 @@ import {
   instructionalCountdownSte,
   interactiveCountdown,
   videoDemo,
-  videoTrial1,
+  noStimuliVideoTutorial,
+  stimuliVideoTutorial,
+  validationVideoTutorial
 } from './tutorial';
 import { autoIncreaseAmount, randomNumberBm } from './utils';
 import { handleValidationFinish, validationFailures } from './validation';
@@ -370,7 +377,7 @@ export async function run({
               calibrationPart2Successes = 0;
             }
             console.log(`Reset successes for ${calibrationPart}`);
-            return `<p>Starting additional calibration trials for ${calibrationPart}</p>`;
+            return `<p>${ADDITIONAL_CALIBRATION_PART_1_DIRECTIONS}</p>`;
           },
         },
         createCalibrationTrial(
@@ -563,7 +570,7 @@ export async function run({
             : false;
           // Update the trial parameters with keyTappedEarlyFlag
           trial.keyTappedEarlyFlag = keyTappedEarlyFlag;
-          this.data.keysReleasedFlag = trial.keysReleasedFlag
+          console.log(keyTappedEarlyFlag)
         },
       },
       {
@@ -575,16 +582,6 @@ export async function run({
         },
       },
     ],
-    loop_function: function () {
-      const lastPracticeData = jsPsych.data
-        .get()
-        .filter({ task: 'practice' })
-        .last(1)
-        .values()[0];
-      return (
-        lastPracticeData.keysReleasedFlag || lastPracticeData.keyTappedEarlyFlag
-      );
-    },
   };
 
   const practiceLoop = {
@@ -600,21 +597,31 @@ export async function run({
         },
       },
       practiceTrial,
+      loadingBarTrial(true)
     ],
+    loop_function: function () {
+      const lastPracticeData = jsPsych.data
+        .get()
+        .filter({ task: 'practice' })
+        .last(1)
+        .values()[0];
+      return (
+        lastPracticeData.keysReleasedFlag || lastPracticeData.keyTappedEarlyFlag
+      );
+    },
   };
 
 
-  timeline.push(videoDemo(CALIBRATION_PART_1_DIRECTIONS));
   timeline.push(     
      {
-    timeline: [videoTrial1],
+    timeline: [noStimuliVideoTutorial],
     on_finish: function () {
       // Clear the display element
       jsPsych.getDisplayElement().innerHTML = '';
     },
   },)
-/*   timeline.push(practiceLoop);
- */
+  timeline.push(practiceLoop);
+  timeline.push(videoDemo(CALIBRATION_PART_1_DIRECTIONS));
   timeline.push({
     timeline: [
       createCalibrationTrial(
@@ -626,22 +633,6 @@ export async function run({
         NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
         'calibrationPart1',
       ),
-      {
-        type: HtmlKeyboardResponsePlugin,
-        choices: ['enter'],
-        stimulus: function () {
-          medianTapsPart1 = calculateMedianTapCount(
-            'calibrationPart1',
-            NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
-          );
-          console.log(`medianTapsPart1: ${medianTapsPart1}`);
-          if (medianTapsPart1 >= MINIMUM_CALIBRATION_MEDIAN) {
-            medianTaps = medianTapsPart1;
-            console.log(`medianTaps updated to: ${medianTaps}`);
-          }
-          return `<p>Calibration Part 1 Complete</p>`;
-        },
-      },
     ],
   });
   timeline.push(
@@ -650,6 +641,32 @@ export async function run({
       NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
     ),
   );
+  timeline.push(      {
+    type: HtmlKeyboardResponsePlugin,
+    choices: ['enter'],
+    stimulus: function () {
+      medianTapsPart1 = calculateMedianTapCount(
+        'calibrationPart1',
+        NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
+      );
+      console.log(`medianTapsPart1: ${medianTapsPart1}`);
+      if (medianTapsPart1 >= MINIMUM_CALIBRATION_MEDIAN) {
+        medianTaps = medianTapsPart1;
+        console.log(`medianTaps updated to: ${medianTaps}`);
+      }
+      return `<p>${CALIBRATION_PART_1_ENDING_MESSAGE}</p>`;
+    },
+  },)
+
+  timeline.push(     
+    {
+   timeline: [stimuliVideoTutorial],
+   on_finish: function () {
+     // Clear the display element
+     jsPsych.getDisplayElement().innerHTML = '';
+   },
+ })
+
   timeline.push({
     timeline: [
       createCalibrationTrial(
@@ -661,22 +678,6 @@ export async function run({
         NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
         'calibrationPart2',
       ),
-      {
-        type: HtmlKeyboardResponsePlugin,
-        choices: ['enter'],
-        stimulus: function () {
-          medianTapsPart2 = calculateMedianTapCount(
-            'calibrationPart2',
-            NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
-          );
-          console.log(`medianTapsPart2: ${medianTapsPart2}`);
-          if (medianTapsPart2 >= MINIMUM_CALIBRATION_MEDIAN) {
-            medianTaps = medianTapsPart2;
-            console.log(`medianTaps updated to: ${medianTaps}`);
-          }
-          return `<p>Calibration Part 2 Complete</p>`;
-        },
-      },
     ],
   });
   timeline.push(
@@ -685,10 +686,36 @@ export async function run({
       NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
     ),
   );
+  timeline.push(      {
+    type: HtmlKeyboardResponsePlugin,
+    choices: ['enter'],
+    stimulus: function () {
+      medianTapsPart2 = calculateMedianTapCount(
+        'calibrationPart2',
+        NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
+      );
+      console.log(`medianTapsPart2: ${medianTapsPart2}`);
+      if (medianTapsPart2 >= MINIMUM_CALIBRATION_MEDIAN) {
+        medianTaps = medianTapsPart2;
+        console.log(`medianTaps updated to: ${medianTaps}`);
+      }
+      return `<p>${CALIBRATION_PART_2_ENDING_MESSAGE}</p>`;
+    },
+  })
+
+  timeline.push(     
+    {
+   timeline: [validationVideoTutorial],
+   on_finish: function () {
+     // Clear the display element
+     jsPsych.getDisplayElement().innerHTML = '';
+   },
+ })
 
   timeline.push(...validationTrials);
 
   let demoTrialSuccesses = 0;
+  timeline.push(videoDemo(TRIAL_BLOCKS_DIRECTIONS));
 
   /**
    * @function createTrialBlock
@@ -716,7 +743,7 @@ export async function run({
         {
           type: HtmlKeyboardResponsePlugin,
           stimulus: () => {
-            return `<p>The delay you experience in the demo will be the same in the next block of trials.</p><p>Press Enter to continue.</p>`;
+            return `<p>${DEMO_TRIAL_MESSAGE}</p>`;
           },
           choices: ['enter'],
         },
@@ -874,6 +901,7 @@ export async function run({
                           .values()[0];
                         return acceptanceData ? acceptanceData.accepted : null;
                       },
+                      reward: trialData.reward
                     },
                     on_start: function (trial) {
                       const lastCountdownData = jsPsych.data
@@ -930,29 +958,26 @@ export async function run({
     return { timeline };
   };
 
-  function calculateTotalReward(allTrials) {
-    const blockTrials = allTrials.filter((trial) => trial.task === 'block');
-    const successfulTrials = blockTrials.filter(
-      (trial) => trial.success === true,
-    );
-    return successfulTrials.reduce((sum, trial) => sum + trial.reward, 0);
+  function calculateTotalReward() {
+    const successfulTrials = jsPsych.data.get().filter({task: 'block', success: true});
+    console.log(successfulTrials)
+    console.log(successfulTrials.select('reward'))
+    return successfulTrials.select('reward').sum()
   }
 
   function createRewardDisplayTrial() {
-    const allTrials = jsPsych.data.get().values(); // Get all trials once
-
     return {
       type: HtmlKeyboardResponsePlugin,
       choices: ['enter'],
       stimulus: function () {
-        const totalSuccessfulReward = calculateTotalReward(allTrials);
+        const totalSuccessfulReward = calculateTotalReward();
         return `<p>${REWARD_TOTAL_MESSAGE(totalSuccessfulReward)}</p>`;
       },
       data: {
         task: 'display_reward',
       },
       on_finish: function (data) {
-        const totalSuccessfulReward = calculateTotalReward(allTrials);
+        const totalSuccessfulReward = calculateTotalReward();
         data.totalReward = totalSuccessfulReward;
       },
     };

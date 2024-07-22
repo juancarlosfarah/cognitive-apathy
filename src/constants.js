@@ -26,8 +26,8 @@ export const HARD_BOUNDS = [70, 90];
 export const BOUND_OPTIONS = [EASY_BOUNDS, MEDIUM_BOUNDS, HARD_BOUNDS];
 
 // CALIBRATION CONSTANTS
-export const NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS = 2; // Number of calibration trials without stimuli
-export const NUM_CALIBRATION_WITH_FEEDBACK_TRIALS = 2; // Number of calibration trials with stimuli
+export const NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS = 1; // Number of calibration trials without stimuli
+export const NUM_CALIBRATION_WITH_FEEDBACK_TRIALS = 1; // Number of calibration trials with stimuli
 export const NUM_CALIBRATION_TRIALS =
   NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS +
   NUM_CALIBRATION_WITH_FEEDBACK_TRIALS;
@@ -68,13 +68,61 @@ export const KEYBOARD_LAYOUT = ''; //https://github.com/simple-keyboard/simple-k
 
 // MESSAGES
 export const PASSED_VALIDATION_MESSAGE =
-  'Congratulations! You passed the extra validation trials.';
+`
+<br>You will now enter the next phase of the experiment.
+<br>
+<br> Press the <b>Enter</b> key to continue.`;
 export const FAILED_VALIDATION_MESSAGE =
-  'You did not pass the extra validation trials. Experiment now ending.';
+`
+<br>Unfortunately, you are not eligible for this experiment.
+<br>Please fine your experimenter, and let them know.`;
+;
 export const CALIBRATION_PART_1_DIRECTIONS =
-  'INSERT CALIBRATION PART 1 DIRECTIONS HERE';
+  `
+  <br>You will perform the same task as you did in the practice.
+  <br>
+  <br> During the trial, remember to continue holding the <b>${KEYS_TO_HOLD[0].toUpperCase()}</b>, <b>${KEYS_TO_HOLD[1].toUpperCase()}</b>, and <b>${KEYS_TO_HOLD[2].toUpperCase()}</b> until told to release them.
+  <br> Do not tap the <b>${KEY_TO_PRESS.toUpperCase()}</b> key until the <b>GO!</b> appears.
+  <br>
+  <br> Press the <b>Enter</b> key to begin.`;
+  ;
+export const ADDITIONAL_CALIBRATION_PART_1_DIRECTIONS =   `
+<br>You will now perform more additional tasks which are the same as you just completed
+<br>
+<br>Make sure you are tapping the <b>${KEY_TO_PRESS.toUpperCase()}</b> key as fast as you can after the <b>GO!</b> appears.
+<br>
+<br> During the trial, remember to continue holding the <b>${KEYS_TO_HOLD[0].toUpperCase()}</b>, <b>${KEYS_TO_HOLD[1].toUpperCase()}</b>, and <b>${KEYS_TO_HOLD[2].toUpperCase()}</b> until told to release them.
+<br> Do not tap the <b>${KEY_TO_PRESS.toUpperCase()}</b> key until the <b>GO!</b> appears.
+<br>
+<br> Press the <b>Enter</b> key to begin.`;
+;
+export const CALIBRATION_PART_1_ENDING_MESSAGE = 
+`
+<br>You will now enter the next phase of the experiment.
+<br>
+<br> Press the <b>Enter</b> key to continue.`;
+
 export const CALIBRATION_PART_2_DIRECTIONS =
-  'INSERT CALIBRATION PART 2 DIRECTIONS HERE';
+``
+export const TRIAL_BLOCKS_DIRECTIONS = `
+<br>During this next phase of the experiment, you will have the choice to accept or deny a trial.
+<br>
+<br> You may either accept a trial with the <b>Left Arrow</b> on your keyboard
+<br> Or
+<br> You may deny the trial with the <b>Right Arrow</b> on your keyboard
+<br> 
+<br>The required target height and corresponding reward will be shown during the decision phase. 
+<br>If you accept the trial and red bar ends in the target area, you will receive the reward designated in the experiment.
+<br>
+<br>Before a set of trials begins, you will have a set of practice trials to familiarize yourself.
+<br>
+<br>Press the <b>Enter</b> key to continue.`;
+
+export const CALIBRATION_PART_2_ENDING_MESSAGE = 
+`
+<br>You will now enter the next phase of the experiment.
+<br>
+<br> Press the <b>Enter</b> key to continue.`;
 export const CALIBRATION_FINISHED_DIRECTIONS =
   'You have finished the first set of trials... INSERT MORE HERE';
 export const VALIDATION_DIRECTIONS = 'INSERT VALIDATION DIRECTIONS HERE';
@@ -88,16 +136,52 @@ export const KEY_TAPPED_EARLY_MESSAGE =
   'Key was tapped too early. Please wait for the appropriate time to press the key.';
 export const RELEASE_KEYS_MESSAGE = 'Release the Keys';
 export const REWARD_TOTAL_MESSAGE = (totalSuccessfulReward) =>
-  `Total reward for successful trials is: $${totalSuccessfulReward}. Press Enter to continue.`;
+  `Total reward for successful trials is: $${totalSuccessfulReward}. Press <b>Enter</b> to continue.`;
+
 export const TUTORIAL_MESSAGE_1 =
   'Welcome to the experiment. Please follow the directions. Press <b>Enter</b> to begin.';
-export const VIDEO_TUTORIAL_MESSAGE = `The video above demonstrates how the experiment will be performed.
+export const NO_STIMULI_VIDEO_TUTORIAL_MESSAGE = `The video below demonstrates how the experiment will be performed.
 <br>
 <br>After clicking the <b>Continue</b> button, you will have the opportunity to practice before the experiment begins.
 <br> You will place your pinky on the <b>${KEYS_TO_HOLD[0].toUpperCase()}</b> key, place your ring finger on the <b>${KEYS_TO_HOLD[1].toUpperCase()}</b> key, and place your middle finger on the <b>${KEYS_TO_HOLD[2].toUpperCase()}</b> key.
-<br> While still holding down with these fingers, when you see the <b>GO!</b>, tap the <b>${KEY_TO_PRESS.toUpperCase()}</b> with your index finger as fast as you can!`;
-export const INTERACTIVE_KEYBOARD_TUTORIAL_MESSAGE = `<br> On your physical keyboard:
+<br> While still holding down with these fingers, when you see the <b>GO!</b>, tap the <b>${KEY_TO_PRESS.toUpperCase()}</b> with your index finger as fast as you can!
+<br> Do not tap the <b>${KEY_TO_PRESS.toUpperCase()}</b> key until the <b>GO!</b> appears.`;
+
+export const STIMULI_VIDEO_TUTORIAL_MESSAGE = `
+<br> Get the red bar as high as possible with your taps!
+<br> Do not tap the <b>${KEY_TO_PRESS.toUpperCase()}</b> key until the <b>GO!</b> appears.
+<br>
+<br> The video below demonstrates how the next section of the experiment will be performed.
+<br> Click <b>Continue</b> after watching the video`;
+
+export const VALIDATION_VIDEO_TUTORIAL_MESSAGE = `
+<br> Get the red bar in the target area with your taps!
+<br> Do not tap the <b>${KEY_TO_PRESS.toUpperCase()}</b> key until the <b>GO!</b> appears.
+<br> The video below demonstrates how the next section of the experiment will be performed.
+<br> Click <b>Continue</b> after watching the video`;
+
+export const INTERACTIVE_KEYBOARD_TUTORIAL_MESSAGE = `
+<br> <b>PRACTICE</b>
+<br>On your physical keyboard:
 <br>Place your <b>pinky finger</b> on the <b>${KEYS_TO_HOLD[0].toUpperCase()}</b> key, place your <b>ring finger</b> on the <b>${KEYS_TO_HOLD[1].toUpperCase()}</b> key, and place your <b>middle finger</b> on the <b>${KEYS_TO_HOLD[2].toUpperCase()}</b> key.
 <br> While still holding down with these fingers, when you see the <b>GO!</b>, tap the <b>${KEY_TO_PRESS.toUpperCase()}</b> with your index finger as fast as you can!`;
 export const COUNTDOWN_DIRECTIONS = `Keep on holding with these fingers! 
 <br>While still holding with your other fingers, when you see the <b>GO!</b>, tap the <b>${KEY_TO_PRESS.toUpperCase()}</b> with your index finger as fast as you can!`;
+
+export const DEMO_TRIAL_MESSAGE = `
+<br>The next set of trials you will complete are practice trials.
+<br>
+<br>Get the red bar as high as possible during the practice trials.
+<br>
+<br>Remember to hold the keys until prompted.
+<br>Remember to only tap when the <b>GO!</b> appears.
+<br>
+<br> Press the <b>Enter</b> key to continue.`;
+
+export const ACCEPTANCE_TRIAL_MESSAGE = `
+<br>The target height and reward are shown above.
+<br>
+<br>Press the <b>Left Arrow</b> on your keyboard to accept the trial
+<br>Or
+<br>Press the <b>Right Arrow</b> on your keyboard to deny the trial`
+

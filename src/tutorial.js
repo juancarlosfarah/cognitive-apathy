@@ -11,7 +11,7 @@ import {
   VIDEO_TUTORIAL_MESSAGE,
 } from './constants';
 import CountdownTrialPlugin from './countdown';
-import { videoStimulus, videoTutorial } from './stimulus';
+import { videoStimulus, noStimuliVideo, stimuliVideo, validationVideo } from './stimulus';
 
 export const interactiveCountdown = {
   type: CountdownTrialPlugin,
@@ -30,9 +30,26 @@ export const videoDemo = (message, video) => ({
   },
 });
 
-export const videoTrial1 = {
+export const noStimuliVideoTutorial = {
   type: htmlButtonResponse,
-  stimulus: [videoTutorial],
+  stimulus: [noStimuliVideo],
   choices: ['Continue'],
   enable_button_after: 15000,
 };
+
+export const stimuliVideoTutorial = {
+  type: htmlButtonResponse,
+  stimulus: [stimuliVideo],
+  choices: ['Continue'],
+  enable_button_after: 15000,
+};
+
+export const validationVideoTutorial = {
+  type: htmlButtonResponse,
+  stimulus: [validationVideo],
+  choices: ['Continue'],
+  enable_button_after: 15000,
+};
+
+
+
