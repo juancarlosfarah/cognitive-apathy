@@ -43,7 +43,6 @@ class ReleaseKeysPlugin {
 
     // Display the stimulus
     display_element.innerHTML = trial.stimulus;
-
     // Handle key up events
     const handleKeyUp = (event) => {
       if (KEYS_TO_HOLD.includes(event.key.toLowerCase())) {
@@ -66,7 +65,6 @@ class ReleaseKeysPlugin {
         endTrial();
       }
     };
-
     // End the trial
     const endTrial = () => {
       document.removeEventListener('keyup', handleKeyUp);
@@ -74,7 +72,7 @@ class ReleaseKeysPlugin {
       display_element.innerHTML = '';
       this.jsPsych.finishTrial({ errorOccurred });
     };
-
+    checkIfAllKeysReleased()
     // Add event listeners
     document.addEventListener('keyup', handleKeyUp);
     document.addEventListener('keydown', handleKeyDown);
