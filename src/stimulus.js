@@ -1,4 +1,9 @@
-import { NO_STIMULI_VIDEO_TUTORIAL_MESSAGE, STIMULI_VIDEO_TUTORIAL_MESSAGE, VALIDATION_VIDEO_TUTORIAL_MESSAGE, ACCEPTANCE_TRIAL_MESSAGE} from './constants';
+import {
+  ACCEPTANCE_TRIAL_MESSAGE,
+  NO_STIMULI_VIDEO_TUTORIAL_MESSAGE,
+  STIMULI_VIDEO_TUTORIAL_MESSAGE,
+  VALIDATION_VIDEO_TUTORIAL_MESSAGE,
+} from './constants';
 
 export function stimulus(
   showThermometer,
@@ -122,7 +127,6 @@ ${NO_STIMULI_VIDEO_TUTORIAL_MESSAGE}
   ></video>
 
 </div>`;
-
 
 export const stimuliVideo = `
 <div style="display: flex; flex-direction: column; align-items: center; text-align: center;">

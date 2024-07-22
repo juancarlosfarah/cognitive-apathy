@@ -67,26 +67,21 @@ export const KEY_TAPPED_EARLY_ERROR_TIME = 3000; //how long does the key tapped 
 export const KEYBOARD_LAYOUT = ''; //https://github.com/simple-keyboard/simple-keyboard-layouts/tree/master/src/lib/layouts
 
 // MESSAGES
-export const PASSED_VALIDATION_MESSAGE =
-`
+export const PASSED_VALIDATION_MESSAGE = `
 <br>You will now enter the next phase of the experiment.
 <br>
 <br> Press the <b>Enter</b> key to continue.`;
-export const FAILED_VALIDATION_MESSAGE =
-`
+export const FAILED_VALIDATION_MESSAGE = `
 <br>Unfortunately, you are not eligible for this experiment.
 <br>Please fine your experimenter, and let them know.`;
-;
-export const CALIBRATION_PART_1_DIRECTIONS =
-  `
+export const CALIBRATION_PART_1_DIRECTIONS = `
   <br>You will perform the same task as you did in the practice.
   <br>
   <br> During the trial, remember to continue holding the <b>${KEYS_TO_HOLD[0].toUpperCase()}</b>, <b>${KEYS_TO_HOLD[1].toUpperCase()}</b>, and <b>${KEYS_TO_HOLD[2].toUpperCase()}</b> until told to release them.
   <br> Do not tap the <b>${KEY_TO_PRESS.toUpperCase()}</b> key until the <b>GO!</b> appears.
   <br>
   <br> Press the <b>Enter</b> key to begin.`;
-  ;
-export const ADDITIONAL_CALIBRATION_PART_1_DIRECTIONS =   `
+export const ADDITIONAL_CALIBRATION_PART_1_DIRECTIONS = `
 <br>You will now perform more additional tasks which are the same as you just completed
 <br>
 <br>Make sure you are tapping the <b>${KEY_TO_PRESS.toUpperCase()}</b> key as fast as you can after the <b>GO!</b> appears.
@@ -95,15 +90,12 @@ export const ADDITIONAL_CALIBRATION_PART_1_DIRECTIONS =   `
 <br> Do not tap the <b>${KEY_TO_PRESS.toUpperCase()}</b> key until the <b>GO!</b> appears.
 <br>
 <br> Press the <b>Enter</b> key to begin.`;
-;
-export const CALIBRATION_PART_1_ENDING_MESSAGE = 
-`
+export const CALIBRATION_PART_1_ENDING_MESSAGE = `
 <br>You will now enter the next phase of the experiment.
 <br>
 <br> Press the <b>Enter</b> key to continue.`;
 
-export const CALIBRATION_PART_2_DIRECTIONS =
-``
+export const CALIBRATION_PART_2_DIRECTIONS = ``;
 export const TRIAL_BLOCKS_DIRECTIONS = `
 <br>During this next phase of the experiment, you will have the choice to accept or deny a trial.
 <br>
@@ -118,8 +110,7 @@ export const TRIAL_BLOCKS_DIRECTIONS = `
 <br>
 <br>Press the <b>Enter</b> key to continue.`;
 
-export const CALIBRATION_PART_2_ENDING_MESSAGE = 
-`
+export const CALIBRATION_PART_2_ENDING_MESSAGE = `
 <br>You will now enter the next phase of the experiment.
 <br>
 <br> Press the <b>Enter</b> key to continue.`;
@@ -183,5 +174,4 @@ export const ACCEPTANCE_TRIAL_MESSAGE = `
 <br>
 <br>Press the <b>Left Arrow</b> on your keyboard to accept the trial
 <br>Or
-<br>Press the <b>Right Arrow</b> on your keyboard to deny the trial`
-
+<br>Press the <b>Right Arrow</b> on your keyboard to deny the trial`;

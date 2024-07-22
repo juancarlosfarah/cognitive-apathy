@@ -15,13 +15,17 @@ import { initJsPsych } from 'jspsych';
 
 import '../styles/main.scss';
 import {
+  ADDITIONAL_CALIBRATION_PART_1_DIRECTIONS,
   AUTO_DECREASE_AMOUNT,
   AUTO_DECREASE_RATE,
   AUTO_INCREASE_AMOUNT,
   BOUND_OPTIONS,
   CALIBRATION_FINISHED_DIRECTIONS,
   CALIBRATION_PART_1_DIRECTIONS,
+  CALIBRATION_PART_1_ENDING_MESSAGE,
   CALIBRATION_PART_2_DIRECTIONS,
+  CALIBRATION_PART_2_ENDING_MESSAGE,
+  DEMO_TRIAL_MESSAGE,
   EASY_BOUNDS,
   EXPECTED_MAXIMUM_PERCENTAGE,
   EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
@@ -47,15 +51,11 @@ import {
   PASSED_VALIDATION_MESSAGE,
   REWARD_TOTAL_MESSAGE,
   SUCCESS_SCREEN_DURATION,
+  TRIAL_BLOCKS_DIRECTIONS,
   TRIAL_DURATION,
   TUTORIAL_MESSAGE_1,
   VALIDATION_DIRECTIONS,
   VIDEO_TUTORIAL_MESSAGE,
-  ADDITIONAL_CALIBRATION_PART_1_DIRECTIONS,
-  CALIBRATION_PART_1_ENDING_MESSAGE,
-  CALIBRATION_PART_2_ENDING_MESSAGE,
-  TRIAL_BLOCKS_DIRECTIONS,
-  DEMO_TRIAL_MESSAGE
 } from './constants';
 import CountdownTrialPlugin from './countdown';
 import { KeyboardInteractionPlugin } from './keyboard';
@@ -73,10 +73,10 @@ import TaskPlugin from './task';
 import {
   instructionalCountdownSte,
   interactiveCountdown,
-  videoDemo,
   noStimuliVideoTutorial,
   stimuliVideoTutorial,
-  validationVideoTutorial
+  validationVideoTutorial,
+  videoDemo,
 } from './tutorial';
 import { autoIncreaseAmount, randomNumberBm } from './utils';
 import { handleValidationFinish, validationFailures } from './validation';
@@ -570,14 +570,17 @@ export async function run({
             : false;
           // Update the trial parameters with keyTappedEarlyFlag
           trial.keyTappedEarlyFlag = keyTappedEarlyFlag;
-          console.log(keyTappedEarlyFlag)
+          console.log(keyTappedEarlyFlag);
         },
       },
       {
         timeline: [releaseKeysStep],
         conditional_function: function () {
-          const lastTrialData = jsPsych.data.get().filter({ task: 'practice' }).
-          last(1).values()[0];
+          const lastTrialData = jsPsych.data
+            .get()
+            .filter({ task: 'practice' })
+            .last(1)
+            .values()[0];
           return !lastTrialData.keysReleasedFlag;
         },
       },
@@ -597,7 +600,7 @@ export async function run({
         },
       },
       practiceTrial,
-      loadingBarTrial(true)
+      loadingBarTrial(true),
     ],
     loop_function: function () {
       const lastPracticeData = jsPsych.data
@@ -611,15 +614,13 @@ export async function run({
     },
   };
 
-
-  timeline.push(     
-     {
+  timeline.push({
     timeline: [noStimuliVideoTutorial],
     on_finish: function () {
       // Clear the display element
       jsPsych.getDisplayElement().innerHTML = '';
     },
-  },)
+  });
   timeline.push(practiceLoop);
   timeline.push(videoDemo(CALIBRATION_PART_1_DIRECTIONS));
   timeline.push({
@@ -641,7 +642,7 @@ export async function run({
       NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
     ),
   );
-  timeline.push(      {
+  timeline.push({
     type: HtmlKeyboardResponsePlugin,
     choices: ['enter'],
     stimulus: function () {
@@ -656,16 +657,15 @@ export async function run({
       }
       return `<p>${CALIBRATION_PART_1_ENDING_MESSAGE}</p>`;
     },
-  },)
+  });
 
-  timeline.push(     
-    {
-   timeline: [stimuliVideoTutorial],
-   on_finish: function () {
-     // Clear the display element
-     jsPsych.getDisplayElement().innerHTML = '';
-   },
- })
+  timeline.push({
+    timeline: [stimuliVideoTutorial],
+    on_finish: function () {
+      // Clear the display element
+      jsPsych.getDisplayElement().innerHTML = '';
+    },
+  });
 
   timeline.push({
     timeline: [
@@ -686,7 +686,7 @@ export async function run({
       NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
     ),
   );
-  timeline.push(      {
+  timeline.push({
     type: HtmlKeyboardResponsePlugin,
     choices: ['enter'],
     stimulus: function () {
@@ -701,16 +701,15 @@ export async function run({
       }
       return `<p>${CALIBRATION_PART_2_ENDING_MESSAGE}</p>`;
     },
-  })
+  });
 
-  timeline.push(     
-    {
-   timeline: [validationVideoTutorial],
-   on_finish: function () {
-     // Clear the display element
-     jsPsych.getDisplayElement().innerHTML = '';
-   },
- })
+  timeline.push({
+    timeline: [validationVideoTutorial],
+    on_finish: function () {
+      // Clear the display element
+      jsPsych.getDisplayElement().innerHTML = '';
+    },
+  });
 
   timeline.push(...validationTrials);
 
@@ -901,7 +900,7 @@ export async function run({
                           .values()[0];
                         return acceptanceData ? acceptanceData.accepted : null;
                       },
-                      reward: trialData.reward
+                      reward: trialData.reward,
                     },
                     on_start: function (trial) {
                       const lastCountdownData = jsPsych.data
@@ -959,10 +958,12 @@ export async function run({
   };
 
   function calculateTotalReward() {
-    const successfulTrials = jsPsych.data.get().filter({task: 'block', success: true});
-    console.log(successfulTrials)
-    console.log(successfulTrials.select('reward'))
-    return successfulTrials.select('reward').sum()
+    const successfulTrials = jsPsych.data
+      .get()
+      .filter({ task: 'block', success: true });
+    console.log(successfulTrials);
+    console.log(successfulTrials.select('reward'));
+    return successfulTrials.select('reward').sum();
   }
 
   function createRewardDisplayTrial() {

@@ -11,7 +11,12 @@ import {
   VIDEO_TUTORIAL_MESSAGE,
 } from './constants';
 import CountdownTrialPlugin from './countdown';
-import { videoStimulus, noStimuliVideo, stimuliVideo, validationVideo } from './stimulus';
+import {
+  noStimuliVideo,
+  stimuliVideo,
+  validationVideo,
+  videoStimulus,
+} from './stimulus';
 
 export const interactiveCountdown = {
   type: CountdownTrialPlugin,
@@ -50,6 +55,3 @@ export const validationVideoTutorial = {
   choices: ['Continue'],
   enable_button_after: 15000,
 };
-
-
-

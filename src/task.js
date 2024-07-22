@@ -91,7 +91,7 @@ class TaskPlugin {
     let mainBlock = false;
     let keyboardInstance;
     let inputElement;
-    let success = false
+    let success = false;
 
     const getRandomDelay = () => {
       const [min, max] = trial.randomDelay;
@@ -228,7 +228,8 @@ class TaskPlugin {
       return (
         this.mercuryHeight >= trial.bounds[0] &&
         this.mercuryHeight <= trial.bounds[1] &&
-        !trial.keysReleasedFlag && !trial.keyTappedEarlyFlag
+        !trial.keysReleasedFlag &&
+        !trial.keyTappedEarlyFlag
       );
     };
 
