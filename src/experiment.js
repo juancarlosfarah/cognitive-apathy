@@ -15,6 +15,12 @@ import { initJsPsych } from 'jspsych';
 
 import '../styles/main.scss';
 import {
+  calibrationTrialPart1,
+  calibrationTrialPart2,
+  createCalibrationTrial,
+  createConditionalCalibrationTrial,
+} from './calibration';
+import {
   ADDITIONAL_CALIBRATION_PART_1_DIRECTIONS,
   AUTO_DECREASE_AMOUNT,
   AUTO_DECREASE_RATE,
@@ -53,16 +59,18 @@ import {
   SUCCESS_SCREEN_DURATION,
   TRIAL_BLOCKS_DIRECTIONS,
   TRIAL_DURATION,
+  TRIAL_FAILED,
+  TRIAL_SUCCEEDED,
   TUTORIAL_MESSAGE_1,
   VALIDATION_DIRECTIONS,
   VIDEO_TUTORIAL_MESSAGE,
-  TRIAL_SUCCEEDED,
-  TRIAL_FAILED,
 } from './constants';
-import CountdownTrialPlugin from './countdown';
+import { countdownStep } from './countdown';
 import { KeyboardInteractionPlugin } from './keyboard';
 import { likertQuestions1, likertQuestions2 } from './likert';
-import ReleaseKeysPlugin from './release-keys';
+import { loadingBarTrial } from './loading-bar';
+import { successScreen } from './message-trials';
+import { ReleaseKeysPlugin, releaseKeysStep } from './release-keys';
 import {
   acceptanceThermometer,
   blockWelcomeMessage,
@@ -73,17 +81,45 @@ import {
 } from './stimulus';
 import TaskPlugin from './task';
 import {
+  DOMINANT_HAND,
+  dominantHand,
   instructionalCountdownSte,
+  instructionalTrial,
   interactiveCountdown,
   noStimuliVideoTutorial,
   stimuliVideoTutorial,
   validationVideoTutorial,
-  instructionalTrial,
-  dominantHand,
-  DOMINANT_HAND
 } from './tutorial';
-import { autoIncreaseAmount, randomNumberBm } from './utils';
-import { handleValidationFinish, validationFailures } from './validation';
+import {
+  autoIncreaseAmount,
+  calculateMedianTapCount,
+  checkFlag,
+  randomNumberBm,
+} from './utils';
+import {
+  validationTrialEasy,
+  validationTrialExtra,
+  validationTrialHard,
+  validationTrialMedium,
+} from './validation';
+
+let state = {
+  medianTaps: 0,
+  medianTapsPart1: 0,
+  medianTapsPart2: 0,
+  calibrationPart1Successes: 0,
+  calibrationPart2Successes: 0,
+  conditionalMedianTapsPart1: 0,
+  conditionalMedianTapsPart2: 0,
+  validationExtraFailures: 0,
+  validationSuccess: false,
+  extraValidationRequired: false,
+  validationFailures: {
+    '[30,50]': 0,
+    '[50,70]': 0,
+    '[70,90]': 0,
+  },
+};
 
 /**
  * @function run
@@ -108,98 +144,7 @@ export async function run({
     video: '../assets/videos',
   });
 
-
-
-  const checkFlag = (taskFilter, flag) => {
-    const lastCountdownData = jsPsych.data
-      .get()
-      .filter({ task: taskFilter })
-      .last(1)
-      .values()[0];
-    
-    if (flag === 'keyTappedEarlyFlag') {
-      return lastCountdownData ? lastCountdownData.keyTappedEarlyFlag : false;
-    } else if (flag === 'keysReleasedFlag') {
-      return lastCountdownData ? lastCountdownData.keysReleasedFlag : true;
-    }
-  };
-  
-
-  // Release keys step
-  const releaseKeysStep = {
-    type: ReleaseKeysPlugin,
-    stimulus: `<p>Release the Keys</p>`,
-    valid_responses: KEYS_TO_HOLD,
-  };
-
-  // Did 
-  const successScreen = {
-    timeline: [
-      {
-        type: HtmlKeyboardResponsePlugin,
-        stimulus: function () {
-          const previousTrial = jsPsych.data.get().last(1).values()[0];
-          if (previousTrial.success) {
-            return `<p style="color: green; font-size: 48px;">${TRIAL_SUCCEEDED}</p>`;
-          } else {
-            return `<p style="color: red; font-size: 48px;">${TRIAL_FAILED}</p>`;
-          }
-        },
-        choices: 'NO_KEYS',
-        trial_duration: SUCCESS_SCREEN_DURATION,
-        data: {
-          task: 'success_screen',
-        },
-      },
-    ],
-  };
-
-  const loadingBarTrial = (acceptance) => ({
-    type: HtmlKeyboardResponsePlugin,
-    stimulus: loadingBar,
-    choices: 'NO_KEYS',
-    on_load: function () {
-      function check_percentage() {
-        let percentage = document.querySelector('.percentage');
-        let percentageValue = +percentage.textContent;
-        let title = document.querySelector('h1');
-
-        setTimeout(function () {
-          if (percentageValue < 100) {
-            update_percentage();
-          } else {
-            percentage.textContent = 100;
-            jsPsych.finishTrial(); // Finish the trial when loading is complete
-          }
-        }, 100);
-      }
-
-      function update_percentage() {
-        let percentage = document.querySelector('.percentage');
-        let percentageValue = +percentage.textContent;
-        let progress = document.querySelector('.progress');
-        let increment;
-        acceptance
-          ? (increment = Math.ceil(Math.random() * LOADING_BAR_SPEED_YES))
-          : (increment = Math.ceil(Math.random() * LOADING_BAR_SPEED_NO));
-        let newPercentageValue = Math.min(percentageValue + increment, 100); // Ensure it does not exceed 100
-        percentage.textContent = newPercentageValue;
-        progress.setAttribute('style', `width:${newPercentageValue}%`);
-
-        check_percentage();
-      }
-
-      check_percentage();
-    },
-    on_finish: function () {
-      const loadingBarContainer = document.querySelector(
-        '.loading-bar-container',
-      );
-      if (loadingBarContainer) {
-        loadingBarContainer.remove();
-      }
-    },
-  });
+  // Did
 
   const failedMinimumDemoTapsTrial = {
     type: HtmlKeyboardResponsePlugin,
@@ -209,354 +154,7 @@ export async function run({
   };
 
   // Countdown step with `key `release flag check
-  const countdownStep = {
-    timeline: [
-      {
-        type: CountdownTrialPlugin,
-        data: {
-          task: 'countdown',
-        },
-      },
-      {
-        type: HtmlKeyboardResponsePlugin,
-        stimulus: '<p style="color: green; font-size: 48px;">GO</p>',
-        choices: 'NO_KEYS',
-        trial_duration: GO_DURATION, // Display "GO" for 1 second
-        data: {
-          task: 'go_screen',
-        },
-      },
-    ],
-  };
 
-  let medianTaps; // Declare a universal variable
-  let medianTapsPart1;
-  let conditionalMedianTapsPart1;
-  let medianTapsPart2;
-  let conditionalMedianTapsPart2;
-
-  /**
-   * @function calculateMedianTapCount
-   * @description Calculate the median tap count for a given task type and number of trials
-   * @param {string} taskType - The task type to filter data by
-   * @param {number} numTrials - The number of trials to consider
-   * @returns {number} - The median tap count
-   */
-  function calculateMedianTapCount(taskType, numTrials) {
-    const filteredTrials = jsPsych.data
-      .get()
-      .filter({ task: taskType })
-      .last(numTrials)
-      .filter({ keysReleasedFlag: false })
-      .select('tapCount');
-
-    const medianValue = filteredTrials.median(); // Calculate the median
-    return medianValue;
-  }
-
-  /**
-   * @function endExperimentTrial
-   * @description Create a trial to end the experiment with a message
-   * @param {string} message - The message to display
-   * @returns {Object} - jsPsych trial object
-   */
-  const endExperimentTrial = (message) => ({
-    type: HtmlKeyboardResponsePlugin,
-    choices: ['enter'],
-    stimulus: `<p>${message}</p>`,
-    on_finish: function () {
-      console.log('Experiment ended:', message);
-      jsPsych.endExperiment(message);
-    },
-  });
-
-  let calibrationPart1Successes = 0;
-  let calibrationPart2Successes = 0;
-
-  const createCalibrationTrial = (
-    showThermometer,
-    bounds,
-    repetitions,
-    calibrationPart,
-  ) => {
-    return {
-      timeline: [
-        countdownStep,
-        {
-          type: TaskPlugin,
-          task: calibrationPart,
-          duration: TRIAL_DURATION,
-          showThermometer,
-          bounds,
-          autoIncreaseAmount: function () {
-            // Determine which median to use for Part 2
-            let medianToUse = medianTaps;
-            if (calibrationPart === 'calibrationPart2') {
-              medianToUse =
-                medianTapsPart1 >= MINIMUM_CALIBRATION_MEDIAN
-                  ? medianTapsPart1
-                  : conditionalMedianTapsPart1;
-            }
-            return autoIncreaseAmount(
-              EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
-              TRIAL_DURATION,
-              AUTO_DECREASE_RATE,
-              AUTO_DECREASE_AMOUNT,
-              medianToUse,
-            );
-          },
-          data: {
-            task: calibrationPart,
-            showThermometer,
-            bounds,
-          },
-          on_start: function (trial) {
-            const keyTappedEarlyFlag = checkFlag('countdown', 'keyTappedEarlyFlag')
-            // Update the trial parameters with keyTappedEarlyFlag
-            trial.keyTappedEarlyFlag = keyTappedEarlyFlag;
-          },
-          on_finish: function (data) {
-            if (!data.keysReleasedFlag && !data.keyTappedEarlyFlag) {
-              calibrationPart === 'calibrationPart1'
-                ? calibrationPart1Successes++
-                : calibrationPart2Successes++;
-            }
-            console.log(
-              `calibrationPart1Successes: ${calibrationPart1Successes}`,
-            );
-            console.log(
-              `calibrationPart2Successes: ${calibrationPart2Successes}`,
-            );
-          },
-        },
-        {
-          timeline: [releaseKeysStep],
-          conditional_function: function () {
-            return !checkFlag(calibrationPart, 'keysReleasedFlag');
-          },
-          
-        },
-        {
-          timeline: [loadingBarTrial(true)],
-        },
-      ],
-      repetitions: repetitions,
-      // Repeat until the user has completed minimum number of calibration trials without releasing keys early or tapping early
-      loop_function: function () {
-        const requiredSuccesses =
-          calibrationPart === 'calibrationPart1'
-            ? NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS
-            : NUM_CALIBRATION_WITH_FEEDBACK_TRIALS;
-
-        const currentSuccesses =
-          calibrationPart === 'calibrationPart1'
-            ? calibrationPart1Successes
-            : calibrationPart2Successes;
-
-        const remainingSuccesses = requiredSuccesses - currentSuccesses;
-        console.log(
-          `Remaining successes for ${calibrationPart}: ${remainingSuccesses}`,
-        );
-        return remainingSuccesses > 0; // Repeat the timeline if more successes are needed
-      },
-    };
-  };
-
-  /**
-   * @function createConditionalCalibrationTrial
-   * @description Create a conditional calibration trial
-   * @param {string} message - The message to display
-   * @param {string} calibrationPart - The calibration part
-   * @param {number} numTrials - The number of trials to consider
-   * @returns {Object} - jsPsych trial object
-   */
-
-  const createConditionalCalibrationTrial = (calibrationPart, numTrials) => {
-    return {
-      timeline: [
-        {
-          type: HtmlKeyboardResponsePlugin,
-          choices: ['enter'],
-          stimulus: function () {
-            // Reset success counters
-            if (calibrationPart === 'calibrationPart1') {
-              calibrationPart1Successes = 0;
-            } else {
-              calibrationPart2Successes = 0;
-            }
-            console.log(`Reset successes for ${calibrationPart}`);
-            return `<p>${ADDITIONAL_CALIBRATION_PART_1_DIRECTIONS}</p>`;
-          },
-        },
-        createCalibrationTrial(
-          calibrationPart === 'calibrationPart2',
-          [
-            EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
-            EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
-          ],
-          numTrials,
-          calibrationPart,
-        ),
-        {
-          timeline: [
-            endExperimentTrial(
-              'Calibration failed. The experiment is now ending.',
-            ),
-          ],
-          conditional_function: function () {
-            if (calibrationPart === 'calibrationPart1') {
-              conditionalMedianTapsPart1 = calculateMedianTapCount(
-                calibrationPart,
-                numTrials,
-              );
-              console.log(
-                `conditionalMedianTapsPart1: ${conditionalMedianTapsPart1}`,
-              );
-              return conditionalMedianTapsPart1 < MINIMUM_CALIBRATION_MEDIAN;
-            } else {
-              conditionalMedianTapsPart2 = calculateMedianTapCount(
-                calibrationPart,
-                numTrials,
-              );
-              console.log(
-                `conditionalMedianTapsPart2: ${conditionalMedianTapsPart2}`,
-              );
-              return conditionalMedianTapsPart2 < MINIMUM_CALIBRATION_MEDIAN;
-            }
-          },
-        },
-      ],
-      conditional_function: function () {
-        if (calibrationPart === 'calibrationPart1') {
-          console.log(`medianTapsPart1: ${medianTapsPart1}`);
-          return medianTapsPart1 < MINIMUM_CALIBRATION_MEDIAN;
-        } else {
-          console.log(`medianTapsPart2: ${medianTapsPart2}`);
-          return medianTapsPart2 < MINIMUM_CALIBRATION_MEDIAN;
-        }
-      },
-    };
-  };
-
-  /**
-   * @function createValidationTrial
-   * @description Create validation trials with specified bounds and difficulty level
-   * @param {Array} bounds - The bounds for the validation task
-   * @param {string} validationName - The name of the validation
-   * @param {number} repetitions - The number of repetitions
-   * @returns {Object} - jsPsych trial object
-   */
-  let validationSuccess = false;
-  let extraValidationRequired = false;
-  let validationExtraFailures = 0;
-
-  const createValidationTrial = (bounds, validationName, repetitions) => ({
-    timeline: [
-      countdownStep,
-      {
-        type: TaskPlugin,
-        task: validationName,
-        duration: TRIAL_DURATION,
-        showThermometer: true,
-        bounds: bounds,
-        autoIncreaseAmount: function () {
-          return autoIncreaseAmount(
-            EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
-            TRIAL_DURATION,
-            AUTO_DECREASE_RATE,
-            AUTO_DECREASE_AMOUNT,
-            medianTaps,
-          );
-        },
-        data: {
-          task: validationName,
-        },
-        on_finish: function (data) {
-          data.task = validationName;
-          const validationExtraCount = jsPsych.data
-            .get()
-            .filter({ task: 'validationExtra' })
-            .values();
-
-          const result = handleValidationFinish(
-            data,
-            validationName,
-            bounds,
-            validationFailures,
-            validationExtraCount,
-            validationExtraFailures,
-          );
-
-          extraValidationRequired = result.extraValidationRequired;
-          validationSuccess = result.validationSuccess;
-          validationExtraFailures = result.validationExtraFailures;
-        },
-      },
-      {
-        timeline: [successScreen],
-      },
-      {
-        timeline: [releaseKeysStep],
-        conditional_function: function () {
-          return !checkFlag(validationName, 'keysReleasedFlag')
-        },
-      },
-      {
-        timeline: [loadingBarTrial(true)],
-      },
-    ],
-    repetitions: repetitions,
-  });
-
-  // Screen to display validation success
-  const validationResultScreen = {
-    type: HtmlKeyboardResponsePlugin,
-    choices: ['enter'],
-    stimulus: function () {
-      return validationSuccess
-        ? PASSED_VALIDATION_MESSAGE
-        : FAILED_VALIDATION_MESSAGE;
-    },
-    on_finish: function () {
-      if (!validationSuccess) {
-        jsPsych.endExperiment(FAILED_VALIDATION_MESSAGE);
-      }
-    },
-  };
-
-  const validationTrialEasy = createValidationTrial(
-    [30, 50],
-    'validationEasy',
-    NUM_VALIDATION_TRIALS,
-  );
-  const validationTrialMedium = createValidationTrial(
-    [50, 70],
-    'validationMedium',
-    NUM_VALIDATION_TRIALS,
-  );
-  const validationTrialHard = createValidationTrial(
-    [70, 90],
-    'validationHard',
-    NUM_VALIDATION_TRIALS,
-  );
-  const validationTrialExtra = createValidationTrial(
-    [70, 90],
-    'validationExtra',
-    NUM_EXTRA_VALIDATION_TRIALS,
-  );
-
-  const validationTrials = [
-    validationTrialEasy,
-    validationTrialMedium,
-    validationTrialHard,
-    {
-      timeline: [validationTrialExtra],
-      conditional_function: function () {
-        return extraValidationRequired;
-      },
-    },
-    validationResultScreen,
-  ];
   // Trial for the user to practice
   const practiceTrial = {
     timeline: [
@@ -567,7 +165,11 @@ export async function run({
           task: 'practice',
         },
         on_start: function (trial) {
-          const keyTappedEarlyFlag = checkFlag('countdown', 'keyTappedEarlyFlag')
+          const keyTappedEarlyFlag = checkFlag(
+            'countdown',
+            'keyTappedEarlyFlag',
+            jsPsych,
+          );
           // Update the trial parameters with keyTappedEarlyFlag
           trial.keyTappedEarlyFlag = keyTappedEarlyFlag;
         },
@@ -575,13 +177,13 @@ export async function run({
       {
         timeline: [releaseKeysStep],
         conditional_function: function () {
-          return !checkFlag('practice', 'keysReleasedFlag');
-        },        
+          return !checkFlag('practice', 'keysReleasedFlag', jsPsych);
+        },
       },
     ],
   };
 
- // Create a loop for the user to practice until done successfully (pushed at the start).
+  // Create a loop for the user to practice until done successfully (pushed at the start).
   const practiceLoop = {
     timeline: [
       interactiveCountdown,
@@ -595,17 +197,32 @@ export async function run({
         },
       },
       practiceTrial,
-      loadingBarTrial(true),
+      loadingBarTrial(true, jsPsych),
     ],
     // Repeat if the keys were released early or if user tapped before go.
     loop_function: function () {
-      const keyTappedEarlyFlag = checkFlag('countdown', 'keyTappedEarlyFlag');
-      const keysReleasedFlag = checkFlag('practice', 'keysReleasedFlag');
+      const keyTappedEarlyFlag = checkFlag(
+        'countdown',
+        'keyTappedEarlyFlag',
+        jsPsych,
+      );
+      const keysReleasedFlag = checkFlag(
+        'practice',
+        'keysReleasedFlag',
+        jsPsych,
+      );
       return keysReleasedFlag || keyTappedEarlyFlag;
     },
   };
 
-  // Video + instructions for 
+  /**
+   * @function endExperimentTrial
+   * @description Create a trial to end the experiment with a message
+   * @param {string} message - The message to display
+   * @returns {Object} - jsPsych trial object
+   */
+
+  // Video + instructions for
   timeline.push({
     timeline: [noStimuliVideoTutorial],
     on_finish: function () {
@@ -616,36 +233,23 @@ export async function run({
   timeline.push(practiceLoop);
   timeline.push(instructionalTrial(CALIBRATION_PART_1_DIRECTIONS));
   timeline.push({
-    timeline: [
-      createCalibrationTrial(
-        false,
-        [
-          EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
-          EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
-        ],
-        NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
-        'calibrationPart1',
-      ),
-    ],
+    timeline: [calibrationTrialPart1(jsPsych, state)],
   });
-  timeline.push(
-    createConditionalCalibrationTrial(
-      'calibrationPart1',
-      NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
-    ),
-  );
+
   timeline.push({
     type: HtmlKeyboardResponsePlugin,
     choices: ['enter'],
     stimulus: function () {
-      medianTapsPart1 = calculateMedianTapCount(
+      state.medianTapsPart1 = calculateMedianTapCount(
         'calibrationPart1',
         NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
+        jsPsych,
+        state.medianTaps,
       );
-      console.log(`medianTapsPart1: ${medianTapsPart1}`);
-      if (medianTapsPart1 >= MINIMUM_CALIBRATION_MEDIAN) {
-        medianTaps = medianTapsPart1;
-        console.log(`medianTaps updated to: ${medianTaps}`);
+      console.log(`medianTapsPart1: ${state.medianTapsPart1}`);
+      if (state.medianTapsPart1 >= MINIMUM_CALIBRATION_MEDIAN) {
+        state.medianTaps = state.medianTapsPart1;
+        console.log(`medianTaps updated to: ${state.medianTaps}`);
       }
       return `<p>${CALIBRATION_PART_1_ENDING_MESSAGE}</p>`;
     },
@@ -660,36 +264,23 @@ export async function run({
   });
 
   timeline.push({
-    timeline: [
-      createCalibrationTrial(
-        true,
-        [
-          EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
-          EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
-        ],
-        NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
-        'calibrationPart2',
-      ),
-    ],
+    timeline: [calibrationTrialPart2(jsPsych, state)],
   });
-  timeline.push(
-    createConditionalCalibrationTrial(
-      'calibrationPart2',
-      NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
-    ),
-  );
+
   timeline.push({
     type: HtmlKeyboardResponsePlugin,
     choices: ['enter'],
     stimulus: function () {
-      medianTapsPart2 = calculateMedianTapCount(
+      state.medianTapsPart2 = calculateMedianTapCount(
         'calibrationPart2',
         NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
+        jsPsych,
+        state.medianTaps,
       );
-      console.log(`medianTapsPart2: ${medianTapsPart2}`);
-      if (medianTapsPart2 >= MINIMUM_CALIBRATION_MEDIAN) {
-        medianTaps = medianTapsPart2;
-        console.log(`medianTaps updated to: ${medianTaps}`);
+      console.log(`medianTapsPart2: ${state.medianTapsPart2}`);
+      if (state.medianTapsPart2 >= MINIMUM_CALIBRATION_MEDIAN) {
+        state.medianTaps = state.medianTapsPart2;
+        console.log(`medianTaps updated to: ${state.medianTaps}`);
       }
       return `<p>${CALIBRATION_PART_2_ENDING_MESSAGE}</p>`;
     },
@@ -702,7 +293,26 @@ export async function run({
       jsPsych.getDisplayElement().innerHTML = '';
     },
   });
-  timeline.push(...validationTrials);
+
+  timeline.push({
+    timeline: [validationTrialEasy(jsPsych, state)],
+  });
+
+  timeline.push({
+    timeline: [validationTrialMedium(jsPsych, state)],
+  });
+
+  timeline.push({
+    timeline: [validationTrialHard(jsPsych, state)],
+  });
+
+  timeline.push({
+    timeline: [validationTrialExtra(jsPsych, state)],
+    conditional_function: function () {
+      return state.extraValidationRequired;
+    },
+  });
+
   let demoTrialSuccesses = 0;
   timeline.push(instructionalTrial(TRIAL_BLOCKS_DIRECTIONS));
 
@@ -753,7 +363,7 @@ export async function run({
                   TRIAL_DURATION,
                   AUTO_DECREASE_RATE,
                   AUTO_DECREASE_AMOUNT,
-                  medianTaps,
+                  state.medianTaps,
                 );
               },
               data: {
@@ -763,10 +373,14 @@ export async function run({
                 minimumTapsReached: false,
               },
               on_start: function (trial) {
-                const keyTappedEarlyFlag = checkFlag('countdown', 'keyTappedEarlyFlag')
+                const keyTappedEarlyFlag = checkFlag(
+                  'countdown',
+                  'keyTappedEarlyFlag',
+                  jsPsych,
+                );
                 // Update the trial parameters with keyTappedEarlyFlag
                 trial.keyTappedEarlyFlag = keyTappedEarlyFlag;
-                return keyTappedEarlyFlag
+                return keyTappedEarlyFlag;
               },
               on_finish: function (data) {
                 // Check if minimum taps was reached
@@ -781,7 +395,7 @@ export async function run({
             {
               timeline: [releaseKeysStep],
               conditional_function: function () {
-                return !checkFlag('demo', 'keysReleasedFlag')
+                return !checkFlag('demo', 'keysReleasedFlag', jsPsych);
               },
             },
             {
@@ -797,7 +411,7 @@ export async function run({
               },
             },
             {
-              timeline: [loadingBarTrial(true)],
+              timeline: [loadingBarTrial(true, jsPsych)],
             },
           ],
           loop_function: function () {
@@ -809,14 +423,14 @@ export async function run({
         ...likertQuestions1,
       );
     }
- // If a block created is an actual trial
-    if (blockName) { 
+    // If a block created is an actual trial
+    if (blockName) {
       // Create the number of full combination of trials (63 trials  / (3 x 3) factorial design = 7 sets of these 9 trials)
-      
+
       const numTrialsPerCombination = Math.floor(
         NUM_TRIALS / PARAMETER_COMBINATIONS.length,
       );
-      // Randomly map each of these combination parameters to each trial within 63 created samples 
+      // Randomly map each of these combination parameters to each trial within 63 created samples
       let trials = PARAMETER_COMBINATIONS.flatMap((combination) =>
         Array(numTrialsPerCombination)
           .fill()
@@ -871,7 +485,7 @@ export async function run({
                         TRIAL_DURATION,
                         AUTO_DECREASE_RATE,
                         AUTO_DECREASE_AMOUNT,
-                        medianTaps,
+                        state.medianTaps,
                       );
                     },
                     data: {
@@ -888,33 +502,37 @@ export async function run({
                       reward: trialData.reward,
                     },
                     on_start: function (trial) {
-                      const keyTappedEarlyFlag = checkFlag('countdown', 'keyTappedEarlyFlag')
+                      const keyTappedEarlyFlag = checkFlag(
+                        'countdown',
+                        'keyTappedEarlyFlag',
+                        jsPsych,
+                      );
                       // Update the trial parameters with keyTappedEarlyFlag
                       trial.keyTappedEarlyFlag = keyTappedEarlyFlag;
-                      return keyTappedEarlyFlag
+                      return keyTappedEarlyFlag;
                     },
                     on_finish: function (data) {
                       console.log(data);
                     },
                   },
                   {
-                    timeline: [successScreen],
+                    timeline: [successScreen(jsPsych)],
                   },
                   {
                     timeline: [releaseKeysStep],
                     conditional_function: function () {
-                      return !checkFlag('block', 'keysReleasedFlag')
+                      return !checkFlag('block', 'keysReleasedFlag', jsPsych);
                     },
                   },
                 ],
                 conditional_function: () => trialData.accepted,
               },
               {
-                timeline: [loadingBarTrial(false)],
+                timeline: [loadingBarTrial(false, jsPsych)],
                 conditional_function: () => !trialData.accepted,
               },
               {
-                timeline: [loadingBarTrial(true)],
+                timeline: [loadingBarTrial(true, jsPsych)],
                 conditional_function: () => trialData.accepted,
               },
             ],
@@ -959,7 +577,7 @@ export async function run({
       },
     };
   }
-  // Array of trials that generates a 6 new random orders of the (3x3 factorial designed blocks of 63 trials) to complete the 3x3x3 factorial design.  
+  // Array of trials that generates a 6 new random orders of the (3x3 factorial designed blocks of 63 trials) to complete the 3x3x3 factorial design.
   const trialsArray = [
     [
       // Demo trials
@@ -968,9 +586,9 @@ export async function run({
         bounds: [0, 0],
         includeDemo: true,
       }),
-      // Synchronous Block of 63 trials 
+      // Synchronous Block of 63 trials
       createTrialBlock({ blockName: 'Synchronous Block', randomDelay: [0, 0] }),
-       // Display accumulated reward
+      // Display accumulated reward
       createRewardDisplayTrial(),
     ],
     [
@@ -980,7 +598,7 @@ export async function run({
         bounds: [0, 0],
         includeDemo: true,
       }),
-      // Synchronous Block of 63 trials 
+      // Synchronous Block of 63 trials
       createTrialBlock({ blockName: 'Synchronous Block', randomDelay: [0, 0] }),
       // Display accumulated reward
       createRewardDisplayTrial(),
@@ -992,7 +610,7 @@ export async function run({
         bounds: [0, 0],
         includeDemo: true,
       }),
-      // Narrow Asynchronous Block of 63 trials 
+      // Narrow Asynchronous Block of 63 trials
       createTrialBlock({
         blockName: 'Narrow Asynchronous Block',
         randomDelay: [400, 600],
@@ -1002,13 +620,13 @@ export async function run({
     ],
     [
       createTrialBlock({
-      // Demo trials
+        // Demo trials
         randomDelay: [400, 600],
         bounds: [0, 0],
         includeDemo: true,
       }),
       createTrialBlock({
-      // Narrow Asynchronous Block of 63 trials 
+        // Narrow Asynchronous Block of 63 trials
         blockName: 'Narrow Asynchronous Block',
         randomDelay: [400, 600],
       }),
@@ -1017,13 +635,13 @@ export async function run({
     ],
     [
       createTrialBlock({
-      // Demo trials
+        // Demo trials
         randomDelay: [0, 1000],
         bounds: [0, 0],
         includeDemo: true,
       }),
       createTrialBlock({
-      // Wide Asynchronous Block of 63 trials 
+        // Wide Asynchronous Block of 63 trials
         blockName: 'Wide Asynchronous Block',
         randomDelay: [0, 1000],
       }),
@@ -1032,13 +650,13 @@ export async function run({
     ],
     [
       createTrialBlock({
-      // Demo trials
+        // Demo trials
         randomDelay: [0, 1000],
         bounds: [0, 0],
         includeDemo: true,
       }),
       createTrialBlock({
-      // Wide Asynchronous Block of 63 trials 
+        // Wide Asynchronous Block of 63 trials
         blockName: 'Wide Asynchronous Block',
         randomDelay: [0, 1000],
       }),
@@ -1046,8 +664,8 @@ export async function run({
       createRewardDisplayTrial(),
     ],
   ];
-  // Randomly sample from the 3x3x3 factorial design to display 2 Synchronous Blocks of 63 trials, 
-  // 2 Narrow Asynchronous Blocks of 63 trials, and 2 Wide Asynchronous Blocks of 63 trials for 
+  // Randomly sample from the 3x3x3 factorial design to display 2 Synchronous Blocks of 63 trials,
+  // 2 Narrow Asynchronous Blocks of 63 trials, and 2 Wide Asynchronous Blocks of 63 trials for
   // a total of 378 trials
   const sampledArray = jsPsych.randomization.sampleWithoutReplacement(
     trialsArray,

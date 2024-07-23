@@ -32,7 +32,6 @@ export function randomNumberBm(min, max, skew = 1) {
  * @param {number} TRIAL_DURATION - The duration of the trial.
  * @param {number} AUTO_DECREASE_RATE - The rate at which auto-decrease occurs.
  * @param {number} AUTO_DECREASE_AMOUNT - The amount by which auto-decrease occurs.
- * @param {number} medianTaps - The median number of taps.
  * @returns {number} - The calculated auto-increase amount.
  */
 export function autoIncreaseAmount(
@@ -40,11 +39,44 @@ export function autoIncreaseAmount(
   TRIAL_DURATION,
   AUTO_DECREASE_RATE,
   AUTO_DECREASE_AMOUNT,
-  medianTaps,
+  median,
 ) {
   return (
     (EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION +
       (TRIAL_DURATION / AUTO_DECREASE_RATE) * AUTO_DECREASE_AMOUNT) /
-    medianTaps
+    median
   );
 }
+
+/**
+ * @function calculateMedianTapCount
+ * @description Calculate the median tap count for a given task type and number of trials
+ * @param {string} taskType - The task type to filter data by
+ * @param {number} numTrials - The number of trials to consider
+ * @returns {number} - The median tap count
+ */
+export function calculateMedianTapCount(taskType, numTrials, jsPsych) {
+  const filteredTrials = jsPsych.data
+    .get()
+    .filter({ task: taskType })
+    .last(numTrials)
+    .filter({ keysReleasedFlag: false })
+    .select('tapCount');
+
+  const medianValue = filteredTrials.median(); // Calculate the median
+  return medianValue;
+}
+
+export const checkFlag = (taskFilter, flag, jsPsych) => {
+  const lastCountdownData = jsPsych.data
+    .get()
+    .filter({ task: taskFilter })
+    .last(1)
+    .values()[0];
+
+  if (flag === 'keyTappedEarlyFlag') {
+    return lastCountdownData ? lastCountdownData.keyTappedEarlyFlag : false;
+  } else if (flag === 'keysReleasedFlag') {
+    return lastCountdownData ? lastCountdownData.keysReleasedFlag : true;
+  }
+};

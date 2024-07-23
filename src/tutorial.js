@@ -3,15 +3,15 @@ import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
 import videoButtonResponse from '@jspsych/plugin-video-button-response';
 
 import {
+  DOMINANT_HAND_MESSAGE,
   GO_DURATION,
   HOLD,
   HOLD_KEYS_MESSAGE,
   INTERACTIVE_KEYBOARD_TUTORIAL_MESSAGE,
   KEYS_TO_HOLD,
   VIDEO_TUTORIAL_MESSAGE,
-  DOMINANT_HAND_MESSAGE
 } from './constants';
-import CountdownTrialPlugin from './countdown';
+import { CountdownTrialPlugin } from './countdown';
 import {
   noStimuliVideo,
   stimuliVideo,
@@ -36,23 +36,22 @@ export const instructionalTrial = (message, video) => ({
   },
 });
 
-export let DOMINANT_HAND = 'right'
+export let DOMINANT_HAND = 'right';
 export const dominantHand = {
   type: htmlButtonResponse,
   stimulus: DOMINANT_HAND_MESSAGE,
   choices: ['Left handed', 'Right handed'],
   data: {
-    task: 'dominant-hand'
+    task: 'dominant-hand',
   },
-  on_finish: function(data) {
-    if(data.response === 0) {
+  on_finish: function (data) {
+    if (data.response === 0) {
       DOMINANT_HAND = 'left';
     } else {
       DOMINANT_HAND = 'right';
     }
-  }
+  },
 };
-
 
 export const noStimuliVideoTutorial = {
   type: htmlButtonResponse,

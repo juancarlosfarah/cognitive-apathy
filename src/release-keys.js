@@ -2,7 +2,7 @@ import { ParameterType } from 'jspsych';
 
 import { KEYS_TO_HOLD, RELEASE_KEYS_MESSAGE } from './constants';
 
-class ReleaseKeysPlugin {
+export class ReleaseKeysPlugin {
   static info = {
     name: 'release-keys',
     parameters: {
@@ -79,4 +79,9 @@ class ReleaseKeysPlugin {
   }
 }
 
-export default ReleaseKeysPlugin;
+// Release keys step
+export const releaseKeysStep = {
+  type: ReleaseKeysPlugin,
+  stimulus: `<p>Release the Keys</p>`,
+  valid_responses: KEYS_TO_HOLD,
+};

@@ -178,7 +178,7 @@ export const ACCEPTANCE_TRIAL_MESSAGE = `
 
 export const DOMINANT_HAND_MESSAGE = `
 Select your dominant hand.
-`
-export const TRIAL_FAILED = 'Trial Failed'
+`;
+export const TRIAL_FAILED = 'Trial Failed';
 
-export const TRIAL_SUCCEEDED = 'Trial Succeeded'
+export const TRIAL_SUCCEEDED = 'Trial Succeeded';
