@@ -1,189 +1,227 @@
-import { ParameterType } from 'jspsych';
+import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
 
-import { calibrationStimulus } from './stimulus';
+import {
+  ADDITIONAL_CALIBRATION_PART_1_DIRECTIONS,
+  AUTO_DECREASE_AMOUNT,
+  AUTO_DECREASE_RATE,
+  EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
+  MINIMUM_CALIBRATION_MEDIAN,
+  NUM_CALIBRATION_TRIALS,
+  NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
+  NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
+  TRIAL_DURATION,
+} from './constants';
+import { CountdownTrialPlugin, countdownStep } from './countdown';
+import { loadingBarTrial } from './loading-bar';
+import { endExperimentTrial } from './message-trials';
+import { releaseKeysStep } from './release-keys';
+import TaskPlugin from './task';
+import { autoIncreaseAmount, checkFlag } from './utils';
 
-class CalibrationPlugin {
-  static info = {
-    name: 'calibration-task',
-    parameters: {
-      autoDecreaseAmount: {
-        type: ParameterType.FLOAT,
-        default: 1,
+export const createCalibrationTrial = (
+  showThermometer,
+  bounds,
+  repetitions,
+  calibrationPart,
+  jsPsych,
+  state,
+) => {
+  return {
+    timeline: [
+      countdownStep,
+      {
+        type: TaskPlugin,
+        task: calibrationPart,
+        duration: TRIAL_DURATION,
+        showThermometer,
+        bounds,
+        autoIncreaseAmount: function () {
+          // Determine which median to use for Part 2
+          let medianToUse = state.medianTaps;
+          if (calibrationPart === 'calibrationPart2') {
+            medianToUse =
+              state.medianTapsPart1 >= MINIMUM_CALIBRATION_MEDIAN
+                ? state.medianTapsPart1
+                : state.conditionalMedianTapsPart1;
+          }
+          return autoIncreaseAmount(
+            EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
+            TRIAL_DURATION,
+            AUTO_DECREASE_RATE,
+            AUTO_DECREASE_AMOUNT,
+            medianToUse,
+          );
+        },
+        data: {
+          task: calibrationPart,
+          showThermometer,
+          bounds,
+        },
+        on_start: function (trial) {
+          const keyTappedEarlyFlag = checkFlag(
+            'countdown',
+            'keyTappedEarlyFlag',
+            jsPsych,
+          );
+          // Update the trial parameters with keyTappedEarlyFlag
+          trial.keyTappedEarlyFlag = keyTappedEarlyFlag;
+        },
+        on_finish: function (data) {
+          if (!data.keysReleasedFlag && !data.keyTappedEarlyFlag) {
+            calibrationPart === 'calibrationPart1'
+              ? state.calibrationPart1Successes++
+              : state.calibrationPart2Successes++;
+          }
+          console.log(
+            `calibrationPart1Successes: ${state.calibrationPart1Successes}`,
+          );
+          console.log(
+            `calibrationPart2Successes: ${state.calibrationPart2Successes}`,
+          );
+        },
       },
-      autoDecreaseRate: {
-        type: ParameterType.INT,
-        default: 100,
+      {
+        timeline: [releaseKeysStep],
+        conditional_function: function () {
+          return !checkFlag(calibrationPart, 'keysReleasedFlag', jsPsych);
+        },
       },
-      autoIncreaseAmount: {
-        type: ParameterType.INT,
-        default: 10,
+      {
+        timeline: [loadingBarTrial(true, jsPsych)],
       },
-      reward: {
-        type: ParameterType.FLOAT,
-        default: 0.5,
-      },
-      showThermometer: {
-        type: ParameterType.BOOL,
-        default: true,
-      },
-      targetHeight: {
-        type: ParameterType.INT,
-        default: 50,
-      },
-      duration: {
-        type: ParameterType.INT,
-        default: 5000,
-      },
+    ],
+    repetitions: repetitions,
+    // Repeat until the user has completed minimum number of calibration trials without releasing keys early or tapping early
+    loop_function: function () {
+      const requiredSuccesses =
+        calibrationPart === 'calibrationPart1'
+          ? NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS
+          : NUM_CALIBRATION_WITH_FEEDBACK_TRIALS;
+
+      const currentSuccesses =
+        calibrationPart === 'calibrationPart1'
+          ? state.calibrationPart1Successes
+          : state.calibrationPart2Successes;
+
+      const remainingSuccesses = requiredSuccesses - currentSuccesses;
+      console.log(
+        `Remaining successes for ${calibrationPart}: ${remainingSuccesses}`,
+      );
+      return remainingSuccesses > 0; // Repeat the timeline if more successes are needed
     },
   };
+};
 
-  constructor(jsPsych) {
-    this.jsPsych = jsPsych;
-  }
+/**
+ * @function createConditionalCalibrationTrial
+ * @description Create a conditional calibration trial
+ * @param {string} message - The message to display
+ * @param {string} calibrationPart - The calibration part
+ * @param {number} numTrials - The number of trials to consider
+ * @returns {Object} - jsPsych trial object
+ */
 
-  trial(display_element, trial) {
-    let mercuryHeight = 0;
-    let autoDecreaseAmount = trial.autoDecreaseAmount;
-    let tapCount = 0;
-    let isRunning = false;
-    let isOvertime = false;
-    let startTime = 0;
-    let endTime = 0;
-    let error = '';
-    let areKeysHeld = false;
-    let keysState = { a: false, w: false, e: false };
-    let timerRef = null;
-    let intervalRef = null;
-
-    // helper functions
-    const increaseMercury = (amount = trial.autoIncreaseAmount) => {
-      mercuryHeight = Math.min(mercuryHeight + amount, 100);
-      updateUI();
-    };
-
-    const updateUI = () => {
-      if (trial.showThermometer) {
-        document.getElementById('mercury').style.height = `${mercuryHeight}%`;
-      }
-      if (trial.targetHeight) {
-        document.getElementById('target-bar').style.bottom =
-          `${trial.targetHeight}%`;
-      }
-      if (error) {
-        document.getElementById('error-message').innerText = error;
+export const createConditionalCalibrationTrial = (
+  calibrationPart,
+  numTrials,
+  jsPsych,
+  state,
+) => {
+  return {
+    timeline: [
+      {
+        type: HtmlKeyboardResponsePlugin,
+        choices: ['enter'],
+        stimulus: function () {
+          // Reset success counters
+          if (calibrationPart === 'calibrationPart1') {
+            state.calibrationPart1Successes = 0;
+          } else {
+            state.calibrationPart2Successes = 0;
+          }
+          console.log(`Reset successes for ${calibrationPart}`);
+          return `<p>${ADDITIONAL_CALIBRATION_PART_1_DIRECTIONS}</p>`;
+        },
+      },
+      createCalibrationTrial(
+        calibrationPart === 'calibrationPart2',
+        [
+          EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
+          EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
+        ],
+        numTrials,
+        calibrationPart,
+        state,
+      ),
+      {
+        timeline: [
+          endExperimentTrial(
+            'Calibration failed. The experiment is now ending.',
+          ),
+        ],
+        conditional_function: function () {
+          if (calibrationPart === 'calibrationPart1') {
+            state.conditionalMedianTapsPart1 = calculateMedianTapCount(
+              calibrationPart,
+              numTrials,
+              jsPsych,
+            );
+            console.log(
+              `conditionalMedianTapsPart1: ${state.conditionalMedianTapsPart1}`,
+            );
+            return (
+              state.conditionalMedianTapsPart1 < MINIMUM_CALIBRATION_MEDIAN
+            );
+          } else {
+            state.conditionalMedianTapsPart2 = calculateMedianTapCount(
+              calibrationPart,
+              numTrials,
+              jsPsych,
+            );
+            console.log(
+              `conditionalMedianTapsPart2: ${state.conditionalMedianTapsPart2}`,
+            );
+            return (
+              state.conditionalMedianTapsPart2 < MINIMUM_CALIBRATION_MEDIAN
+            );
+          }
+        },
+      },
+    ],
+    conditional_function: function () {
+      if (calibrationPart === 'calibrationPart1') {
+        console.log(`medianTapsPart1: ${state.medianTapsPart1}`);
+        return state.medianTapsPart1 < MINIMUM_CALIBRATION_MEDIAN;
       } else {
-        document.getElementById('error-message').innerText = '';
+        console.log(`medianTapsPart2: ${state.medianTapsPart2}`);
+        return state.medianTapsPart2 < MINIMUM_CALIBRATION_MEDIAN;
       }
-    };
+    },
+  };
+};
 
-    // event handlers
-    const handleKeyDown = (event) => {
-      // todo: don't allow enter at the end of a trial
-      if (event.key === 'Enter' && areKeysHeld && !isRunning) {
-        startRunning();
-      }
-      if (event.key === 'r' && isRunning) {
-        tapCount++;
-        increaseMercury();
-      } else if (['a', 'w', 'e'].includes(event.key.toLowerCase())) {
-        keysState[event.key.toLowerCase()] = true;
-        setAreKeysHeld();
-      }
-    };
+export const calibrationTrialPart1 = (jsPsych, state) =>
+  createCalibrationTrial(
+    false,
+    [
+      EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
+      EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
+    ],
+    NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
+    'calibrationPart1',
+    jsPsych,
+    state,
+  );
 
-    const handleKeyUp = (event) => {
-      if (['a', 'w', 'e'].includes(event.key.toLowerCase())) {
-        keysState[event.key.toLowerCase()] = false;
-        setAreKeysHeld();
-      }
-    };
-
-    const setAreKeysHeld = () => {
-      areKeysHeld = keysState.a && keysState.w && keysState.e;
-      document.getElementById('hold-keys-message').style.display =
-        !areKeysHeld || isRunning ? 'block' : 'none';
-      document.getElementById('start-message').style.display =
-        areKeysHeld && !isRunning ? 'block' : 'none';
-      if (!areKeysHeld && isRunning) {
-        stopRunning();
-        setError('You stopped holding the keys!');
-      }
-    };
-
-    const startRunning = () => {
-      isRunning = true;
-      startTime = this.jsPsych.getTotalTime();
-      document.getElementById('start-message').style.visibility = 'hidden';
-      tapCount = 0;
-      mercuryHeight = 0;
-      error = '';
-      updateUI();
-
-      intervalRef = setInterval(decreaseMercury, trial.autoDecreaseRate);
-
-      // todo: handle overtime
-      timerRef = setTimeout(stopRunning, trial.duration);
-    };
-
-    const stopRunning = () => {
-      endTime = this.jsPsych.getTotalTime();
-      isRunning = false;
-      clearInterval(timerRef);
-      clearInterval(intervalRef);
-      timerRef = null;
-      intervalRef = null;
-      end_trial();
-      updateUI();
-    };
-
-    const decreaseMercury = () => {
-      mercuryHeight = Math.max(mercuryHeight - autoDecreaseAmount, 0);
-      updateUI();
-    };
-
-    const setError = (message) => {
-      error = message;
-      updateUI();
-    };
-
-    // setup ui
-    display_element.innerHTML = calibrationStimulus(
-      trial.showThermometer,
-      mercuryHeight,
-      trial.targetHeight,
-      error,
-    );
-
-    // Event listeners
-    document.addEventListener('keydown', handleKeyDown);
-    document.addEventListener('keyup', handleKeyUp);
-
-    // cleanup function
-    const end_trial = () => {
-      setTimeout(() => {
-        document.removeEventListener('keydown', handleKeyDown);
-        document.removeEventListener('keyup', handleKeyUp);
-        display_element.innerHTML = '';
-
-        // Gather data to save for the trial
-        const trial_data = {
-          tapCount,
-          startTime,
-          endTime,
-          mercuryHeight,
-          error,
-          targetHeight: trial.targetHeight,
-        };
-
-        this.jsPsych.finishTrial(trial_data);
-      }, 1000);
-    };
-  }
-
-  static calculateAverageTaps(data) {
-    const tapCounts = data.map((trial) => trial.tapCount);
-    return tapCounts.reduce((a, b) => a + b, 0) / tapCounts.length;
-  }
-}
-
-export default CalibrationPlugin;
+export const calibrationTrialPart2 = (jsPsych, state) =>
+  createCalibrationTrial(
+    true,
+    [
+      EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
+      EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
+    ],
+    NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
+    'calibrationPart2',
+    jsPsych,
+    state,
+  );
