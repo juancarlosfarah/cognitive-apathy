@@ -107,14 +107,23 @@ export async function run({
     audio: assetPaths.audio,
     video: '../assets/videos',
   });
+
+
+
+  const checkFlag = (taskFilter, flag) => {
+    const lastCountdownData = jsPsych.data
+      .get()
+      .filter({ task: taskFilter })
+      .last(1)
+      .values()[0];
+    
+    if (flag === 'keyTappedEarlyFlag') {
+      return lastCountdownData ? lastCountdownData.keyTappedEarlyFlag : false;
+    } else if (flag === 'keysReleasedFlag') {
+      return lastCountdownData ? lastCountdownData.keysReleasedFlag : true;
+    }
+  };
   
-/*   timeline.push(
-    {timeline: 
-    [dominantHand],
-  on_finish: function(){
-    this.jsPsych.getDisplayElement().innerHTML = '';
-  }}
-  ) */
 
   // Release keys step
   const releaseKeysStep = {
@@ -206,9 +215,6 @@ export async function run({
         type: CountdownTrialPlugin,
         data: {
           task: 'countdown',
-        },
-        on_finish: function (data) {
-          console.log(data.keyTappedEarlyFlag);
         },
       },
       {
@@ -305,15 +311,7 @@ export async function run({
             bounds,
           },
           on_start: function (trial) {
-            const lastCountdownData = jsPsych.data
-              .get()
-              .filter({ task: 'countdown' })
-              .last(1)
-              .values()[0];
-            const keyTappedEarlyFlag = lastCountdownData
-              ? lastCountdownData.keyTappedEarlyFlag
-              : false;
-
+            const keyTappedEarlyFlag = checkFlag('countdown', 'keyTappedEarlyFlag')
             // Update the trial parameters with keyTappedEarlyFlag
             trial.keyTappedEarlyFlag = keyTappedEarlyFlag;
           },
@@ -334,13 +332,9 @@ export async function run({
         {
           timeline: [releaseKeysStep],
           conditional_function: function () {
-            const lastTrialData = jsPsych.data
-              .get()
-              .filter({ task: calibrationPart })
-              .last(1)
-              .values()[0];
-            return lastTrialData ? !lastTrialData.keysReleasedFlag : true;
+            return !checkFlag(calibrationPart, 'keysReleasedFlag');
           },
+          
         },
         {
           timeline: [loadingBarTrial(true)],
@@ -504,8 +498,7 @@ export async function run({
       {
         timeline: [releaseKeysStep],
         conditional_function: function () {
-          const lastTrialData = jsPsych.data.get().last(2).values()[0];
-          return !lastTrialData.keysReleasedFlag;
+          return !checkFlag(validationName, 'keysReleasedFlag')
         },
       },
       {
@@ -564,7 +557,7 @@ export async function run({
     },
     validationResultScreen,
   ];
-
+  // Trial for the user to practice
   const practiceTrial = {
     timeline: [
       {
@@ -574,33 +567,21 @@ export async function run({
           task: 'practice',
         },
         on_start: function (trial) {
-          const lastCountdownData = jsPsych.data
-            .get()
-            .filter({ task: 'countdown' })
-            .last(1)
-            .values()[0];
-          const keyTappedEarlyFlag = lastCountdownData
-            ? lastCountdownData.keyTappedEarlyFlag
-            : false;
+          const keyTappedEarlyFlag = checkFlag('countdown', 'keyTappedEarlyFlag')
           // Update the trial parameters with keyTappedEarlyFlag
           trial.keyTappedEarlyFlag = keyTappedEarlyFlag;
-          console.log(keyTappedEarlyFlag);
         },
       },
       {
         timeline: [releaseKeysStep],
         conditional_function: function () {
-          const lastTrialData = jsPsych.data
-            .get()
-            .filter({ task: 'practice' })
-            .last(1)
-            .values()[0];
-          return !lastTrialData.keysReleasedFlag;
-        },
+          return !checkFlag('practice', 'keysReleasedFlag');
+        },        
       },
     ],
   };
 
+ // Create a loop for the user to practice until done successfully (pushed at the start).
   const practiceLoop = {
     timeline: [
       interactiveCountdown,
@@ -618,14 +599,9 @@ export async function run({
     ],
     // Repeat if the keys were released early or if user tapped before go.
     loop_function: function () {
-      const lastPracticeData = jsPsych.data
-        .get()
-        .filter({ task: 'practice' })
-        .last(1)
-        .values()[0];
-      return (
-        lastPracticeData.keysReleasedFlag || lastPracticeData.keyTappedEarlyFlag
-      );
+      const keyTappedEarlyFlag = checkFlag('countdown', 'keyTappedEarlyFlag');
+      const keysReleasedFlag = checkFlag('practice', 'keysReleasedFlag');
+      return keysReleasedFlag || keyTappedEarlyFlag;
     },
   };
 
@@ -637,11 +613,8 @@ export async function run({
       jsPsych.getDisplayElement().innerHTML = '';
     },
   });
-
   timeline.push(practiceLoop);
-
   timeline.push(instructionalTrial(CALIBRATION_PART_1_DIRECTIONS));
-  
   timeline.push({
     timeline: [
       createCalibrationTrial(
@@ -729,9 +702,7 @@ export async function run({
       jsPsych.getDisplayElement().innerHTML = '';
     },
   });
-
   timeline.push(...validationTrials);
-
   let demoTrialSuccesses = 0;
   timeline.push(instructionalTrial(TRIAL_BLOCKS_DIRECTIONS));
 
@@ -792,16 +763,10 @@ export async function run({
                 minimumTapsReached: false,
               },
               on_start: function (trial) {
-                const lastCountdownData = jsPsych.data
-                  .get()
-                  .filter({ task: 'countdown' })
-                  .last(1)
-                  .values()[0];
-                const keyTappedEarlyFlag = lastCountdownData
-                  ? lastCountdownData.keyTappedEarlyFlag
-                  : false;
+                const keyTappedEarlyFlag = checkFlag('countdown', 'keyTappedEarlyFlag')
                 // Update the trial parameters with keyTappedEarlyFlag
                 trial.keyTappedEarlyFlag = keyTappedEarlyFlag;
+                return keyTappedEarlyFlag
               },
               on_finish: function (data) {
                 // Check if minimum taps was reached
@@ -816,8 +781,7 @@ export async function run({
             {
               timeline: [releaseKeysStep],
               conditional_function: function () {
-                const lastTrialData = jsPsych.data.get().last(1).values()[0];
-                return !lastTrialData.keysReleasedFlag;
+                return !checkFlag('demo', 'keysReleasedFlag')
               },
             },
             {
@@ -924,16 +888,10 @@ export async function run({
                       reward: trialData.reward,
                     },
                     on_start: function (trial) {
-                      const lastCountdownData = jsPsych.data
-                        .get()
-                        .filter({ task: 'countdown' })
-                        .last(1)
-                        .values()[0];
-                      const keyTappedEarlyFlag = lastCountdownData
-                        ? lastCountdownData.keyTappedEarlyFlag
-                        : false;
+                      const keyTappedEarlyFlag = checkFlag('countdown', 'keyTappedEarlyFlag')
                       // Update the trial parameters with keyTappedEarlyFlag
                       trial.keyTappedEarlyFlag = keyTappedEarlyFlag;
+                      return keyTappedEarlyFlag
                     },
                     on_finish: function (data) {
                       console.log(data);
@@ -945,11 +903,7 @@ export async function run({
                   {
                     timeline: [releaseKeysStep],
                     conditional_function: function () {
-                      const lastTrialData = jsPsych.data
-                        .get()
-                        .last(2)
-                        .values()[0];
-                      return !lastTrialData.keysReleasedFlag;
+                      return !checkFlag('block', 'keysReleasedFlag')
                     },
                   },
                 ],
