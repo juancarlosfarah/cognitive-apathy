@@ -73,7 +73,7 @@ export const acceptanceThermometer = (bounds, reward) => `
       ></div>
     </div>
   </div>
-  <p style="text-align: center;">Reward: $${reward}</p>
+  <p style="text-align: center;">Reward: $${reward.toFixed(2)}</p>
   <p style="text-align: center;">${ACCEPTANCE_TRIAL_MESSAGE}</p>
 </div>
 `;

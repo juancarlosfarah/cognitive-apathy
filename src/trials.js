@@ -263,7 +263,7 @@ export function createRewardDisplayTrial(jsPsych) {
     choices: ['enter'],
     stimulus: function () {
       const totalSuccessfulReward = calculateTotalReward(jsPsych);
-      return `<p>${REWARD_TOTAL_MESSAGE(totalSuccessfulReward)}</p>`;
+      return `<p>${REWARD_TOTAL_MESSAGE(totalSuccessfulReward.toFixed(2))}</p>`;
     },
     data: {
       task: 'display_reward',
