@@ -89,6 +89,7 @@ import {
   noStimuliVideoTutorial,
   stimuliVideoTutorial,
   validationVideoTutorial,
+  practiceLoop
 } from './tutorial';
 import {
   autoIncreaseAmount,
@@ -155,65 +156,7 @@ export async function run({
 
   // Countdown step with `key `release flag check
 
-  // Trial for the user to practice
-  const practiceTrial = {
-    timeline: [
-      {
-        type: TaskPlugin,
-        showThermometer: false,
-        data: {
-          task: 'practice',
-        },
-        on_start: function (trial) {
-          const keyTappedEarlyFlag = checkFlag(
-            'countdown',
-            'keyTappedEarlyFlag',
-            jsPsych,
-          );
-          // Update the trial parameters with keyTappedEarlyFlag
-          trial.keyTappedEarlyFlag = keyTappedEarlyFlag;
-        },
-      },
-      {
-        timeline: [releaseKeysStep],
-        conditional_function: function () {
-          return !checkFlag('practice', 'keysReleasedFlag', jsPsych);
-        },
-      },
-    ],
-  };
-
-  // Create a loop for the user to practice until done successfully (pushed at the start).
-  const practiceLoop = {
-    timeline: [
-      interactiveCountdown,
-      {
-        type: HtmlKeyboardResponsePlugin,
-        stimulus: '<p style="color: green; font-size: 48px;">GO</p>',
-        choices: 'NO_KEYS',
-        trial_duration: GO_DURATION, // Display "GO" for 1 second
-        data: {
-          task: 'go_screen',
-        },
-      },
-      practiceTrial,
-      loadingBarTrial(true, jsPsych),
-    ],
-    // Repeat if the keys were released early or if user tapped before go.
-    loop_function: function () {
-      const keyTappedEarlyFlag = checkFlag(
-        'countdown',
-        'keyTappedEarlyFlag',
-        jsPsych,
-      );
-      const keysReleasedFlag = checkFlag(
-        'practice',
-        'keysReleasedFlag',
-        jsPsych,
-      );
-      return keysReleasedFlag || keyTappedEarlyFlag;
-    },
-  };
+  
 
   /**
    * @function endExperimentTrial
@@ -230,7 +173,9 @@ export async function run({
       jsPsych.getDisplayElement().innerHTML = '';
     },
   });
-  timeline.push(practiceLoop);
+  
+  timeline.push(practiceLoop(jsPsych));
+
   timeline.push(instructionalTrial(CALIBRATION_PART_1_DIRECTIONS));
   timeline.push({
     timeline: [calibrationTrialPart1(jsPsych, state)],

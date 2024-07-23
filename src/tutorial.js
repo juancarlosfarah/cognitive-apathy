@@ -1,7 +1,10 @@
 import htmlButtonResponse from '@jspsych/plugin-html-button-response';
 import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
 import videoButtonResponse from '@jspsych/plugin-video-button-response';
-
+import { checkFlag } from './utils';
+import TaskPlugin from './task';
+import { releaseKeysStep } from './release-keys';
+import { loadingBarTrial } from './loading-bar';
 import {
   DOMINANT_HAND_MESSAGE,
   GO_DURATION,
@@ -18,6 +21,9 @@ import {
   validationVideo,
   videoStimulus,
 } from './stimulus';
+
+
+
 
 export const interactiveCountdown = {
   type: CountdownTrialPlugin,
@@ -73,3 +79,50 @@ export const validationVideoTutorial = {
   choices: ['Continue'],
   enable_button_after: 15000,
 };
+
+
+export const practiceTrial = (jsPsych) => ({
+  timeline: [
+    {
+      type: TaskPlugin,
+      showThermometer: false,
+      data: {
+        task: 'practice',
+      },
+      on_start: function (trial) {
+        const keyTappedEarlyFlag = checkFlag('countdown', 'keyTappedEarlyFlag', jsPsych);
+        // Update the trial parameters with keyTappedEarlyFlag
+        trial.keyTappedEarlyFlag = keyTappedEarlyFlag;
+      },
+    },
+    {
+      timeline: [releaseKeysStep],
+      conditional_function: function () {
+        return !checkFlag('practice', 'keysReleasedFlag', jsPsych);
+      },
+    },
+  ],
+});
+
+export const practiceLoop = (jsPsych) => ({
+  timeline: [
+    interactiveCountdown,
+    {
+      type: HtmlKeyboardResponsePlugin,
+      stimulus: '<p style="color: green; font-size: 48px;">GO</p>',
+      choices: 'NO_KEYS',
+      trial_duration: GO_DURATION, // Display "GO" for 1 second
+      data: {
+        task: 'go_screen',
+      },
+    },
+    practiceTrial(jsPsych),
+    loadingBarTrial(true, jsPsych),
+  ],
+  // Repeat if the keys were released early or if user tapped before go.
+  loop_function: function () {
+    const keyTappedEarlyFlag = checkFlag('countdown', 'keyTappedEarlyFlag', jsPsych);
+    const keysReleasedFlag = checkFlag('practice', 'keysReleasedFlag', jsPsych);
+    return keysReleasedFlag || keyTappedEarlyFlag;
+  },
+});
