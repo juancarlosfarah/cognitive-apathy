@@ -1,10 +1,7 @@
 import htmlButtonResponse from '@jspsych/plugin-html-button-response';
 import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
 import videoButtonResponse from '@jspsych/plugin-video-button-response';
-import { checkFlag } from './utils';
-import TaskPlugin from './task';
-import { releaseKeysStep } from './release-keys';
-import { loadingBarTrial } from './loading-bar';
+
 import {
   DOMINANT_HAND_MESSAGE,
   GO_DURATION,
@@ -15,15 +12,16 @@ import {
   VIDEO_TUTORIAL_MESSAGE,
 } from './constants';
 import { CountdownTrialPlugin } from './countdown';
+import { loadingBarTrial } from './loading-bar';
+import { releaseKeysStep } from './release-keys';
 import {
   noStimuliVideo,
   stimuliVideo,
   validationVideo,
   videoStimulus,
 } from './stimulus';
-
-
-
+import TaskPlugin from './task';
+import { checkFlag } from './utils';
 
 export const interactiveCountdown = {
   type: CountdownTrialPlugin,
@@ -80,7 +78,6 @@ export const validationVideoTutorial = {
   enable_button_after: 15000,
 };
 
-
 export const practiceTrial = (jsPsych) => ({
   timeline: [
     {
@@ -90,7 +87,11 @@ export const practiceTrial = (jsPsych) => ({
         task: 'practice',
       },
       on_start: function (trial) {
-        const keyTappedEarlyFlag = checkFlag('countdown', 'keyTappedEarlyFlag', jsPsych);
+        const keyTappedEarlyFlag = checkFlag(
+          'countdown',
+          'keyTappedEarlyFlag',
+          jsPsych,
+        );
         // Update the trial parameters with keyTappedEarlyFlag
         trial.keyTappedEarlyFlag = keyTappedEarlyFlag;
       },
@@ -121,7 +122,11 @@ export const practiceLoop = (jsPsych) => ({
   ],
   // Repeat if the keys were released early or if user tapped before go.
   loop_function: function () {
-    const keyTappedEarlyFlag = checkFlag('countdown', 'keyTappedEarlyFlag', jsPsych);
+    const keyTappedEarlyFlag = checkFlag(
+      'countdown',
+      'keyTappedEarlyFlag',
+      jsPsych,
+    );
     const keysReleasedFlag = checkFlag('practice', 'keysReleasedFlag', jsPsych);
     return keysReleasedFlag || keyTappedEarlyFlag;
   },

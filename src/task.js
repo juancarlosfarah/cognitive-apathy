@@ -58,7 +58,7 @@ class TaskPlugin {
       },
       reward: {
         type: ParameterType.FLOAT,
-        default: 0.5,
+        default: 0,
       },
       keyTappedEarlyFlag: {
         type: ParameterType.BOOL,
