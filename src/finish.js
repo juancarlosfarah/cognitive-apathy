@@ -1,7 +1,7 @@
-import HtmlKeyboardResponsePlugin from "@jspsych/plugin-html-keyboard-response";
-import { calculateTotalReward } from './utils'; // Ensure this is correctly imported
-import { REWARD_TOTAL_MESSAGE } from './constants'; // Ensure this is correctly imported
-import { saveAs } from 'file-saver'; // Ensure this is correctly imported
+import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
+import { saveAs } from 'file-saver';
+import { REWARD_TOTAL_MESSAGE } from './constants';
+import { calculateTotalReward } from './utils';
 
 export const finishExperiment = (jsPsych) => ({
   type: HtmlKeyboardResponsePlugin,

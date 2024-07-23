@@ -18,6 +18,7 @@ import {
   CALIBRATION_PART_1_DIRECTIONS,
   REWARD_TOTAL_MESSAGE,
 } from './constants';
+import { finishExperiment } from './finish';
 import {
   calculateMedianCalibrationPart1,
   calculateMedianCalibrationPart2,
@@ -36,7 +37,6 @@ import {
   validationTrialHard,
   validationTrialMedium,
 } from './validation';
-import { finishExperiment } from './finish';
 
 // Initialize the state object to keep track of various metrics and flags throughout the experiment
 let state = {
@@ -58,7 +58,6 @@ let state = {
   failedMinimumDemoTapsTrial: 0,
   demoTrialSuccesses: 0,
 };
-
 
 /**
  * @function run
@@ -88,11 +87,10 @@ export async function run({
   timeline.push(practiceLoop(jsPsych));
 
   // Calibration Part 1
-  timeline.push(instructionalTrial(CALIBRATION_PART_1_DIRECTIONS))
+  timeline.push(instructionalTrial(CALIBRATION_PART_1_DIRECTIONS));
 
   timeline.push(calibrationTrialPart1(jsPsych, state)),
-  
-  timeline.push(calculateMedianCalibrationPart1(jsPsych, state))
+    timeline.push(calculateMedianCalibrationPart1(jsPsych, state));
 
   // Calibration Part 2
   timeline.push(stimuliVideoTutorialTrial(jsPsych));
