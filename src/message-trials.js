@@ -10,9 +10,6 @@ import {
   CALIBRATION_PART_1_ENDING_MESSAGE,
   CALIBRATION_PART_2_ENDING_MESSAGE,
   MINIMUM_CALIBRATION_MEDIAN,
-  
-
-
 } from './constants';
 
 export const endExperimentTrial = (message) => ({

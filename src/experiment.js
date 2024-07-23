@@ -7,9 +7,7 @@
  */
 // Import necessary plugins and modules from jsPsych and other libraries
 import FullscreenPlugin from '@jspsych/plugin-fullscreen';
-import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
 import PreloadPlugin from '@jspsych/plugin-preload';
-import { saveAs } from 'file-saver';
 import { initJsPsych } from 'jspsych';
 
 import '../styles/main.scss';
