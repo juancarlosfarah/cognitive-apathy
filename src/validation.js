@@ -18,41 +18,14 @@ import { releaseKeysStep } from './release-keys';
 import TaskPlugin from './task';
 import { autoIncreaseAmount, checkFlag } from './utils';
 
-// Ensure handleValidationFinish is imported correctly
-
-// Initialize validationFailures with each bound option set to 0
-export const validationFailures = BOUND_OPTIONS.reduce((acc, bounds) => {
-  acc[JSON.stringify(bounds)] = 0;
-  return acc;
-}, {});
-
-let validationExtraFailures = 0; // Initialize the counter for extra validation failures
-
-/**
- * Handle the logic for finishing a validation trial.
- *
- * @param {Object} data - The data object from the trial
- * @param {String} validationName - The name of the validation trial
- * @param {Array} bounds - The bounds used in the validation trial
- * @param {Object} validationFailures - The object tracking validation failures
- * @param {Array} validationExtraCount - The count of extra validation trials
- *
- * @returns {Object} - An object containing extraValidationRequired, validationSuccess, and validationExtraFailures
- */
-export const handleValidationFinish = (data, validationName, bounds, state) => {
-  let extraValidationRequired = false;
-  let validationSuccess = true;
-
+export const handleValidationFinish = (data, validationName, state) => {
   if (validationName !== 'validationExtra') {
     if (!data.success) {
-      state.validationFailures[JSON.stringify(bounds)]++; // Increment the failure count if trial was not successful
-      // If any of the validations levels have 3/4 or more failures, ensure extra validation follows.
-      if (
-        Object.values(state.validationFailures).some(
-          (failures) => failures >= Math.floor(0.75 * NUM_VALIDATION_TRIALS),
-        )
-      ) {
-        extraValidationRequired = true;
+      state.validationFailures[validationName]++; // Increment the failure count if trial was not successful
+
+      // If any of the validation levels have 3/4 or more failures, ensure extra validation follows.
+      if (Object.values(state.validationFailures).some(failures => failures >= Math.floor(0.75 * NUM_VALIDATION_TRIALS))) {
+        state.extraValidationRequired = true;
       }
     }
   } else {
@@ -62,18 +35,13 @@ export const handleValidationFinish = (data, validationName, bounds, state) => {
     }
 
     // Check if there have been 3 or more extra validation trials
-    if (state.validationExtraCount >= NUM_EXTRA_VALIDATION_TRIALS) {
+    if (state.validationExtraFailures >= NUM_EXTRA_VALIDATION_TRIALS) {
+      console.log(state.validationExtraFailures)
+      console.log('more than 3 failurs have been reached')
       // Set validation success if the user passed at least 1 extra validation trial
-      validationSuccess =
-        state.validationExtraFailures <= NUM_EXTRA_VALIDATION_TRIALS - 1;
+      state.validationSuccess = false
     }
   }
-
-  return {
-    extraValidationRequired,
-    validationSuccess,
-    validationExtraFailures: state.validationExtraFailures,
-  };
 };
 
 export const createValidationTrial = (
@@ -105,23 +73,7 @@ export const createValidationTrial = (
       },
       on_finish: function (data) {
         data.task = validationName;
-        const validationExtraCount = jsPsych.data
-          .get()
-          .filter({ task: 'validationExtra' })
-          .values();
-
-        const result = handleValidationFinish(
-          data,
-          validationName,
-          bounds,
-          state.validationFailures,
-          validationExtraCount,
-          state.validationExtraFailures,
-        );
-
-        state.extraValidationRequired = result.extraValidationRequired;
-        state.validationSuccess = result.validationSuccess;
-        state.validationExtraFailures = result.validationExtraFailures;
+        handleValidationFinish(data, validationName, state);
       },
     },
     {
@@ -140,7 +92,7 @@ export const createValidationTrial = (
   repetitions: repetitions,
 });
 
-const validationResultScreen = {
+export const validationResultScreen = (jsPsych, state) => ({
   type: HtmlKeyboardResponsePlugin,
   choices: ['enter'],
   stimulus: function () {
@@ -150,10 +102,13 @@ const validationResultScreen = {
   },
   on_finish: function () {
     if (!state.validationSuccess) {
+      const allData = jsPsych.data.get().json();
+      const blob = new Blob([allData], { type: 'application/json' });
+      saveAs(blob, `experiment_data_${new Date().toISOString()}.json`);
       jsPsych.endExperiment(FAILED_VALIDATION_MESSAGE);
     }
   },
-};
+});
 
 // Create individual validation trial functions
 export const validationTrialEasy = (jsPsych, state) =>
@@ -192,16 +147,3 @@ export const validationTrialExtra = (jsPsych, state) =>
     state,
   );
 
-// Set up the validation trials array similarly
-export const validationTrials = (jsPsych, state) => [
-  validationTrialEasy(jsPsych, state),
-  validationTrialMedium(jsPsych, state),
-  validationTrialHard(jsPsych, state),
-  {
-    timeline: [validationTrialExtra(jsPsych, state)],
-    conditional_function: function () {
-      return state.extraValidationRequired;
-    },
-  },
-  validationResultScreen,
-];

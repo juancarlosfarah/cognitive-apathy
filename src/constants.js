@@ -73,7 +73,7 @@ export const PASSED_VALIDATION_MESSAGE = `
 <br> Press the <b>Enter</b> key to continue.`;
 export const FAILED_VALIDATION_MESSAGE = `
 <br>Unfortunately, you are not eligible for this experiment.
-<br>Please fine your experimenter, and let them know.`;
+<br>Please find your experimenter, and let them know.`;
 export const CALIBRATION_PART_1_DIRECTIONS = `
   <br>You will perform the same task as you did in the practice.
   <br>

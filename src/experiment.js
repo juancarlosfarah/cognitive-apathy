@@ -30,6 +30,7 @@ import {
   validationVideoTutorialTrial,
 } from './tutorial';
 import {
+  validationResultScreen,
   validationTrialEasy,
   validationTrialExtra,
   validationTrialHard,
@@ -49,9 +50,9 @@ let state = {
   validationSuccess: false,
   extraValidationRequired: false,
   validationFailures: {
-    '[30,50]': 0,
-    '[50,70]': 0,
-    '[70,90]': 0,
+    'validationEasy': 0,
+    'validationMedium': 0,
+    'validationHard': 0,
   },
   failedMinimumDemoTapsTrial: 0,
   demoTrialSuccesses: 0,
@@ -113,6 +114,9 @@ export async function run({
     conditional_function: function () {
       return state.extraValidationRequired;
     },
+  });
+  timeline.push({
+    timeline: [validationResultScreen(jsPsych, state)]
   });
 
   // Sample 6 random blocks of 63 trials
