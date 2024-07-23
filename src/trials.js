@@ -11,6 +11,8 @@ import {
   PARAMETER_COMBINATIONS,
   REWARD_TOTAL_MESSAGE,
   TRIAL_DURATION,
+  FAILED_MINIMUM_DEMO_TAPS_DURATION,
+  FAILED_MINIMUM_DEMO_TAPS_MESSAGE
 } from './constants';
 import { countdownStep } from './countdown';
 import { likertQuestions1, likertQuestions2 } from './likert';
@@ -20,6 +22,13 @@ import { releaseKeysStep } from './release-keys';
 import { acceptanceThermometer } from './stimulus';
 import TaskPlugin from './task';
 import { autoIncreaseAmount, checkFlag } from './utils';
+
+const failedMinimumDemoTapsTrial = {
+  type: HtmlKeyboardResponsePlugin,
+  stimulus: `<p style="color: red;">${FAILED_MINIMUM_DEMO_TAPS_MESSAGE}</p>`,
+  choices: ['NO_KEYS'],
+  trial_duration: FAILED_MINIMUM_DEMO_TAPS_DURATION,
+};
 
 export const createTrialBlock = ({
   blockName,
@@ -95,7 +104,8 @@ export const createTrialBlock = ({
             },
           },
           {
-            timeline: [loadingBarTrial(true, jsPsych)],
+            timeline: [failedMinimumDemoTapsTrial],
+            // Check if minimum taps was reached in last trial to determine whether 'failedMinimumDemoTapsTrial' should display
             conditional_function: function () {
               const lastTrialData = jsPsych.data
                 .get()
@@ -104,6 +114,9 @@ export const createTrialBlock = ({
                 .values()[0];
               return !lastTrialData.minimumTapsReached;
             },
+          },
+          {
+            timeline: [loadingBarTrial(true, jsPsych)],
           },
         ],
         loop_function: function () {

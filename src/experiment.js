@@ -150,12 +150,7 @@ export async function run({
 
   // Did
 
-  const failedMinimumDemoTapsTrial = {
-    type: HtmlKeyboardResponsePlugin,
-    stimulus: `<p style="color: red;">${FAILED_MINIMUM_DEMO_TAPS_MESSAGE}</p>`,
-    choices: ['NO_KEYS'],
-    trial_duration: FAILED_MINIMUM_DEMO_TAPS_DURATION,
-  };
+
 
   // Countdown step with `key `release flag check
 
