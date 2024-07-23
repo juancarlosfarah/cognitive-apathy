@@ -21,7 +21,7 @@ import { successScreen } from './message-trials';
 import { releaseKeysStep } from './release-keys';
 import { acceptanceThermometer } from './stimulus';
 import TaskPlugin from './task';
-import { autoIncreaseAmount, checkFlag } from './utils';
+import { autoIncreaseAmount, checkFlag, calculateTotalReward } from './utils';
 
 const failedMinimumDemoTapsTrial = {
   type: HtmlKeyboardResponsePlugin,
@@ -256,15 +256,7 @@ export const createTrialBlock = ({
   return { timeline };
 };
 
-// Function to calculate accumulated reward
-export function calculateTotalReward(jsPsych) {
-  const successfulTrials = jsPsych.data
-    .get()
-    .filter({ task: 'block', success: true });
-  console.log(successfulTrials);
-  console.log(successfulTrials.select('reward'));
-  return successfulTrials.select('reward').sum();
-}
+
 
 // Function to create a trial that displays the accumulated reward to the user
 export function createRewardDisplayTrial(jsPsych) {

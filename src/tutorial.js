@@ -64,6 +64,14 @@ export const noStimuliVideoTutorial = {
   enable_button_after: 15000,
 };
 
+export const noStimuliVideoTutorialTrial = (jsPsych) => ({
+  timeline: [noStimuliVideoTutorial],
+  on_finish: function () {
+    // Clear the display element
+    jsPsych.getDisplayElement().innerHTML = '';
+  },
+});
+
 export const stimuliVideoTutorial = {
   type: htmlButtonResponse,
   stimulus: [stimuliVideo],
@@ -71,12 +79,28 @@ export const stimuliVideoTutorial = {
   enable_button_after: 15000,
 };
 
+export const stimuliVideoTutorialTrial = (jsPsych) => ({
+  timeline: [stimuliVideoTutorial],
+  on_finish: function () {
+    // Clear the display element
+    jsPsych.getDisplayElement().innerHTML = '';
+  },
+});
+
 export const validationVideoTutorial = {
   type: htmlButtonResponse,
   stimulus: [validationVideo],
   choices: ['Continue'],
   enable_button_after: 15000,
 };
+
+export const validationVideoTutorialTrial = (jsPsych) => ({
+  timeline: [validationVideoTutorial],
+  on_finish: function () {
+    // Clear the display element
+    jsPsych.getDisplayElement().innerHTML = '';
+  },
+});
 
 export const practiceTrial = (jsPsych) => ({
   timeline: [

@@ -32,3 +32,41 @@ export const successScreen = (jsPsych) => ({
     task: 'success_screen',
   },
 });
+
+export const calculateMedianCalibrationPart1 = (jsPsych, state) => ({
+  type: HtmlKeyboardResponsePlugin,
+  choices: ['enter'],
+  stimulus: function () {
+    state.medianTapsPart1 = calculateMedianTapCount(
+      'calibrationPart1',
+      NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
+      jsPsych,
+      state.medianTaps,
+    );
+    console.log(`medianTapsPart1: ${state.medianTapsPart1}`);
+    if (state.medianTapsPart1 >= MINIMUM_CALIBRATION_MEDIAN) {
+      state.medianTaps = state.medianTapsPart1;
+      console.log(`medianTaps updated to: ${state.medianTaps}`);
+    }
+    return `<p>${CALIBRATION_PART_1_ENDING_MESSAGE}</p>`;
+  },
+});
+
+export const calculateMedianCalibrationPart2 = (jsPsych, state) => ({
+  type: HtmlKeyboardResponsePlugin,
+  choices: ['enter'],
+  stimulus: function () {
+    state.medianTapsPart2 = calculateMedianTapCount(
+      'calibrationPart2',
+      NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
+      jsPsych,
+      state.medianTaps,
+    );
+    console.log(`medianTapsPart2: ${state.medianTapsPart2}`);
+    if (state.medianTapsPart2 >= MINIMUM_CALIBRATION_MEDIAN) {
+      state.medianTaps = state.medianTapsPart2;
+      console.log(`medianTaps updated to: ${state.medianTaps}`);
+    }
+    return `<p>${CALIBRATION_PART_2_ENDING_MESSAGE}</p>`;
+  },
+});

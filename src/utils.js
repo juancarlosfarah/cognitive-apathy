@@ -80,3 +80,13 @@ export const checkFlag = (taskFilter, flag, jsPsych) => {
     return lastCountdownData ? lastCountdownData.keysReleasedFlag : true;
   }
 };
+
+// Function to calculate accumulated reward
+export function calculateTotalReward(jsPsych) {
+  const successfulTrials = jsPsych.data
+    .get()
+    .filter({ task: 'block', success: true });
+  console.log(successfulTrials);
+  console.log(successfulTrials.select('reward'));
+  return successfulTrials.select('reward').sum();
+}

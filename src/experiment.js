@@ -5,106 +5,40 @@
  *
  * @assets assets/
  */
+// Import necessary plugins and modules from jsPsych and other libraries
 import FullscreenPlugin from '@jspsych/plugin-fullscreen';
 import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
 import PreloadPlugin from '@jspsych/plugin-preload';
-import surveyLikert from '@jspsych/plugin-survey-likert';
-import videoButtonResponse from '@jspsych/plugin-video-button-response';
 import { saveAs } from 'file-saver';
 import { initJsPsych } from 'jspsych';
 
 import '../styles/main.scss';
+import { calibrationTrialPart1, calibrationTrialPart2 } from './calibration';
 import {
-  calibrationTrialPart1,
-  calibrationTrialPart2,
-  createCalibrationTrial,
-  createConditionalCalibrationTrial,
-} from './calibration';
-import {
-  ADDITIONAL_CALIBRATION_PART_1_DIRECTIONS,
-  AUTO_DECREASE_AMOUNT,
-  AUTO_DECREASE_RATE,
-  AUTO_INCREASE_AMOUNT,
-  BOUND_OPTIONS,
-  CALIBRATION_FINISHED_DIRECTIONS,
   CALIBRATION_PART_1_DIRECTIONS,
-  CALIBRATION_PART_1_ENDING_MESSAGE,
-  CALIBRATION_PART_2_DIRECTIONS,
-  CALIBRATION_PART_2_ENDING_MESSAGE,
-  DEMO_TRIAL_MESSAGE,
-  EASY_BOUNDS,
-  EXPECTED_MAXIMUM_PERCENTAGE,
-  EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
-  FAILED_MINIMUM_DEMO_TAPS_DURATION,
-  FAILED_MINIMUM_DEMO_TAPS_MESSAGE,
-  FAILED_VALIDATION_MESSAGE,
-  GO_DURATION,
-  HARD_BOUNDS,
-  KEYS_TO_HOLD,
-  LIKERT_PREAMBLE,
-  LOADING_BAR_SPEED_NO,
-  LOADING_BAR_SPEED_YES,
-  MEDIUM_BOUNDS,
-  MINIMUM_CALIBRATION_MEDIAN,
-  MINIMUM_DEMO_TAPS,
-  NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
-  NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
-  NUM_DEMO_TRIALS,
-  NUM_EXTRA_VALIDATION_TRIALS,
-  NUM_TRIALS,
-  NUM_VALIDATION_TRIALS,
-  PARAMETER_COMBINATIONS,
-  PASSED_VALIDATION_MESSAGE,
   REWARD_TOTAL_MESSAGE,
-  SUCCESS_SCREEN_DURATION,
-  TRIAL_BLOCKS_DIRECTIONS,
-  TRIAL_DURATION,
-  TRIAL_FAILED,
-  TRIAL_SUCCEEDED,
-  TUTORIAL_MESSAGE_1,
-  VALIDATION_DIRECTIONS,
-  VIDEO_TUTORIAL_MESSAGE,
 } from './constants';
-import { countdownStep } from './countdown';
-import { KeyboardInteractionPlugin } from './keyboard';
-import { likertQuestions1, likertQuestions2 } from './likert';
-import { loadingBarTrial } from './loading-bar';
-import { successScreen } from './message-trials';
-import { ReleaseKeysPlugin, releaseKeysStep } from './release-keys';
 import {
-  acceptanceThermometer,
-  blockWelcomeMessage,
-  loadingBar,
-  showThermometer,
-  thermometer,
-  videoStimulus,
-} from './stimulus';
-import TaskPlugin from './task';
+  calculateMedianCalibrationPart1,
+  calculateMedianCalibrationPart2,
+} from './message-trials';
 import { sampledArray } from './trials';
 import {
-  DOMINANT_HAND,
-  dominantHand,
-  instructionalCountdownSte,
   instructionalTrial,
-  interactiveCountdown,
-  noStimuliVideoTutorial,
+  noStimuliVideoTutorialTrial,
   practiceLoop,
-  stimuliVideoTutorial,
-  validationVideoTutorial,
+  stimuliVideoTutorialTrial,
+  validationVideoTutorialTrial,
 } from './tutorial';
-import {
-  autoIncreaseAmount,
-  calculateMedianTapCount,
-  checkFlag,
-  randomNumberBm,
-} from './utils';
 import {
   validationTrialEasy,
   validationTrialExtra,
   validationTrialHard,
   validationTrialMedium,
 } from './validation';
+import { finishExperiment } from './finish';
 
+// Initialize the state object to keep track of various metrics and flags throughout the experiment
 let state = {
   medianTaps: 0,
   medianTapsPart1: 0,
@@ -124,6 +58,7 @@ let state = {
   failedMinimumDemoTapsTrial: 0,
   demoTrialSuccesses: 0,
 };
+
 
 /**
  * @function run
@@ -148,103 +83,35 @@ export async function run({
     video: '../assets/videos',
   });
 
-  // Did
-
-  // Countdown step with `key `release flag check
-
-  /**
-   * @function endExperimentTrial
-   * @description Create a trial to end the experiment with a message
-   * @param {string} message - The message to display
-   * @returns {Object} - jsPsych trial object
-   */
-
-  // Video + instructions for
-  timeline.push({
-    timeline: [noStimuliVideoTutorial],
-    on_finish: function () {
-      // Clear the display element
-      jsPsych.getDisplayElement().innerHTML = '';
-    },
-  });
-
+  // Practice Section
+  timeline.push(noStimuliVideoTutorialTrial(jsPsych));
   timeline.push(practiceLoop(jsPsych));
 
-  timeline.push(instructionalTrial(CALIBRATION_PART_1_DIRECTIONS));
-  timeline.push({
-    timeline: [calibrationTrialPart1(jsPsych, state)],
-  });
+  // Calibration Part 1
+  timeline.push(instructionalTrial(CALIBRATION_PART_1_DIRECTIONS))
 
-  timeline.push({
-    type: HtmlKeyboardResponsePlugin,
-    choices: ['enter'],
-    stimulus: function () {
-      state.medianTapsPart1 = calculateMedianTapCount(
-        'calibrationPart1',
-        NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
-        jsPsych,
-        state.medianTaps,
-      );
-      console.log(`medianTapsPart1: ${state.medianTapsPart1}`);
-      if (state.medianTapsPart1 >= MINIMUM_CALIBRATION_MEDIAN) {
-        state.medianTaps = state.medianTapsPart1;
-        console.log(`medianTaps updated to: ${state.medianTaps}`);
-      }
-      return `<p>${CALIBRATION_PART_1_ENDING_MESSAGE}</p>`;
-    },
-  });
+  timeline.push(calibrationTrialPart1(jsPsych, state)),
+  
+  timeline.push(calculateMedianCalibrationPart1(jsPsych, state))
 
-  timeline.push({
-    timeline: [stimuliVideoTutorial],
-    on_finish: function () {
-      // Clear the display element
-      jsPsych.getDisplayElement().innerHTML = '';
-    },
-  });
-
+  // Calibration Part 2
+  timeline.push(stimuliVideoTutorialTrial(jsPsych));
   timeline.push({
     timeline: [calibrationTrialPart2(jsPsych, state)],
   });
+  timeline.push(calculateMedianCalibrationPart2(jsPsych, state));
 
-  timeline.push({
-    type: HtmlKeyboardResponsePlugin,
-    choices: ['enter'],
-    stimulus: function () {
-      state.medianTapsPart2 = calculateMedianTapCount(
-        'calibrationPart2',
-        NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
-        jsPsych,
-        state.medianTaps,
-      );
-      console.log(`medianTapsPart2: ${state.medianTapsPart2}`);
-      if (state.medianTapsPart2 >= MINIMUM_CALIBRATION_MEDIAN) {
-        state.medianTaps = state.medianTapsPart2;
-        console.log(`medianTaps updated to: ${state.medianTaps}`);
-      }
-      return `<p>${CALIBRATION_PART_2_ENDING_MESSAGE}</p>`;
-    },
-  });
-
-  timeline.push({
-    timeline: [validationVideoTutorial],
-    on_finish: function () {
-      // Clear the display element
-      jsPsych.getDisplayElement().innerHTML = '';
-    },
-  });
-
+  // Validation section
+  timeline.push(validationVideoTutorialTrial(jsPsych));
   timeline.push({
     timeline: [validationTrialEasy(jsPsych, state)],
   });
-
   timeline.push({
     timeline: [validationTrialMedium(jsPsych, state)],
   });
-
   timeline.push({
     timeline: [validationTrialHard(jsPsych, state)],
   });
-
   timeline.push({
     timeline: [validationTrialExtra(jsPsych, state)],
     conditional_function: function () {
@@ -252,35 +119,16 @@ export async function run({
     },
   });
 
+  // Sample 6 random blocks of 63 trials
   const sampledTrials = sampledArray(jsPsych, state);
   sampledTrials.forEach((trialBlock) => {
-    timeline.push(trialBlock[0]);
-    timeline.push(trialBlock[1]);
-    timeline.push(trialBlock[2]);
+    trialBlock.forEach((trial) => {
+      timeline.push(trial);
+    });
   });
 
-  // Final step to calculate total reward at the end of the experiment
-  const finishExperiment = {
-    type: HtmlKeyboardResponsePlugin,
-    choices: ['enter'],
-    stimulus: function () {
-      const totalSuccessfulReward = calculateTotalReward();
-      return `<p>${REWARD_TOTAL_MESSAGE(totalSuccessfulReward)}</p>`;
-    },
-    data: {
-      task: 'finish_experiment',
-    },
-    on_finish: function (data) {
-      // Add total reward data to this trial for easy access
-      const totalSuccessfulReward = calculateTotalReward();
-      data.totalReward = totalSuccessfulReward;
-      const allData = jsPsych.data.get().json();
-      const blob = new Blob([allData], { type: 'application/json' });
-      saveAs(blob, `experiment_data_${new Date().toISOString()}.json`);
-    },
-  };
-
-  timeline.push(finishExperiment);
+  // Finish experiment and save data
+  timeline.push(finishExperiment(jsPsych));
 
   // Start the experiment
   await jsPsych.run(timeline);
