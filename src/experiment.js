@@ -845,12 +845,14 @@ export async function run({
         ...likertQuestions1,
       );
     }
-
+ // If a block created is an actual trial
     if (blockName) { 
+      // Create the number of full combination of trials (63 trials  / (3 x 3) factorial design = 7 sets of these 9 trials)
+      
       const numTrialsPerCombination = Math.floor(
         NUM_TRIALS / PARAMETER_COMBINATIONS.length,
       );
-
+      // Randomly map each of these combination parameters to each trial within 63 created samples 
       let trials = PARAMETER_COMBINATIONS.flatMap((combination) =>
         Array(numTrialsPerCombination)
           .fill()
@@ -863,7 +865,7 @@ export async function run({
             bounds: combination.bounds,
           })),
       );
-
+      // Shuffle the order of these trials
       trials = jsPsych.randomization.shuffle(trials);
       timeline.push(
         {
@@ -963,6 +965,7 @@ export async function run({
               },
             ],
           })),
+          // Sample these without replacement so no trials are repeated
           sample: {
             type: 'without-replacement',
             size: trials.length,
@@ -975,7 +978,7 @@ export async function run({
 
     return { timeline };
   };
-
+  // Function to calculate accumulated reward
   function calculateTotalReward() {
     const successfulTrials = jsPsych.data
       .get()
@@ -984,7 +987,7 @@ export async function run({
     console.log(successfulTrials.select('reward'));
     return successfulTrials.select('reward').sum();
   }
-
+  // Function to create a trial that displays the accumulated reward to the user
   function createRewardDisplayTrial() {
     return {
       type: HtmlKeyboardResponsePlugin,
@@ -1002,81 +1005,101 @@ export async function run({
       },
     };
   }
-
+  // Array of trials that generates a 6 new random orders of the (3x3 factorial designed blocks of 63 trials) to complete the 3x3x3 factorial design.  
   const trialsArray = [
     [
+      // Demo trials
       createTrialBlock({
         randomDelay: [0, 0],
         bounds: [0, 0],
         includeDemo: true,
       }),
+      // Synchronous Block of 63 trials 
       createTrialBlock({ blockName: 'Synchronous Block', randomDelay: [0, 0] }),
+       // Display accumulated reward
       createRewardDisplayTrial(),
     ],
     [
+      // Demo trials
       createTrialBlock({
         randomDelay: [0, 0],
         bounds: [0, 0],
         includeDemo: true,
       }),
+      // Synchronous Block of 63 trials 
       createTrialBlock({ blockName: 'Synchronous Block', randomDelay: [0, 0] }),
+      // Display accumulated reward
       createRewardDisplayTrial(),
     ],
     [
+      // Demo trials
       createTrialBlock({
         randomDelay: [400, 600],
         bounds: [0, 0],
         includeDemo: true,
       }),
+      // Narrow Asynchronous Block of 63 trials 
       createTrialBlock({
         blockName: 'Narrow Asynchronous Block',
         randomDelay: [400, 600],
       }),
+      // Display accumulated reward
       createRewardDisplayTrial(),
     ],
     [
       createTrialBlock({
+      // Demo trials
         randomDelay: [400, 600],
         bounds: [0, 0],
         includeDemo: true,
       }),
       createTrialBlock({
+      // Narrow Asynchronous Block of 63 trials 
         blockName: 'Narrow Asynchronous Block',
         randomDelay: [400, 600],
       }),
+      // Display accumulated reward
       createRewardDisplayTrial(),
     ],
     [
       createTrialBlock({
+      // Demo trials
         randomDelay: [0, 1000],
         bounds: [0, 0],
         includeDemo: true,
       }),
       createTrialBlock({
+      // Wide Asynchronous Block of 63 trials 
         blockName: 'Wide Asynchronous Block',
         randomDelay: [0, 1000],
       }),
+      // Display accumulated reward
       createRewardDisplayTrial(),
     ],
     [
       createTrialBlock({
+      // Demo trials
         randomDelay: [0, 1000],
         bounds: [0, 0],
         includeDemo: true,
       }),
       createTrialBlock({
+      // Wide Asynchronous Block of 63 trials 
         blockName: 'Wide Asynchronous Block',
         randomDelay: [0, 1000],
       }),
+      // Display accumulated reward
       createRewardDisplayTrial(),
     ],
   ];
-
+  // Randomly sample from the 3x3x3 factorial design to display 2 Synchronous Blocks of 63 trials, 
+  // 2 Narrow Asynchronous Blocks of 63 trials, and 2 Wide Asynchronous Blocks of 63 trials for 
+  // a total of 378 trials
   const sampledArray = jsPsych.randomization.sampleWithoutReplacement(
     trialsArray,
     6,
   );
-  //NOTE: SAMPLING IS NOT EVENLY DISTRIBUTED LIKE HUMMEL LAB
+  // NOTE: SAMPLING IS NOT EVENLY DISTRIBUTED LIKE HUMMEL LAB
 
   // Push each array of trial blocks to the timeline
   sampledArray.forEach((sampledArray) => {
@@ -1096,14 +1119,10 @@ export async function run({
     data: {
       task: 'finish_experiment',
     },
-    on_start: function () {
-      const allTrials = jsPsych.data.get().values(); // Get all trials once
-      blockTrialData = allTrials.filter({task: 'block'});
-    },
     on_finish: function (data) {
+      // Add total reward data to this trial for easy access
       const totalSuccessfulReward = calculateTotalReward();
       data.totalReward = totalSuccessfulReward;
-
       const allData = jsPsych.data.get().json();
       const blob = new Blob([allData], { type: 'application/json' });
       saveAs(blob, `experiment_data_${new Date().toISOString()}.json`);
