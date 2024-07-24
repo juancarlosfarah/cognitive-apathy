@@ -6,6 +6,8 @@ import {
   DOMINANT_HAND_MESSAGE,
   GO_DURATION,
   INTERACTIVE_KEYBOARD_TUTORIAL_MESSAGE,
+  CONTINUE_BUTTON_MESSAGE,
+  GO_MESSAGE
 } from './constants';
 import { CountdownTrialPlugin } from './countdown';
 import { loadingBarTrial } from './loading-bar';
@@ -59,7 +61,7 @@ export const dominantHand = {
 export const noStimuliVideoTutorial = {
   type: htmlButtonResponse,
   stimulus: [noStimuliVideo],
-  choices: ['Continue'],
+  choices: [CONTINUE_BUTTON_MESSAGE],
   enable_button_after: 15000,
 };
 
@@ -74,7 +76,7 @@ export const noStimuliVideoTutorialTrial = (jsPsych: JsPsych) => ({
 export const stimuliVideoTutorial = {
   type: htmlButtonResponse,
   stimulus: [stimuliVideo],
-  choices: ['Continue'],
+  choices: [CONTINUE_BUTTON_MESSAGE],
   enable_button_after: 15000,
 };
 
@@ -89,7 +91,7 @@ export const stimuliVideoTutorialTrial = (jsPsych: JsPsych) => ({
 export const validationVideoTutorial = {
   type: htmlButtonResponse,
   stimulus: [validationVideo],
-  choices: ['Continue'],
+  choices: [CONTINUE_BUTTON_MESSAGE],
   enable_button_after: 15000,
 };
 
@@ -134,7 +136,7 @@ export const practiceLoop = (jsPsych: JsPsych) => ({
     interactiveCountdown,
     {
       type: HtmlKeyboardResponsePlugin,
-      stimulus: '<p style="color: green; font-size: 48px;">GO</p>',
+      stimulus: `<p style="color: green; font-size: 48px;">${GO_MESSAGE}</p>`,
       choices: 'NO_KEYS',
       trial_duration: GO_DURATION, // Display "GO" for 1 second
       data: {

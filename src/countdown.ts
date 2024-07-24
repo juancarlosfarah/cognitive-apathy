@@ -8,6 +8,8 @@ import {
   HOLD_KEYS_MESSAGE,
   KEYS_TO_HOLD,
   KEY_TO_PRESS,
+  GO_MESSAGE,
+  COUNTDOWN_TIMER_MESSAGE
 } from './constants';
 import { createKeyboard } from './keyboard';
 
@@ -35,7 +37,7 @@ export class CountdownTrialPlugin {
       },
       initialText: {
         type: ParameterType.STRING,
-        default: 'The next part of the experiment will start in ',
+        default: COUNTDOWN_TIMER_MESSAGE,
       },
       allow_held_key: {
         type: ParameterType.BOOL,
@@ -224,7 +226,7 @@ export const countdownStep = {
     },
     {
       type: HtmlKeyboardResponsePlugin,
-      stimulus: '<p style="color: green; font-size: 48px;">GO</p>',
+      stimulus: `<p style="color: green; font-size: 48px;">${GO_MESSAGE}</p>`,
       choices: 'NO_KEYS',
       trial_duration: GO_DURATION, // Display "GO" for 1 second
       data: {

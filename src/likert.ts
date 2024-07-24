@@ -1,64 +1,68 @@
 import surveyLikert from '@jspsych/plugin-survey-likert';
 
-import { LIKERT_PREAMBLE } from './constants';
+import { LIKERT_PREAMBLE, CONTINUE_BUTTON_MESSAGE, LIKERT_SURVEY_1_QUESTIONS, LIKERT_SURVEY_2_QUESTIONS, LIKERT_RESPONSES} from './constants';
+
+// ALL LIKERT STILL NEEDS TO BE TRANSLATED BUT AM WAIT ON JEVITA QUESTIONS + ANSWERS TO TRANSLATE
+
+
 
 export const likertQuestions1 = [
   {
     type: surveyLikert,
     questions: [
       {
-        prompt: `${LIKERT_PREAMBLE}<br><br>Placeholder question 1`,
+        prompt: `${LIKERT_PREAMBLE}<br><br>${LIKERT_SURVEY_1_QUESTIONS.QUESTION_1}`,
         labels: [
-          'Strongly Disagree',
-          'Disagree',
-          'Neutral',
-          'Agree',
-          'Strongly Agree',
+          LIKERT_RESPONSES.STRONGLY_DISAGREE,
+          LIKERT_RESPONSES.DISAGREE,
+          LIKERT_RESPONSES.NEUTRAL,
+          LIKERT_RESPONSES.AGREE,
+          LIKERT_RESPONSES.STRONGLY_AGREE,
         ],
-        name: 'Q1',
+        name: LIKERT_SURVEY_1_QUESTIONS.QUESTION_1,
         required: true,
       },
     ],
     randomize_question_order: false,
-    button_label: 'Continue',
+    button_label: CONTINUE_BUTTON_MESSAGE,
   },
   {
     type: surveyLikert,
     questions: [
       {
-        prompt: `${LIKERT_PREAMBLE}<br><br>Placeholder question 2`,
+        prompt: `${LIKERT_PREAMBLE}<br><br>${LIKERT_SURVEY_1_QUESTIONS.QUESTION_2}`,
         labels: [
-          'Strongly Disagree',
-          'Disagree',
-          'Neutral',
-          'Agree',
-          'Strongly Agree',
+          LIKERT_RESPONSES.STRONGLY_DISAGREE,
+          LIKERT_RESPONSES.DISAGREE,
+          LIKERT_RESPONSES.NEUTRAL,
+          LIKERT_RESPONSES.AGREE,
+          LIKERT_RESPONSES.STRONGLY_AGREE,
         ],
-        name: 'Q2',
+        name: LIKERT_SURVEY_1_QUESTIONS.QUESTION_2,
         required: true,
       },
     ],
     randomize_question_order: false,
-    button_label: 'Continue',
+    button_label: CONTINUE_BUTTON_MESSAGE,
   },
   {
     type: surveyLikert,
     questions: [
       {
-        prompt: `${LIKERT_PREAMBLE}<br><br>Placeholder question 3`,
+        prompt: `${LIKERT_PREAMBLE}<br><br>${LIKERT_SURVEY_1_QUESTIONS.QUESTION_3}`,
         labels: [
-          'Strongly Disagree',
-          'Disagree',
-          'Neutral',
-          'Agree',
-          'Strongly Agree',
+          LIKERT_RESPONSES.STRONGLY_DISAGREE,
+          LIKERT_RESPONSES.DISAGREE,
+          LIKERT_RESPONSES.NEUTRAL,
+          LIKERT_RESPONSES.AGREE,
+          LIKERT_RESPONSES.STRONGLY_AGREE,
         ],
-        name: 'Q3',
+        name: LIKERT_SURVEY_1_QUESTIONS.QUESTION_3,
         required: true,
       },
     ],
     randomize_question_order: false,
-    button_label: 'Continue',
+    button_label: CONTINUE_BUTTON_MESSAGE,
   },
 ];
 
@@ -67,95 +71,95 @@ export const likertQuestions2 = [
     type: surveyLikert,
     questions: [
       {
-        prompt: `${LIKERT_PREAMBLE}<br><br>Placeholder question 1`,
+        prompt: `${LIKERT_PREAMBLE}<br><br>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_1}`,
         labels: [
-          'Strongly Disagree',
-          'Disagree',
-          'Neutral',
-          'Agree',
-          'Strongly Agree',
+          LIKERT_RESPONSES.STRONGLY_DISAGREE,
+          LIKERT_RESPONSES.DISAGREE,
+          LIKERT_RESPONSES.NEUTRAL,
+          LIKERT_RESPONSES.AGREE,
+          LIKERT_RESPONSES.STRONGLY_AGREE,
         ],
-        name: 'Q1',
+        name: LIKERT_SURVEY_2_QUESTIONS.QUESTION_1,
         required: true,
       },
     ],
     randomize_question_order: false,
-    button_label: 'Continue',
+    button_label: CONTINUE_BUTTON_MESSAGE,
   },
   {
     type: surveyLikert,
     questions: [
       {
-        prompt: `${LIKERT_PREAMBLE}<br><br>Placeholder question 2`,
+        prompt: `${LIKERT_PREAMBLE}<br><br>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_2}`,
         labels: [
-          'Strongly Disagree',
-          'Disagree',
-          'Neutral',
-          'Agree',
-          'Strongly Agree',
+          LIKERT_RESPONSES.STRONGLY_DISAGREE,
+          LIKERT_RESPONSES.DISAGREE,
+          LIKERT_RESPONSES.NEUTRAL,
+          LIKERT_RESPONSES.AGREE,
+          LIKERT_RESPONSES.STRONGLY_AGREE,
         ],
-        name: 'Q2',
+        name: LIKERT_SURVEY_2_QUESTIONS.QUESTION_2,
         required: true,
       },
     ],
     randomize_question_order: false,
-    button_label: 'Continue',
+    button_label: CONTINUE_BUTTON_MESSAGE,
   },
   {
     type: surveyLikert,
     questions: [
       {
-        prompt: `${LIKERT_PREAMBLE}<br><br>Placeholder question 3`,
+        prompt: `${LIKERT_PREAMBLE}<br><br>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_3}`,
         labels: [
-          'Strongly Disagree',
-          'Disagree',
-          'Neutral',
-          'Agree',
-          'Strongly Agree',
+          LIKERT_RESPONSES.STRONGLY_DISAGREE,
+          LIKERT_RESPONSES.DISAGREE,
+          LIKERT_RESPONSES.NEUTRAL,
+          LIKERT_RESPONSES.AGREE,
+          LIKERT_RESPONSES.STRONGLY_AGREE,
         ],
-        name: 'Q3',
+        name: LIKERT_SURVEY_2_QUESTIONS.QUESTION_3,
         required: true,
       },
     ],
     randomize_question_order: false,
-    button_label: 'Continue',
+    button_label: CONTINUE_BUTTON_MESSAGE,
   },
   {
     type: surveyLikert,
     questions: [
       {
-        prompt: `${LIKERT_PREAMBLE}<br><br>Placeholder question 4`,
+        prompt: `${LIKERT_PREAMBLE}<br><br>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_4}`,
         labels: [
-          'Strongly Disagree',
-          'Disagree',
-          'Neutral',
-          'Agree',
-          'Strongly Agree',
+          LIKERT_RESPONSES.STRONGLY_DISAGREE,
+          LIKERT_RESPONSES.DISAGREE,
+          LIKERT_RESPONSES.NEUTRAL,
+          LIKERT_RESPONSES.AGREE,
+          LIKERT_RESPONSES.STRONGLY_AGREE,
         ],
-        name: 'Q4',
+        name: LIKERT_SURVEY_2_QUESTIONS.QUESTION_4,
         required: true,
       },
     ],
     randomize_question_order: false,
-    button_label: 'Continue',
+    button_label: CONTINUE_BUTTON_MESSAGE,
   },
   {
     type: surveyLikert,
     questions: [
       {
-        prompt: `${LIKERT_PREAMBLE}<br><br>Placeholder question 5`,
+        prompt: `${LIKERT_PREAMBLE}<br><br>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_5}`,
         labels: [
-          'Strongly Disagree',
-          'Disagree',
-          'Neutral',
-          'Agree',
-          'Strongly Agree',
+          LIKERT_RESPONSES.STRONGLY_DISAGREE,
+          LIKERT_RESPONSES.DISAGREE,
+          LIKERT_RESPONSES.NEUTRAL,
+          LIKERT_RESPONSES.AGREE,
+          LIKERT_RESPONSES.STRONGLY_AGREE,
         ],
-        name: 'Q5',
+        name: LIKERT_SURVEY_2_QUESTIONS.QUESTION_5,
         required: true,
       },
     ],
     randomize_question_order: false,
-    button_label: 'Continue',
+    button_label: CONTINUE_BUTTON_MESSAGE,
   },
 ];

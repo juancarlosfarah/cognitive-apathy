@@ -3,6 +3,8 @@ import {
   NO_STIMULI_VIDEO_TUTORIAL_MESSAGE,
   STIMULI_VIDEO_TUTORIAL_MESSAGE,
   VALIDATION_VIDEO_TUTORIAL_MESSAGE,
+  LOADING_BAR_MESSAGE,
+  REWARD_TRIAL_MESSAGE
 } from './constants';
 
 export function stimulus(
@@ -73,13 +75,10 @@ export const acceptanceThermometer = (bounds: number[], reward: number) => `
       ></div>
     </div>
   </div>
-  <p style="text-align: center;">Reward: $${reward.toFixed(2)}</p>
+  <p style="text-align: center;"> ${REWARD_TRIAL_MESSAGE}${reward.toFixed(2)}</p>
   <p style="text-align: center;">${ACCEPTANCE_TRIAL_MESSAGE}</p>
 </div>
 `;
-
-export const blockWelcomeMessage = (name: string) =>
-  `<h2>${name}</h2><p><b>Please press "Enter" to start the experiment.</b></p>`;
 
 export const videoStimulus = (message: string) => {
   let stimulusHTML = `<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; text-align: center;">
@@ -90,7 +89,7 @@ export const videoStimulus = (message: string) => {
 
 export const loadingBar = () => `
   <div class="loading-bar-container">
-    <h1>Loading...</h1>
+    <h1>${LOADING_BAR_MESSAGE}</h1>
     <br>
     <div class="bar">
       <div class="progress"></div>

@@ -22,6 +22,10 @@
     "crypto-js": "^4.2.0",
     "fast-cartesian": "^9.0.0",
     "file-saver": "^2.0.5",
+    "i18next": "^23.12.2",
+    "i18next-browser-languagedetector": "^8.0.0",
+    "i18next-fs-backend": "^2.3.1",
+    "i18next-http-backend": "^2.5.2",
     "jspsych": "^7.3.1",
     "simple-keyboard": "^3.7.93"
   },

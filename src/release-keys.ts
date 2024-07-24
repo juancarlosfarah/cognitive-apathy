@@ -78,6 +78,5 @@ export class ReleaseKeysPlugin {
 
 export const releaseKeysStep = {
   type: ReleaseKeysPlugin,
-  stimulus: `<p>Release the Keys</p>`,
   valid_responses: KEYS_TO_HOLD,
 };

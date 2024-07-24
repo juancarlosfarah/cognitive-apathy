@@ -46,7 +46,7 @@ let state: State = {
   conditionalMedianTapsPart1: 0,
   conditionalMedianTapsPart2: 0,
   validationExtraFailures: 0,
-  validationSuccess: false,
+  validationSuccess: true,
   extraValidationRequired: false,
   validationFailures: {
     'validationEasy': 0,
@@ -56,6 +56,7 @@ let state: State = {
   failedMinimumDemoTapsTrial: 0,
   demoTrialSuccesses: 0,
 };
+import './i18n'
 
 /**
  * @function run
