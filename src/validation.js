@@ -17,6 +17,7 @@ import { successScreen } from './message-trials';
 import { releaseKeysStep } from './release-keys';
 import TaskPlugin from './task';
 import { autoIncreaseAmount, checkFlag } from './utils';
+import { finishExperimentEarly } from './finish';
 
 export const handleValidationFinish = (data, validationName, state) => {
   if (validationName !== 'validationExtra') {
@@ -102,10 +103,7 @@ export const validationResultScreen = (jsPsych, state) => ({
   },
   on_finish: function () {
     if (!state.validationSuccess) {
-      const allData = jsPsych.data.get().json();
-      const blob = new Blob([allData], { type: 'application/json' });
-      saveAs(blob, `experiment_data_${new Date().toISOString()}.json`);
-      jsPsych.endExperiment(FAILED_VALIDATION_MESSAGE);
+      finishExperimentEarly(jsPsych)
     }
   },
 });

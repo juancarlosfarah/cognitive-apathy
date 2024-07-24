@@ -13,10 +13,10 @@ import {
 } from './constants';
 import { CountdownTrialPlugin, countdownStep } from './countdown';
 import { loadingBarTrial } from './loading-bar';
-import { endExperimentTrial } from './message-trials';
+import { finishExperimentEarlyTrial } from './finish';
 import { releaseKeysStep } from './release-keys';
 import TaskPlugin from './task';
-import { autoIncreaseAmount, checkFlag } from './utils';
+import { autoIncreaseAmount, checkFlag, calculateMedianTapCount } from './utils';
 
 export const createCalibrationTrial = (
   showThermometer,
@@ -151,13 +151,12 @@ export const createConditionalCalibrationTrial = (
         ],
         numTrials,
         calibrationPart,
+        jsPsych,
         state,
       ),
       {
         timeline: [
-          endExperimentTrial(
-            'Calibration failed. The experiment is now ending.',
-          ),
+          finishExperimentEarlyTrial(jsPsych),
         ],
         conditional_function: function () {
           if (calibrationPart === 'calibrationPart1') {
@@ -213,6 +212,16 @@ export const calibrationTrialPart1 = (jsPsych, state) =>
     state,
   );
 
+  export const conditionalCalibrationTrialPart1 = (
+    jsPsych,
+    state
+  ) => createConditionalCalibrationTrial(
+    'calibrationPart1',
+    NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
+    jsPsych,
+    state
+  );
+
 export const calibrationTrialPart2 = (jsPsych, state) =>
   createCalibrationTrial(
     true,
@@ -225,3 +234,13 @@ export const calibrationTrialPart2 = (jsPsych, state) =>
     jsPsych,
     state,
   );
+  export const conditionalCalibrationTrialPart2 = (
+    jsPsych,
+    state
+  ) => createConditionalCalibrationTrial(
+    'calibrationPart2',
+    NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
+    jsPsych,
+    state
+  );
+  

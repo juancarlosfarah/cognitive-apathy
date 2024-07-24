@@ -11,7 +11,7 @@ import PreloadPlugin from '@jspsych/plugin-preload';
 import { initJsPsych } from 'jspsych';
 
 import '../styles/main.scss';
-import { calibrationTrialPart1, calibrationTrialPart2 } from './calibration';
+import { calibrationTrialPart1, calibrationTrialPart2, conditionalCalibrationTrialPart1, conditionalCalibrationTrialPart2 } from './calibration';
 import {
   CALIBRATION_PART_1_DIRECTIONS,
   REWARD_TOTAL_MESSAGE,
@@ -89,6 +89,7 @@ export async function run({
   timeline.push(instructionalTrial(CALIBRATION_PART_1_DIRECTIONS));
 
   timeline.push(calibrationTrialPart1(jsPsych, state)),
+  timeline.push(conditionalCalibrationTrialPart1(jsPsych, state))
     timeline.push(calculateMedianCalibrationPart1(jsPsych, state));
 
   // Calibration Part 2
@@ -96,6 +97,7 @@ export async function run({
   timeline.push({
     timeline: [calibrationTrialPart2(jsPsych, state)],
   });
+  timeline.push(conditionalCalibrationTrialPart2(jsPsych, state))
   timeline.push(calculateMedianCalibrationPart2(jsPsych, state));
 
   // Validation section
