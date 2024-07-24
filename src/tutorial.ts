@@ -7,7 +7,8 @@ import {
   GO_DURATION,
   INTERACTIVE_KEYBOARD_TUTORIAL_MESSAGE,
   CONTINUE_BUTTON_MESSAGE,
-  GO_MESSAGE
+  GO_MESSAGE,
+  MINIMUM_CALIBRATION_MEDIAN
 } from './constants';
 import { CountdownTrialPlugin } from './countdown';
 import { loadingBarTrial } from './loading-bar';
@@ -154,6 +155,12 @@ export const practiceLoop = (jsPsych: JsPsych) => ({
       jsPsych,
     );
     const keysReleasedFlag = checkFlag('practice', 'keysReleasedFlag', jsPsych);
-    return keysReleasedFlag || keyTappedEarlyFlag;
+    const numberOfTaps = jsPsych.data
+    .get()
+    .filter({ task: 'practice' })
+    .last(1)
+    .values()[0]
+    .tapCount;
+    return keysReleasedFlag || keyTappedEarlyFlag || numberOfTaps < MINIMUM_CALIBRATION_MEDIAN;
   },
 });

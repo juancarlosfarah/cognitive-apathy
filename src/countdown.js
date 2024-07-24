@@ -1,48 +1,14 @@
-import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
-import { ParameterType } from 'jspsych';
-import { COUNTDOWN_DIRECTIONS, COUNTDOWN_TIME, GO_DURATION, HOLD_KEYS_MESSAGE, KEYS_TO_HOLD, KEY_TO_PRESS, GO_MESSAGE, COUNTDOWN_TIMER_MESSAGE } from './constants';
-import { createKeyboard } from './keyboard';
-export class CountdownTrialPlugin {
-    static info = {
-        name: 'countdown-trial',
-        parameters: {
-            keystoHold: {
-                type: ParameterType.STRING,
-                array: true,
-                default: KEYS_TO_HOLD,
-            },
-            keyToPress: {
-                type: ParameterType.STRING,
-                array: false,
-                default: KEY_TO_PRESS,
-            },
-            message: {
-                type: ParameterType.HTML_STRING,
-                default: HOLD_KEYS_MESSAGE,
-            },
-            waitTime: {
-                type: ParameterType.INT,
-                default: COUNTDOWN_TIME,
-            },
-            initialText: {
-                type: ParameterType.STRING,
-                default: COUNTDOWN_TIMER_MESSAGE,
-            },
-            allow_held_key: {
-                type: ParameterType.BOOL,
-                default: true,
-            },
-            keyTappedEarlyFlag: {
-                type: ParameterType.BOOL,
-                default: false,
-            },
-            showKeyboard: {
-                type: ParameterType.BOOL,
-                default: false,
-            },
-        },
-    };
-    jsPsych;
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.countdownStep = exports.CountdownTrialPlugin = void 0;
+const plugin_html_keyboard_response_1 = __importDefault(require("@jspsych/plugin-html-keyboard-response"));
+const jspsych_1 = require("jspsych");
+const constants_1 = require("./constants");
+const keyboard_1 = require("./keyboard");
+class CountdownTrialPlugin {
     constructor(jsPsych) {
         this.jsPsych = jsPsych;
     }
@@ -66,7 +32,7 @@ export class CountdownTrialPlugin {
         timerContainer.id = 'timer-container';
         displayElement.appendChild(timerContainer);
         if (trial.showKeyboard) {
-            const { keyboard, keyboardDiv } = createKeyboard(displayElement);
+            const { keyboard, keyboardDiv } = (0, keyboard_1.createKeyboard)(displayElement);
             keyboardInstance = keyboard;
             inputElement = document.createElement('input');
             inputElement.type = 'text';
@@ -103,7 +69,7 @@ export class CountdownTrialPlugin {
             areKeysHeld = (trial.keystoHold || []).every((key) => keysState[key.toLowerCase()]);
             if (areKeysHeld && !interval) {
                 messageContainer.innerHTML = ''; // Hide the initial message
-                directionsContainer.innerHTML = `<p>${COUNTDOWN_DIRECTIONS}</p>`;
+                directionsContainer.innerHTML = `<p>${constants_1.COUNTDOWN_DIRECTIONS}</p>`;
                 startCountdown();
             }
             else if (!areKeysHeld && interval) {
@@ -177,7 +143,47 @@ export class CountdownTrialPlugin {
         console.log('Initial UI setup complete.');
     }
 }
-export const countdownStep = {
+exports.CountdownTrialPlugin = CountdownTrialPlugin;
+CountdownTrialPlugin.info = {
+    name: 'countdown-trial',
+    parameters: {
+        keystoHold: {
+            type: jspsych_1.ParameterType.STRING,
+            array: true,
+            default: constants_1.KEYS_TO_HOLD,
+        },
+        keyToPress: {
+            type: jspsych_1.ParameterType.STRING,
+            array: false,
+            default: constants_1.KEY_TO_PRESS,
+        },
+        message: {
+            type: jspsych_1.ParameterType.HTML_STRING,
+            default: constants_1.HOLD_KEYS_MESSAGE,
+        },
+        waitTime: {
+            type: jspsych_1.ParameterType.INT,
+            default: constants_1.COUNTDOWN_TIME,
+        },
+        initialText: {
+            type: jspsych_1.ParameterType.STRING,
+            default: constants_1.COUNTDOWN_TIMER_MESSAGE,
+        },
+        allow_held_key: {
+            type: jspsych_1.ParameterType.BOOL,
+            default: true,
+        },
+        keyTappedEarlyFlag: {
+            type: jspsych_1.ParameterType.BOOL,
+            default: false,
+        },
+        showKeyboard: {
+            type: jspsych_1.ParameterType.BOOL,
+            default: false,
+        },
+    },
+};
+exports.countdownStep = {
     timeline: [
         {
             type: CountdownTrialPlugin,
@@ -186,10 +192,10 @@ export const countdownStep = {
             },
         },
         {
-            type: HtmlKeyboardResponsePlugin,
-            stimulus: `<p style="color: green; font-size: 48px;">${GO_MESSAGE}</p>`,
+            type: plugin_html_keyboard_response_1.default,
+            stimulus: `<p style="color: green; font-size: 48px;">${constants_1.GO_MESSAGE}</p>`,
             choices: 'NO_KEYS',
-            trial_duration: GO_DURATION, // Display "GO" for 1 second
+            trial_duration: constants_1.GO_DURATION, // Display "GO" for 1 second
             data: {
                 task: 'go_screen',
             },

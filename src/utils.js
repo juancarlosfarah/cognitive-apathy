@@ -1,3 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.checkFlag = void 0;
+exports.randomNumberBm = randomNumberBm;
+exports.autoIncreaseAmount = autoIncreaseAmount;
+exports.calculateMedianTapCount = calculateMedianTapCount;
+exports.calculateTotalReward = calculateTotalReward;
 /**
  * Generate a random number with a bias towards the mean.
  *
@@ -6,7 +13,7 @@
  * @param {number} skew - The skew factor to bias the distribution (default is 1).
  * @returns {number} - A random number between min and max, skewed towards the mean.
  */
-export function randomNumberBm(min, max, skew = 1) {
+function randomNumberBm(min, max, skew = 1) {
     let u = 0;
     let v = 0;
     // Converting [0,1) to (0,1)
@@ -35,7 +42,7 @@ export function randomNumberBm(min, max, skew = 1) {
  * @param {number} AUTO_DECREASE_AMOUNT - The amount by which auto-decrease occurs.
  * @returns {number} - The calculated auto-increase amount.
  */
-export function autoIncreaseAmount(EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, TRIAL_DURATION, AUTO_DECREASE_RATE, AUTO_DECREASE_AMOUNT, median) {
+function autoIncreaseAmount(EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, TRIAL_DURATION, AUTO_DECREASE_RATE, AUTO_DECREASE_AMOUNT, median) {
     return ((EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION +
         (TRIAL_DURATION / AUTO_DECREASE_RATE) * AUTO_DECREASE_AMOUNT) /
         median);
@@ -48,7 +55,7 @@ export function autoIncreaseAmount(EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, 
  * @param {JsPsych} jsPsych - The jsPsych instance
  * @returns {number} - The median tap count
  */
-export function calculateMedianTapCount(taskType, numTrials, jsPsych) {
+function calculateMedianTapCount(taskType, numTrials, jsPsych) {
     const filteredTrials = jsPsych.data
         .get()
         .filter({ task: taskType })
@@ -58,7 +65,7 @@ export function calculateMedianTapCount(taskType, numTrials, jsPsych) {
     const medianValue = filteredTrials.median(); // Calculate the median
     return medianValue;
 }
-export const checkFlag = (taskFilter, flag, jsPsych) => {
+const checkFlag = (taskFilter, flag, jsPsych) => {
     const lastCountdownData = jsPsych.data
         .get()
         .filter({ task: taskFilter })
@@ -72,8 +79,9 @@ export const checkFlag = (taskFilter, flag, jsPsych) => {
     }
     return false;
 };
+exports.checkFlag = checkFlag;
 // Function to calculate accumulated reward
-export function calculateTotalReward(jsPsych) {
+function calculateTotalReward(jsPsych) {
     const successfulTrials = jsPsych.data
         .get()
         .filter({ task: 'block', success: true });

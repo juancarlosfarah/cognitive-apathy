@@ -1,5 +1,9 @@
-import { ACCEPTANCE_TRIAL_MESSAGE, NO_STIMULI_VIDEO_TUTORIAL_MESSAGE, STIMULI_VIDEO_TUTORIAL_MESSAGE, VALIDATION_VIDEO_TUTORIAL_MESSAGE, LOADING_BAR_MESSAGE, REWARD_TRIAL_MESSAGE } from './constants';
-export function stimulus(showThermometer, mercuryHeight, lowerBound, upperBound, error) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.validationVideo = exports.stimuliVideo = exports.noStimuliVideo = exports.loadingBar = exports.videoStimulus = exports.acceptanceThermometer = void 0;
+exports.stimulus = stimulus;
+const constants_1 = require("./constants");
+function stimulus(showThermometer, mercuryHeight, lowerBound, upperBound, error) {
     const bounds = `
     <div
       id="lower-bound"
@@ -35,7 +39,7 @@ export function stimulus(showThermometer, mercuryHeight, lowerBound, upperBound,
     </div>
   `;
 }
-export const acceptanceThermometer = (bounds, reward) => `
+const acceptanceThermometer = (bounds, reward) => `
 <div
   id="acceptance-container"
   style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;"
@@ -58,19 +62,21 @@ export const acceptanceThermometer = (bounds, reward) => `
       ></div>
     </div>
   </div>
-  <p style="text-align: center;"> ${REWARD_TRIAL_MESSAGE}${reward.toFixed(2)}</p>
-  <p style="text-align: center;">${ACCEPTANCE_TRIAL_MESSAGE}</p>
+  <p style="text-align: center;"> ${constants_1.REWARD_TRIAL_MESSAGE}${reward.toFixed(2)}</p>
+  <p style="text-align: center;">${constants_1.ACCEPTANCE_TRIAL_MESSAGE}</p>
 </div>
 `;
-export const videoStimulus = (message) => {
+exports.acceptanceThermometer = acceptanceThermometer;
+const videoStimulus = (message) => {
     let stimulusHTML = `<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; text-align: center;">
                         <p style="margin-bottom: 20px;">${message}</p>`;
     stimulusHTML += '</div>';
     return stimulusHTML;
 };
-export const loadingBar = () => `
+exports.videoStimulus = videoStimulus;
+const loadingBar = () => `
   <div class="loading-bar-container">
-    <h1>${LOADING_BAR_MESSAGE}</h1>
+    <h1>${constants_1.LOADING_BAR_MESSAGE}</h1>
     <br>
     <div class="bar">
       <div class="progress"></div>
@@ -79,10 +85,11 @@ export const loadingBar = () => `
     <link rel="stylesheet" type="text/css" href="import '../styles/main.scss';">
   </div>
 `;
-export const noStimuliVideo = `
+exports.loadingBar = loadingBar;
+exports.noStimuliVideo = `
 <div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
 <p style=font-size: 18px; color: #333; max-width: 80%; line-height: 1.5;">
-${NO_STIMULI_VIDEO_TUTORIAL_MESSAGE}
+${constants_1.NO_STIMULI_VIDEO_TUTORIAL_MESSAGE}
 </p>
   <video
     id="videoTutorial"
@@ -95,10 +102,10 @@ ${NO_STIMULI_VIDEO_TUTORIAL_MESSAGE}
   ></video>
 
 </div>`;
-export const stimuliVideo = `
+exports.stimuliVideo = `
 <div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
 <p style=font-size: 18px; color: #333; max-width: 80%; line-height: 1.5;">
-${STIMULI_VIDEO_TUTORIAL_MESSAGE}
+${constants_1.STIMULI_VIDEO_TUTORIAL_MESSAGE}
 </p>
   <video
     id="videoTutorial"
@@ -110,10 +117,10 @@ ${STIMULI_VIDEO_TUTORIAL_MESSAGE}
     loop
   ></video>
 </div>`;
-export const validationVideo = `
+exports.validationVideo = `
 <div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
 <p style=font-size: 18px; color: #333; max-width: 80%; line-height: 1.5;">
-${VALIDATION_VIDEO_TUTORIAL_MESSAGE}
+${constants_1.VALIDATION_VIDEO_TUTORIAL_MESSAGE}
 </p>
   <video
     id="videoTutorial"

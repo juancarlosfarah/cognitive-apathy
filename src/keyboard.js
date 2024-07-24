@@ -1,6 +1,12 @@
-import Keyboard from 'simple-keyboard';
-import 'simple-keyboard/build/css/index.css';
-export function createKeyboard(displayElement) {
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.createKeyboard = createKeyboard;
+const simple_keyboard_1 = __importDefault(require("simple-keyboard"));
+require("simple-keyboard/build/css/index.css");
+function createKeyboard(displayElement) {
     console.log('Creating keyboard...');
     const keyboardContainer = document.createElement('div');
     keyboardContainer.id = 'keyboard-container';
@@ -19,7 +25,7 @@ export function createKeyboard(displayElement) {
     keyboardDiv.style.backgroundColor = 'lightgray';
     keyboardContainer.appendChild(keyboardDiv);
     console.log('Keyboard div created and appended.');
-    const keyboard = new Keyboard(keyboardDiv, {
+    const keyboard = new simple_keyboard_1.default(keyboardDiv, {
         onChange: (input) => {
             document.querySelector('.input').value = input;
             console.log('Input changed', input);

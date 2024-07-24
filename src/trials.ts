@@ -303,7 +303,7 @@ export const trialsArray = (jsPsych: JsPsych, state: State) => [
       jsPsych,
       state,
     }),
-    // Display accumulated reward
+    // Display accumulated reward in between trials
     createRewardDisplayTrial(jsPsych),
   ],
   [

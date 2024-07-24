@@ -1,44 +1,51 @@
-import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
-import { AUTO_DECREASE_AMOUNT, AUTO_DECREASE_RATE, DEMO_TRIAL_MESSAGE, EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, FAILED_MINIMUM_DEMO_TAPS_DURATION, FAILED_MINIMUM_DEMO_TAPS_MESSAGE, MINIMUM_DEMO_TAPS, NUM_DEMO_TRIALS, NUM_TRIALS, PARAMETER_COMBINATIONS, REWARD_TOTAL_MESSAGE, TRIAL_DURATION, } from './constants';
-import { countdownStep } from './countdown';
-import { likertQuestions1, likertQuestions2 } from './likert';
-import { loadingBarTrial } from './loading-bar';
-import { successScreen } from './message-trials';
-import { releaseKeysStep } from './release-keys';
-import { acceptanceThermometer } from './stimulus';
-import TaskPlugin from './task';
-import { autoIncreaseAmount, calculateTotalReward, checkFlag } from './utils';
-const failedMinimumDemoTapsTrial = {
-    type: HtmlKeyboardResponsePlugin,
-    stimulus: `<p style="color: red;">${FAILED_MINIMUM_DEMO_TAPS_MESSAGE}</p>`,
-    choices: ['NO_KEYS'],
-    trial_duration: FAILED_MINIMUM_DEMO_TAPS_DURATION,
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo = false, jsPsych, state, }) => {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.sampledArray = exports.trialsArray = exports.createTrialBlock = void 0;
+exports.createRewardDisplayTrial = createRewardDisplayTrial;
+const plugin_html_keyboard_response_1 = __importDefault(require("@jspsych/plugin-html-keyboard-response"));
+const constants_1 = require("./constants");
+const countdown_1 = require("./countdown");
+const likert_1 = require("./likert");
+const loading_bar_1 = require("./loading-bar");
+const message_trials_1 = require("./message-trials");
+const release_keys_1 = require("./release-keys");
+const stimulus_1 = require("./stimulus");
+const task_1 = __importDefault(require("./task"));
+const utils_1 = require("./utils");
+const failedMinimumDemoTapsTrial = {
+    type: plugin_html_keyboard_response_1.default,
+    stimulus: `<p style="color: red;">${constants_1.FAILED_MINIMUM_DEMO_TAPS_MESSAGE}</p>`,
+    choices: ['NO_KEYS'],
+    trial_duration: constants_1.FAILED_MINIMUM_DEMO_TAPS_DURATION,
+};
+const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo = false, jsPsych, state, }) => {
     const timeline = [];
     if (includeDemo) {
         state.demoTrialSuccesses = 0; // Reset demo successes before starting
         timeline.push(
         // Alert before demo
         {
-            type: HtmlKeyboardResponsePlugin,
-            stimulus: () => `<p>${DEMO_TRIAL_MESSAGE}</p>`,
+            type: plugin_html_keyboard_response_1.default,
+            stimulus: () => `<p>${constants_1.DEMO_TRIAL_MESSAGE}</p>`,
             choices: ['enter'],
         }, 
         // Demo trials
         {
             timeline: [
-                countdownStep,
+                countdown_1.countdownStep,
                 {
-                    type: TaskPlugin,
+                    type: task_1.default,
                     task: blockName,
-                    duration: TRIAL_DURATION,
+                    duration: constants_1.TRIAL_DURATION,
                     showThermometer: true,
                     randomDelay,
                     bounds,
                     autoIncreaseAmount: function () {
                         console.log(state.medianTaps);
-                        return autoIncreaseAmount(EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, TRIAL_DURATION, AUTO_DECREASE_RATE, AUTO_DECREASE_AMOUNT, state.medianTaps);
+                        return (0, utils_1.autoIncreaseAmount)(constants_1.EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, constants_1.TRIAL_DURATION, constants_1.AUTO_DECREASE_RATE, constants_1.AUTO_DECREASE_AMOUNT, state.medianTaps);
                     },
                     data: {
                         task: 'demo',
@@ -47,13 +54,13 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
                         minimumTapsReached: false,
                     },
                     on_start: function (data) {
-                        const keyTappedEarlyFlag = checkFlag('countdown', 'keyTappedEarlyFlag', jsPsych);
+                        const keyTappedEarlyFlag = (0, utils_1.checkFlag)('countdown', 'keyTappedEarlyFlag', jsPsych);
                         // Update the trial parameters with keyTappedEarlyFlag
                         data.keyTappedEarlyFlag = keyTappedEarlyFlag;
                     },
                     on_finish: function (data) {
                         // Check if minimum taps was reached
-                        if (data.tapCount > MINIMUM_DEMO_TAPS) {
+                        if (data.tapCount > constants_1.MINIMUM_DEMO_TAPS) {
                             data.minimumTapsReached = true;
                         }
                         if (!data.keysReleasedFlag && data.minimumTapsReached && !data.keyTappedEarlyFlag) {
@@ -62,9 +69,9 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
                     },
                 },
                 {
-                    timeline: [releaseKeysStep],
+                    timeline: [release_keys_1.releaseKeysStep],
                     conditional_function: function () {
-                        return !checkFlag('demo', 'keysReleasedFlag', jsPsych);
+                        return !(0, utils_1.checkFlag)('demo', 'keysReleasedFlag', jsPsych);
                     },
                 },
                 {
@@ -80,23 +87,23 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
                     },
                 },
                 {
-                    timeline: [loadingBarTrial(true, jsPsych)],
+                    timeline: [(0, loading_bar_1.loadingBarTrial)(true, jsPsych)],
                 },
             ],
             loop_function: function () {
-                const remainingSuccesses = NUM_DEMO_TRIALS - state.demoTrialSuccesses;
+                const remainingSuccesses = constants_1.NUM_DEMO_TRIALS - state.demoTrialSuccesses;
                 return remainingSuccesses > 0; // Repeat the timeline if more successes are needed
             },
         }, 
         // Likert scale survey after demo
-        ...likertQuestions1);
+        ...likert_1.likertQuestions1);
     }
     // If a block created is an actual trial
     if (blockName) {
         // Create the number of full combination of trials (63 trials  / (3 x 3) factorial design = 7 sets of these 9 trials)
-        const numTrialsPerCombination = Math.floor(NUM_TRIALS / PARAMETER_COMBINATIONS.length);
+        const numTrialsPerCombination = Math.floor(constants_1.NUM_TRIALS / constants_1.PARAMETER_COMBINATIONS.length);
         // Randomly map each of these combination parameters to each trial within 63 created samples
-        let trials = PARAMETER_COMBINATIONS.flatMap((combination) => Array(numTrialsPerCombination)
+        let trials = constants_1.PARAMETER_COMBINATIONS.flatMap((combination) => Array(numTrialsPerCombination)
             .fill(null)
             .map(() => ({
             reward: jsPsych.randomization.sampleWithReplacement(combination.reward, 1)[0],
@@ -110,9 +117,9 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
                 timeline: [
                     // Acceptance Phase
                     {
-                        type: HtmlKeyboardResponsePlugin,
+                        type: plugin_html_keyboard_response_1.default,
                         stimulus: function () {
-                            return `${acceptanceThermometer(trialData.bounds, trialData.reward)}`;
+                            return `${(0, stimulus_1.acceptanceThermometer)(trialData.bounds, trialData.reward)}`;
                         },
                         choices: ['arrowleft', 'arrowright'],
                         data: {
@@ -128,16 +135,16 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
                     // Task Performance Phase (only if accepted)
                     {
                         timeline: [
-                            countdownStep,
+                            countdown_1.countdownStep,
                             {
-                                type: TaskPlugin,
-                                duration: TRIAL_DURATION,
+                                type: task_1.default,
+                                duration: constants_1.TRIAL_DURATION,
                                 showThermometer: true,
                                 randomDelay: trialData.randomDelay,
                                 bounds: trialData.bounds,
                                 reward: trialData.reward,
                                 autoIncreaseAmount: function () {
-                                    return autoIncreaseAmount(EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, TRIAL_DURATION, AUTO_DECREASE_RATE, AUTO_DECREASE_AMOUNT, state.medianTaps);
+                                    return (0, utils_1.autoIncreaseAmount)(constants_1.EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, constants_1.TRIAL_DURATION, constants_1.AUTO_DECREASE_RATE, constants_1.AUTO_DECREASE_AMOUNT, state.medianTaps);
                                 },
                                 data: {
                                     task: 'block',
@@ -153,7 +160,7 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
                                     reward: trialData.reward,
                                 },
                                 on_start: function (trial) {
-                                    const keyTappedEarlyFlag = checkFlag('countdown', 'keyTappedEarlyFlag', jsPsych);
+                                    const keyTappedEarlyFlag = (0, utils_1.checkFlag)('countdown', 'keyTappedEarlyFlag', jsPsych);
                                     // Update the trial parameters with keyTappedEarlyFlag
                                     trial.keyTappedEarlyFlag = keyTappedEarlyFlag;
                                     return keyTappedEarlyFlag;
@@ -163,23 +170,23 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
                                 },
                             },
                             {
-                                timeline: [successScreen(jsPsych)],
+                                timeline: [(0, message_trials_1.successScreen)(jsPsych)],
                             },
                             {
-                                timeline: [releaseKeysStep],
+                                timeline: [release_keys_1.releaseKeysStep],
                                 conditional_function: function () {
-                                    return !checkFlag('block', 'keysReleasedFlag', jsPsych);
+                                    return !(0, utils_1.checkFlag)('block', 'keysReleasedFlag', jsPsych);
                                 },
                             },
                         ],
                         conditional_function: () => trialData.accepted, // Use trialData.accepted in the conditional function
                     },
                     {
-                        timeline: [loadingBarTrial(false, jsPsych)],
+                        timeline: [(0, loading_bar_1.loadingBarTrial)(false, jsPsych)],
                         conditional_function: () => !trialData.accepted, // Use trialData.accepted in the conditional function
                     },
                     {
-                        timeline: [loadingBarTrial(true, jsPsych)],
+                        timeline: [(0, loading_bar_1.loadingBarTrial)(true, jsPsych)],
                         conditional_function: () => trialData.accepted, // Use trialData.accepted in the conditional function
                     },
                 ],
@@ -191,33 +198,34 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
             },
         }, 
         // Likert scale survey after block
-        ...likertQuestions2);
+        ...likert_1.likertQuestions2);
     }
     return { timeline };
 };
+exports.createTrialBlock = createTrialBlock;
 // Function to create a trial that displays the accumulated reward to the user
-export function createRewardDisplayTrial(jsPsych) {
+function createRewardDisplayTrial(jsPsych) {
     return {
-        type: HtmlKeyboardResponsePlugin,
+        type: plugin_html_keyboard_response_1.default,
         choices: ['enter'],
         stimulus: function () {
-            const totalSuccessfulReward = calculateTotalReward(jsPsych);
-            return `<p>${REWARD_TOTAL_MESSAGE(totalSuccessfulReward.toFixed(2))}</p>`;
+            const totalSuccessfulReward = (0, utils_1.calculateTotalReward)(jsPsych);
+            return `<p>${(0, constants_1.REWARD_TOTAL_MESSAGE)(totalSuccessfulReward.toFixed(2))}</p>`;
         },
         data: {
             task: 'display_reward',
         },
         on_finish: function (data) {
-            const totalSuccessfulReward = calculateTotalReward(jsPsych);
+            const totalSuccessfulReward = (0, utils_1.calculateTotalReward)(jsPsych);
             data.totalReward = totalSuccessfulReward;
         },
     };
 }
 // Array of trials that generates a 6 new random orders of the (3x3 factorial designed blocks of 63 trials) to complete the 3x3x3 factorial design.
-export const trialsArray = (jsPsych, state) => [
+const trialsArray = (jsPsych, state) => [
     [
         // Demo trials
-        createTrialBlock({
+        (0, exports.createTrialBlock)({
             randomDelay: [0, 0],
             bounds: [0, 0],
             includeDemo: true,
@@ -225,7 +233,26 @@ export const trialsArray = (jsPsych, state) => [
             state,
         }),
         // Synchronous Block of 63 trials
-        createTrialBlock({
+        (0, exports.createTrialBlock)({
+            blockName: 'Synchronous Block',
+            randomDelay: [0, 0],
+            jsPsych,
+            state,
+        }),
+        // Display accumulated reward in between trials
+        createRewardDisplayTrial(jsPsych),
+    ],
+    [
+        // Demo trials
+        (0, exports.createTrialBlock)({
+            randomDelay: [0, 0],
+            bounds: [0, 0],
+            includeDemo: true,
+            jsPsych,
+            state,
+        }),
+        // Synchronous Block of 63 trials
+        (0, exports.createTrialBlock)({
             blockName: 'Synchronous Block',
             randomDelay: [0, 0],
             jsPsych,
@@ -236,26 +263,7 @@ export const trialsArray = (jsPsych, state) => [
     ],
     [
         // Demo trials
-        createTrialBlock({
-            randomDelay: [0, 0],
-            bounds: [0, 0],
-            includeDemo: true,
-            jsPsych,
-            state,
-        }),
-        // Synchronous Block of 63 trials
-        createTrialBlock({
-            blockName: 'Synchronous Block',
-            randomDelay: [0, 0],
-            jsPsych,
-            state,
-        }),
-        // Display accumulated reward
-        createRewardDisplayTrial(jsPsych),
-    ],
-    [
-        // Demo trials
-        createTrialBlock({
+        (0, exports.createTrialBlock)({
             randomDelay: [400, 600],
             bounds: [0, 0],
             includeDemo: true,
@@ -263,7 +271,7 @@ export const trialsArray = (jsPsych, state) => [
             state,
         }),
         // Narrow Asynchronous Block of 63 trials
-        createTrialBlock({
+        (0, exports.createTrialBlock)({
             blockName: 'Narrow Asynchronous Block',
             randomDelay: [400, 600],
             jsPsych,
@@ -273,7 +281,7 @@ export const trialsArray = (jsPsych, state) => [
         createRewardDisplayTrial(jsPsych),
     ],
     [
-        createTrialBlock({
+        (0, exports.createTrialBlock)({
             // Demo trials
             randomDelay: [400, 600],
             bounds: [0, 0],
@@ -281,7 +289,7 @@ export const trialsArray = (jsPsych, state) => [
             jsPsych,
             state,
         }),
-        createTrialBlock({
+        (0, exports.createTrialBlock)({
             // Narrow Asynchronous Block of 63 trials
             blockName: 'Narrow Asynchronous Block',
             randomDelay: [400, 600],
@@ -292,7 +300,7 @@ export const trialsArray = (jsPsych, state) => [
         createRewardDisplayTrial(jsPsych),
     ],
     [
-        createTrialBlock({
+        (0, exports.createTrialBlock)({
             // Demo trials
             randomDelay: [0, 1000],
             bounds: [0, 0],
@@ -300,7 +308,7 @@ export const trialsArray = (jsPsych, state) => [
             jsPsych,
             state,
         }),
-        createTrialBlock({
+        (0, exports.createTrialBlock)({
             // Wide Asynchronous Block of 63 trials
             blockName: 'Wide Asynchronous Block',
             randomDelay: [0, 1000],
@@ -311,7 +319,7 @@ export const trialsArray = (jsPsych, state) => [
         createRewardDisplayTrial(jsPsych),
     ],
     [
-        createTrialBlock({
+        (0, exports.createTrialBlock)({
             // Demo trials
             randomDelay: [0, 1000],
             bounds: [0, 0],
@@ -319,7 +327,7 @@ export const trialsArray = (jsPsych, state) => [
             jsPsych,
             state,
         }),
-        createTrialBlock({
+        (0, exports.createTrialBlock)({
             // Wide Asynchronous Block of 63 trials
             blockName: 'Wide Asynchronous Block',
             randomDelay: [0, 1000],
@@ -330,7 +338,9 @@ export const trialsArray = (jsPsych, state) => [
         createRewardDisplayTrial(jsPsych),
     ],
 ];
+exports.trialsArray = trialsArray;
 // Randomly sample from the 3x3x3 factorial design to display 2 Synchronous Blocks of 63 trials,
 // 2 Narrow Asynchronous Blocks of 63 trials, and 2 Wide Asynchronous Blocks of 63 trials for
 // a total of 378 trials
-export const sampledArray = (jsPsych, state) => jsPsych.randomization.sampleWithoutReplacement(trialsArray(jsPsych, state), 6);
+const sampledArray = (jsPsych, state) => jsPsych.randomization.sampleWithoutReplacement((0, exports.trialsArray)(jsPsych, state), 6);
+exports.sampledArray = sampledArray;

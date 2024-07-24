@@ -1,159 +1,165 @@
-import surveyLikert from '@jspsych/plugin-survey-likert';
-import { LIKERT_PREAMBLE, CONTINUE_BUTTON_MESSAGE, LIKERT_SURVEY_1_QUESTIONS, LIKERT_SURVEY_2_QUESTIONS, LIKERT_RESPONSES } from './constants';
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.likertQuestions2 = exports.likertQuestions1 = void 0;
+const plugin_survey_likert_1 = __importDefault(require("@jspsych/plugin-survey-likert"));
+const constants_1 = require("./constants");
 // ALL LIKERT STILL NEEDS TO BE TRANSLATED BUT AM WAIT ON JEVITA QUESTIONS + ANSWERS TO TRANSLATE
-export const likertQuestions1 = [
+exports.likertQuestions1 = [
     {
-        type: surveyLikert,
+        type: plugin_survey_likert_1.default,
         questions: [
             {
-                prompt: `${LIKERT_PREAMBLE}<br><br>${LIKERT_SURVEY_1_QUESTIONS.QUESTION_1}`,
+                prompt: `${constants_1.LIKERT_PREAMBLE}<br><br>${constants_1.LIKERT_SURVEY_1_QUESTIONS.QUESTION_1}`,
                 labels: [
-                    LIKERT_RESPONSES.STRONGLY_DISAGREE,
-                    LIKERT_RESPONSES.DISAGREE,
-                    LIKERT_RESPONSES.NEUTRAL,
-                    LIKERT_RESPONSES.AGREE,
-                    LIKERT_RESPONSES.STRONGLY_AGREE,
+                    constants_1.LIKERT_RESPONSES.STRONGLY_DISAGREE,
+                    constants_1.LIKERT_RESPONSES.DISAGREE,
+                    constants_1.LIKERT_RESPONSES.NEUTRAL,
+                    constants_1.LIKERT_RESPONSES.AGREE,
+                    constants_1.LIKERT_RESPONSES.STRONGLY_AGREE,
                 ],
-                name: LIKERT_SURVEY_1_QUESTIONS.QUESTION_1,
+                name: constants_1.LIKERT_SURVEY_1_QUESTIONS.QUESTION_1,
                 required: true,
             },
         ],
         randomize_question_order: false,
-        button_label: CONTINUE_BUTTON_MESSAGE,
+        button_label: constants_1.CONTINUE_BUTTON_MESSAGE,
     },
     {
-        type: surveyLikert,
+        type: plugin_survey_likert_1.default,
         questions: [
             {
-                prompt: `${LIKERT_PREAMBLE}<br><br>${LIKERT_SURVEY_1_QUESTIONS.QUESTION_2}`,
+                prompt: `${constants_1.LIKERT_PREAMBLE}<br><br>${constants_1.LIKERT_SURVEY_1_QUESTIONS.QUESTION_2}`,
                 labels: [
-                    LIKERT_RESPONSES.STRONGLY_DISAGREE,
-                    LIKERT_RESPONSES.DISAGREE,
-                    LIKERT_RESPONSES.NEUTRAL,
-                    LIKERT_RESPONSES.AGREE,
-                    LIKERT_RESPONSES.STRONGLY_AGREE,
+                    constants_1.LIKERT_RESPONSES.STRONGLY_DISAGREE,
+                    constants_1.LIKERT_RESPONSES.DISAGREE,
+                    constants_1.LIKERT_RESPONSES.NEUTRAL,
+                    constants_1.LIKERT_RESPONSES.AGREE,
+                    constants_1.LIKERT_RESPONSES.STRONGLY_AGREE,
                 ],
-                name: LIKERT_SURVEY_1_QUESTIONS.QUESTION_2,
+                name: constants_1.LIKERT_SURVEY_1_QUESTIONS.QUESTION_2,
                 required: true,
             },
         ],
         randomize_question_order: false,
-        button_label: CONTINUE_BUTTON_MESSAGE,
+        button_label: constants_1.CONTINUE_BUTTON_MESSAGE,
     },
     {
-        type: surveyLikert,
+        type: plugin_survey_likert_1.default,
         questions: [
             {
-                prompt: `${LIKERT_PREAMBLE}<br><br>${LIKERT_SURVEY_1_QUESTIONS.QUESTION_3}`,
+                prompt: `${constants_1.LIKERT_PREAMBLE}<br><br>${constants_1.LIKERT_SURVEY_1_QUESTIONS.QUESTION_3}`,
                 labels: [
-                    LIKERT_RESPONSES.STRONGLY_DISAGREE,
-                    LIKERT_RESPONSES.DISAGREE,
-                    LIKERT_RESPONSES.NEUTRAL,
-                    LIKERT_RESPONSES.AGREE,
-                    LIKERT_RESPONSES.STRONGLY_AGREE,
+                    constants_1.LIKERT_RESPONSES.STRONGLY_DISAGREE,
+                    constants_1.LIKERT_RESPONSES.DISAGREE,
+                    constants_1.LIKERT_RESPONSES.NEUTRAL,
+                    constants_1.LIKERT_RESPONSES.AGREE,
+                    constants_1.LIKERT_RESPONSES.STRONGLY_AGREE,
                 ],
-                name: LIKERT_SURVEY_1_QUESTIONS.QUESTION_3,
+                name: constants_1.LIKERT_SURVEY_1_QUESTIONS.QUESTION_3,
                 required: true,
             },
         ],
         randomize_question_order: false,
-        button_label: CONTINUE_BUTTON_MESSAGE,
+        button_label: constants_1.CONTINUE_BUTTON_MESSAGE,
     },
 ];
-export const likertQuestions2 = [
+exports.likertQuestions2 = [
     {
-        type: surveyLikert,
+        type: plugin_survey_likert_1.default,
         questions: [
             {
-                prompt: `${LIKERT_PREAMBLE}<br><br>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_1}`,
+                prompt: `${constants_1.LIKERT_PREAMBLE}<br><br>${constants_1.LIKERT_SURVEY_2_QUESTIONS.QUESTION_1}`,
                 labels: [
-                    LIKERT_RESPONSES.STRONGLY_DISAGREE,
-                    LIKERT_RESPONSES.DISAGREE,
-                    LIKERT_RESPONSES.NEUTRAL,
-                    LIKERT_RESPONSES.AGREE,
-                    LIKERT_RESPONSES.STRONGLY_AGREE,
+                    constants_1.LIKERT_RESPONSES.STRONGLY_DISAGREE,
+                    constants_1.LIKERT_RESPONSES.DISAGREE,
+                    constants_1.LIKERT_RESPONSES.NEUTRAL,
+                    constants_1.LIKERT_RESPONSES.AGREE,
+                    constants_1.LIKERT_RESPONSES.STRONGLY_AGREE,
                 ],
-                name: LIKERT_SURVEY_2_QUESTIONS.QUESTION_1,
+                name: constants_1.LIKERT_SURVEY_2_QUESTIONS.QUESTION_1,
                 required: true,
             },
         ],
         randomize_question_order: false,
-        button_label: CONTINUE_BUTTON_MESSAGE,
+        button_label: constants_1.CONTINUE_BUTTON_MESSAGE,
     },
     {
-        type: surveyLikert,
+        type: plugin_survey_likert_1.default,
         questions: [
             {
-                prompt: `${LIKERT_PREAMBLE}<br><br>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_2}`,
+                prompt: `${constants_1.LIKERT_PREAMBLE}<br><br>${constants_1.LIKERT_SURVEY_2_QUESTIONS.QUESTION_2}`,
                 labels: [
-                    LIKERT_RESPONSES.STRONGLY_DISAGREE,
-                    LIKERT_RESPONSES.DISAGREE,
-                    LIKERT_RESPONSES.NEUTRAL,
-                    LIKERT_RESPONSES.AGREE,
-                    LIKERT_RESPONSES.STRONGLY_AGREE,
+                    constants_1.LIKERT_RESPONSES.STRONGLY_DISAGREE,
+                    constants_1.LIKERT_RESPONSES.DISAGREE,
+                    constants_1.LIKERT_RESPONSES.NEUTRAL,
+                    constants_1.LIKERT_RESPONSES.AGREE,
+                    constants_1.LIKERT_RESPONSES.STRONGLY_AGREE,
                 ],
-                name: LIKERT_SURVEY_2_QUESTIONS.QUESTION_2,
+                name: constants_1.LIKERT_SURVEY_2_QUESTIONS.QUESTION_2,
                 required: true,
             },
         ],
         randomize_question_order: false,
-        button_label: CONTINUE_BUTTON_MESSAGE,
+        button_label: constants_1.CONTINUE_BUTTON_MESSAGE,
     },
     {
-        type: surveyLikert,
+        type: plugin_survey_likert_1.default,
         questions: [
             {
-                prompt: `${LIKERT_PREAMBLE}<br><br>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_3}`,
+                prompt: `${constants_1.LIKERT_PREAMBLE}<br><br>${constants_1.LIKERT_SURVEY_2_QUESTIONS.QUESTION_3}`,
                 labels: [
-                    LIKERT_RESPONSES.STRONGLY_DISAGREE,
-                    LIKERT_RESPONSES.DISAGREE,
-                    LIKERT_RESPONSES.NEUTRAL,
-                    LIKERT_RESPONSES.AGREE,
-                    LIKERT_RESPONSES.STRONGLY_AGREE,
+                    constants_1.LIKERT_RESPONSES.STRONGLY_DISAGREE,
+                    constants_1.LIKERT_RESPONSES.DISAGREE,
+                    constants_1.LIKERT_RESPONSES.NEUTRAL,
+                    constants_1.LIKERT_RESPONSES.AGREE,
+                    constants_1.LIKERT_RESPONSES.STRONGLY_AGREE,
                 ],
-                name: LIKERT_SURVEY_2_QUESTIONS.QUESTION_3,
+                name: constants_1.LIKERT_SURVEY_2_QUESTIONS.QUESTION_3,
                 required: true,
             },
         ],
         randomize_question_order: false,
-        button_label: CONTINUE_BUTTON_MESSAGE,
+        button_label: constants_1.CONTINUE_BUTTON_MESSAGE,
     },
     {
-        type: surveyLikert,
+        type: plugin_survey_likert_1.default,
         questions: [
             {
-                prompt: `${LIKERT_PREAMBLE}<br><br>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_4}`,
+                prompt: `${constants_1.LIKERT_PREAMBLE}<br><br>${constants_1.LIKERT_SURVEY_2_QUESTIONS.QUESTION_4}`,
                 labels: [
-                    LIKERT_RESPONSES.STRONGLY_DISAGREE,
-                    LIKERT_RESPONSES.DISAGREE,
-                    LIKERT_RESPONSES.NEUTRAL,
-                    LIKERT_RESPONSES.AGREE,
-                    LIKERT_RESPONSES.STRONGLY_AGREE,
+                    constants_1.LIKERT_RESPONSES.STRONGLY_DISAGREE,
+                    constants_1.LIKERT_RESPONSES.DISAGREE,
+                    constants_1.LIKERT_RESPONSES.NEUTRAL,
+                    constants_1.LIKERT_RESPONSES.AGREE,
+                    constants_1.LIKERT_RESPONSES.STRONGLY_AGREE,
                 ],
-                name: LIKERT_SURVEY_2_QUESTIONS.QUESTION_4,
+                name: constants_1.LIKERT_SURVEY_2_QUESTIONS.QUESTION_4,
                 required: true,
             },
         ],
         randomize_question_order: false,
-        button_label: CONTINUE_BUTTON_MESSAGE,
+        button_label: constants_1.CONTINUE_BUTTON_MESSAGE,
     },
     {
-        type: surveyLikert,
+        type: plugin_survey_likert_1.default,
         questions: [
             {
-                prompt: `${LIKERT_PREAMBLE}<br><br>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_5}`,
+                prompt: `${constants_1.LIKERT_PREAMBLE}<br><br>${constants_1.LIKERT_SURVEY_2_QUESTIONS.QUESTION_5}`,
                 labels: [
-                    LIKERT_RESPONSES.STRONGLY_DISAGREE,
-                    LIKERT_RESPONSES.DISAGREE,
-                    LIKERT_RESPONSES.NEUTRAL,
-                    LIKERT_RESPONSES.AGREE,
-                    LIKERT_RESPONSES.STRONGLY_AGREE,
+                    constants_1.LIKERT_RESPONSES.STRONGLY_DISAGREE,
+                    constants_1.LIKERT_RESPONSES.DISAGREE,
+                    constants_1.LIKERT_RESPONSES.NEUTRAL,
+                    constants_1.LIKERT_RESPONSES.AGREE,
+                    constants_1.LIKERT_RESPONSES.STRONGLY_AGREE,
                 ],
-                name: LIKERT_SURVEY_2_QUESTIONS.QUESTION_5,
+                name: constants_1.LIKERT_SURVEY_2_QUESTIONS.QUESTION_5,
                 required: true,
             },
         ],
         randomize_question_order: false,
-        button_label: CONTINUE_BUTTON_MESSAGE,
+        button_label: constants_1.CONTINUE_BUTTON_MESSAGE,
     },
 ];
