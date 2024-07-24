@@ -1,25 +1,19 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.conditionalCalibrationTrialPart2 = exports.calibrationTrialPart2 = exports.conditionalCalibrationTrialPart1 = exports.calibrationTrialPart1 = exports.createConditionalCalibrationTrial = exports.createCalibrationTrial = void 0;
-const plugin_html_keyboard_response_1 = __importDefault(require("@jspsych/plugin-html-keyboard-response"));
-const constants_1 = require("./constants");
-const countdown_1 = require("./countdown");
-const loading_bar_1 = require("./loading-bar");
-const finish_1 = require("./finish");
-const release_keys_1 = require("./release-keys");
-const task_1 = __importDefault(require("./task"));
-const utils_1 = require("./utils");
-const createCalibrationTrial = ({ showThermometer, bounds, repetitions, calibrationPart, jsPsych, state, }) => {
+import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
+import { ADDITIONAL_CALIBRATION_PART_1_DIRECTIONS, AUTO_DECREASE_AMOUNT, AUTO_DECREASE_RATE, EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, MINIMUM_CALIBRATION_MEDIAN, NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS, NUM_CALIBRATION_WITH_FEEDBACK_TRIALS, TRIAL_DURATION, } from './constants';
+import { countdownStep } from './countdown';
+import { loadingBarTrial } from './loading-bar';
+import { finishExperimentEarlyTrial } from './finish';
+import { releaseKeysStep } from './release-keys';
+import TaskPlugin from './task';
+import { autoIncreaseAmount, checkFlag, calculateMedianTapCount } from './utils';
+export const createCalibrationTrial = ({ showThermometer, bounds, repetitions, calibrationPart, jsPsych, state, }) => {
     return {
         timeline: [
-            countdown_1.countdownStep,
+            countdownStep,
             {
-                type: task_1.default,
+                type: TaskPlugin,
                 task: calibrationPart,
-                duration: constants_1.TRIAL_DURATION,
+                duration: TRIAL_DURATION,
                 showThermometer,
                 bounds,
                 autoIncreaseAmount: function () {
@@ -27,11 +21,11 @@ const createCalibrationTrial = ({ showThermometer, bounds, repetitions, calibrat
                     let medianToUse = state.medianTaps;
                     if (calibrationPart === 'calibrationPart2') {
                         medianToUse =
-                            state.medianTapsPart1 >= constants_1.MINIMUM_CALIBRATION_MEDIAN
+                            state.medianTapsPart1 >= MINIMUM_CALIBRATION_MEDIAN
                                 ? state.medianTapsPart1
                                 : state.conditionalMedianTapsPart1;
                     }
-                    return (0, utils_1.autoIncreaseAmount)(constants_1.EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, constants_1.TRIAL_DURATION, constants_1.AUTO_DECREASE_RATE, constants_1.AUTO_DECREASE_AMOUNT, medianToUse);
+                    return autoIncreaseAmount(EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, TRIAL_DURATION, AUTO_DECREASE_RATE, AUTO_DECREASE_AMOUNT, medianToUse);
                 },
                 data: {
                     task: calibrationPart,
@@ -39,7 +33,7 @@ const createCalibrationTrial = ({ showThermometer, bounds, repetitions, calibrat
                     bounds,
                 },
                 on_start: function (trial) {
-                    const keyTappedEarlyFlag = (0, utils_1.checkFlag)('countdown', 'keyTappedEarlyFlag', jsPsych);
+                    const keyTappedEarlyFlag = checkFlag('countdown', 'keyTappedEarlyFlag', jsPsych);
                     // Update the trial parameters with keyTappedEarlyFlag
                     trial.keyTappedEarlyFlag = keyTappedEarlyFlag;
                 },
@@ -54,20 +48,20 @@ const createCalibrationTrial = ({ showThermometer, bounds, repetitions, calibrat
                 },
             },
             {
-                timeline: [release_keys_1.releaseKeysStep],
+                timeline: [releaseKeysStep],
                 conditional_function: function () {
-                    return !(0, utils_1.checkFlag)(calibrationPart, 'keysReleasedFlag', jsPsych);
+                    return !checkFlag(calibrationPart, 'keysReleasedFlag', jsPsych);
                 },
             },
             {
-                timeline: [(0, loading_bar_1.loadingBarTrial)(true, jsPsych)],
+                timeline: [loadingBarTrial(true, jsPsych)],
             },
         ],
         repetitions: repetitions,
         loop_function: function () {
             const requiredSuccesses = calibrationPart === 'calibrationPart1'
-                ? constants_1.NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS
-                : constants_1.NUM_CALIBRATION_WITH_FEEDBACK_TRIALS;
+                ? NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS
+                : NUM_CALIBRATION_WITH_FEEDBACK_TRIALS;
             const currentSuccesses = calibrationPart === 'calibrationPart1'
                 ? state.calibrationPart1Successes
                 : state.calibrationPart2Successes;
@@ -77,18 +71,17 @@ const createCalibrationTrial = ({ showThermometer, bounds, repetitions, calibrat
         },
     };
 };
-exports.createCalibrationTrial = createCalibrationTrial;
 /**
  * @function createConditionalCalibrationTrial
  * @description Create a conditional calibration trial
  * @param {ConditionalCalibrationTrialParams} params - The parameters for the conditional calibration trial
  * @returns {Object} - jsPsych trial object
  */
-const createConditionalCalibrationTrial = ({ calibrationPart, numTrials, jsPsych, state, }) => {
+export const createConditionalCalibrationTrial = ({ calibrationPart, numTrials, jsPsych, state, }) => {
     return {
         timeline: [
             {
-                type: plugin_html_keyboard_response_1.default,
+                type: HtmlKeyboardResponsePlugin,
                 choices: ['enter'],
                 stimulus: function () {
                     // Reset success counters
@@ -99,14 +92,14 @@ const createConditionalCalibrationTrial = ({ calibrationPart, numTrials, jsPsych
                         state.calibrationPart2Successes = 0;
                     }
                     console.log(`Reset successes for ${calibrationPart}`);
-                    return `<p>${constants_1.ADDITIONAL_CALIBRATION_PART_1_DIRECTIONS}</p>`;
+                    return `<p>${ADDITIONAL_CALIBRATION_PART_1_DIRECTIONS}</p>`;
                 },
             },
-            (0, exports.createCalibrationTrial)({
+            createCalibrationTrial({
                 showThermometer: calibrationPart === 'calibrationPart2',
                 bounds: [
-                    constants_1.EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
-                    constants_1.EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
+                    EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
+                    EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
                 ],
                 repetitions: numTrials,
                 calibrationPart,
@@ -115,18 +108,18 @@ const createConditionalCalibrationTrial = ({ calibrationPart, numTrials, jsPsych
             }),
             {
                 timeline: [
-                    (0, finish_1.finishExperimentEarlyTrial)(jsPsych),
+                    finishExperimentEarlyTrial(jsPsych),
                 ],
                 conditional_function: function () {
                     if (calibrationPart === 'calibrationPart1') {
-                        state.conditionalMedianTapsPart1 = (0, utils_1.calculateMedianTapCount)(calibrationPart, numTrials, jsPsych);
+                        state.conditionalMedianTapsPart1 = calculateMedianTapCount(calibrationPart, numTrials, jsPsych);
                         console.log(`conditionalMedianTapsPart1: ${state.conditionalMedianTapsPart1}`);
-                        return (state.conditionalMedianTapsPart1 < constants_1.MINIMUM_CALIBRATION_MEDIAN);
+                        return (state.conditionalMedianTapsPart1 < MINIMUM_CALIBRATION_MEDIAN);
                     }
                     else {
-                        state.conditionalMedianTapsPart2 = (0, utils_1.calculateMedianTapCount)(calibrationPart, numTrials, jsPsych);
+                        state.conditionalMedianTapsPart2 = calculateMedianTapCount(calibrationPart, numTrials, jsPsych);
                         console.log(`conditionalMedianTapsPart2: ${state.conditionalMedianTapsPart2}`);
-                        return (state.conditionalMedianTapsPart2 < constants_1.MINIMUM_CALIBRATION_MEDIAN);
+                        return (state.conditionalMedianTapsPart2 < MINIMUM_CALIBRATION_MEDIAN);
                     }
                 },
             },
@@ -134,51 +127,46 @@ const createConditionalCalibrationTrial = ({ calibrationPart, numTrials, jsPsych
         conditional_function: function () {
             if (calibrationPart === 'calibrationPart1') {
                 console.log(`medianTapsPart1: ${state.medianTapsPart1}`);
-                return state.medianTapsPart1 < constants_1.MINIMUM_CALIBRATION_MEDIAN;
+                return state.medianTapsPart1 < MINIMUM_CALIBRATION_MEDIAN;
             }
             else {
                 console.log(`medianTapsPart2: ${state.medianTapsPart2}`);
-                return state.medianTapsPart2 < constants_1.MINIMUM_CALIBRATION_MEDIAN;
+                return state.medianTapsPart2 < MINIMUM_CALIBRATION_MEDIAN;
             }
         },
     };
 };
-exports.createConditionalCalibrationTrial = createConditionalCalibrationTrial;
-const calibrationTrialPart1 = (jsPsych, state) => (0, exports.createCalibrationTrial)({
+export const calibrationTrialPart1 = (jsPsych, state) => createCalibrationTrial({
     showThermometer: false,
     bounds: [
-        constants_1.EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
-        constants_1.EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
+        EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
+        EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
     ],
-    repetitions: constants_1.NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
+    repetitions: NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
     calibrationPart: 'calibrationPart1',
     jsPsych,
     state,
 });
-exports.calibrationTrialPart1 = calibrationTrialPart1;
-const conditionalCalibrationTrialPart1 = (jsPsych, state) => (0, exports.createConditionalCalibrationTrial)({
+export const conditionalCalibrationTrialPart1 = (jsPsych, state) => createConditionalCalibrationTrial({
     calibrationPart: 'calibrationPart1',
-    numTrials: constants_1.NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
+    numTrials: NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
     jsPsych,
     state
 });
-exports.conditionalCalibrationTrialPart1 = conditionalCalibrationTrialPart1;
-const calibrationTrialPart2 = (jsPsych, state) => (0, exports.createCalibrationTrial)({
+export const calibrationTrialPart2 = (jsPsych, state) => createCalibrationTrial({
     showThermometer: true,
     bounds: [
-        constants_1.EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
-        constants_1.EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
+        EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
+        EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
     ],
-    repetitions: constants_1.NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
+    repetitions: NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
     calibrationPart: 'calibrationPart2',
     jsPsych,
     state,
 });
-exports.calibrationTrialPart2 = calibrationTrialPart2;
-const conditionalCalibrationTrialPart2 = (jsPsych, state) => (0, exports.createConditionalCalibrationTrial)({
+export const conditionalCalibrationTrialPart2 = (jsPsych, state) => createConditionalCalibrationTrial({
     calibrationPart: 'calibrationPart2',
-    numTrials: constants_1.NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
+    numTrials: NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
     jsPsych,
     state
 });
-exports.conditionalCalibrationTrialPart2 = conditionalCalibrationTrialPart2;

@@ -103,3 +103,8 @@ export function calculateTotalReward(jsPsych: JsPsych): number {
   console.log(successfulTrials.select('reward'));
   return successfulTrials.select('reward').sum();
 }
+
+export const getQueryParam = (param: string) => {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(param);
+};

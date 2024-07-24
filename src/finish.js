@@ -1,50 +1,41 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.finishExperimentEarlyTrial = exports.finishExperimentEarly = exports.finishExperiment = void 0;
-const plugin_html_keyboard_response_1 = __importDefault(require("@jspsych/plugin-html-keyboard-response"));
-const file_saver_1 = require("file-saver");
-const constants_1 = require("./constants");
-const utils_1 = require("./utils");
-const finishExperiment = (jsPsych) => ({
-    type: plugin_html_keyboard_response_1.default,
+import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
+import { saveAs } from 'file-saver';
+import { REWARD_TOTAL_MESSAGE, FAILED_VALIDATION_MESSAGE } from './constants';
+import { calculateTotalReward } from './utils';
+export const finishExperiment = (jsPsych) => ({
+    type: HtmlKeyboardResponsePlugin,
     choices: ['enter'],
     stimulus: function () {
-        const totalSuccessfulReward = (0, utils_1.calculateTotalReward)(jsPsych);
-        return `<p>${(0, constants_1.REWARD_TOTAL_MESSAGE)(totalSuccessfulReward.toFixed(2))}</p>`;
+        const totalSuccessfulReward = calculateTotalReward(jsPsych);
+        return `<p>${REWARD_TOTAL_MESSAGE(totalSuccessfulReward.toFixed(2))}</p>`;
     },
     data: {
         task: 'finish_experiment',
     },
     on_finish: function (data) {
-        const totalSuccessfulReward = (0, utils_1.calculateTotalReward)(jsPsych);
+        const totalSuccessfulReward = calculateTotalReward(jsPsych);
         data.totalReward = totalSuccessfulReward;
         const allData = jsPsych.data.get().json();
         const blob = new Blob([allData], { type: 'application/json' });
-        (0, file_saver_1.saveAs)(blob, `experiment_data_${new Date().toISOString()}.json`);
+        saveAs(blob, `experiment_data_${new Date().toISOString()}.json`);
     },
 });
-exports.finishExperiment = finishExperiment;
-const finishExperimentEarly = (jsPsych) => {
+export const finishExperimentEarly = (jsPsych) => {
     const allData = jsPsych.data.get().json();
     const blob = new Blob([allData], { type: 'application/json' });
-    (0, file_saver_1.saveAs)(blob, `experiment_data_${new Date().toISOString()}.json`);
-    jsPsych.endExperiment(constants_1.FAILED_VALIDATION_MESSAGE);
+    saveAs(blob, `experiment_data_${new Date().toISOString()}.json`);
+    jsPsych.endExperiment(FAILED_VALIDATION_MESSAGE);
 };
-exports.finishExperimentEarly = finishExperimentEarly;
-const finishExperimentEarlyTrial = (jsPsych) => ({
-    type: plugin_html_keyboard_response_1.default,
+export const finishExperimentEarlyTrial = (jsPsych) => ({
+    type: HtmlKeyboardResponsePlugin,
     choices: ['enter'],
-    stimulus: constants_1.FAILED_VALIDATION_MESSAGE,
+    stimulus: FAILED_VALIDATION_MESSAGE,
     data: {
         task: 'finish_experiment',
     },
     on_finish: function (data) {
         const allData = jsPsych.data.get().json();
         const blob = new Blob([allData], { type: 'application/json' });
-        (0, file_saver_1.saveAs)(blob, `experiment_data_${new Date().toISOString()}.json`);
+        saveAs(blob, `experiment_data_${new Date().toISOString()}.json`);
     },
 });
-exports.finishExperimentEarlyTrial = finishExperimentEarlyTrial;

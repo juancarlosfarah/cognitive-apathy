@@ -1,10 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkFlag = void 0;
-exports.randomNumberBm = randomNumberBm;
-exports.autoIncreaseAmount = autoIncreaseAmount;
-exports.calculateMedianTapCount = calculateMedianTapCount;
-exports.calculateTotalReward = calculateTotalReward;
 /**
  * Generate a random number with a bias towards the mean.
  *
@@ -13,7 +6,7 @@ exports.calculateTotalReward = calculateTotalReward;
  * @param {number} skew - The skew factor to bias the distribution (default is 1).
  * @returns {number} - A random number between min and max, skewed towards the mean.
  */
-function randomNumberBm(min, max, skew = 1) {
+export function randomNumberBm(min, max, skew = 1) {
     let u = 0;
     let v = 0;
     // Converting [0,1) to (0,1)
@@ -42,7 +35,7 @@ function randomNumberBm(min, max, skew = 1) {
  * @param {number} AUTO_DECREASE_AMOUNT - The amount by which auto-decrease occurs.
  * @returns {number} - The calculated auto-increase amount.
  */
-function autoIncreaseAmount(EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, TRIAL_DURATION, AUTO_DECREASE_RATE, AUTO_DECREASE_AMOUNT, median) {
+export function autoIncreaseAmount(EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, TRIAL_DURATION, AUTO_DECREASE_RATE, AUTO_DECREASE_AMOUNT, median) {
     return ((EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION +
         (TRIAL_DURATION / AUTO_DECREASE_RATE) * AUTO_DECREASE_AMOUNT) /
         median);
@@ -55,7 +48,7 @@ function autoIncreaseAmount(EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, TRIAL_D
  * @param {JsPsych} jsPsych - The jsPsych instance
  * @returns {number} - The median tap count
  */
-function calculateMedianTapCount(taskType, numTrials, jsPsych) {
+export function calculateMedianTapCount(taskType, numTrials, jsPsych) {
     const filteredTrials = jsPsych.data
         .get()
         .filter({ task: taskType })
@@ -65,7 +58,7 @@ function calculateMedianTapCount(taskType, numTrials, jsPsych) {
     const medianValue = filteredTrials.median(); // Calculate the median
     return medianValue;
 }
-const checkFlag = (taskFilter, flag, jsPsych) => {
+export const checkFlag = (taskFilter, flag, jsPsych) => {
     const lastCountdownData = jsPsych.data
         .get()
         .filter({ task: taskFilter })
@@ -79,9 +72,8 @@ const checkFlag = (taskFilter, flag, jsPsych) => {
     }
     return false;
 };
-exports.checkFlag = checkFlag;
 // Function to calculate accumulated reward
-function calculateTotalReward(jsPsych) {
+export function calculateTotalReward(jsPsych) {
     const successfulTrials = jsPsych.data
         .get()
         .filter({ task: 'block', success: true });
@@ -89,3 +81,7 @@ function calculateTotalReward(jsPsych) {
     console.log(successfulTrials.select('reward'));
     return successfulTrials.select('reward').sum();
 }
+export const getQueryParam = (param) => {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+};

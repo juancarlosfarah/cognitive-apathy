@@ -1,20 +1,14 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.loadingBarTrial = void 0;
-const plugin_html_keyboard_response_1 = __importDefault(require("@jspsych/plugin-html-keyboard-response"));
-const constants_1 = require("./constants");
-const stimulus_1 = require("./stimulus");
-const loadingBarTrial = (acceptance, jsPsych) => ({
-    type: plugin_html_keyboard_response_1.default,
-    stimulus: stimulus_1.loadingBar,
+import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
+import { LOADING_BAR_SPEED_NO, LOADING_BAR_SPEED_YES } from './constants';
+import { loadingBar } from './stimulus';
+export const loadingBarTrial = (acceptance, jsPsych) => ({
+    type: HtmlKeyboardResponsePlugin,
+    stimulus: loadingBar,
     choices: 'NO_KEYS',
     on_load: function () {
         const check_percentage = () => {
             const percentage = document.querySelector('.percentage');
-            const percentageValue = +((percentage === null || percentage === void 0 ? void 0 : percentage.textContent) || 0);
+            const percentageValue = +(percentage?.textContent || 0);
             setTimeout(() => {
                 if (percentageValue < 100) {
                     update_percentage();
@@ -28,12 +22,12 @@ const loadingBarTrial = (acceptance, jsPsych) => ({
         };
         const update_percentage = () => {
             const percentage = document.querySelector('.percentage');
-            const percentageValue = +((percentage === null || percentage === void 0 ? void 0 : percentage.textContent) || 0);
+            const percentageValue = +(percentage?.textContent || 0);
             const progress = document.querySelector('.progress');
             let increment;
             acceptance
-                ? (increment = Math.ceil(Math.random() * constants_1.LOADING_BAR_SPEED_YES))
-                : (increment = Math.ceil(Math.random() * constants_1.LOADING_BAR_SPEED_NO));
+                ? (increment = Math.ceil(Math.random() * LOADING_BAR_SPEED_YES))
+                : (increment = Math.ceil(Math.random() * LOADING_BAR_SPEED_NO));
             const newPercentageValue = Math.min(percentageValue + increment, 100);
             if (percentage)
                 percentage.textContent = newPercentageValue.toString();
@@ -50,4 +44,3 @@ const loadingBarTrial = (acceptance, jsPsych) => ({
         }
     },
 });
-exports.loadingBarTrial = loadingBarTrial;
