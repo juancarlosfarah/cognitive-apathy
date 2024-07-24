@@ -7,24 +7,25 @@
  * @returns {number} - A random number between min and max, skewed towards the mean.
  */
 export function randomNumberBm(min, max, skew = 1) {
-  let u = 0;
-  let v = 0;
-  // Converting [0,1) to (0,1)
-  while (u === 0) u = Math.random();
-  while (v === 0) v = Math.random();
-  let num = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
-
-  num = num / 10.0 + 0.5; // Translate to 0 -> 1
-  if (num > 1 || num < 0) {
-    num = randomNumberBm(min, max, skew); // Resample between 0 and 1 if out of range
-  } else {
-    num = Math.pow(num, skew); // Apply skew
-    num *= max - min; // Stretch to fill range
-    num += min; // Offset to min
-  }
-  return num;
+    let u = 0;
+    let v = 0;
+    // Converting [0,1) to (0,1)
+    while (u === 0)
+        u = Math.random();
+    while (v === 0)
+        v = Math.random();
+    let num = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+    num = num / 10.0 + 0.5; // Translate to 0 -> 1
+    if (num > 1 || num < 0) {
+        num = randomNumberBm(min, max, skew); // Resample between 0 and 1 if out of range
+    }
+    else {
+        num = Math.pow(num, skew); // Apply skew
+        num *= max - min; // Stretch to fill range
+        num += min; // Offset to min
+    }
+    return num;
 }
-
 /**
  * Calculate the auto-increase amount for the thermometer.
  *
@@ -34,59 +35,49 @@ export function randomNumberBm(min, max, skew = 1) {
  * @param {number} AUTO_DECREASE_AMOUNT - The amount by which auto-decrease occurs.
  * @returns {number} - The calculated auto-increase amount.
  */
-export function autoIncreaseAmount(
-  EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
-  TRIAL_DURATION,
-  AUTO_DECREASE_RATE,
-  AUTO_DECREASE_AMOUNT,
-  median,
-) {
-  return (
-    (EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION +
-      (TRIAL_DURATION / AUTO_DECREASE_RATE) * AUTO_DECREASE_AMOUNT) /
-    median
-  );
+export function autoIncreaseAmount(EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, TRIAL_DURATION, AUTO_DECREASE_RATE, AUTO_DECREASE_AMOUNT, median) {
+    return ((EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION +
+        (TRIAL_DURATION / AUTO_DECREASE_RATE) * AUTO_DECREASE_AMOUNT) /
+        median);
 }
-
 /**
  * @function calculateMedianTapCount
  * @description Calculate the median tap count for a given task type and number of trials
  * @param {string} taskType - The task type to filter data by
  * @param {number} numTrials - The number of trials to consider
+ * @param {JsPsych} jsPsych - The jsPsych instance
  * @returns {number} - The median tap count
  */
 export function calculateMedianTapCount(taskType, numTrials, jsPsych) {
-  const filteredTrials = jsPsych.data
-    .get()
-    .filter({ task: taskType })
-    .last(numTrials)
-    .filter({ keysReleasedFlag: false })
-    .select('tapCount');
-
-  const medianValue = filteredTrials.median(); // Calculate the median
-  return medianValue;
+    const filteredTrials = jsPsych.data
+        .get()
+        .filter({ task: taskType })
+        .last(numTrials)
+        .filter({ keysReleasedFlag: false })
+        .select('tapCount');
+    const medianValue = filteredTrials.median(); // Calculate the median
+    return medianValue;
 }
-
 export const checkFlag = (taskFilter, flag, jsPsych) => {
-  const lastCountdownData = jsPsych.data
-    .get()
-    .filter({ task: taskFilter })
-    .last(1)
-    .values()[0];
-
-  if (flag === 'keyTappedEarlyFlag') {
-    return lastCountdownData ? lastCountdownData.keyTappedEarlyFlag : false;
-  } else if (flag === 'keysReleasedFlag') {
-    return lastCountdownData ? lastCountdownData.keysReleasedFlag : true;
-  }
+    const lastCountdownData = jsPsych.data
+        .get()
+        .filter({ task: taskFilter })
+        .last(1)
+        .values()[0];
+    if (flag === 'keyTappedEarlyFlag') {
+        return lastCountdownData ? lastCountdownData.keyTappedEarlyFlag : false;
+    }
+    else if (flag === 'keysReleasedFlag') {
+        return lastCountdownData ? lastCountdownData.keysReleasedFlag : true;
+    }
+    return false;
 };
-
 // Function to calculate accumulated reward
 export function calculateTotalReward(jsPsych) {
-  const successfulTrials = jsPsych.data
-    .get()
-    .filter({ task: 'block', success: true });
-  console.log(successfulTrials);
-  console.log(successfulTrials.select('reward'));
-  return successfulTrials.select('reward').sum();
+    const successfulTrials = jsPsych.data
+        .get()
+        .filter({ task: 'block', success: true });
+    console.log(successfulTrials);
+    console.log(successfulTrials.select('reward'));
+    return successfulTrials.select('reward').sum();
 }

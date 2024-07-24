@@ -1,6 +1,18 @@
-import { ACCEPTANCE_TRIAL_MESSAGE, NO_STIMULI_VIDEO_TUTORIAL_MESSAGE, STIMULI_VIDEO_TUTORIAL_MESSAGE, VALIDATION_VIDEO_TUTORIAL_MESSAGE, } from './constants';
-export function stimulus(showThermometer, mercuryHeight, lowerBound, upperBound, error) {
-    const bounds = `
+import {
+  ACCEPTANCE_TRIAL_MESSAGE,
+  NO_STIMULI_VIDEO_TUTORIAL_MESSAGE,
+  STIMULI_VIDEO_TUTORIAL_MESSAGE,
+  VALIDATION_VIDEO_TUTORIAL_MESSAGE,
+} from './constants';
+
+export function stimulus(
+  showThermometer: boolean,
+  mercuryHeight: number,
+  lowerBound: number,
+  upperBound: number,
+  error: string,
+) {
+  const bounds = `
     <div
       id="lower-bound"
       style="position: absolute; bottom: ${lowerBound}%; width: 100%; height: 2px; background-color: black;"
@@ -10,8 +22,9 @@ export function stimulus(showThermometer, mercuryHeight, lowerBound, upperBound,
       style="position: absolute; bottom: ${upperBound}%; width: 100%; height: 2px; background-color: black;"
     ></div>
   `;
-    const thermometer = showThermometer
-        ? `<div
+
+  const thermometer = showThermometer
+    ? `<div
       id="thermometer-container"
       style="display: flex; justify-content: center; align-items: center; height: 300px; width: 100px; border: 1px solid #000;"
     >
@@ -26,8 +39,9 @@ export function stimulus(showThermometer, mercuryHeight, lowerBound, upperBound,
         ${bounds}
       </div>
     </div>`
-        : '<p style="font-size: 48px; position: absolute;">+</p>';
-    return `
+    : '<p style="font-size: 48px; position: absolute;">+</p>';
+
+  return `
     <div id="calibration-task" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
         ${thermometer}
         <p id="start-message" style="display: none;">Hit <b>Enter</b> to start! Then tap the <b>R</b> key with your index finger as fast as possible.</p>
@@ -35,7 +49,8 @@ export function stimulus(showThermometer, mercuryHeight, lowerBound, upperBound,
     </div>
   `;
 }
-export const acceptanceThermometer = (bounds, reward) => `
+
+export const acceptanceThermometer = (bounds: number[], reward: number) => `
 <div
   id="acceptance-container"
   style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;"
@@ -62,13 +77,17 @@ export const acceptanceThermometer = (bounds, reward) => `
   <p style="text-align: center;">${ACCEPTANCE_TRIAL_MESSAGE}</p>
 </div>
 `;
-export const blockWelcomeMessage = (name) => `<h2>${name}</h2><p><b>Please press "Enter" to start the experiment.</b></p>`;
-export const videoStimulus = (message) => {
-    let stimulusHTML = `<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; text-align: center;">
+
+export const blockWelcomeMessage = (name: string) =>
+  `<h2>${name}</h2><p><b>Please press "Enter" to start the experiment.</b></p>`;
+
+export const videoStimulus = (message: string) => {
+  let stimulusHTML = `<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; text-align: center;">
                         <p style="margin-bottom: 20px;">${message}</p>`;
-    stimulusHTML += '</div>';
-    return stimulusHTML;
+  stimulusHTML += '</div>';
+  return stimulusHTML;
 };
+
 export const loadingBar = () => `
   <div class="loading-bar-container">
     <h1>Loading...</h1>
@@ -80,6 +99,7 @@ export const loadingBar = () => `
     <link rel="stylesheet" type="text/css" href="import '../styles/main.scss';">
   </div>
 `;
+
 export const noStimuliVideo = `
 <div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
 <p style=font-size: 18px; color: #333; max-width: 80%; line-height: 1.5;">
@@ -96,6 +116,7 @@ ${NO_STIMULI_VIDEO_TUTORIAL_MESSAGE}
   ></video>
 
 </div>`;
+
 export const stimuliVideo = `
 <div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
 <p style=font-size: 18px; color: #333; max-width: 80%; line-height: 1.5;">
@@ -111,6 +132,7 @@ ${STIMULI_VIDEO_TUTORIAL_MESSAGE}
     loop
   ></video>
 </div>`;
+
 export const validationVideo = `
 <div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
 <p style=font-size: 18px; color: #333; max-width: 80%; line-height: 1.5;">
