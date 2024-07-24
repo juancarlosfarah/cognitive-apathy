@@ -46,18 +46,17 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
                         bounds: bounds,
                         minimumTapsReached: false,
                     },
-                    on_start: function (trial) {
+                    on_start: function (data) {
                         const keyTappedEarlyFlag = checkFlag('countdown', 'keyTappedEarlyFlag', jsPsych);
                         // Update the trial parameters with keyTappedEarlyFlag
-                        trial.keyTappedEarlyFlag = keyTappedEarlyFlag;
-                        return keyTappedEarlyFlag;
+                        data.keyTappedEarlyFlag = keyTappedEarlyFlag;
                     },
                     on_finish: function (data) {
                         // Check if minimum taps was reached
                         if (data.tapCount > MINIMUM_DEMO_TAPS) {
                             data.minimumTapsReached = true;
                         }
-                        if (!data.keysReleasedFlag && data.minimumTapsReached) {
+                        if (!data.keysReleasedFlag && data.minimumTapsReached && !data.keyTappedEarlyFlag) {
                             state.demoTrialSuccesses++;
                         }
                     },
@@ -77,7 +76,7 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
                             .filter({ task: 'demo' })
                             .last(1)
                             .values()[0];
-                        return !lastTrialData.minimumTapsReached;
+                        return !lastTrialData.minimumTapsReached && !lastTrialData.keyTappedEarlyFlag;
                     },
                 },
                 {
