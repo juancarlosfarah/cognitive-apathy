@@ -14,7 +14,7 @@ i18n
         translation: frTranslation,
       },
     },
-    lng: 'fr', // Default language
+    lng: 'en', // Default language
     fallbackLng: 'en',
     interpolation: {
       escapeValue: false, // React already does escaping
