@@ -1,4 +1,6 @@
 import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
+import { JsPsych } from 'jspsych';
+
 import {
   ADDITIONAL_CALIBRATION_PART_1_DIRECTIONS,
   AUTO_DECREASE_AMOUNT,
@@ -11,13 +13,20 @@ import {
   TRIAL_DURATION,
 } from './constants';
 import { CountdownTrialPlugin, countdownStep } from './countdown';
-import { loadingBarTrial } from './loading-bar';
 import { finishExperimentEarlyTrial } from './finish';
+import { loadingBarTrial } from './loading-bar';
 import { releaseKeysStep } from './release-keys';
 import TaskPlugin from './task';
-import { autoIncreaseAmount, checkFlag, calculateMedianTapCount } from './utils';
-import { JsPsych } from 'jspsych';
-import { CalibrationTrialParams, ConditionalCalibrationTrialParams, State } from './types';
+import {
+  CalibrationTrialParams,
+  ConditionalCalibrationTrialParams,
+  State,
+} from './types';
+import {
+  autoIncreaseAmount,
+  calculateMedianTapCount,
+  checkFlag,
+} from './utils';
 
 export const createCalibrationTrial = ({
   showThermometer,
@@ -152,9 +161,7 @@ export const createConditionalCalibrationTrial = ({
         state,
       }),
       {
-        timeline: [
-          finishExperimentEarlyTrial(jsPsych),
-        ],
+        timeline: [finishExperimentEarlyTrial(jsPsych)],
         conditional_function: function () {
           if (calibrationPart === 'calibrationPart1') {
             state.conditionalMedianTapsPart1 = calculateMedianTapCount(
@@ -211,13 +218,14 @@ export const calibrationTrialPart1 = (jsPsych: JsPsych, state: State) =>
 
 export const conditionalCalibrationTrialPart1 = (
   jsPsych: JsPsych,
-  state: State
-) => createConditionalCalibrationTrial({
-  calibrationPart: 'calibrationPart1',
-  numTrials: NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
-  jsPsych,
-  state
-});
+  state: State,
+) =>
+  createConditionalCalibrationTrial({
+    calibrationPart: 'calibrationPart1',
+    numTrials: NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
+    jsPsych,
+    state,
+  });
 
 export const calibrationTrialPart2 = (jsPsych: JsPsych, state: State) =>
   createCalibrationTrial({
@@ -234,10 +242,11 @@ export const calibrationTrialPart2 = (jsPsych: JsPsych, state: State) =>
 
 export const conditionalCalibrationTrialPart2 = (
   jsPsych: JsPsych,
-  state: State
-) => createConditionalCalibrationTrial({
-  calibrationPart: 'calibrationPart2',
-  numTrials: NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
-  jsPsych,
-  state
-});
+  state: State,
+) =>
+  createConditionalCalibrationTrial({
+    calibrationPart: 'calibrationPart2',
+    numTrials: NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
+    jsPsych,
+    state,
+  });

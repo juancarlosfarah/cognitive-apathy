@@ -1,11 +1,11 @@
 import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
 import { ADDITIONAL_CALIBRATION_PART_1_DIRECTIONS, AUTO_DECREASE_AMOUNT, AUTO_DECREASE_RATE, EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, MINIMUM_CALIBRATION_MEDIAN, NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS, NUM_CALIBRATION_WITH_FEEDBACK_TRIALS, TRIAL_DURATION, } from './constants';
 import { countdownStep } from './countdown';
-import { loadingBarTrial } from './loading-bar';
 import { finishExperimentEarlyTrial } from './finish';
+import { loadingBarTrial } from './loading-bar';
 import { releaseKeysStep } from './release-keys';
 import TaskPlugin from './task';
-import { autoIncreaseAmount, checkFlag, calculateMedianTapCount } from './utils';
+import { autoIncreaseAmount, calculateMedianTapCount, checkFlag, } from './utils';
 export const createCalibrationTrial = ({ showThermometer, bounds, repetitions, calibrationPart, jsPsych, state, }) => {
     return {
         timeline: [
@@ -107,9 +107,7 @@ export const createConditionalCalibrationTrial = ({ calibrationPart, numTrials, 
                 state,
             }),
             {
-                timeline: [
-                    finishExperimentEarlyTrial(jsPsych),
-                ],
+                timeline: [finishExperimentEarlyTrial(jsPsych)],
                 conditional_function: function () {
                     if (calibrationPart === 'calibrationPart1') {
                         state.conditionalMedianTapsPart1 = calculateMedianTapCount(calibrationPart, numTrials, jsPsych);
@@ -151,7 +149,7 @@ export const conditionalCalibrationTrialPart1 = (jsPsych, state) => createCondit
     calibrationPart: 'calibrationPart1',
     numTrials: NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
     jsPsych,
-    state
+    state,
 });
 export const calibrationTrialPart2 = (jsPsych, state) => createCalibrationTrial({
     showThermometer: true,
@@ -168,5 +166,5 @@ export const conditionalCalibrationTrialPart2 = (jsPsych, state) => createCondit
     calibrationPart: 'calibrationPart2',
     numTrials: NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
     jsPsych,
-    state
+    state,
 });

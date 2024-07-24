@@ -53,7 +53,7 @@ export function calculateMedianTapCount(taskType, numTrials, jsPsych) {
         .get()
         .filter({ task: taskType })
         .last(numTrials)
-        .filter({ keysReleasedFlag: false })
+        .filter({ keysReleasedFlag: false, keyTappedEarlyFlag: false })
         .select('tapCount');
     const medianValue = filteredTrials.median(); // Calculate the median
     return medianValue;
