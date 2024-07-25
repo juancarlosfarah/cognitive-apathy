@@ -14,6 +14,7 @@ export interface State {
   validationFailures: Record<string, number>;
   failedMinimumDemoTapsTrial: number;
   demoTrialSuccesses: number;
+  minimumDemoTapsReached: boolean;
 }
 
 // Define the CalibrationTrialParams interface

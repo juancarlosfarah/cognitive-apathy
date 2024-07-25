@@ -73,6 +73,7 @@ export const createCalibrationTrial = ({
             if (calibrationPart === 'calibrationPart1') {
               // Increase successful trials counter for respective calibration part
               state.calibrationPart1Successes++;
+              console.log(state.calibrationPart1Successes)
               // calculate median for respective trial
               state.medianTapsPart1 = calculateMedianTapCount(
                 'calibrationPart1',
@@ -111,7 +112,6 @@ export const createCalibrationTrial = ({
         timeline: [loadingBarTrial(true, jsPsych)],
       },
     ],
-    repetitions: repetitions,
     loop_function: function () {
       // Ensure minimum amount of trials are done fully without releasing keys or tapping early
       const requiredSuccesses =
@@ -128,8 +128,12 @@ export const createCalibrationTrial = ({
       console.log(
         `Remaining successes for ${calibrationPart}: ${remainingSuccesses}`,
       );
-      return (remainingSuccesses > 0); // Repeat the timeline if more successes are needed
-    },
+      if (remainingSuccesses <= 0) {
+        console.log('Stopping loop');
+        return false;
+      } else {
+        return true;
+      }    },
   };
 };
 

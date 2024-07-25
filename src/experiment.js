@@ -22,6 +22,7 @@ let state = {
     },
     failedMinimumDemoTapsTrial: 0,
     demoTrialSuccesses: 0,
+    minimumDemoTapsReached: false
 };
 import './i18n';
 /**

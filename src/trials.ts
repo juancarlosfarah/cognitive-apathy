@@ -21,7 +21,7 @@ import { successScreen } from './message-trials';
 import { releaseKeysStep } from './release-keys';
 import { acceptanceThermometer } from './stimulus';
 import TaskPlugin from './task';
-import { autoIncreaseAmount, calculateTotalReward, checkFlag, randomNumberBm} from './utils';
+import { autoIncreaseAmount, calculateTotalReward, checkFlag, randomNumberBm } from './utils';
 import { State, TaskTrialData, PassedTaskData } from './types'; // Assuming you have the appropriate types defined here
 import { EASY_BOUNDS } from './constants';
 
@@ -86,7 +86,6 @@ export const createTrialBlock = ({
               task: 'demo',
               randomDelay: randomDelay,
               bounds: bounds,
-              minimumTapsReached: false,
             },
             on_start: function (data: any) {
               const keyTappedEarlyFlag = checkFlag(
@@ -100,39 +99,43 @@ export const createTrialBlock = ({
             on_finish: function (data: TaskTrialData) {
               // Check if minimum taps was reached
               if (data.tapCount > MINIMUM_DEMO_TAPS) {
-                data.minimumTapsReached = true;
+                state.minimumDemoTapsReached = true;
               }
-              if (!data.keysReleasedFlag && data.minimumTapsReached && !data.keyTappedEarlyFlag) {
+              if (!data.keysReleasedFlag && state.minimumDemoTapsReached && !data.keyTappedEarlyFlag) {
                 state.demoTrialSuccesses++;
               }
             },
           },
           {
-            timeline: [releaseKeysStep],
-            conditional_function: function () {
-              return !checkFlag('demo', 'keysReleasedFlag', jsPsych);
+            timeline: [
+              {
+                timeline: [releaseKeysStep],
+                conditional_function: function () {
+                  return !checkFlag('demo', 'keysReleasedFlag', jsPsych);
+                },
+              },
+              {
+                timeline: [failedMinimumDemoTapsTrial],
+                // Check if minimum taps was reached in last trial to determine whether 'failedMinimumDemoTapsTrial' should display
+                conditional_function: function () {
+                  const lastTrialData = jsPsych.data
+                    .get()
+                    .filter({ task: 'demo' })
+                    .last(1)
+                    .values()[0];
+                  return !state.minimumDemoTapsReached && !lastTrialData.keyTappedEarlyFlag;
+                },
+              },
+              {
+                timeline: [loadingBarTrial(true, jsPsych)],
+              },
+            ],
+            loop_function: function () {
+              const remainingSuccesses = NUM_DEMO_TRIALS - state.demoTrialSuccesses;
+              return remainingSuccesses > 0; // Repeat the timeline if more successes are needed
             },
-          },
-          {
-            timeline: [failedMinimumDemoTapsTrial],
-            // Check if minimum taps was reached in last trial to determine whether 'failedMinimumDemoTapsTrial' should display
-            conditional_function: function () {
-              const lastTrialData = jsPsych.data
-                .get()
-                .filter({ task: 'demo' })
-                .last(1)
-                .values()[0];
-              return !lastTrialData.minimumTapsReached && !lastTrialData.keyTappedEarlyFlag;
-            },
-          },
-          {
-            timeline: [loadingBarTrial(true, jsPsych)],
           },
         ],
-        loop_function: function () {
-          const remainingSuccesses = NUM_DEMO_TRIALS - state.demoTrialSuccesses;
-          return remainingSuccesses > 0; // Repeat the timeline if more successes are needed
-        },
       },
       // Likert scale survey after demo
       ...likertQuestions1,
@@ -420,5 +423,3 @@ export const trialsArray = (jsPsych: JsPsych, state: State) => [
 // a total of 378 trials
 export const sampledArray = (jsPsych: JsPsych, state: State) =>
   jsPsych.randomization.sampleWithoutReplacement(trialsArray(jsPsych, state), 6);
-  // CHANGE BACK TO 6
-  // ONLY AT 1 FOR TESTING PURPOSES

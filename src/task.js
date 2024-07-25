@@ -2,6 +2,7 @@ import { ParameterType } from 'jspsych';
 import { AUTO_DECREASE_AMOUNT, AUTO_DECREASE_RATE, KEYS_TO_HOLD, KEY_TAPPED_EARLY_ERROR_TIME, KEY_TAPPED_EARLY_MESSAGE, KEY_TO_PRESS, PREMATURE_KEY_RELEASE_ERROR_MESSAGE, PREMATURE_KEY_RELEASE_ERROR_TIME, } from './constants';
 import { createKeyboard } from './keyboard';
 import { stimulus } from './stimulus';
+import { TRIAL_DURATION } from './constants';
 class TaskPlugin {
     static info = {
         name: 'task-plugin',
@@ -33,7 +34,7 @@ class TaskPlugin {
             },
             trial_duration: {
                 type: ParameterType.INT,
-                default: 5000,
+                default: TRIAL_DURATION,
             },
             keysReleasedFlag: {
                 type: ParameterType.BOOL,
@@ -72,13 +73,11 @@ class TaskPlugin {
         let endTime = 0;
         let error = '';
         let keysState = { a: true, w: true, e: true };
-        let intervalRef = null;
         let errorOccurred = false;
         let isRunning = false;
         let trialEnded = false;
         let keyboardInstance;
         let inputElement;
-        let success = false;
         const getRandomDelay = () => {
             const [min, max] = trial.randomDelay;
             return Math.random() * (max - min) + min;
@@ -109,14 +108,14 @@ class TaskPlugin {
                 startMessageElement.style.display = areKeysHeld ? 'block' : 'none';
             }
             if (!areKeysHeld) {
-                setError(`${PREMATURE_KEY_RELEASE_ERROR_MESSAGE}`);
+                setError(PREMATURE_KEY_RELEASE_ERROR_MESSAGE);
+                trial.keysReleasedFlag = true;
                 display_element.innerHTML = `
           <div id="status" style="margin-top: 50px;">
             <div id="error-message" style="color: red;">${PREMATURE_KEY_RELEASE_ERROR_MESSAGE}</div>
           </div>
         `;
-                trial.keysReleasedFlag = true;
-                this.jsPsych.pluginAPI.setTimeout(() => stopRunning(true), PREMATURE_KEY_RELEASE_ERROR_TIME);
+                setTimeout(() => stopRunning(true), PREMATURE_KEY_RELEASE_ERROR_TIME);
             }
         };
         const increaseMercury = (amount = trial.autoIncreaseAmount) => {
@@ -142,7 +141,7 @@ class TaskPlugin {
             else if (key === KEY_TO_PRESS && isRunning) {
                 this.isKeyDown = false;
                 tapCount++;
-                if (trial.data.task === 'demo' || trial.data.task === 'block') {
+                if (trial.task === 'demo' || trial.task === 'block') {
                     this.jsPsych.pluginAPI.setTimeout(() => increaseMercury(), getRandomDelay());
                 }
                 else {
@@ -178,6 +177,7 @@ class TaskPlugin {
             errorOccurred = errorFlag;
             display_element.innerHTML = stimulus(trial.showThermometer, this.mercuryHeight, trial.bounds[0], trial.bounds[1], error);
             updateUI();
+            end_trial();
         };
         const setError = (message) => {
             error = message;
@@ -189,19 +189,34 @@ class TaskPlugin {
                 !trial.keysReleasedFlag &&
                 !trial.keyTappedEarlyFlag);
         };
+        const end_trial = () => {
+            document.removeEventListener('keydown', handleKeyDown);
+            document.removeEventListener('keyup', handleKeyUp);
+            const trialData = {
+                tapCount,
+                startTime,
+                endTime,
+                mercuryHeight: this.mercuryHeight,
+                error,
+                bounds: trial.bounds,
+                reward: trial.reward,
+                task: trial.task,
+                errorOccurred,
+                keysReleasedFlag: trial.keysReleasedFlag,
+                success: isSuccess(),
+                keyTappedEarlyFlag: trial.keyTappedEarlyFlag,
+            };
+            this.jsPsych.finishTrial(trialData);
+            console.log(trialData);
+        };
         if (trial.keyTappedEarlyFlag) {
+            console.log('keyTappedEarlyActive');
             display_element.innerHTML = `
         <div id="status" style="margin-top: 50px;">
           <div id="error-message" style="color: red;">${KEY_TAPPED_EARLY_MESSAGE}</div>
         </div>
       `;
-            this.jsPsych.pluginAPI.setTimeout(() => {
-                this.jsPsych.finishTrial({
-                    keyTappedEarlyFlag: true,
-                    keysReleasedFlag: false,
-                    success: isSuccess(),
-                });
-            }, KEY_TAPPED_EARLY_ERROR_TIME);
+            setTimeout(() => stopRunning(true), KEY_TAPPED_EARLY_ERROR_TIME);
             return;
         }
         display_element.innerHTML = stimulus(trial.showThermometer, this.mercuryHeight, trial.bounds[0], trial.bounds[1], error);
@@ -239,31 +254,9 @@ class TaskPlugin {
         }
         document.addEventListener('keydown', handleKeyDown);
         document.addEventListener('keyup', handleKeyUp);
-        const end_trial = () => {
-            document.removeEventListener('keydown', handleKeyDown);
-            document.removeEventListener('keyup', handleKeyUp);
-            display_element.innerHTML = '';
-            const trialData = {
-                tapCount,
-                startTime,
-                endTime,
-                mercuryHeight: this.mercuryHeight,
-                error,
-                bounds: trial.bounds,
-                reward: trial.reward,
-                task: trial.task,
-                errorOccurred,
-                keysReleasedFlag: trial.keysReleasedFlag,
-                success: isSuccess(),
-                keyTappedEarlyFlag: false,
-            };
-            this.jsPsych.finishTrial(trialData);
-            console.log(trialData);
-        };
         startRunning();
-        setTimeout(() => {
+        this.jsPsych.pluginAPI.setTimeout(() => {
             stopRunning();
-            end_trial();
         }, trial.trial_duration);
     }
 }
