@@ -4,11 +4,10 @@ import { JsPsych } from 'jspsych';
 export interface State {
   medianTaps: number;
   medianTapsPart1: number;
-  medianTapsPart2: number;
+  calibrationPart1Failed: boolean;
+  calibrationPart2Failed: boolean;
   calibrationPart1Successes: number;
   calibrationPart2Successes: number;
-  conditionalMedianTapsPart1: number;
-  conditionalMedianTapsPart2: number;
   validationExtraFailures: number;
   validationSuccess: boolean;
   extraValidationRequired: boolean;

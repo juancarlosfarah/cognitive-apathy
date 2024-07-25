@@ -16,10 +16,6 @@ import {
   REWARD_TOTAL_MESSAGE,
 } from './constants';
 import { finishExperiment } from './finish';
-import {
-  calculateMedianCalibrationPart1,
-  calculateMedianCalibrationPart2,
-} from './message-trials';
 import { sampledArray } from './trials';
 import {
   instructionalTrial,
@@ -38,13 +34,12 @@ import {
 import { State } from './types';
 
 let state: State = {
-  medianTaps: 0,
   medianTapsPart1: 0,
-  medianTapsPart2: 0,
+  medianTaps: 0,
   calibrationPart1Successes: 0,
   calibrationPart2Successes: 0,
-  conditionalMedianTapsPart1: 0,
-  conditionalMedianTapsPart2: 0,
+  calibrationPart1Failed: true,
+  calibrationPart2Failed: true,
   validationExtraFailures: 0,
   validationSuccess: true,
   extraValidationRequired: false,
@@ -87,14 +82,12 @@ export async function run({
 
   timeline.push(calibrationTrialPart1(jsPsych, state)),
   timeline.push(conditionalCalibrationTrialPart1(jsPsych, state));
-  timeline.push(calculateMedianCalibrationPart1(jsPsych, state));
 
   timeline.push(stimuliVideoTutorialTrial(jsPsych));
   timeline.push({
     timeline: [calibrationTrialPart2(jsPsych, state)],
   });
   timeline.push(conditionalCalibrationTrialPart2(jsPsych, state));
-  timeline.push(calculateMedianCalibrationPart2(jsPsych, state));
 
   timeline.push(validationVideoTutorialTrial(jsPsych));
   timeline.push({

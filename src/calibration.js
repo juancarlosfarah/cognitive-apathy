@@ -17,15 +17,8 @@ export const createCalibrationTrial = ({ showThermometer, bounds, repetitions, c
                 showThermometer,
                 bounds,
                 autoIncreaseAmount: function () {
-                    // Determine which median to use for Part 2
-                    let medianToUse = state.medianTaps;
-                    if (calibrationPart === 'calibrationPart2') {
-                        medianToUse =
-                            state.medianTapsPart1 >= MINIMUM_CALIBRATION_MEDIAN
-                                ? state.medianTapsPart1
-                                : state.conditionalMedianTapsPart1;
-                    }
-                    return autoIncreaseAmount(EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, TRIAL_DURATION, AUTO_DECREASE_RATE, AUTO_DECREASE_AMOUNT, medianToUse);
+                    console.log('autoIncreaseAmount called with medianTapsPart1:', state.medianTapsPart1);
+                    return autoIncreaseAmount(EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, TRIAL_DURATION, AUTO_DECREASE_RATE, AUTO_DECREASE_AMOUNT, state.medianTapsPart1);
                 },
                 data: {
                     task: calibrationPart,
@@ -39,12 +32,27 @@ export const createCalibrationTrial = ({ showThermometer, bounds, repetitions, c
                 },
                 on_finish: function (data) {
                     if (!data.keysReleasedFlag && !data.keyTappedEarlyFlag) {
-                        calibrationPart === 'calibrationPart1'
-                            ? state.calibrationPart1Successes++
-                            : state.calibrationPart2Successes++;
+                        if (calibrationPart === 'calibrationPart1') {
+                            state.calibrationPart1Successes++;
+                            state.medianTapsPart1 = calculateMedianTapCount('calibrationPart1', NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS, jsPsych);
+                            console.log(state.medianTapsPart1);
+                            if (state.medianTapsPart1 >= MINIMUM_CALIBRATION_MEDIAN) {
+                                state.calibrationPart1Failed = false;
+                                console.log(`state.calibrationPart1Failed = ${state.calibrationPart1Failed}`);
+                            }
+                        }
+                        else if (calibrationPart === 'calibrationPart2') {
+                            state.calibrationPart2Successes++;
+                            state.medianTaps = calculateMedianTapCount('calibrationPart2', NUM_CALIBRATION_WITH_FEEDBACK_TRIALS, jsPsych);
+                            console.log(`state.medianTaps = ${state.medianTaps}`);
+                            if (state.medianTaps >= MINIMUM_CALIBRATION_MEDIAN) {
+                                state.calibrationPart2Failed = false;
+                                console.log(`state.calibrationPart2Failed = ${state.calibrationPart2Failed}`);
+                            }
+                        }
+                        console.log(`calibrationPart1Successes: ${state.calibrationPart1Successes}`);
+                        console.log(`calibrationPart2Successes: ${state.calibrationPart2Successes}`);
                     }
-                    console.log(`calibrationPart1Successes: ${state.calibrationPart1Successes}`);
-                    console.log(`calibrationPart2Successes: ${state.calibrationPart2Successes}`);
                 },
             },
             {
@@ -67,7 +75,7 @@ export const createCalibrationTrial = ({ showThermometer, bounds, repetitions, c
                 : state.calibrationPart2Successes;
             const remainingSuccesses = requiredSuccesses - currentSuccesses;
             console.log(`Remaining successes for ${calibrationPart}: ${remainingSuccesses}`);
-            return remainingSuccesses > 0; // Repeat the timeline if more successes are needed
+            return (remainingSuccesses > 0); // Repeat the timeline if more successes are needed
         },
     };
 };
@@ -107,31 +115,38 @@ export const createConditionalCalibrationTrial = ({ calibrationPart, numTrials, 
                 state,
             }),
             {
+                // If minimum taps is not reached in this set of conditional trials, then end trial
                 timeline: [finishExperimentEarlyTrial(jsPsych)],
                 conditional_function: function () {
                     if (calibrationPart === 'calibrationPart1') {
-                        state.conditionalMedianTapsPart1 = calculateMedianTapCount(calibrationPart, numTrials, jsPsych);
-                        console.log(`conditionalMedianTapsPart1: ${state.conditionalMedianTapsPart1}`);
-                        return (state.conditionalMedianTapsPart1 < MINIMUM_CALIBRATION_MEDIAN);
+                        if (!(state.medianTapsPart1 >= MINIMUM_CALIBRATION_MEDIAN)) {
+                            return false;
+                        }
+                        else
+                            return true;
                     }
-                    else {
-                        state.conditionalMedianTapsPart2 = calculateMedianTapCount(calibrationPart, numTrials, jsPsych);
-                        console.log(`conditionalMedianTapsPart2: ${state.conditionalMedianTapsPart2}`);
-                        return (state.conditionalMedianTapsPart2 < MINIMUM_CALIBRATION_MEDIAN);
+                    else if (calibrationPart === 'calibrationPart2') {
+                        console.log(`state.medianTaps for conditional trial = ${state.medianTaps}`);
+                        if ((state.medianTaps >= MINIMUM_CALIBRATION_MEDIAN)) {
+                            return false;
+                        }
+                        else
+                            return true;
                     }
                 },
-            },
+            }
         ],
+        // Conditional trial section should only occur if the corresponding calibration part failed due to minimum taps previously
         conditional_function: function () {
+            console.log(`state.calibrationPart1Failed = ${state.calibrationPart1Failed}`);
+            console.log(`state.calibrationPart2Failed = ${state.calibrationPart2Failed}`);
             if (calibrationPart === 'calibrationPart1') {
-                console.log(`medianTapsPart1: ${state.medianTapsPart1}`);
-                return state.medianTapsPart1 < MINIMUM_CALIBRATION_MEDIAN;
+                return state.calibrationPart1Failed;
             }
-            else {
-                console.log(`medianTapsPart2: ${state.medianTapsPart2}`);
-                return state.medianTapsPart2 < MINIMUM_CALIBRATION_MEDIAN;
+            else if (calibrationPart === 'calibrationPart2') {
+                return state.calibrationPart2Failed;
             }
-        },
+        }
     };
 };
 export const calibrationTrialPart1 = (jsPsych, state) => createCalibrationTrial({

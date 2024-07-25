@@ -4,18 +4,16 @@ import '../styles/main.scss';
 import { calibrationTrialPart1, calibrationTrialPart2, conditionalCalibrationTrialPart1, conditionalCalibrationTrialPart2 } from './calibration';
 import { CALIBRATION_PART_1_DIRECTIONS, } from './constants';
 import { finishExperiment } from './finish';
-import { calculateMedianCalibrationPart1, calculateMedianCalibrationPart2, } from './message-trials';
 import { sampledArray } from './trials';
 import { instructionalTrial, noStimuliVideoTutorialTrial, practiceLoop, stimuliVideoTutorialTrial, validationVideoTutorialTrial, } from './tutorial';
 import { validationResultScreen, validationTrialEasy, validationTrialExtra, validationTrialHard, validationTrialMedium, } from './validation';
 let state = {
-    medianTaps: 0,
     medianTapsPart1: 0,
-    medianTapsPart2: 0,
+    medianTaps: 0,
     calibrationPart1Successes: 0,
     calibrationPart2Successes: 0,
-    conditionalMedianTapsPart1: 0,
-    conditionalMedianTapsPart2: 0,
+    calibrationPart1Failed: true,
+    calibrationPart2Failed: true,
     validationExtraFailures: 0,
     validationSuccess: true,
     extraValidationRequired: false,
@@ -46,13 +44,11 @@ export async function run({ assetPaths, input = {}, environment, title, version,
     timeline.push(instructionalTrial(CALIBRATION_PART_1_DIRECTIONS));
     timeline.push(calibrationTrialPart1(jsPsych, state)),
         timeline.push(conditionalCalibrationTrialPart1(jsPsych, state));
-    timeline.push(calculateMedianCalibrationPart1(jsPsych, state));
     timeline.push(stimuliVideoTutorialTrial(jsPsych));
     timeline.push({
         timeline: [calibrationTrialPart2(jsPsych, state)],
     });
     timeline.push(conditionalCalibrationTrialPart2(jsPsych, state));
-    timeline.push(calculateMedianCalibrationPart2(jsPsych, state));
     timeline.push(validationVideoTutorialTrial(jsPsych));
     timeline.push({
         timeline: [validationTrialEasy(jsPsych, state)],
