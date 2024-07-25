@@ -29,60 +29,67 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
         // Demo trials
         {
             timeline: [
-                countdownStep,
-                {
-                    type: TaskPlugin,
-                    task: blockName,
-                    duration: TRIAL_DURATION,
-                    showThermometer: true,
-                    randomDelay,
-                    bounds,
-                    autoIncreaseAmount: function () {
-                        console.log(state.medianTaps);
-                        return autoIncreaseAmount(EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, TRIAL_DURATION, AUTO_DECREASE_RATE, AUTO_DECREASE_AMOUNT, state.medianTaps);
-                    },
-                    data: {
-                        task: 'demo',
-                        randomDelay: randomDelay,
-                        bounds: bounds,
-                    },
-                    on_start: function (data) {
-                        const keyTappedEarlyFlag = checkFlag('countdown', 'keyTappedEarlyFlag', jsPsych);
-                        // Update the trial parameters with keyTappedEarlyFlag
-                        data.keyTappedEarlyFlag = keyTappedEarlyFlag;
-                    },
-                    on_finish: function (data) {
-                        // Check if minimum taps was reached
-                        if (data.tapCount > MINIMUM_DEMO_TAPS) {
-                            state.minimumDemoTapsReached = true;
-                        }
-                        if (!data.keysReleasedFlag && state.minimumDemoTapsReached && !data.keyTappedEarlyFlag) {
-                            state.demoTrialSuccesses++;
-                        }
-                    },
-                },
                 {
                     timeline: [
+                        countdownStep,
                         {
-                            timeline: [releaseKeysStep],
-                            conditional_function: function () {
-                                return !checkFlag('demo', 'keysReleasedFlag', jsPsych);
+                            type: TaskPlugin,
+                            task: 'demo',
+                            duration: TRIAL_DURATION,
+                            showThermometer: true,
+                            randomDelay,
+                            bounds,
+                            autoIncreaseAmount: function () {
+                                console.log(state.medianTaps);
+                                return autoIncreaseAmount(EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, TRIAL_DURATION, AUTO_DECREASE_RATE, AUTO_DECREASE_AMOUNT, state.medianTaps);
+                            },
+                            data: {
+                                task: 'demo',
+                                randomDelay: randomDelay,
+                                bounds: bounds,
+                            },
+                            on_start: function (data) {
+                                const keyTappedEarlyFlag = checkFlag('countdown', 'keyTappedEarlyFlag', jsPsych);
+                                // Update the trial parameters with keyTappedEarlyFlag
+                                data.keyTappedEarlyFlag = keyTappedEarlyFlag;
+                            },
+                            on_finish: function (data) {
+                                console.log(`KEYS RELEASED FLAG: ${data.keysReleasedFlag}`);
+                                // Check if minimum taps was reached
+                                if (data.tapCount > MINIMUM_DEMO_TAPS) {
+                                    state.minimumDemoTapsReached = true;
+                                }
+                                if (!data.keysReleasedFlag && state.minimumDemoTapsReached && !data.keyTappedEarlyFlag) {
+                                    state.demoTrialSuccesses++;
+                                }
                             },
                         },
                         {
-                            timeline: [failedMinimumDemoTapsTrial],
-                            // Check if minimum taps was reached in last trial to determine whether 'failedMinimumDemoTapsTrial' should display
-                            conditional_function: function () {
-                                const lastTrialData = jsPsych.data
-                                    .get()
-                                    .filter({ task: 'demo' })
-                                    .last(1)
-                                    .values()[0];
-                                return !state.minimumDemoTapsReached && !lastTrialData.keyTappedEarlyFlag;
-                            },
-                        },
-                        {
-                            timeline: [loadingBarTrial(true, jsPsych)],
+                            timeline: [
+                                {
+                                    timeline: [releaseKeysStep],
+                                    conditional_function: function () {
+                                        const keysReleasedFlag = checkFlag('demo', 'keysReleasedFlag', jsPsych);
+                                        console.log(keysReleasedFlag);
+                                        return !keysReleasedFlag;
+                                    },
+                                },
+                                {
+                                    timeline: [failedMinimumDemoTapsTrial],
+                                    // Check if minimum taps was reached in the last trial to determine whether 'failedMinimumDemoTapsTrial' should display
+                                    conditional_function: function () {
+                                        const lastTrialData = jsPsych.data
+                                            .get()
+                                            .filter({ task: 'demo' })
+                                            .last(1)
+                                            .values()[0];
+                                        return !state.minimumDemoTapsReached && !lastTrialData.keyTappedEarlyFlag;
+                                    },
+                                },
+                                {
+                                    timeline: [loadingBarTrial(true, jsPsych)],
+                                },
+                            ],
                         },
                     ],
                     loop_function: function () {
@@ -149,6 +156,7 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
                                 randomDelay: trialData.randomDelay,
                                 bounds: trialData.bounds,
                                 reward: trialData.reward,
+                                task: 'block',
                                 autoIncreaseAmount: function () {
                                     return autoIncreaseAmount(EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, TRIAL_DURATION, AUTO_DECREASE_RATE, AUTO_DECREASE_AMOUNT, state.medianTaps);
                                 },
