@@ -35,7 +35,7 @@ export async function run({ assetPaths, input = {}, environment, title, version,
     timeline.push({
         type: PreloadPlugin,
         audio: assetPaths.audio,
-        video: '../assets/videos',
+        video: ['../assets/videos'],
     });
     /*   timeline.push(noStimuliVideoTutorialTrial(jsPsych));
       timeline.push(practiceLoop(jsPsych));

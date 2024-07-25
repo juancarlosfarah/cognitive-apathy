@@ -24,7 +24,7 @@ export const finishExperimentEarly = (jsPsych) => {
     const allData = jsPsych.data.get().json();
     const blob = new Blob([allData], { type: 'application/json' });
     saveAs(blob, `experiment_data_${new Date().toISOString()}.json`);
-    jsPsych.endExperiment(FAILED_VALIDATION_MESSAGE);
+    jsPsych.abortExperiment(FAILED_VALIDATION_MESSAGE);
 };
 export const finishExperimentEarlyTrial = (jsPsych) => ({
     type: HtmlKeyboardResponsePlugin,

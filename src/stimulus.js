@@ -30,8 +30,6 @@ export function stimulus(showThermometer, mercuryHeight, lowerBound, upperBound,
     return `
     <div id="calibration-task" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
         ${thermometer}
-        <p id="start-message" style="display: none;">Hit <b>Enter</b> to start! Then tap the <b>R</b> key with your index finger as fast as possible.</p>
-        </div>
     </div>
   `;
 }

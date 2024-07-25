@@ -13,7 +13,7 @@ export const createCalibrationTrial = ({ showThermometer, bounds, repetitions, c
             {
                 type: TaskPlugin,
                 task: calibrationPart,
-                duration: TRIAL_DURATION,
+                trial_duration: TRIAL_DURATION,
                 showThermometer,
                 bounds,
                 autoIncreaseAmount: function () {

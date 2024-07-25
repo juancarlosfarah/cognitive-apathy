@@ -31,7 +31,7 @@ class TaskPlugin {
                 array: true,
                 default: [20, 40],
             },
-            duration: {
+            trial_duration: {
                 type: ParameterType.INT,
                 default: 5000,
             },
@@ -72,7 +72,6 @@ class TaskPlugin {
         let endTime = 0;
         let error = '';
         let keysState = { a: true, w: true, e: true };
-        let timerRef = null;
         let intervalRef = null;
         let errorOccurred = false;
         let isRunning = false;
@@ -117,7 +116,7 @@ class TaskPlugin {
           </div>
         `;
                 trial.keysReleasedFlag = true;
-                setTimeout(() => stopRunning(true), PREMATURE_KEY_RELEASE_ERROR_TIME);
+                this.jsPsych.pluginAPI.setTimeout(() => stopRunning(true), PREMATURE_KEY_RELEASE_ERROR_TIME);
             }
         };
         const increaseMercury = (amount = trial.autoIncreaseAmount) => {
@@ -144,7 +143,7 @@ class TaskPlugin {
                 this.isKeyDown = false;
                 tapCount++;
                 if (trial.data.task === 'demo' || trial.data.task === 'block') {
-                    setTimeout(() => increaseMercury(), getRandomDelay());
+                    this.jsPsych.pluginAPI.setTimeout(() => increaseMercury(), getRandomDelay());
                 }
                 else {
                     increaseMercury();
@@ -161,10 +160,14 @@ class TaskPlugin {
             this.mercuryHeight = 0;
             error = '';
             updateUI();
-            intervalRef = window.setInterval(decreaseMercury, trial.autoDecreaseRate);
-            timerRef = window.setTimeout(() => {
-                stopRunning();
-            }, trial.duration);
+            const decreaseInterval = () => {
+                this.mercuryHeight = Math.max(this.mercuryHeight - trial.autoDecreaseAmount, 0);
+                updateUI();
+                if (isRunning) {
+                    this.jsPsych.pluginAPI.setTimeout(decreaseInterval, trial.autoDecreaseRate);
+                }
+            };
+            decreaseInterval();
         };
         const stopRunning = (errorFlag = false) => {
             if (trialEnded)
@@ -172,17 +175,8 @@ class TaskPlugin {
             trialEnded = true;
             endTime = this.jsPsych.getTotalTime();
             isRunning = false;
-            clearInterval(timerRef);
-            clearInterval(intervalRef);
-            timerRef = null;
-            intervalRef = null;
             errorOccurred = errorFlag;
             display_element.innerHTML = stimulus(trial.showThermometer, this.mercuryHeight, trial.bounds[0], trial.bounds[1], error);
-            end_trial();
-            updateUI();
-        };
-        const decreaseMercury = () => {
-            this.mercuryHeight = Math.max(this.mercuryHeight - trial.autoDecreaseAmount, 0);
             updateUI();
         };
         const setError = (message) => {
@@ -201,7 +195,7 @@ class TaskPlugin {
           <div id="error-message" style="color: red;">${KEY_TAPPED_EARLY_MESSAGE}</div>
         </div>
       `;
-            setTimeout(() => {
+            this.jsPsych.pluginAPI.setTimeout(() => {
                 this.jsPsych.finishTrial({
                     keyTappedEarlyFlag: true,
                     keysReleasedFlag: false,
@@ -266,11 +260,11 @@ class TaskPlugin {
             this.jsPsych.finishTrial(trialData);
             console.log(trialData);
         };
-        trial.on_load = () => {
-            console.log('Trial loaded');
-            setAreKeysHeld();
-            startRunning();
-        };
+        startRunning();
+        setTimeout(() => {
+            stopRunning();
+            end_trial();
+        }, trial.trial_duration);
     }
 }
 export default TaskPlugin;

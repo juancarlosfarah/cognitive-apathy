@@ -72,7 +72,7 @@ export async function run({
   timeline.push({
     type: PreloadPlugin,
     audio: assetPaths.audio,
-    video: '../assets/videos',
+    video: ['../assets/videos'],
   });
 
 /*   timeline.push(noStimuliVideoTutorialTrial(jsPsych));
