@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/27</span>
+                <span class='fraction'>0/25</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/27</span>
+                <span class='fraction'>0/25</span>
             </div>
         
             
@@ -143,12 +143,7 @@
 <a name='L78'></a><a href='#L78'>78</a>
 <a name='L79'></a><a href='#L79'>79</a>
 <a name='L80'></a><a href='#L80'>80</a>
-<a name='L81'></a><a href='#L81'>81</a>
-<a name='L82'></a><a href='#L82'>82</a>
-<a name='L83'></a><a href='#L83'>83</a>
-<a name='L84'></a><a href='#L84'>84</a>
-<a name='L85'></a><a href='#L85'>85</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L81'></a><a href='#L81'>81</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -158,7 +153,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -197,10 +191,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -237,18 +229,16 @@ import '../styles/main.scss';
 import { calibrationTrialPart1, calibrationTrialPart2, conditionalCalibrationTrialPart1, conditionalCalibrationTrialPart2 } from './calibration';
 import { CALIBRATION_PART_1_DIRECTIONS, } from './constants';
 import { finishExperiment } from './finish';
-import { calculateMedianCalibrationPart1, calculateMedianCalibrationPart2, } from './message-trials';
 import { sampledArray } from './trials';
 import { instructionalTrial, noStimuliVideoTutorialTrial, practiceLoop, stimuliVideoTutorialTrial, validationVideoTutorialTrial, } from './tutorial';
 import { validationResultScreen, validationTrialEasy, validationTrialExtra, validationTrialHard, validationTrialMedium, } from './validation';
 let state = <span class="cstat-no" title="statement not covered" >{</span>
-    medianTaps: 0,
     medianTapsPart1: 0,
-    medianTapsPart2: 0,
+    medianTaps: 0,
     calibrationPart1Successes: 0,
     calibrationPart2Successes: 0,
-    conditionalMedianTapsPart1: 0,
-    conditionalMedianTapsPart2: 0,
+    calibrationPart1Failed: true,
+    calibrationPart2Failed: true,
     validationExtraFailures: 0,
     validationSuccess: true,
     extraValidationRequired: false,
@@ -279,13 +269,11 @@ export async function <span class="fstat-no" title="function not covered" >run(<
 <span class="cstat-no" title="statement not covered" >    timeline.push(instructionalTrial(CALIBRATION_PART_1_DIRECTIONS));</span>
 <span class="cstat-no" title="statement not covered" >    timeline.push(calibrationTrialPart1(jsPsych, state)),</span>
         timeline.push(conditionalCalibrationTrialPart1(jsPsych, state));
-<span class="cstat-no" title="statement not covered" >    timeline.push(calculateMedianCalibrationPart1(jsPsych, state));</span>
 <span class="cstat-no" title="statement not covered" >    timeline.push(stimuliVideoTutorialTrial(jsPsych));</span>
 <span class="cstat-no" title="statement not covered" >    timeline.push({</span>
         timeline: [calibrationTrialPart2(jsPsych, state)],
     });
 <span class="cstat-no" title="statement not covered" >    timeline.push(conditionalCalibrationTrialPart2(jsPsych, state));</span>
-<span class="cstat-no" title="statement not covered" >    timeline.push(calculateMedianCalibrationPart2(jsPsych, state));</span>
 <span class="cstat-no" title="statement not covered" >    timeline.push(validationVideoTutorialTrial(jsPsych));</span>
 <span class="cstat-no" title="statement not covered" >    timeline.push({</span>
         timeline: [validationTrialEasy(jsPsych, state)],
@@ -298,7 +286,7 @@ export async function <span class="fstat-no" title="function not covered" >run(<
     });
 <span class="cstat-no" title="statement not covered" >    timeline.push({</span>
         timeline: [validationTrialExtra(jsPsych, state)],
-        conditional_function: <span class="fstat-no" title="function not covered" >fu</span>nction () {
+        conditional_function: <span class="fstat-no" title="function not covered" >function (</span>) {
 <span class="cstat-no" title="statement not covered" >            return state.extraValidationRequired;</span>
         },
     });
@@ -322,7 +310,7 @@ export async function <span class="fstat-no" title="function not covered" >run(<
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-07-24T15:32:37.094Z
+                at 2024-07-25T10:51:42.984Z
             </div>
         <script src="prettify.js"></script>
         <script>

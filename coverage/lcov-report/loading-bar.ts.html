@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/30</span>
+                <span class='fraction'>0/26</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/20</span>
+                <span class='fraction'>0/12</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/25</span>
+                <span class='fraction'>0/22</span>
             </div>
         
             
@@ -112,26 +112,12 @@
 <a name='L47'></a><a href='#L47'>47</a>
 <a name='L48'></a><a href='#L48'>48</a>
 <a name='L49'></a><a href='#L49'>49</a>
-<a name='L50'></a><a href='#L50'>50</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<a name='L50'></a><a href='#L50'>50</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -140,6 +126,20 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -161,22 +161,22 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
 &nbsp;
-<span class="cstat-no" title="statement not covered" >import { LOADING_BAR_SPEED_NO, LOADING_BAR_SPEED_YES } from './constants';</span>
-<span class="cstat-no" title="statement not covered" >import { loadingBar } from './stimulus';</span>
+import { LOADING_BAR_SPEED_NO, LOADING_BAR_SPEED_YES } from './constants';
+import { loadingBar } from './stimulus';
 import { JsPsych } from 'jspsych';
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >loadingBarTrial = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(</span>a</span>cceptance: boolean, jsPsych: JsPsych) =&gt; (<span class="cstat-no" title="statement not covered" >{</span></span>
+export const loadingBarTrial = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(a</span>cceptance: boolean, jsPsych: JsPsych) =&gt; (<span class="cstat-no" title="statement not covered" >{</span></span>
   type: HtmlKeyboardResponsePlugin,
   stimulus: loadingBar,
   choices: 'NO_KEYS',
-  on_load: <span class="fstat-no" title="function not covered" >function () {</span>
-    const check_percentage = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
+  on_load: <span class="fstat-no" title="function not covered" >function (</span>) {
+    const check_percentage = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
       const percentage = <span class="cstat-no" title="statement not covered" >document.querySelector('.percentage');</span>
       const percentageValue = <span class="cstat-no" title="statement not covered" >+(percentage?.textContent || 0);</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >      setTimeout(<span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
+<span class="cstat-no" title="statement not covered" >      setTimeout(<span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >        if (percentageValue &lt; 100) {</span>
 <span class="cstat-no" title="statement not covered" >          update_percentage();</span>
         } else {
@@ -186,7 +186,7 @@ export const <span class="cstat-no" title="statement not covered" >loadingBarTri
       }, 100);
     };
 &nbsp;
-    const update_percentage = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
+    const update_percentage = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
       const percentage = <span class="cstat-no" title="statement not covered" >document.querySelector('.percentage');</span>
       const percentageValue = <span class="cstat-no" title="statement not covered" >+(percentage?.textContent || 0);</span>
       const progress = <span class="cstat-no" title="statement not covered" >document.querySelector('.progress');</span>
@@ -203,7 +203,7 @@ export const <span class="cstat-no" title="statement not covered" >loadingBarTri
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    check_percentage();</span>
   },
-  on_finish: <span class="fstat-no" title="function not covered" >function () {</span>
+  on_finish: <span class="fstat-no" title="function not covered" >function (</span>) {
     const loadingBarContainer = <span class="cstat-no" title="statement not covered" >document.querySelector('.loading-bar-container');</span>
 <span class="cstat-no" title="statement not covered" >    <span class="missing-if-branch" title="if path not taken" >I</span>if (loadingBarContainer) {</span>
 <span class="cstat-no" title="statement not covered" >      loadingBarContainer.remove();</span>
@@ -217,7 +217,7 @@ export const <span class="cstat-no" title="statement not covered" >loadingBarTri
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-07-24T15:32:37.094Z
+                at 2024-07-25T10:51:42.984Z
             </div>
         <script src="prettify.js"></script>
         <script>

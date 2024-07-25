@@ -32,7 +32,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/36</span>
+                <span class='fraction'>0/28</span>
             </div>
         
             
@@ -504,10 +504,10 @@ export class CountdownTrialPlugin {
         },
     };
     jsPsych;
-<span class="fstat-no" title="function not covered" >    co</span>nstructor(jsPsych) {
+<span class="fstat-no" title="function not covered" >    constructor(</span>jsPsych) {
 <span class="cstat-no" title="statement not covered" >        this.jsPsych = jsPsych;</span>
     }
-<span class="fstat-no" title="function not covered" >    tr</span>ial(displayElement, trial) {
+<span class="fstat-no" title="function not covered" >    trial(</span>displayElement, trial) {
 <span class="cstat-no" title="statement not covered" >        console.log('Trial started with parameters:', trial);</span>
         let keysState = <span class="cstat-no" title="statement not covered" >{};</span>
 <span class="cstat-no" title="statement not covered" >        (trial.keystoHold || []).forEach(<span class="fstat-no" title="function not covered" >(k</span>ey) =&gt; (<span class="cstat-no" title="statement not covered" >keysState[key.toLowerCase()] = false)</span>);</span>
@@ -526,7 +526,7 @@ export class CountdownTrialPlugin {
         const timerContainer = <span class="cstat-no" title="statement not covered" >document.createElement('div');</span>
 <span class="cstat-no" title="statement not covered" >        timerContainer.id = 'timer-container';</span>
 <span class="cstat-no" title="statement not covered" >        displayElement.appendChild(timerContainer);</span>
-<span class="cstat-no" title="statement not covered" >        if (trial.showKeyboard) {</span>
+<span class="cstat-no" title="statement not covered" >        <span class="missing-if-branch" title="if path not taken" >I</span>if (trial.showKeyboard) {</span>
             const { keyboard, keyboardDiv } = <span class="cstat-no" title="statement not covered" >createKeyboard(displayElement);</span>
 <span class="cstat-no" title="statement not covered" >            keyboardInstance = keyboard;</span>
 <span class="cstat-no" title="statement not covered" >            inputElement = document.createElement('input');</span>
@@ -538,10 +538,10 @@ export class CountdownTrialPlugin {
             // Event listeners to sync physical keyboard with on-screen keyboard
 <span class="cstat-no" title="statement not covered" >            document.addEventListener('keydown', <span class="fstat-no" title="function not covered" >(e</span>vent) =&gt; {</span>
                 const key = <span class="cstat-no" title="statement not covered" >event.key.toLowerCase();</span>
-<span class="cstat-no" title="statement not covered" >                if (trial.keystoHold.includes(key) &amp;&amp; inputElement) {</span>
+<span class="cstat-no" title="statement not covered" >                <span class="missing-if-branch" title="if path not taken" >I</span>if (trial.keystoHold.includes(key) &amp;&amp; inputElement) {</span>
 <span class="cstat-no" title="statement not covered" >                    keyboardInstance.setInput(inputElement.value + key);</span>
                     const button = <span class="cstat-no" title="statement not covered" >keyboardDiv.querySelector(`[data-skbtn="${key}"]`);</span>
-<span class="cstat-no" title="statement not covered" >                    if (button) {</span>
+<span class="cstat-no" title="statement not covered" >                    <span class="missing-if-branch" title="if path not taken" >I</span>if (button) {</span>
 <span class="cstat-no" title="statement not covered" >                        button.classList.add('hg-activeButton');</span>
                     }
                 }
@@ -549,10 +549,10 @@ export class CountdownTrialPlugin {
 <span class="cstat-no" title="statement not covered" >            document.addEventListener('keyup', <span class="fstat-no" title="function not covered" >(e</span>vent) =&gt; {</span>
                 const key = <span class="cstat-no" title="statement not covered" >event.key.toLowerCase();</span>
                 const button = <span class="cstat-no" title="statement not covered" >keyboardDiv.querySelector(`[data-skbtn="${key}"]`);</span>
-<span class="cstat-no" title="statement not covered" >                if (button &amp;&amp; button instanceof HTMLElement) {</span>
+<span class="cstat-no" title="statement not covered" >                <span class="missing-if-branch" title="if path not taken" >I</span>if (button &amp;&amp; button instanceof HTMLElement) {</span>
 <span class="cstat-no" title="statement not covered" >                    button.classList.remove('hg-activeButton');</span>
-<span class="cstat-no" title="statement not covered" >                    button.style.backgroundColor = ''; </span>// Remove inline style
-<span class="cstat-no" title="statement not covered" >                    button.style.color = ''; </span>// Remove inline style
+<span class="cstat-no" title="statement not covered" >                    button.style.backgroundColor = ''; // Remove inline style</span>
+<span class="cstat-no" title="statement not covered" >                    button.style.color = ''; // Remove inline style</span>
                 }
             });
             // Event listener for input changes
@@ -563,32 +563,32 @@ export class CountdownTrialPlugin {
         const setAreKeysHeld = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >            areKeysHeld = (trial.keystoHold || []).every(<span class="fstat-no" title="function not covered" >(k</span>ey) =&gt; <span class="cstat-no" title="statement not covered" >keysState[key.toLowerCase()])</span>;</span>
 <span class="cstat-no" title="statement not covered" >            if (areKeysHeld &amp;&amp; !interval) {</span>
-<span class="cstat-no" title="statement not covered" >                messageContainer.innerHTML = ''; </span>// Hide the initial message
+<span class="cstat-no" title="statement not covered" >                messageContainer.innerHTML = ''; // Hide the initial message</span>
 <span class="cstat-no" title="statement not covered" >                directionsContainer.innerHTML = `&lt;p&gt;${COUNTDOWN_DIRECTIONS}&lt;/p&gt;`;</span>
 <span class="cstat-no" title="statement not covered" >                startCountdown();</span>
             }
-            else <span class="cstat-no" title="statement not covered" >if (!areKeysHeld &amp;&amp; interval) {</span>
+            else <span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="if path not taken" >I</span>if (!areKeysHeld &amp;&amp; interval) {</span>
 <span class="cstat-no" title="statement not covered" >                clearInterval(interval);</span>
 <span class="cstat-no" title="statement not covered" >                interval = null;</span>
 <span class="cstat-no" title="statement not covered" >                setError('You stopped holding the keys!');</span>
-<span class="cstat-no" title="statement not covered" >                messageContainer.innerHTML = trial.message; </span>// Reset the display message
-<span class="cstat-no" title="statement not covered" >                directionsContainer.innerHTML = ''; </span>// Clear the directions
-<span class="cstat-no" title="statement not covered" >                timerContainer.innerHTML = ''; </span>// Clear the timer
+<span class="cstat-no" title="statement not covered" >                messageContainer.innerHTML = trial.message; // Reset the display message</span>
+<span class="cstat-no" title="statement not covered" >                directionsContainer.innerHTML = ''; // Clear the directions</span>
+<span class="cstat-no" title="statement not covered" >                timerContainer.innerHTML = ''; // Clear the timer</span>
             }
         };
         const handleKeyDown = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(e</span>vent) =&gt; {</span>
             const key = <span class="cstat-no" title="statement not covered" >event.key.toLowerCase();</span>
-<span class="cstat-no" title="statement not covered" >            if ((trial.keystoHold || []).includes(key)) {</span>
+<span class="cstat-no" title="statement not covered" >            <span class="missing-if-branch" title="if path not taken" >I</span>if ((trial.keystoHold || []).includes(key)) {</span>
 <span class="cstat-no" title="statement not covered" >                keysState[key] = true;</span>
 <span class="cstat-no" title="statement not covered" >                setAreKeysHeld();</span>
             }
-<span class="cstat-no" title="statement not covered" >            if (key === trial.keyToPress.toLowerCase()) {</span>
+<span class="cstat-no" title="statement not covered" >            <span class="missing-if-branch" title="if path not taken" >I</span>if (key === trial.keyToPress.toLowerCase()) {</span>
 <span class="cstat-no" title="statement not covered" >                trial.keyTappedEarlyFlag = true;</span>
             }
         };
         const handleKeyUp = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(e</span>vent) =&gt; {</span>
             const key = <span class="cstat-no" title="statement not covered" >event.key.toLowerCase();</span>
-<span class="cstat-no" title="statement not covered" >            if ((trial.keystoHold || []).includes(key)) {</span>
+<span class="cstat-no" title="statement not covered" >            <span class="missing-if-branch" title="if path not taken" >I</span>if ((trial.keystoHold || []).includes(key)) {</span>
 <span class="cstat-no" title="statement not covered" >                keysState[key] = false;</span>
 <span class="cstat-no" title="statement not covered" >                setAreKeysHeld();</span>
             }
@@ -618,27 +618,27 @@ export class CountdownTrialPlugin {
             const seconds = <span class="cstat-no" title="statement not covered" >Math.floor((time - minutes * 1000 * 60) / 1000);</span>
 <span class="cstat-no" title="statement not covered" >            return `${minutes}:${seconds.toString().padStart(2, '0')}`;</span>
         };
-        const endTrial = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >            document.removeEventListener('keydown', handleKeyDown);</span>
-<span class="cstat-no" title="statement not covered" >            document.removeEventListener('keyup', handleKeyUp);</span>
-            const trialData = <span class="cstat-no" title="statement not covered" >{</span>
+        const endTri<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >al = () =&gt; {</span></span>
+            document<span class="cstat-no" title="statement not covered" >.removeEventListener('keydown', handleKeyDown);</span>
+            document<span class="cstat-no" title="statement not covered" >.removeEventListener('keyup', handleKeyUp);</span>
+            const tr<span class="cstat-no" title="statement not covered" >ialData = {</span>
                 keys_held: areKeysHeld,
                 keyTappedEarlyFlag: trial.keyTappedEarlyFlag,
                 task: 'countdown',
             };
-<span class="cstat-no" title="statement not covered" >            displayElement.innerHTML = ''; </span>// Clear the DOM
-<span class="cstat-no" title="statement not covered" >            this.jsPsych.finishTrial(trialData);</span>
-<span class="cstat-no" title="statement not covered" >            console.log('Trial ended with data:', trialData);</span>
+            displayE<span class="cstat-no" title="statement not covered" >lement.innerHTML = ''; // Clear the DOM</span>
+            this.jsP<span class="cstat-no" title="statement not covered" >sych.finishTrial(trialData);</span>
+            console.<span class="cstat-no" title="statement not covered" >log('Trial ended with data:', trialData);</span>
         };
-        const setError = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(m</span>essage) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >            console.error(message);</span>
+        const setErr<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >or = (message) =&gt; {</span></span>
+            console.<span class="cstat-no" title="statement not covered" >error(message);</span>
         };
-<span class="cstat-no" title="statement not covered" >        document.addEventListener('keydown', handleKeyDown);</span>
-<span class="cstat-no" title="statement not covered" >        document.addEventListener('keyup', handleKeyUp);</span>
-<span class="cstat-no" title="statement not covered" >        console.log('Initial UI setup complete.');</span>
+        document.add<span class="cstat-no" title="statement not covered" >EventListener('keydown', handleKeyDown);</span>
+        document.add<span class="cstat-no" title="statement not covered" >EventListener('keyup', handleKeyUp);</span>
+        console.log(<span class="cstat-no" title="statement not covered" >'Initial UI setup complete.');</span>
     }
 }
-export const countdownStep = <span class="cstat-no" title="statement not covered" >{</span>
+export const countdo<span class="cstat-no" title="statement not covered" >wnStep = {</span>
     timeline: [
         {
             type: CountdownTrialPlugin,
@@ -664,7 +664,7 @@ export const countdownStep = <span class="cstat-no" title="statement not covered
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-07-24T15:32:37.094Z
+                at 2024-07-25T10:51:42.984Z
             </div>
         <script src="prettify.js"></script>
         <script>

@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/151</span>
+                <span class='fraction'>0/141</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/146</span>
+                <span class='fraction'>0/141</span>
             </div>
         
             
@@ -395,8 +395,7 @@
 <a name='L330'></a><a href='#L330'>330</a>
 <a name='L331'></a><a href='#L331'>331</a>
 <a name='L332'></a><a href='#L332'>332</a>
-<a name='L333'></a><a href='#L333'>333</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<a name='L333'></a><a href='#L333'>333</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -406,11 +405,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -726,9 +726,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >import { ParameterType, JsPsych } from 'jspsych';</span>
-<span class="cstat-no" title="statement not covered" >import {</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { ParameterType, JsPsych } from 'jspsych';
+import {
   AUTO_DECREASE_AMOUNT,
   AUTO_DECREASE_RATE,
   KEYS_TO_HOLD,
@@ -738,12 +738,12 @@
   PREMATURE_KEY_RELEASE_ERROR_MESSAGE,
   PREMATURE_KEY_RELEASE_ERROR_TIME,
 } from './constants';
-<span class="cstat-no" title="statement not covered" >import { createKeyboard } from './keyboard';</span>
-<span class="cstat-no" title="statement not covered" >import { stimulus } from './stimulus';</span>
+import { createKeyboard } from './keyboard';
+import { stimulus } from './stimulus';
 import { TaskTrialData } from './types';
 &nbsp;
 class TaskPlugin {
-  static <span class="cstat-no" title="statement not covered" >info = {</span>
+  static info = <span class="cstat-no" title="statement not covered" >{</span>
     name: 'task-plugin',
     parameters: {
       task: {
@@ -803,7 +803,7 @@ class TaskPlugin {
   mercuryHeight: number;
   isKeyDown: boolean;
 &nbsp;
-<span class="fstat-no" title="function not covered" >  constructor(j</span>sPsych: JsPsych) {
+<span class="fstat-no" title="function not covered" >  constructor(</span>jsPsych: JsPsych) {
 <span class="cstat-no" title="statement not covered" >    this.jsPsych = jsPsych;</span>
 <span class="cstat-no" title="statement not covered" >    this.mercuryHeight = 0;</span>
 <span class="cstat-no" title="statement not covered" >    this.isKeyDown = false;</span>
@@ -824,110 +824,110 @@ class TaskPlugin {
     let inputElement: HTMLInputElement | undefined;
     let success = <span class="cstat-no" title="statement not covered" >false;</span>
 &nbsp;
-    const getRandomDelay = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
+    const getRandomDelay = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
       const [min, max] = <span class="cstat-no" title="statement not covered" >trial.randomDelay;</span>
 <span class="cstat-no" title="statement not covered" >      return Math.random() * (max - min) + min;</span>
     };
 &nbsp;
-    const updateUI = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
+    const updateUI = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      <span class="missing-if-branch" title="if path not taken" >I</span>if (trial.showThermometer) {</span>
         const mercuryElement = <span class="cstat-no" title="statement not covered" >document.getElementById('mercury');</span>
 <span class="cstat-no" title="statement not covered" >        <span class="missing-if-branch" title="if path not taken" >I</span>if (mercuryElement)</span>
 <span class="cstat-no" title="statement not covered" >          mercuryElement.style.height = `${this.mercuryHeight}%`;</span>
 &nbsp;
-        const lowerBoundElement = <span class="cstat-no" title="statement not covered" >document.getElementById('lower-bound');</span>
-        const upperBoundElement = <span class="cstat-no" title="statement not covered" >document.getElementById('upper-bound');</span>
-<span class="cstat-no" title="statement not covered" >        <span class="missing-if-branch" title="if path not taken" >I</span>if (lowerBoundElement)</span>
-<span class="cstat-no" title="statement not covered" >          lowerBoundElement.style.bottom = `${trial.bounds[0]}%`;</span>
-<span class="cstat-no" title="statement not covered" >        <span class="missing-if-branch" title="if path not taken" >I</span>if (upperBoundElement)</span>
-<span class="cstat-no" title="statement not covered" >          upperBoundElement.style.bottom = `${trial.bounds[1]}%`;</span>
+        const lowerBoundElement = documen<span class="cstat-no" title="statement not covered" >t.getElementById('lower-bound');</span>
+        const upperBoundElement = documen<span class="cstat-no" title="statement not covered" >t.getElementById('upper-bound');</span>
+        if (lowerBoundElement)<span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="if path not taken" >I</span></span>
+          lowerBoundElement.style.bottom <span class="cstat-no" title="statement not covered" >= `${trial.bounds[0]}%`;</span>
+        if (upperBoundElement)<span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="if path not taken" >I</span></span>
+          upperBoundElement.style.bottom <span class="cstat-no" title="statement not covered" >= `${trial.bounds[1]}%`;</span>
       }
-      const errorMessageElement = <span class="cstat-no" title="statement not covered" >document.getElementById('error-message');</span>
-<span class="cstat-no" title="statement not covered" >      <span class="missing-if-branch" title="if path not taken" >I</span>if (errorMessageElement) {</span>
-<span class="cstat-no" title="statement not covered" >        errorMessageElement.innerText = error;</span>
+      const errorMessageElement = documen<span class="cstat-no" title="statement not covered" >t.getElementById('error-message');</span>
+      if (errorMessageElement) {<span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="if path not taken" >I</span></span>
+        errorMessageElement.innerText = e<span class="cstat-no" title="statement not covered" >rror;</span>
       }
     };
 &nbsp;
-    const setAreKeysHeld = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      <span class="missing-if-branch" title="if path not taken" >I</span>if (trialEnded) <span class="cstat-no" title="statement not covered" >return;</span></span>
+    const setAreKeysHeld = () =&gt; {<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ></span></span>
+      if (trialEnded) return;<span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="if path not taken" >I</span></span>
 &nbsp;
-      const areKeysHeld = <span class="cstat-no" title="statement not covered" >keysState.a &amp;&amp; keysState.w &amp;&amp; keysState.e;</span>
-      const startMessageElement = <span class="cstat-no" title="statement not covered" >document.getElementById('start-message');</span>
+      const areKeysHeld = keysState.a &amp;&amp; <span class="cstat-no" title="statement not covered" >keysState.w &amp;&amp; keysState.e;</span>
+      const startMessageElement = documen<span class="cstat-no" title="statement not covered" >t.getElementById('start-message');</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >      <span class="missing-if-branch" title="if path not taken" >I</span>if (startMessageElement) {</span>
-<span class="cstat-no" title="statement not covered" >        startMessageElement.style.display = areKeysHeld ? 'block' : 'none';</span>
+      if (startMessageElement) {<span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="if path not taken" >I</span></span>
+        startMessageElement.style.display<span class="cstat-no" title="statement not covered" > = areKeysHeld ? 'block' : 'none';</span>
       }
-<span class="cstat-no" title="statement not covered" >      <span class="missing-if-branch" title="if path not taken" >I</span>if (!areKeysHeld) {</span>
-<span class="cstat-no" title="statement not covered" >        setError(`${PREMATURE_KEY_RELEASE_ERROR_MESSAGE}`);</span>
-<span class="cstat-no" title="statement not covered" >        display_element.innerHTML = `</span>
+      if (!areKeysHeld) {<span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="if path not taken" >I</span></span>
+        setError(`${PREMATURE_KEY_RELEASE<span class="cstat-no" title="statement not covered" >_ERROR_MESSAGE}`);</span>
+        display_element.innerHTML = `<span class="cstat-no" title="statement not covered" ></span>
           &lt;div id="status" style="margin-top: 50px;"&gt;
             &lt;div id="error-message" style="color: red;"&gt;${PREMATURE_KEY_RELEASE_ERROR_MESSAGE}&lt;/div&gt;
           &lt;/div&gt;
         `;
-<span class="cstat-no" title="statement not covered" >        trial.keysReleasedFlag = true;</span>
-<span class="cstat-no" title="statement not covered" >        setTimeout(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >stopRunning(true),</span> PREMATURE_KEY_RELEASE_ERROR_TIME);</span>
+        trial.keysReleasedFlag = true;<span class="cstat-no" title="statement not covered" ></span>
+        setTimeout(() =&gt; stopRunning(true<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >), PREMATURE_KEY_RELEASE_ERROR_TIME);</span></span>
       }
     };
 &nbsp;
-    const increaseMercury = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(a</span>mount = <span class="branch-0 cbranch-no" title="branch not covered" >trial.autoIncreaseAmount)</span> =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      this.mercuryHeight = Math.min(this.mercuryHeight + amount, 100);</span>
-<span class="cstat-no" title="statement not covered" >      updateUI();</span>
+    const increaseMercury = (amount = tri<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >al.autoIncreaseAmount) =&gt; {</span></span></span>
+      this.mercuryHeight = Math.min(this.<span class="cstat-no" title="statement not covered" >mercuryHeight + amount, 100);</span>
+      updateUI();<span class="cstat-no" title="statement not covered" ></span>
     };
 &nbsp;
-    const handleKeyDown = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(e</span>vent: KeyboardEvent) =&gt; {</span>
-      const key = <span class="cstat-no" title="statement not covered" >event.key.toLowerCase();</span>
-<span class="cstat-no" title="statement not covered" >      if (KEYS_TO_HOLD.includes(key)) {</span>
-<span class="cstat-no" title="statement not covered" >        keysState[key] = true;</span>
-<span class="cstat-no" title="statement not covered" >        setAreKeysHeld();</span>
-      } else <span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="if path not taken" >I</span>if (key === KEY_TO_PRESS &amp;&amp; isRunning &amp;&amp; !this.isKeyDown) {</span>
-<span class="cstat-no" title="statement not covered" >        this.isKeyDown = true;</span>
+    const handleKeyDown = (event: Keyboar<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >dEvent) =&gt; {</span></span>
+      const key = event.key.toLowerCase()<span class="cstat-no" title="statement not covered" >;</span>
+      if (KEYS_TO_HOLD.includes(key)) {<span class="cstat-no" title="statement not covered" ></span>
+        keysState[key] = true;<span class="cstat-no" title="statement not covered" ></span>
+        setAreKeysHeld();<span class="cstat-no" title="statement not covered" ></span>
+      } else if (key === KEY_TO_PRESS &amp;&amp; <span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="if path not taken" >I</span>isRunning &amp;&amp; !this.isKeyDown) {</span>
+        this.isKeyDown = true;<span class="cstat-no" title="statement not covered" ></span>
       }
     };
 &nbsp;
-    const handleKeyUp = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(e</span>vent: KeyboardEvent) =&gt; {</span>
-      const key = <span class="cstat-no" title="statement not covered" >event.key.toLowerCase();</span>
-<span class="cstat-no" title="statement not covered" >      if (KEYS_TO_HOLD.includes(key)) {</span>
-<span class="cstat-no" title="statement not covered" >        keysState[key] = false;</span>
-<span class="cstat-no" title="statement not covered" >        setAreKeysHeld();</span>
-      } else <span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="if path not taken" >I</span>if (key === KEY_TO_PRESS &amp;&amp; isRunning) {</span>
-<span class="cstat-no" title="statement not covered" >        this.isKeyDown = false;</span>
-<span class="cstat-no" title="statement not covered" >        tapCount++;</span>
-<span class="cstat-no" title="statement not covered" >        if (trial.data.task === 'demo' || trial.data.task === 'block') {</span>
-<span class="cstat-no" title="statement not covered" >          setTimeout(<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >increaseMercury(),</span> getRandomDelay());</span>
+    const handleKeyUp = (event: KeyboardE<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >vent) =&gt; {</span></span>
+      const key = event.key.toLowerCase()<span class="cstat-no" title="statement not covered" >;</span>
+      if (KEYS_TO_HOLD.includes(key)) {<span class="cstat-no" title="statement not covered" ></span>
+        keysState[key] = false;<span class="cstat-no" title="statement not covered" ></span>
+        setAreKeysHeld();<span class="cstat-no" title="statement not covered" ></span>
+      } else if (key === KEY_TO_PRESS &amp;&amp; <span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="if path not taken" >I</span>isRunning) {</span>
+        this.isKeyDown = false;<span class="cstat-no" title="statement not covered" ></span>
+        tapCount++;<span class="cstat-no" title="statement not covered" ></span>
+        if (trial.data.task === 'demo' ||<span class="cstat-no" title="statement not covered" > trial.data.task === 'block') {</span>
+          setTimeout(() =&gt; increaseMercur<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >y(), getRandomDelay());</span></span>
         } else {
-<span class="cstat-no" title="statement not covered" >          increaseMercury();</span>
+          increaseMercury();<span class="cstat-no" title="statement not covered" ></span>
         }
       }
     };
 &nbsp;
-    const startRunning = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      isRunning = true;</span>
-<span class="cstat-no" title="statement not covered" >      startTime = this.jsPsych.getTotalTime();</span>
-      const startMessageElement = <span class="cstat-no" title="statement not covered" >document.getElementById('start-message');</span>
-<span class="cstat-no" title="statement not covered" >      <span class="missing-if-branch" title="if path not taken" >I</span>if (startMessageElement) <span class="cstat-no" title="statement not covered" >startMessageElement.style.visibility = 'hidden';</span></span>
-<span class="cstat-no" title="statement not covered" >      tapCount = 0;</span>
-<span class="cstat-no" title="statement not covered" >      this.mercuryHeight = 0;</span>
-<span class="cstat-no" title="statement not covered" >      error = '';</span>
-<span class="cstat-no" title="statement not covered" >      updateUI();</span>
+    const startRunning = () =&gt; {<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ></span></span>
+      isRunning = true;<span class="cstat-no" title="statement not covered" ></span>
+      startTime = this.jsPsych.getTotalTi<span class="cstat-no" title="statement not covered" >me();</span>
+      const startMessageElement = documen<span class="cstat-no" title="statement not covered" >t.getElementById('start-message');</span>
+      if (startMessageElement) startMessa<span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="if path not taken" >I</span>geElement.style.visibility = 'hidden';</span>
+      tapCount = 0;<span class="cstat-no" title="statement not covered" ></span>
+      this.mercuryHeight = 0;<span class="cstat-no" title="statement not covered" ></span>
+      error = '';<span class="cstat-no" title="statement not covered" ></span>
+      updateUI();<span class="cstat-no" title="statement not covered" ></span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >      intervalRef = window.setInterval(decreaseMercury, trial.autoDecreaseRate);</span>
-<span class="cstat-no" title="statement not covered" >      timerRef = window.setTimeout(<span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
-<span class="cstat-no" title="statement not covered" >        stopRunning();</span>
+      intervalRef = window.setInterval(de<span class="cstat-no" title="statement not covered" >creaseMercury, trial.autoDecreaseRate);</span>
+      timerRef = window.setTimeout(() =&gt; <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >{</span></span>
+        stopRunning();<span class="cstat-no" title="statement not covered" ></span>
       }, trial.duration);
     };
 &nbsp;
-    const stopRunning = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(e</span>rrorFlag = <span class="branch-0 cbranch-no" title="branch not covered" >false)</span> =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      <span class="missing-if-branch" title="if path not taken" >I</span>if (trialEnded) <span class="cstat-no" title="statement not covered" >return;</span></span>
-<span class="cstat-no" title="statement not covered" >      trialEnded = true;</span>
-<span class="cstat-no" title="statement not covered" >      endTime = this.jsPsych.getTotalTime();</span>
-<span class="cstat-no" title="statement not covered" >      isRunning = false;</span>
-<span class="cstat-no" title="statement not covered" >      clearInterval(timerRef!);</span>
-<span class="cstat-no" title="statement not covered" >      clearInterval(intervalRef!);</span>
-<span class="cstat-no" title="statement not covered" >      timerRef = null;</span>
-<span class="cstat-no" title="statement not covered" >      intervalRef = null;</span>
-<span class="cstat-no" title="statement not covered" >      errorOccurred = errorFlag;</span>
+    const stopRunning = (errorFlag = fals<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >e) =&gt; {</span></span></span>
+      if (trialEnded) return;<span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="if path not taken" >I</span></span>
+      trialEnded = true;<span class="cstat-no" title="statement not covered" ></span>
+      endTime = this.jsPsych.getTotalTime<span class="cstat-no" title="statement not covered" >();</span>
+      isRunning = false;<span class="cstat-no" title="statement not covered" ></span>
+      clearInterval(timerRef!);<span class="cstat-no" title="statement not covered" ></span>
+      clearInterval(intervalRef!);<span class="cstat-no" title="statement not covered" ></span>
+      timerRef = null;<span class="cstat-no" title="statement not covered" ></span>
+      intervalRef = null;<span class="cstat-no" title="statement not covered" ></span>
+      errorOccurred = errorFlag;<span class="cstat-no" title="statement not covered" ></span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >      display_element.innerHTML = stimulus(</span>
+      display_element.innerHTML = stimulu<span class="cstat-no" title="statement not covered" >s(</span>
         trial.showThermometer,
         this.mercuryHeight,
         trial.bounds[0],
@@ -935,25 +935,25 @@ class TaskPlugin {
         error,
       );
 &nbsp;
-<span class="cstat-no" title="statement not covered" >      end_trial();</span>
-<span class="cstat-no" title="statement not covered" >      updateUI();</span>
+      end_trial();<span class="cstat-no" title="statement not covered" ></span>
+      updateUI();<span class="cstat-no" title="statement not covered" ></span>
     };
 &nbsp;
-    const decreaseMercury = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      this.mercuryHeight = Math.max(</span>
+    const decreaseMercury = () =&gt; {<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ></span></span>
+      this.mercuryHeight = Math.max(<span class="cstat-no" title="statement not covered" ></span>
         this.mercuryHeight - trial.autoDecreaseAmount,
         0,
       );
-<span class="cstat-no" title="statement not covered" >      updateUI();</span>
+      updateUI();<span class="cstat-no" title="statement not covered" ></span>
     };
 &nbsp;
-    const setError = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(m</span>essage: string) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      error = message;</span>
-<span class="cstat-no" title="statement not covered" >      updateUI();</span>
+    const setError = (message: string) =&gt;<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" > {</span></span>
+      error = message;<span class="cstat-no" title="statement not covered" ></span>
+      updateUI();<span class="cstat-no" title="statement not covered" ></span>
     };
 &nbsp;
-    const isSuccess = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      return (</span>
+    const isSuccess = () =&gt; {<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ></span></span>
+      return (<span class="cstat-no" title="statement not covered" ></span>
         this.mercuryHeight &gt;= trial.bounds[0] &amp;&amp;
         this.mercuryHeight &lt;= trial.bounds[1] &amp;&amp;
         !trial.keysReleasedFlag &amp;&amp;
@@ -961,25 +961,25 @@ class TaskPlugin {
       );
     };
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    <span class="missing-if-branch" title="if path not taken" >I</span>if (trial.keyTappedEarlyFlag) {</span>
-<span class="cstat-no" title="statement not covered" >      display_element.innerHTML = `</span>
+    if (trial.keyTappedEarlyFlag) {<span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="if path not taken" >I</span></span>
+      display_element.innerHTML = `<span class="cstat-no" title="statement not covered" ></span>
         &lt;div id="status" style="margin-top: 50px;"&gt;
           &lt;div id="error-message" style="color: red;"&gt;${KEY_TAPPED_EARLY_MESSAGE}&lt;/div&gt;
         &lt;/div&gt;
       `;
 &nbsp;
-<span class="cstat-no" title="statement not covered" >      setTimeout(<span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
-<span class="cstat-no" title="statement not covered" >        this.jsPsych.finishTrial({</span>
+      setTimeout(() =&gt; {<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ></span></span>
+        this.jsPsych.finishTrial({<span class="cstat-no" title="statement not covered" ></span>
           keyTappedEarlyFlag: true,
           keysReleasedFlag: false,
           success: isSuccess(),
         });
       }, KEY_TAPPED_EARLY_ERROR_TIME);
 &nbsp;
-<span class="cstat-no" title="statement not covered" >      return;</span>
+      return;<span class="cstat-no" title="statement not covered" ></span>
     }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    display_element.innerHTML = stimulus(</span>
+    display_element.innerHTML = stimulus(<span class="cstat-no" title="statement not covered" ></span>
       trial.showThermometer,
       this.mercuryHeight,
       trial.bounds[0],
@@ -987,51 +987,51 @@ class TaskPlugin {
       error,
     );
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    <span class="missing-if-branch" title="if path not taken" >I</span>if (trial.showKeyboard) {</span>
-      const { keyboard, keyboardDiv } = <span class="cstat-no" title="statement not covered" >createKeyboard(display_element);</span>
-<span class="cstat-no" title="statement not covered" >      keyboardInstance = keyboard;</span>
-<span class="cstat-no" title="statement not covered" >      inputElement = document.createElement('input');</span>
-<span class="cstat-no" title="statement not covered" >      inputElement.type = 'text';</span>
-<span class="cstat-no" title="statement not covered" >      inputElement.className = 'input';</span>
-<span class="cstat-no" title="statement not covered" >      inputElement.style.position = 'absolute';</span>
-<span class="cstat-no" title="statement not covered" >      inputElement.style.top = '-9999px';</span>
-<span class="cstat-no" title="statement not covered" >      document.body.appendChild(inputElement);</span>
+    if (trial.showKeyboard) {<span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="if path not taken" >I</span></span>
+      const { keyboard, keyboardDiv } = c<span class="cstat-no" title="statement not covered" >reateKeyboard(display_element);</span>
+      keyboardInstance = keyboard;<span class="cstat-no" title="statement not covered" ></span>
+      inputElement = document.createEleme<span class="cstat-no" title="statement not covered" >nt('input');</span>
+      inputElement.type = 'text';<span class="cstat-no" title="statement not covered" ></span>
+      inputElement.className = 'input';<span class="cstat-no" title="statement not covered" ></span>
+      inputElement.style.position = 'abso<span class="cstat-no" title="statement not covered" >lute';</span>
+      inputElement.style.top = '-9999px';<span class="cstat-no" title="statement not covered" ></span>
+      document.body.appendChild(inputElem<span class="cstat-no" title="statement not covered" >ent);</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >      document.addEventListener('keydown', <span class="fstat-no" title="function not covered" >(e</span>vent) =&gt; {</span>
-        const key = <span class="cstat-no" title="statement not covered" >event.key.toLowerCase();</span>
-<span class="cstat-no" title="statement not covered" >        <span class="missing-if-branch" title="if path not taken" >I</span>if (KEYS_TO_HOLD.includes(key) || key === KEY_TO_PRESS) {</span>
-<span class="cstat-no" title="statement not covered" >          keyboardInstance.setInput(inputElement!.value + key);</span>
-          const button = <span class="cstat-no" title="statement not covered" >keyboardDiv.querySelector(`[data-skbtn="${key}"]`);</span>
-<span class="cstat-no" title="statement not covered" >          <span class="missing-if-branch" title="if path not taken" >I</span>if (button) {</span>
-<span class="cstat-no" title="statement not covered" >            button.classList.add('hg-activeButton');</span>
+      document.addEventListener('keydown'<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >, (event) =&gt; {</span></span>
+        const key = event.key.toLowerCase<span class="cstat-no" title="statement not covered" >();</span>
+        if (KEYS_TO_HOLD.includes(key) ||<span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="if path not taken" >I</span> key === KEY_TO_PRESS) {</span>
+          keyboardInstance.setInput(input<span class="cstat-no" title="statement not covered" >Element!.value + key);</span>
+          const button = keyboardDiv.quer<span class="cstat-no" title="statement not covered" >ySelector(`[data-skbtn="${key}"]`);</span>
+          if (button) {<span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="if path not taken" >I</span></span>
+            button.classList.add('hg-acti<span class="cstat-no" title="statement not covered" >veButton');</span>
           }
         }
       });
 &nbsp;
-<span class="cstat-no" title="statement not covered" >      document.addEventListener('keyup', <span class="fstat-no" title="function not covered" >(e</span>vent) =&gt; {</span>
-        const key = <span class="cstat-no" title="statement not covered" >event.key.toLowerCase();</span>
-        const button = <span class="cstat-no" title="statement not covered" >keyboardDiv.querySelector(`[data-skbtn="${key}"]`);</span>
-<span class="cstat-no" title="statement not covered" >        <span class="missing-if-branch" title="if path not taken" >I</span>if (button &amp;&amp; button instanceof HTMLElement) {</span>
-<span class="cstat-no" title="statement not covered" >          button.classList.remove('hg-activeButton');</span>
-<span class="cstat-no" title="statement not covered" >          button.style.backgroundColor = '';</span>
-<span class="cstat-no" title="statement not covered" >          button.style.color = '';</span>
+      document.addEventListener('keyup', <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(event) =&gt; {</span></span>
+        const key = event.key.toLowerCase<span class="cstat-no" title="statement not covered" >();</span>
+        const button = keyboardDiv.queryS<span class="cstat-no" title="statement not covered" >elector(`[data-skbtn="${key}"]`);</span>
+        if (button &amp;&amp; button instanceof H<span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="if path not taken" >I</span>TMLElement) {</span>
+          button.classList.remove('hg-act<span class="cstat-no" title="statement not covered" >iveButton');</span>
+          button.style.backgroundColor = <span class="cstat-no" title="statement not covered" >'';</span>
+          button.style.color = '';<span class="cstat-no" title="statement not covered" ></span>
         }
       });
 &nbsp;
-<span class="cstat-no" title="statement not covered" >      inputElement.addEventListener('input', <span class="fstat-no" title="function not covered" >(e</span>vent) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >        keyboardInstance.setInput((event.target as HTMLInputElement).value);</span>
+      inputElement.addEventListener('inpu<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >t', (event) =&gt; {</span></span>
+        keyboardInstance.setInput((event.<span class="cstat-no" title="statement not covered" >target as HTMLInputElement).value);</span>
       });
     }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    document.addEventListener('keydown', handleKeyDown);</span>
-<span class="cstat-no" title="statement not covered" >    document.addEventListener('keyup', handleKeyUp);</span>
+    document.addEventListener('keydown', <span class="cstat-no" title="statement not covered" >handleKeyDown);</span>
+    document.addEventListener('keyup', ha<span class="cstat-no" title="statement not covered" >ndleKeyUp);</span>
 &nbsp;
-    const end_trial = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      document.removeEventListener('keydown', handleKeyDown);</span>
-<span class="cstat-no" title="statement not covered" >      document.removeEventListener('keyup', handleKeyUp);</span>
-<span class="cstat-no" title="statement not covered" >      display_element.innerHTML = '';</span>
+    const end_trial = () =&gt; {<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ></span></span>
+      document.removeEventListener('keydo<span class="cstat-no" title="statement not covered" >wn', handleKeyDown);</span>
+      document.removeEventListener('keyup<span class="cstat-no" title="statement not covered" >', handleKeyUp);</span>
+      display_element.innerHTML = '';<span class="cstat-no" title="statement not covered" ></span>
 &nbsp;
-      const trialData: TaskTrialData = <span class="cstat-no" title="statement not covered" >{</span>
+      const trialData: TaskTrialData = {<span class="cstat-no" title="statement not covered" ></span>
         tapCount,
         startTime,
         endTime,
@@ -1046,19 +1046,19 @@ class TaskPlugin {
         keyTappedEarlyFlag: false,
       };
 &nbsp;
-<span class="cstat-no" title="statement not covered" >      this.jsPsych.finishTrial(trialData);</span>
-<span class="cstat-no" title="statement not covered" >      console.log(trialData);</span>
+      this.jsPsych.finishTrial(trialData)<span class="cstat-no" title="statement not covered" >;</span>
+      console.log(trialData);<span class="cstat-no" title="statement not covered" ></span>
     };
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    trial.on_load = <span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      console.log('Trial loaded');</span>
-<span class="cstat-no" title="statement not covered" >      setAreKeysHeld();</span>
-<span class="cstat-no" title="statement not covered" >      startRunning();</span>
+    trial.on_load = () =&gt; {<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ></span></span>
+      console.log('Trial loaded');<span class="cstat-no" title="statement not covered" ></span>
+      setAreKeysHeld();<span class="cstat-no" title="statement not covered" ></span>
+      startRunning();<span class="cstat-no" title="statement not covered" ></span>
     };
   }
 }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >export default TaskPlugin;</span>
+export default TaskPlugin;
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -1066,7 +1066,7 @@ class TaskPlugin {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-07-24T15:32:37.094Z
+                at 2024-07-25T10:51:42.984Z
             </div>
         <script src="prettify.js"></script>
         <script>

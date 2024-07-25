@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/104</span>
+                <span class='fraction'>0/99</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/104</span>
+                <span class='fraction'>0/99</span>
             </div>
         
             
@@ -300,10 +300,8 @@
 <a name='L235'></a><a href='#L235'>235</a>
 <a name='L236'></a><a href='#L236'>236</a>
 <a name='L237'></a><a href='#L237'>237</a>
-<a name='L238'></a><a href='#L238'>238</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<a name='L238'></a><a href='#L238'>238</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -313,9 +311,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -537,10 +537,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';</span>
-<span class="cstat-no" title="statement not covered" >import { ParameterType, JsPsych } from 'jspsych';</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
+import { ParameterType, JsPsych } from 'jspsych';
 &nbsp;
-<span class="cstat-no" title="statement not covered" >import {</span>
+import {
   COUNTDOWN_DIRECTIONS,
   COUNTDOWN_TIME,
   GO_DURATION,
@@ -550,10 +550,10 @@
   GO_MESSAGE,
   COUNTDOWN_TIMER_MESSAGE
 } from './constants';
-<span class="cstat-no" title="statement not covered" >import { createKeyboard } from './keyboard';</span>
+import { createKeyboard } from './keyboard';
 &nbsp;
-<span class="cstat-no" title="statement not covered" >export class C</span>ountdownTrialPlugin {
-  static <span class="cstat-no" title="statement not covered" >info = {</span>
+export class CountdownTrialPlugin {
+  static info = <span class="cstat-no" title="statement not covered" >{</span>
     name: 'countdown-trial',
     parameters: {
       keystoHold: {
@@ -594,7 +594,7 @@
   };
 &nbsp;
   jsPsych: JsPsych;
-<span class="fstat-no" title="function not covered" >  constructor(j</span>sPsych: JsPsych) {
+<span class="fstat-no" title="function not covered" >  constructor(</span>jsPsych: JsPsych) {
 <span class="cstat-no" title="statement not covered" >    this.jsPsych = jsPsych;</span>
   }
 &nbsp;
@@ -652,8 +652,8 @@
         const button = <span class="cstat-no" title="statement not covered" >keyboardDiv.querySelector(`[data-skbtn="${key}"]`);</span>
 <span class="cstat-no" title="statement not covered" >        <span class="missing-if-branch" title="if path not taken" >I</span>if (button &amp;&amp; button instanceof HTMLElement) {</span>
 <span class="cstat-no" title="statement not covered" >          button.classList.remove('hg-activeButton');</span>
-<span class="cstat-no" title="statement not covered" >          button.style.backgroundColor = ''; </span>// Remove inline style
-<span class="cstat-no" title="statement not covered" >          button.style.color = ''; </span>// Remove inline style
+<span class="cstat-no" title="statement not covered" >          button.style.backgroundColor = ''; // Remove inline style</span>
+<span class="cstat-no" title="statement not covered" >          button.style.color = ''; // Remove inline style</span>
         }
       });
 &nbsp;
@@ -663,21 +663,21 @@
       });
     }
 &nbsp;
-    const setAreKeysHeld = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
+    const setAreKeysHeld = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      areKeysHeld = (trial.keystoHold || []).every(</span>
 <span class="fstat-no" title="function not covered" >        (k</span>ey: string) =&gt; <span class="cstat-no" title="statement not covered" >keysState[key.toLowerCase()],</span>
       );
 <span class="cstat-no" title="statement not covered" >      if (areKeysHeld &amp;&amp; !interval) {</span>
-<span class="cstat-no" title="statement not covered" >        messageContainer.innerHTML = ''; </span>// Hide the initial message
+<span class="cstat-no" title="statement not covered" >        messageContainer.innerHTML = ''; // Hide the initial message</span>
 <span class="cstat-no" title="statement not covered" >        directionsContainer.innerHTML = `&lt;p&gt;${COUNTDOWN_DIRECTIONS}&lt;/p&gt;`;</span>
 <span class="cstat-no" title="statement not covered" >        startCountdown();</span>
       } else <span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="if path not taken" >I</span>if (!areKeysHeld &amp;&amp; interval) {</span>
 <span class="cstat-no" title="statement not covered" >        clearInterval(interval);</span>
 <span class="cstat-no" title="statement not covered" >        interval = null;</span>
 <span class="cstat-no" title="statement not covered" >        setError('You stopped holding the keys!');</span>
-<span class="cstat-no" title="statement not covered" >        messageContainer.innerHTML = trial.message; </span>// Reset the display message
-<span class="cstat-no" title="statement not covered" >        directionsContainer.innerHTML = ''; </span>// Clear the directions
-<span class="cstat-no" title="statement not covered" >        timerContainer.innerHTML = ''; </span>// Clear the timer
+<span class="cstat-no" title="statement not covered" >        messageContainer.innerHTML = trial.message; // Reset the display message</span>
+<span class="cstat-no" title="statement not covered" >        directionsContainer.innerHTML = ''; // Clear the directions</span>
+<span class="cstat-no" title="statement not covered" >        timerContainer.innerHTML = ''; // Clear the timer</span>
       }
     };
 &nbsp;
@@ -700,7 +700,7 @@
       }
     };
 &nbsp;
-    const startCountdown = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
+    const startCountdown = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
       const waitTime = <span class="cstat-no" title="statement not covered" >trial.waitTime * 1000;</span> // convert to milliseconds
       const initialText = <span class="cstat-no" title="statement not covered" >trial.initialText;</span>
       const startTime = <span class="cstat-no" title="statement not covered" >performance.now();</span>
@@ -711,7 +711,7 @@
 &nbsp;
       const clockElement = <span class="cstat-no" title="statement not covered" >document.getElementById('clock');</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >      interval = window.setInterval(<span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
+<span class="cstat-no" title="statement not covered" >      interval = window.setInterval(<span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
         const timeLeft = <span class="cstat-no" title="statement not covered" >waitTime - (performance.now() - startTime);</span>
 <span class="cstat-no" title="statement not covered" >        if (timeLeft &lt;= 0) {</span>
 <span class="cstat-no" title="statement not covered" >          clearInterval(interval!);</span>
@@ -729,33 +729,33 @@
 <span class="cstat-no" title="statement not covered" >      return `${minutes}:${seconds.toString().padStart(2, '0')}`;</span>
     };
 &nbsp;
-    const endTrial = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      document.removeEventListener('keydown', handleKeyDown);</span>
-<span class="cstat-no" title="statement not covered" >      document.removeEventListener('keyup', handleKeyUp);</span>
+    const endT<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >rial = () =&gt; {</span></span>
+      document<span class="cstat-no" title="statement not covered" >.removeEventListener('keydown', handleKeyDown);</span>
+      document<span class="cstat-no" title="statement not covered" >.removeEventListener('keyup', handleKeyUp);</span>
 &nbsp;
-      const trialData = <span class="cstat-no" title="statement not covered" >{</span>
+      const tr<span class="cstat-no" title="statement not covered" >ialData = {</span>
         keys_held: areKeysHeld,
         keyTappedEarlyFlag: trial.keyTappedEarlyFlag,
         task: 'countdown',
       };
 &nbsp;
-<span class="cstat-no" title="statement not covered" >      displayElement.innerHTML = ''; </span>// Clear the DOM
-<span class="cstat-no" title="statement not covered" >      this.jsPsych.finishTrial(trialData);</span>
-<span class="cstat-no" title="statement not covered" >      console.log('Trial ended with data:', trialData);</span>
+      displayE<span class="cstat-no" title="statement not covered" >lement.innerHTML = ''; // Clear the DOM</span>
+      this.jsP<span class="cstat-no" title="statement not covered" >sych.finishTrial(trialData);</span>
+      console.<span class="cstat-no" title="statement not covered" >log('Trial ended with data:', trialData);</span>
     };
 &nbsp;
-    const setError = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(m</span>essage: string) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      console.error(message);</span>
+    const setE<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >rror = (message: string) =&gt; {</span></span>
+      console.<span class="cstat-no" title="statement not covered" >error(message);</span>
     };
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    document.addEventListener('keydown', handleKeyDown);</span>
-<span class="cstat-no" title="statement not covered" >    document.addEventListener('keyup', handleKeyUp);</span>
+    document.a<span class="cstat-no" title="statement not covered" >ddEventListener('keydown', handleKeyDown);</span>
+    document.a<span class="cstat-no" title="statement not covered" >ddEventListener('keyup', handleKeyUp);</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    console.log('Initial UI setup complete.');</span>
+    console.lo<span class="cstat-no" title="statement not covered" >g('Initial UI setup complete.');</span>
   }
 }
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >countdownStep = {</span>
+export const c<span class="cstat-no" title="statement not covered" >ountdownStep = {</span>
   timeline: [
     {
       type: CountdownTrialPlugin,
@@ -781,7 +781,7 @@ export const <span class="cstat-no" title="statement not covered" >countdownStep
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-07-24T15:32:37.094Z
+                at 2024-07-25T10:51:42.984Z
             </div>
         <script src="prettify.js"></script>
         <script>

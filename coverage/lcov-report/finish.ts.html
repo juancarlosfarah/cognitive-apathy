@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/26</span>
+                <span class='fraction'>0/19</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/21</span>
+                <span class='fraction'>0/17</span>
             </div>
         
             
@@ -108,28 +108,20 @@
 <a name='L43'></a><a href='#L43'>43</a>
 <a name='L44'></a><a href='#L44'>44</a>
 <a name='L45'></a><a href='#L45'>45</a>
-<a name='L46'></a><a href='#L46'>46</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<a name='L46'></a><a href='#L46'>46</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -140,6 +132,14 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -153,23 +153,23 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" >import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';</span>
-<span class="cstat-no" title="statement not covered" >import { saveAs } from 'file-saver';</span>
-<span class="cstat-no" title="statement not covered" >import { REWARD_TOTAL_MESSAGE, FAILED_VALIDATION_MESSAGE } from './constants';</span>
-<span class="cstat-no" title="statement not covered" >import { calculateTotalReward } from './utils';</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
+import { saveAs } from 'file-saver';
+import { REWARD_TOTAL_MESSAGE, FAILED_VALIDATION_MESSAGE } from './constants';
+import { calculateTotalReward } from './utils';
 import { JsPsych } from 'jspsych';
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >finishExperiment = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(</span>j</span>sPsych: JsPsych) =&gt; (<span class="cstat-no" title="statement not covered" >{</span></span>
+export const finishExperiment = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(j</span>sPsych: JsPsych) =&gt; (<span class="cstat-no" title="statement not covered" >{</span></span>
   type: HtmlKeyboardResponsePlugin,
   choices: ['enter'],
-  stimulus: <span class="fstat-no" title="function not covered" >function () {</span>
+  stimulus: <span class="fstat-no" title="function not covered" >function (</span>) {
     const totalSuccessfulReward = <span class="cstat-no" title="statement not covered" >calculateTotalReward(jsPsych);</span>
 <span class="cstat-no" title="statement not covered" >    return `&lt;p&gt;${REWARD_TOTAL_MESSAGE(totalSuccessfulReward.toFixed(2))}&lt;/p&gt;`;</span>
   },
   data: {
     task: 'finish_experiment',
   },
-  on_finish: <span class="fstat-no" title="function not covered" >function (d</span>ata: any) {
+  on_finish: <span class="fstat-no" title="function not covered" >function (</span>data: any) {
     const totalSuccessfulReward = <span class="cstat-no" title="statement not covered" >calculateTotalReward(jsPsych);</span>
 <span class="cstat-no" title="statement not covered" >    data.totalReward = totalSuccessfulReward;</span>
     const allData = <span class="cstat-no" title="statement not covered" >jsPsych.data.get().json();</span>
@@ -178,21 +178,21 @@ export const <span class="cstat-no" title="statement not covered" >finishExperim
   },
 });
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >finishExperimentEarly = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(</span>j</span>sPsych: JsPsych) =&gt; {</span>
+export const finishExperimentEarly = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(j</span>sPsych: JsPsych) =&gt; {</span>
   const allData = <span class="cstat-no" title="statement not covered" >jsPsych.data.get().json();</span>
   const blob = <span class="cstat-no" title="statement not covered" >new Blob([allData], { type: 'application/json' });</span>
 <span class="cstat-no" title="statement not covered" >  saveAs(blob, `experiment_data_${new Date().toISOString()}.json`);</span>
 <span class="cstat-no" title="statement not covered" >  jsPsych.endExperiment(FAILED_VALIDATION_MESSAGE);</span>
 }
 &nbsp;
-export const <span class="cstat-no" title="statement not covered" >finishExperimentEarlyTrial = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(</span>j</span>sPsych: JsPsych) =&gt; (<span class="cstat-no" title="statement not covered" >{</span></span>
+export const finishExperimentEarlyTrial = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(j</span>sPsych: JsPsych) =&gt; (<span class="cstat-no" title="statement not covered" >{</span></span>
   type: HtmlKeyboardResponsePlugin,
   choices: ['enter'],
   stimulus: FAILED_VALIDATION_MESSAGE,
   data: {
     task: 'finish_experiment',
   },
-  on_finish: <span class="fstat-no" title="function not covered" >function (d</span>ata: any) {
+  on_finish: <span class="fstat-no" title="function not covered" >function (</span>data: any) {
     const allData = <span class="cstat-no" title="statement not covered" >jsPsych.data.get().json();</span>
     const blob = <span class="cstat-no" title="statement not covered" >new Blob([allData], { type: 'application/json' });</span>
 <span class="cstat-no" title="statement not covered" >    saveAs(blob, `experiment_data_${new Date().toISOString()}.json`);</span>
@@ -205,7 +205,7 @@ export const <span class="cstat-no" title="statement not covered" >finishExperim
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-07-24T15:32:37.094Z
+                at 2024-07-25T10:51:42.984Z
             </div>
         <script src="prettify.js"></script>
         <script>

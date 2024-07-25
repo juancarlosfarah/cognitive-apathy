@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/52</span>
+                <span class='fraction'>0/50</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/16</span>
+                <span class='fraction'>0/12</span>
             </div>
         
             
@@ -753,8 +753,8 @@ const failedMinimumDemoTapsTrial = <span class="cstat-no" title="statement not c
 };
 export const createTrialBlock = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >({</span> blockName, randomDelay, bounds, includeDemo = <span class="branch-0 cbranch-no" title="branch not covered" >false,</span> jsPsych, state, }) =&gt; {</span>
     const timeline = <span class="cstat-no" title="statement not covered" >[];</span>
-<span class="cstat-no" title="statement not covered" >    if (includeDemo) {</span>
-<span class="cstat-no" title="statement not covered" >        state.demoTrialSuccesses = 0; </span>// Reset demo successes before starting
+<span class="cstat-no" title="statement not covered" >    <span class="missing-if-branch" title="if path not taken" >I</span>if (includeDemo) {</span>
+<span class="cstat-no" title="statement not covered" >        state.demoTrialSuccesses = 0; // Reset demo successes before starting</span>
 <span class="cstat-no" title="statement not covered" >        timeline.push(</span>
         // Alert before demo
         {
@@ -773,7 +773,7 @@ export const createTrialBlock = <span class="cstat-no" title="statement not cove
                     showThermometer: true,
                     randomDelay,
                     bounds,
-                    autoIncreaseAmount: <span class="fstat-no" title="function not covered" >fu</span>nction () {
+                    autoIncreaseAmount: <span class="fstat-no" title="function not covered" >function (</span>) {
 <span class="cstat-no" title="statement not covered" >                        console.log(state.medianTaps);</span>
 <span class="cstat-no" title="statement not covered" >                        return autoIncreaseAmount(EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, TRIAL_DURATION, AUTO_DECREASE_RATE, AUTO_DECREASE_AMOUNT, state.medianTaps);</span>
                     },
@@ -783,31 +783,31 @@ export const createTrialBlock = <span class="cstat-no" title="statement not cove
                         bounds: bounds,
                         minimumTapsReached: false,
                     },
-                    on_start: <span class="fstat-no" title="function not covered" >fu</span>nction (data) {
+                    on_start: <span class="fstat-no" title="function not covered" >function (</span>data) {
                         const keyTappedEarlyFlag = <span class="cstat-no" title="statement not covered" >checkFlag('countdown', 'keyTappedEarlyFlag', jsPsych);</span>
                         // Update the trial parameters with keyTappedEarlyFlag
 <span class="cstat-no" title="statement not covered" >                        data.keyTappedEarlyFlag = keyTappedEarlyFlag;</span>
                     },
-                    on_finish: <span class="fstat-no" title="function not covered" >fu</span>nction (data) {
+                    on_finish: <span class="fstat-no" title="function not covered" >function (</span>data) {
                         // Check if minimum taps was reached
-<span class="cstat-no" title="statement not covered" >                        if (data.tapCount &gt; MINIMUM_DEMO_TAPS) {</span>
+<span class="cstat-no" title="statement not covered" >                        <span class="missing-if-branch" title="if path not taken" >I</span>if (data.tapCount &gt; MINIMUM_DEMO_TAPS) {</span>
 <span class="cstat-no" title="statement not covered" >                            data.minimumTapsReached = true;</span>
                         }
-<span class="cstat-no" title="statement not covered" >                        if (!data.keysReleasedFlag &amp;&amp; data.minimumTapsReached &amp;&amp; !data.keyTappedEarlyFlag) {</span>
+<span class="cstat-no" title="statement not covered" >                        <span class="missing-if-branch" title="if path not taken" >I</span>if (!data.keysReleasedFlag &amp;&amp; data.minimumTapsReached &amp;&amp; !data.keyTappedEarlyFlag) {</span>
 <span class="cstat-no" title="statement not covered" >                            state.demoTrialSuccesses++;</span>
                         }
                     },
                 },
                 {
                     timeline: [releaseKeysStep],
-                    conditional_function: <span class="fstat-no" title="function not covered" >fu</span>nction () {
+                    conditional_function: <span class="fstat-no" title="function not covered" >function (</span>) {
 <span class="cstat-no" title="statement not covered" >                        return !checkFlag('demo', 'keysReleasedFlag', jsPsych);</span>
                     },
                 },
                 {
                     timeline: [failedMinimumDemoTapsTrial],
                     // Check if minimum taps was reached in last trial to determine whether 'failedMinimumDemoTapsTrial' should display
-                    conditional_function: <span class="fstat-no" title="function not covered" >fu</span>nction () {
+                    conditional_function: <span class="fstat-no" title="function not covered" >function (</span>) {
                         const lastTrialData = <span class="cstat-no" title="statement not covered" >jsPsych.data</span>
                             .get()
                             .filter({ task: 'demo' })
@@ -820,16 +820,16 @@ export const createTrialBlock = <span class="cstat-no" title="statement not cove
                     timeline: [loadingBarTrial(true, jsPsych)],
                 },
             ],
-            loop_function: <span class="fstat-no" title="function not covered" >fu</span>nction () {
+            loop_function: <span class="fstat-no" title="function not covered" >function (</span>) {
                 const remainingSuccesses = <span class="cstat-no" title="statement not covered" >NUM_DEMO_TRIALS - state.demoTrialSuccesses;</span>
-<span class="cstat-no" title="statement not covered" >                return remainingSuccesses &gt; 0; </span>// Repeat the timeline if more successes are needed
+<span class="cstat-no" title="statement not covered" >                return remainingSuccesses &gt; 0; // Repeat the timeline if more successes are needed</span>
             },
         }, 
         // Likert scale survey after demo
         ...likertQuestions1);
     }
     // If a block created is an actual trial
-<span class="cstat-no" title="statement not covered" >    if (blockName) {</span>
+<span class="cstat-no" title="statement not covered" >    <span class="missing-if-branch" title="if path not taken" >I</span>if (blockName) {</span>
         // Create the number of full combination of trials (63 trials  / (3 x 3) factorial design = 7 sets of these 9 trials)
         const numTrialsPerCombination = <span class="cstat-no" title="statement not covered" >Math.floor(NUM_TRIALS / PARAMETER_COMBINATIONS.length);</span>
         // Randomly map each of these combination parameters to each trial within 63 created samples
@@ -848,7 +848,7 @@ export const createTrialBlock = <span class="cstat-no" title="statement not cove
                     // Acceptance Phase
                     {
                         type: HtmlKeyboardResponsePlugin,
-                        stimulus: <span class="fstat-no" title="function not covered" >fu</span>nction () {
+                        stimulus: <span class="fstat-no" title="function not covered" >function (</span>) {
 <span class="cstat-no" title="statement not covered" >                            return `${acceptanceThermometer(trialData.bounds, trialData.reward)}`;</span>
                         },
                         choices: ['arrowleft', 'arrowright'],
@@ -856,10 +856,10 @@ export const createTrialBlock = <span class="cstat-no" title="statement not cove
                             task: 'accept',
                             reward: trialData.reward,
                         },
-                        on_finish: <span class="fstat-no" title="function not covered" >(d</span>ata) =&gt; {
+                        on_finish: (<span class="fstat-no" title="function not covered" >data) =&gt; {</span>
                             // ADD TYPE FOR DATA
-<span class="cstat-no" title="statement not covered" >                            data.accepted = jsPsych.pluginAPI.compareKeys(data.response, 'arrowleft');</span>
-<span class="cstat-no" title="statement not covered" >                            trialData.accepted = data.accepted; </span>// Pass accepted to trialData
+                            data.acc<span class="cstat-no" title="statement not covered" >epted = jsPsych.pluginAPI.compareKeys(data.response, 'arrowleft');</span>
+                            trialDat<span class="cstat-no" title="statement not covered" >a.accepted = data.accepted; // Pass accepted to trialData</span>
                         },
                     },
                     // Task Performance Phase (only if accepted)
@@ -873,14 +873,14 @@ export const createTrialBlock = <span class="cstat-no" title="statement not cove
                                 randomDelay: trialData.randomDelay,
                                 bounds: trialData.bounds,
                                 reward: trialData.reward,
-                                autoIncreaseAmount: <span class="fstat-no" title="function not covered" >fu</span>nction () {
+                                auto<span class="fstat-no" title="function not covered" >IncreaseAmount: function () {</span>
 <span class="cstat-no" title="statement not covered" >                                    return autoIncreaseAmount(EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, TRIAL_DURATION, AUTO_DECREASE_RATE, AUTO_DECREASE_AMOUNT, state.medianTaps);</span>
                                 },
                                 data: {
                                     task: 'block',
                                     blockType: blockName,
-                                    accept: <span class="fstat-no" title="function not covered" >()</span> =&gt; {
-                                        const acceptanceData = <span class="cstat-no" title="statement not covered" >jsPsych.data</span>
+<span class="fstat-no" title="function not covered" >                                    accept: () =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                                        const acceptanceData = jsPsych.data</span>
                                             .get()
                                             .filter({ task: 'accept' })
                                             .last(1)
@@ -889,13 +889,13 @@ export const createTrialBlock = <span class="cstat-no" title="statement not cove
                                     },
                                     reward: trialData.reward,
                                 },
-                                on_start: <span class="fstat-no" title="function not covered" >fu</span>nction (trial) {
-                                    const keyTappedEarlyFlag = <span class="cstat-no" title="statement not covered" >checkFlag('countdown', 'keyTappedEarlyFlag', jsPsych);</span>
+                                on_s<span class="fstat-no" title="function not covered" >tart: function (trial) {</span>
+<span class="cstat-no" title="statement not covered" >                                    const keyTappedEarlyFlag = checkFlag('countdown', 'keyTappedEarlyFlag', jsPsych);</span>
                                     // Update the trial parameters with keyTappedEarlyFlag
 <span class="cstat-no" title="statement not covered" >                                    trial.keyTappedEarlyFlag = keyTappedEarlyFlag;</span>
 <span class="cstat-no" title="statement not covered" >                                    return keyTappedEarlyFlag;</span>
                                 },
-                                on_finish: <span class="fstat-no" title="function not covered" >fu</span>nction (data) {
+                                on_f<span class="fstat-no" title="function not covered" >inish: function (data) {</span>
 <span class="cstat-no" title="statement not covered" >                                    console.log(data);</span>
                                 },
                             },
@@ -904,20 +904,20 @@ export const createTrialBlock = <span class="cstat-no" title="statement not cove
                             },
                             {
                                 timeline: [releaseKeysStep],
-                                conditional_function: <span class="fstat-no" title="function not covered" >fu</span>nction () {
+                                cond<span class="fstat-no" title="function not covered" >itional_function: function () {</span>
 <span class="cstat-no" title="statement not covered" >                                    return !checkFlag('block', 'keysReleasedFlag', jsPsych);</span>
                                 },
                             },
                         ],
-                        conditional_function: <span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >trialData.accepted,</span> // Use trialData.accepted in the conditional function
+                        conditional_<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function: () =&gt; trialData.accepted, // Use trialData.accepted in the conditional function</span></span>
                     },
                     {
                         timeline: [loadingBarTrial(false, jsPsych)],
-                        conditional_function: <span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >!trialData.accepted,</span> // Use trialData.accepted in the conditional function
+                        conditional_<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function: () =&gt; !trialData.accepted, // Use trialData.accepted in the conditional function</span></span>
                     },
                     {
                         timeline: [loadingBarTrial(true, jsPsych)],
-                        conditional_function: <span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >trialData.accepted,</span> // Use trialData.accepted in the conditional function
+                        conditional_<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >function: () =&gt; trialData.accepted, // Use trialData.accepted in the conditional function</span></span>
                     },
                 ],
             })),
@@ -930,28 +930,28 @@ export const createTrialBlock = <span class="cstat-no" title="statement not cove
         // Likert scale survey after block
         ...likertQuestions2);
     }
-<span class="cstat-no" title="statement not covered" >    return { timeline };</span>
+    return { timeline };<span class="cstat-no" title="statement not covered" ></span>
 };
 // Function to create a trial that displays the accumulated reward to the user
-export function <span class="fstat-no" title="function not covered" >createRewardDisplayTrial(</span>jsPsych) {
-<span class="cstat-no" title="statement not covered" >    return {</span>
+export function createRewardDisplayT<span class="fstat-no" title="function not covered" >rial(jsPsych) {</span>
+    return {<span class="cstat-no" title="statement not covered" ></span>
         type: HtmlKeyboardResponsePlugin,
         choices: ['enter'],
-        stimulus: <span class="fstat-no" title="function not covered" >fu</span>nction () {
-            const totalSuccessfulReward = <span class="cstat-no" title="statement not covered" >calculateTotalReward(jsPsych);</span>
-<span class="cstat-no" title="statement not covered" >            return `&lt;p&gt;${REWARD_TOTAL_MESSAGE(totalSuccessfulReward.toFixed(2))}&lt;/p&gt;`;</span>
+        stimulus: function () {<span class="fstat-no" title="function not covered" ></span>
+            const totalSuccessfulRew<span class="cstat-no" title="statement not covered" >ard = calculateTotalReward(jsPsych);</span>
+            return `&lt;p&gt;${REWARD_TOTA<span class="cstat-no" title="statement not covered" >L_MESSAGE(totalSuccessfulReward.toFixed(2))}&lt;/p&gt;`;</span>
         },
         data: {
             task: 'display_reward',
         },
-        on_finish: <span class="fstat-no" title="function not covered" >fu</span>nction (data) {
-            const totalSuccessfulReward = <span class="cstat-no" title="statement not covered" >calculateTotalReward(jsPsych);</span>
-<span class="cstat-no" title="statement not covered" >            data.totalReward = totalSuccessfulReward;</span>
+        on_finish: function (data) {<span class="fstat-no" title="function not covered" ></span>
+            const totalSuccessfulRew<span class="cstat-no" title="statement not covered" >ard = calculateTotalReward(jsPsych);</span>
+            data.totalReward = total<span class="cstat-no" title="statement not covered" >SuccessfulReward;</span>
         },
     };
 }
 // Array of trials that generates a 6 new random orders of the (3x3 factorial designed blocks of 63 trials) to complete the 3x3x3 factorial design.
-export const trialsArray = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(j</span>sPsych, state) =&gt; <span class="cstat-no" title="statement not covered" >[</span></span>
+export const trialsArray = (jsPsych,<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" > state) =&gt; [</span></span>
     [
         // Demo trials
         createTrialBlock({
@@ -1070,7 +1070,7 @@ export const trialsArray = <span class="cstat-no" title="statement not covered" 
 // Randomly sample from the 3x3x3 factorial design to display 2 Synchronous Blocks of 63 trials,
 // 2 Narrow Asynchronous Blocks of 63 trials, and 2 Wide Asynchronous Blocks of 63 trials for
 // a total of 378 trials
-export const sampledArray = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(j</span>sPsych, state) =&gt; <span class="cstat-no" title="statement not covered" >jsPsych.randomization.sampleWithoutReplacement(trialsArray(jsPsych, state), 6);</span></span>
+export const sampledArray = (jsPsych<span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >, state) =&gt; jsPsych.randomization.sampleWithoutReplacement(trialsArray(jsPsych, state), 6);</span></span>
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -1078,7 +1078,7 @@ export const sampledArray = <span class="cstat-no" title="statement not covered"
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-07-24T15:32:37.094Z
+                at 2024-07-25T10:51:42.984Z
             </div>
         <script src="prettify.js"></script>
         <script>

@@ -345,7 +345,7 @@ export const interactiveCountdown = <span class="cstat-no" title="statement not 
 export const instructionalTrial = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(m</span>essage) =&gt; (<span class="cstat-no" title="statement not covered" >{</span></span>
     type: HtmlKeyboardResponsePlugin,
     choices: ['Enter'],
-    stimulus: <span class="fstat-no" title="function not covered" >fu</span>nction () {
+    stimulus: <span class="fstat-no" title="function not covered" >function (</span>) {
 <span class="cstat-no" title="statement not covered" >        return videoStimulus(message);</span>
     },
 });
@@ -357,7 +357,7 @@ export const dominantHand = <span class="cstat-no" title="statement not covered"
     data: {
         task: 'dominant-hand',
     },
-    on_finish: <span class="fstat-no" title="function not covered" >fu</span>nction (data) {
+    on_finish: <span class="fstat-no" title="function not covered" >function (</span>data) {
 <span class="cstat-no" title="statement not covered" >        if (data.response === 0) {</span>
 <span class="cstat-no" title="statement not covered" >            DOMINANT_HAND = 'left';</span>
         }
@@ -374,7 +374,7 @@ export const noStimuliVideoTutorial = <span class="cstat-no" title="statement no
 };
 export const noStimuliVideoTutorialTrial = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(j</span>sPsych) =&gt; (<span class="cstat-no" title="statement not covered" >{</span></span>
     timeline: [noStimuliVideoTutorial],
-    on_finish: <span class="fstat-no" title="function not covered" >fu</span>nction () {
+    on_finish: <span class="fstat-no" title="function not covered" >function (</span>) {
         // Clear the display element
 <span class="cstat-no" title="statement not covered" >        jsPsych.getDisplayElement().innerHTML = '';</span>
     },
@@ -387,7 +387,7 @@ export const stimuliVideoTutorial = <span class="cstat-no" title="statement not 
 };
 export const stimuliVideoTutorialTrial = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(j</span>sPsych) =&gt; (<span class="cstat-no" title="statement not covered" >{</span></span>
     timeline: [stimuliVideoTutorial],
-    on_finish: <span class="fstat-no" title="function not covered" >fu</span>nction () {
+    on_finish: <span class="fstat-no" title="function not covered" >function (</span>) {
         // Clear the display element
 <span class="cstat-no" title="statement not covered" >        jsPsych.getDisplayElement().innerHTML = '';</span>
     },
@@ -400,7 +400,7 @@ export const validationVideoTutorial = <span class="cstat-no" title="statement n
 };
 export const validationVideoTutorialTrial = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(j</span>sPsych) =&gt; (<span class="cstat-no" title="statement not covered" >{</span></span>
     timeline: [validationVideoTutorial],
-    on_finish: <span class="fstat-no" title="function not covered" >fu</span>nction () {
+    on_finish: <span class="fstat-no" title="function not covered" >function (</span>) {
         // Clear the display element
 <span class="cstat-no" title="statement not covered" >        jsPsych.getDisplayElement().innerHTML = '';</span>
     },
@@ -413,7 +413,7 @@ export const practiceTrial = <span class="cstat-no" title="statement not covered
             data: {
                 task: 'practice',
             },
-            on_start: <span class="fstat-no" title="function not covered" >fu</span>nction (trial) {
+            on_start: <span class="fstat-no" title="function not covered" >function (</span>trial) {
                 // ADD TYPE FOR TRIAL
                 const keyTappedEarlyFlag = <span class="cstat-no" title="statement not covered" >checkFlag('countdown', 'keyTappedEarlyFlag', jsPsych);</span>
                 // Update the trial parameters with keyTappedEarlyFlag
@@ -422,7 +422,7 @@ export const practiceTrial = <span class="cstat-no" title="statement not covered
         },
         {
             timeline: [releaseKeysStep],
-            conditional_function: <span class="fstat-no" title="function not covered" >fu</span>nction () {
+            conditional_function: <span class="fstat-no" title="function not covered" >function (</span>) {
 <span class="cstat-no" title="statement not covered" >                return !checkFlag('practice', 'keysReleasedFlag', jsPsych);</span>
             },
         },
@@ -444,7 +444,7 @@ export const practiceLoop = <span class="cstat-no" title="statement not covered"
         loadingBarTrial(true, jsPsych),
     ],
     // Repeat if the keys were released early or if user tapped before go.
-    loop_function: <span class="fstat-no" title="function not covered" >fu</span>nction () {
+    loop_function: <span class="fstat-no" title="function not covered" >function (</span>) {
         const keyTappedEarlyFlag = <span class="cstat-no" title="statement not covered" >checkFlag('countdown', 'keyTappedEarlyFlag', jsPsych);</span>
         const keysReleasedFlag = <span class="cstat-no" title="statement not covered" >checkFlag('practice', 'keysReleasedFlag', jsPsych);</span>
         const numberOfTaps = <span class="cstat-no" title="statement not covered" >jsPsych.data</span>
@@ -463,7 +463,7 @@ export const practiceLoop = <span class="cstat-no" title="statement not covered"
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-07-24T15:32:37.094Z
+                at 2024-07-25T10:51:42.984Z
             </div>
         <script src="prettify.js"></script>
         <script>

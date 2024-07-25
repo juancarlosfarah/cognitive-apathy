@@ -25,28 +25,28 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/29</span>
+                <span class='fraction'>0/32</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/13</span>
+                <span class='fraction'>0/12</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/5</span>
+                <span class='fraction'>0/6</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/29</span>
+                <span class='fraction'>0/32</span>
             </div>
         
             
@@ -146,7 +146,11 @@
 <a name='L81'></a><a href='#L81'>81</a>
 <a name='L82'></a><a href='#L82'>82</a>
 <a name='L83'></a><a href='#L83'>83</a>
-<a name='L84'></a><a href='#L84'>84</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L84'></a><a href='#L84'>84</a>
+<a name='L85'></a><a href='#L85'>85</a>
+<a name='L86'></a><a href='#L86'>86</a>
+<a name='L87'></a><a href='#L87'>87</a>
+<a name='L88'></a><a href='#L88'>88</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -224,6 +228,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -246,14 +254,14 @@ export function <span class="fstat-no" title="function not covered" >randomNumbe
 <span class="cstat-no" title="statement not covered" >    while (v === 0)</span>
 <span class="cstat-no" title="statement not covered" >        v = Math.random();</span>
     let num = <span class="cstat-no" title="statement not covered" >Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);</span>
-<span class="cstat-no" title="statement not covered" >    num = num / 10.0 + 0.5; </span>// Translate to 0 -&gt; 1
+<span class="cstat-no" title="statement not covered" >    num = num / 10.0 + 0.5; // Translate to 0 -&gt; 1</span>
 <span class="cstat-no" title="statement not covered" >    if (num &gt; 1 || num &lt; 0) {</span>
-<span class="cstat-no" title="statement not covered" >        num = randomNumberBm(min, max, skew); </span>// Resample between 0 and 1 if out of range
+<span class="cstat-no" title="statement not covered" >        num = randomNumberBm(min, max, skew); // Resample between 0 and 1 if out of range</span>
     }
     else {
-<span class="cstat-no" title="statement not covered" >        num = Math.pow(num, skew); </span>// Apply skew
-<span class="cstat-no" title="statement not covered" >        num *= max - min; </span>// Stretch to fill range
-<span class="cstat-no" title="statement not covered" >        num += min; </span>// Offset to min
+<span class="cstat-no" title="statement not covered" >        num = Math.pow(num, skew); // Apply skew</span>
+<span class="cstat-no" title="statement not covered" >        num *= max - min; // Stretch to fill range</span>
+<span class="cstat-no" title="statement not covered" >        num += min; // Offset to min</span>
     }
 <span class="cstat-no" title="statement not covered" >    return num;</span>
 }
@@ -284,7 +292,7 @@ export function <span class="fstat-no" title="function not covered" >calculateMe
         .get()
         .filter({ task: taskType })
         .last(numTrials)
-        .filter({ keysReleasedFlag: false })
+        .filter({ keysReleasedFlag: false, keyTappedEarlyFlag: false })
         .select('tapCount');
     const medianValue = <span class="cstat-no" title="statement not covered" >filteredTrials.median();</span> // Calculate the median
 <span class="cstat-no" title="statement not covered" >    return medianValue;</span>
@@ -298,7 +306,7 @@ export const checkFlag = <span class="cstat-no" title="statement not covered" ><
 <span class="cstat-no" title="statement not covered" >    if (flag === 'keyTappedEarlyFlag') {</span>
 <span class="cstat-no" title="statement not covered" >        return lastCountdownData ? lastCountdownData.keyTappedEarlyFlag : false;</span>
     }
-    else <span class="cstat-no" title="statement not covered" >if (flag === 'keysReleasedFlag') {</span>
+    else <span class="cstat-no" title="statement not covered" ><span class="missing-if-branch" title="if path not taken" >I</span>if (flag === 'keysReleasedFlag') {</span>
 <span class="cstat-no" title="statement not covered" >        return lastCountdownData ? lastCountdownData.keysReleasedFlag : true;</span>
     }
 <span class="cstat-no" title="statement not covered" >    return false;</span>
@@ -312,6 +320,10 @@ export function <span class="fstat-no" title="function not covered" >calculateTo
 <span class="cstat-no" title="statement not covered" >    console.log(successfulTrials.select('reward'));</span>
 <span class="cstat-no" title="statement not covered" >    return successfulTrials.select('reward').sum();</span>
 }
+export const getQueryParam = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(p</span>aram) =&gt; {</span>
+    const urlParams = <span class="cstat-no" title="statement not covered" >new URLSearchParams(window.location.search);</span>
+<span class="cstat-no" title="statement not covered" >    return urlParams.get(param);</span>
+};
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -319,7 +331,7 @@ export function <span class="fstat-no" title="function not covered" >calculateTo
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-07-24T15:32:37.094Z
+                at 2024-07-25T10:51:42.984Z
             </div>
         <script src="prettify.js"></script>
         <script>

@@ -32,7 +32,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/14</span>
+                <span class='fraction'>0/9</span>
             </div>
         
             
@@ -238,18 +238,18 @@ import { autoIncreaseAmount, checkFlag } from './utils';
 import { finishExperimentEarly } from './finish';
 export const handleValidationFinish = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(d</span>ata, validationName, state) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    if (validationName !== 'validationExtra') {</span>
-<span class="cstat-no" title="statement not covered" >        if (!data.success) {</span>
+<span class="cstat-no" title="statement not covered" >        <span class="missing-if-branch" title="if path not taken" >I</span>if (!data.success) {</span>
 <span class="cstat-no" title="statement not covered" >            state.validationFailures[validationName]++;</span>
-<span class="cstat-no" title="statement not covered" >            if (Object.values(state.validationFailures).some(<span class="fstat-no" title="function not covered" >fa</span>ilures =&gt; <span class="cstat-no" title="statement not covered" >failures &gt;= Math.floor(0.75 * NUM_VALIDATION_TRIALS))</span>) {</span>
+<span class="cstat-no" title="statement not covered" >            <span class="missing-if-branch" title="if path not taken" >I</span>if (Object.values(state.validationFailures).some(<span class="fstat-no" title="function not covered" >failures =</span>&gt; <span class="cstat-no" title="statement not covered" >failures &gt;= Math.floor(0.75 * NUM_VALIDATION_TRIALS))</span>) {</span>
 <span class="cstat-no" title="statement not covered" >                state.extraValidationRequired = true;</span>
             }
         }
     }
     else {
-<span class="cstat-no" title="statement not covered" >        if (!data.success) {</span>
+<span class="cstat-no" title="statement not covered" >        <span class="missing-if-branch" title="if path not taken" >I</span>if (!data.success) {</span>
 <span class="cstat-no" title="statement not covered" >            state.validationExtraFailures++;</span>
         }
-<span class="cstat-no" title="statement not covered" >        if (state.validationExtraFailures &gt;= NUM_EXTRA_VALIDATION_TRIALS) {</span>
+<span class="cstat-no" title="statement not covered" >        <span class="missing-if-branch" title="if path not taken" >I</span>if (state.validationExtraFailures &gt;= NUM_EXTRA_VALIDATION_TRIALS) {</span>
 <span class="cstat-no" title="statement not covered" >            console.log(state.validationExtraFailures);</span>
 <span class="cstat-no" title="statement not covered" >            console.log('more than 3 failures have been reached');</span>
 <span class="cstat-no" title="statement not covered" >            state.validationSuccess = false;</span>
@@ -265,13 +265,13 @@ export const createValidationTrial = <span class="cstat-no" title="statement not
             duration: TRIAL_DURATION,
             showThermometer: true,
             bounds: bounds,
-            autoIncreaseAmount: <span class="fstat-no" title="function not covered" >fu</span>nction () {
+            autoIncreaseAmount: <span class="fstat-no" title="function not covered" >function (</span>) {
 <span class="cstat-no" title="statement not covered" >                return autoIncreaseAmount(EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, TRIAL_DURATION, AUTO_DECREASE_RATE, AUTO_DECREASE_AMOUNT, state.medianTaps);</span>
             },
             data: {
                 task: validationName,
             },
-            on_finish: <span class="fstat-no" title="function not covered" >fu</span>nction (data) {
+            on_finish: <span class="fstat-no" title="function not covered" >function (</span>data) {
 <span class="cstat-no" title="statement not covered" >                data.task = validationName;</span>
 <span class="cstat-no" title="statement not covered" >                handleValidationFinish(data, validationName, state);</span>
             },
@@ -281,7 +281,7 @@ export const createValidationTrial = <span class="cstat-no" title="statement not
         },
         {
             timeline: [releaseKeysStep],
-            conditional_function: <span class="fstat-no" title="function not covered" >fu</span>nction () {
+            conditional_function: <span class="fstat-no" title="function not covered" >function (</span>) {
 <span class="cstat-no" title="statement not covered" >                return !checkFlag(validationName, 'keysReleasedFlag', jsPsych);</span>
             },
         },
@@ -294,13 +294,13 @@ export const createValidationTrial = <span class="cstat-no" title="statement not
 export const validationResultScreen = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(j</span>sPsych, state) =&gt; (<span class="cstat-no" title="statement not covered" >{</span></span>
     type: HtmlKeyboardResponsePlugin,
     choices: ['enter'],
-    stimulus: <span class="fstat-no" title="function not covered" >fu</span>nction () {
+    stimulus: <span class="fstat-no" title="function not covered" >function (</span>) {
 <span class="cstat-no" title="statement not covered" >        return state.validationSuccess</span>
             ? PASSED_VALIDATION_MESSAGE
             : FAILED_VALIDATION_MESSAGE;
     },
-    on_finish: <span class="fstat-no" title="function not covered" >fu</span>nction () {
-<span class="cstat-no" title="statement not covered" >        if (!state.validationSuccess) {</span>
+    on_finish: <span class="fstat-no" title="function not covered" >function (</span>) {
+<span class="cstat-no" title="statement not covered" >        <span class="missing-if-branch" title="if path not taken" >I</span>if (!state.validationSuccess) {</span>
 <span class="cstat-no" title="statement not covered" >            finishExperimentEarly(jsPsych);</span>
         }
     },
@@ -316,7 +316,7 @@ export const validationTrialExtra = <span class="cstat-no" title="statement not 
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-07-24T15:32:37.094Z
+                at 2024-07-25T10:51:42.984Z
             </div>
         <script src="prettify.js"></script>
         <script>
