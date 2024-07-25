@@ -21,7 +21,7 @@ import { successScreen } from './message-trials';
 import { releaseKeysStep } from './release-keys';
 import { acceptanceThermometer } from './stimulus';
 import TaskPlugin from './task';
-import { autoIncreaseAmount, calculateTotalReward, checkFlag } from './utils';
+import { autoIncreaseAmount, calculateTotalReward, checkFlag, randomNumberBm} from './utils';
 import { State, TaskTrialData, PassedTaskData } from './types'; // Assuming you have the appropriate types defined here
 
 const failedMinimumDemoTapsTrial = {
@@ -157,6 +157,15 @@ export const createTrialBlock = ({
           bounds: combination.bounds,
         })),
     );
+
+    for (let i = 0; i < trials.length; i++) {
+      let center = (trials[i].bounds[0] + trials[i].bounds[1]) / 2;
+      let min = center - 10 - (center - 10) * 0.1;
+      let max = center + 10 + (center + 10) * 0.1;
+      let newCenter = randomNumberBm(min, max);
+    
+      trials[i].bounds = [newCenter - 10, newCenter + 10];
+    }
     // Shuffle the order of these trials
     trials = jsPsych.randomization.shuffle(trials);
     timeline.push(
