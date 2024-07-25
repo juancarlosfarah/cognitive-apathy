@@ -23,6 +23,7 @@ import { acceptanceThermometer } from './stimulus';
 import TaskPlugin from './task';
 import { autoIncreaseAmount, calculateTotalReward, checkFlag, randomNumberBm} from './utils';
 import { State, TaskTrialData, PassedTaskData } from './types'; // Assuming you have the appropriate types defined here
+import { EASY_BOUNDS } from './constants';
 
 const failedMinimumDemoTapsTrial = {
   type: HtmlKeyboardResponsePlugin,
@@ -157,15 +158,17 @@ export const createTrialBlock = ({
           bounds: combination.bounds,
         })),
     );
-
+    // Add 10% variation of bounds while keeping distance the same
+    let differenceBetweenBounds = EASY_BOUNDS[1] - EASY_BOUNDS[0]
     for (let i = 0; i < trials.length; i++) {
       let center = (trials[i].bounds[0] + trials[i].bounds[1]) / 2;
-      let min = center - 10 - (center - 10) * 0.1;
-      let max = center + 10 + (center + 10) * 0.1;
+      let min = center - (differenceBetweenBounds/2) - (center - (differenceBetweenBounds/2)) * 0.1;
+      let max = center + (differenceBetweenBounds/2) + (center + (differenceBetweenBounds/2)) * 0.1;
       let newCenter = randomNumberBm(min, max);
     
-      trials[i].bounds = [newCenter - 10, newCenter + 10];
+      trials[i].bounds = [newCenter - (differenceBetweenBounds/2), newCenter + (differenceBetweenBounds/2)];
     }
+
     // Shuffle the order of these trials
     trials = jsPsych.randomization.shuffle(trials);
     timeline.push(
