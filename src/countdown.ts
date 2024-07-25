@@ -139,6 +139,7 @@ export class CountdownTrialPlugin {
         messageContainer.innerHTML = trial.message; // Reset the display message
         directionsContainer.innerHTML = ''; // Clear the directions
         timerContainer.innerHTML = ''; // Clear the timer
+        trial.keyTappedEarlyFlag = false;
       }
     };
 
@@ -195,14 +196,12 @@ export class CountdownTrialPlugin {
       document.removeEventListener('keyup', handleKeyUp);
 
       const trialData = {
-        keys_held: areKeysHeld,
         keyTappedEarlyFlag: trial.keyTappedEarlyFlag,
         task: 'countdown',
       };
 
       displayElement.innerHTML = ''; // Clear the DOM
       this.jsPsych.finishTrial(trialData);
-      console.log('Trial ended with data:', trialData);
     };
 
     const setError = (message: string) => {

@@ -113,6 +113,7 @@ export class CountdownTrialPlugin {
                 messageContainer.innerHTML = trial.message; // Reset the display message
                 directionsContainer.innerHTML = ''; // Clear the directions
                 timerContainer.innerHTML = ''; // Clear the timer
+                trial.keyTappedEarlyFlag = false;
             }
         };
         const handleKeyDown = (event) => {
@@ -161,13 +162,11 @@ export class CountdownTrialPlugin {
             document.removeEventListener('keydown', handleKeyDown);
             document.removeEventListener('keyup', handleKeyUp);
             const trialData = {
-                keys_held: areKeysHeld,
                 keyTappedEarlyFlag: trial.keyTappedEarlyFlag,
                 task: 'countdown',
             };
             displayElement.innerHTML = ''; // Clear the DOM
             this.jsPsych.finishTrial(trialData);
-            console.log('Trial ended with data:', trialData);
         };
         const setError = (message) => {
             console.error(message);

@@ -56,7 +56,6 @@ export const createCalibrationTrial = ({
         },
         data: {
           task: calibrationPart,
-          showThermometer,
           bounds,
         },
         on_start: function (trial: any) {

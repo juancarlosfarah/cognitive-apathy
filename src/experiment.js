@@ -4,8 +4,7 @@ import '../styles/main.scss';
 import { calibrationTrialPart1, calibrationTrialPart2, conditionalCalibrationTrialPart1, conditionalCalibrationTrialPart2 } from './calibration';
 import { finishExperiment } from './finish';
 import { sampledArray } from './trials';
-import { stimuliVideoTutorialTrial, validationVideoTutorialTrial, } from './tutorial';
-import { validationResultScreen, validationTrialEasy, validationTrialExtra, validationTrialHard, validationTrialMedium, } from './validation';
+import { stimuliVideoTutorialTrial, } from './tutorial';
 let state = {
     medianTapsPart1: 0,
     medianTaps: 0,
@@ -49,25 +48,25 @@ export async function run({ assetPaths, input = {}, environment, title, version,
         timeline: [calibrationTrialPart2(jsPsych, state)],
     });
     timeline.push(conditionalCalibrationTrialPart2(jsPsych, state));
-    timeline.push(validationVideoTutorialTrial(jsPsych));
-    timeline.push({
+    /*   timeline.push(validationVideoTutorialTrial(jsPsych));
+      timeline.push({
         timeline: [validationTrialEasy(jsPsych, state)],
-    });
-    timeline.push({
+      });
+      timeline.push({
         timeline: [validationTrialMedium(jsPsych, state)],
-    });
-    timeline.push({
+      });
+      timeline.push({
         timeline: [validationTrialHard(jsPsych, state)],
-    });
-    timeline.push({
+      });
+      timeline.push({
         timeline: [validationTrialExtra(jsPsych, state)],
         conditional_function: function () {
-            return state.extraValidationRequired;
+          return state.extraValidationRequired;
         },
-    });
-    timeline.push({
+      });
+      timeline.push({
         timeline: [validationResultScreen(jsPsych, state)]
-    });
+      }); */
     const sampledTrials = sampledArray(jsPsych, state);
     sampledTrials.forEach((trialBlock) => {
         trialBlock.forEach((trial) => {

@@ -420,3 +420,5 @@ export const trialsArray = (jsPsych: JsPsych, state: State) => [
 // a total of 378 trials
 export const sampledArray = (jsPsych: JsPsych, state: State) =>
   jsPsych.randomization.sampleWithoutReplacement(trialsArray(jsPsych, state), 6);
+  // CHANGE BACK TO 6
+  // ONLY AT 1 FOR TESTING PURPOSES

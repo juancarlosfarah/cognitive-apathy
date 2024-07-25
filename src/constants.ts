@@ -88,6 +88,7 @@ export const HOLD_KEYS_MESSAGE = i18n.t('HOLD_KEYS_MESSAGE', {
 });
 export const KEY_TAPPED_EARLY_MESSAGE = i18n.t('KEY_TAPPED_EARLY_MESSAGE');
 export const RELEASE_KEYS_MESSAGE = i18n.t('RELEASE_KEYS_MESSAGE');
+export const RELEASE_KEYS_BACKUP_MESSAGE = i18n.t('RELEASE_KEYS_BACKUP_MESSAGE')
 export const REWARD_TOTAL_MESSAGE = (totalSuccessfulReward: string) =>
   i18n.t('REWARD_TOTAL_MESSAGE', { totalSuccessfulReward });
 

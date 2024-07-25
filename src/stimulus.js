@@ -49,6 +49,10 @@ export const acceptanceThermometer = (bounds, reward) => `
       style="position: relative; width: 100%; height: 100%; background-color: #e0e0e0;"
     >
       <div
+        id="green-area"
+        style="position: absolute; bottom: ${bounds[0]}%; height: ${bounds[1] - bounds[0]}%; width: 100%; background-color: green;"
+      ></div>
+      <div
         id="lower-bound"
         style="position: absolute; bottom: ${bounds[0]}%; width: 100%; height: 2px; background-color: black;"
       ></div>
@@ -58,7 +62,7 @@ export const acceptanceThermometer = (bounds, reward) => `
       ></div>
     </div>
   </div>
-  <p style="text-align: center;"> ${REWARD_TRIAL_MESSAGE}${reward.toFixed(2)}</p>
+  <p style="text-align: center;">${REWARD_TRIAL_MESSAGE} CHF ${reward.toFixed(2)}</p>
   <p style="text-align: center;">${ACCEPTANCE_TRIAL_MESSAGE}</p>
 </div>
 `;

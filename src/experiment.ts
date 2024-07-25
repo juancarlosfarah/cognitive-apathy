@@ -89,7 +89,7 @@ export async function run({
   });
   timeline.push(conditionalCalibrationTrialPart2(jsPsych, state));
 
-  timeline.push(validationVideoTutorialTrial(jsPsych));
+/*   timeline.push(validationVideoTutorialTrial(jsPsych));
   timeline.push({
     timeline: [validationTrialEasy(jsPsych, state)],
   });
@@ -107,7 +107,7 @@ export async function run({
   });
   timeline.push({
     timeline: [validationResultScreen(jsPsych, state)]
-  });
+  }); */
 
   const sampledTrials = sampledArray(jsPsych, state);
   sampledTrials.forEach((trialBlock) => {
