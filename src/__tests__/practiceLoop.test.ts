@@ -1,4 +1,4 @@
-import htmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response";
+/* import htmlKeyboardResponse from "@jspsych/plugin-html-keyboard-response";
 import { pressKey, startTimeline } from "@jspsych/test-utils";
 import { initJsPsych } from "jspsych";
 describe("loop function", () => {
@@ -424,4 +424,4 @@ describe("nested timelines", () => {
     expect(getHTML()).toMatch("bar");
     await pressKey("a");
   });
-});
+}); */

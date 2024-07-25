@@ -75,10 +75,10 @@ export async function run({
     video: '../assets/videos',
   });
 
-  timeline.push(noStimuliVideoTutorialTrial(jsPsych));
+/*   timeline.push(noStimuliVideoTutorialTrial(jsPsych));
   timeline.push(practiceLoop(jsPsych));
 
-  timeline.push(instructionalTrial(CALIBRATION_PART_1_DIRECTIONS));
+  timeline.push(instructionalTrial(CALIBRATION_PART_1_DIRECTIONS)); */
 
   timeline.push(calibrationTrialPart1(jsPsych, state)),
   timeline.push(conditionalCalibrationTrialPart1(jsPsych, state));
