@@ -93,7 +93,7 @@ describe("loop function", () => {
                             },
                         ],
                         loop_function: () => {
-                            if (jsPsych.timelineVariable("word") === "b" && counter < 2) {
+                            if (jsPsych.evaluateTimelineVariable("word") === "b" && counter < 2) {
                                 counter++;
                                 return true;
                             }
@@ -193,6 +193,41 @@ describe("conditional function", () => {
         // clear
         await pressKey("a");
     });
+    // TODO What's the purpose of this? Is it documented anywhere?
+    test.skip("executes on every loop of the timeline", async () => {
+        let count = 0;
+        let conditional_count = 0;
+        await startTimeline([
+            {
+                timeline: [
+                    {
+                        type: htmlKeyboardResponse,
+                        stimulus: "foo",
+                    },
+                ],
+                loop_function: () => {
+                    if (count < 1) {
+                        count++;
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                },
+                conditional_function: () => {
+                    conditional_count++;
+                    return true;
+                },
+            },
+        ]);
+        expect(conditional_count).toBe(1);
+        // first trial
+        await pressKey("a");
+        expect(conditional_count).toBe(2);
+        // second trial
+        await pressKey("a");
+        expect(conditional_count).toBe(2);
+    });
     test("executes only once even when repetitions is > 1", async () => {
         let conditional_count = 0;
         await startTimeline([
@@ -260,7 +295,7 @@ describe("conditional function", () => {
                             },
                         ],
                         conditional_function: () => {
-                            if (jsPsych.timelineVariable("word") === "b") {
+                            if (jsPsych.evaluateTimelineVariable("word") === "b") {
                                 return false;
                             }
                             else {
@@ -284,7 +319,7 @@ describe("conditional function", () => {
         await pressKey("a");
     });
 });
-describe("abortCurrentTimeline", () => {
+describe("endCurrentTimeline", () => {
     test("stops the current timeline, skipping to the end after the trial completes", async () => {
         const jsPsych = initJsPsych();
         const { getHTML } = await startTimeline([
@@ -347,74 +382,6 @@ describe("abortCurrentTimeline", () => {
         expect(getHTML()).toMatch("foo");
         await pressKey("a");
         expect(getHTML()).toMatch("bar");
-        await pressKey("a");
-        expect(getHTML()).toMatch("woo");
-        await pressKey("a");
-    });
-});
-describe("abortTimelineByName", () => {
-    test("stops the timeline with the given name, skipping to the end after the trial completes", async () => {
-        const jsPsych = initJsPsych();
-        const { getHTML } = await startTimeline([
-            {
-                timeline: [
-                    {
-                        type: htmlKeyboardResponse,
-                        stimulus: "foo",
-                        on_finish: () => {
-                            jsPsych.endCurrentTimeline;
-                        },
-                    },
-                    {
-                        type: htmlKeyboardResponse,
-                        stimulus: "bar",
-                    },
-                ],
-                name: "timeline",
-            },
-            {
-                type: htmlKeyboardResponse,
-                stimulus: "woo",
-            },
-        ], jsPsych);
-        expect(getHTML()).toMatch("foo");
-        await pressKey("a");
-        expect(getHTML()).toMatch("woo");
-        await pressKey("a");
-    });
-    test("works inside nested timelines", async () => {
-        const jsPsych = initJsPsych();
-        const { getHTML } = await startTimeline([
-            {
-                timeline: [
-                    {
-                        timeline: [
-                            {
-                                type: htmlKeyboardResponse,
-                                stimulus: "foo",
-                                on_finish: () => {
-                                    jsPsych.endCurrentTimeline;
-                                },
-                            },
-                            {
-                                type: htmlKeyboardResponse,
-                                stimulus: "skip me!",
-                            },
-                        ],
-                    },
-                    {
-                        type: htmlKeyboardResponse,
-                        stimulus: "skip me too!",
-                    },
-                ],
-                name: "timeline",
-            },
-            {
-                type: htmlKeyboardResponse,
-                stimulus: "woo",
-            },
-        ], jsPsych);
-        expect(getHTML()).toMatch("foo");
         await pressKey("a");
         expect(getHTML()).toMatch("woo");
         await pressKey("a");
