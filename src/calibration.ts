@@ -70,39 +70,35 @@ export const createCalibrationTrial = ({
         },
         on_finish: function (data: any) {
           if (!data.keysReleasedFlag && !data.keyTappedEarlyFlag) {
+            // Only consider trials where keys were not released early and not tapped early for minimum tapping logic
             if (calibrationPart === 'calibrationPart1') {
+              // Increase successful trials counter for respective calibration part
               state.calibrationPart1Successes++;
+              // calculate median for respective trial
               state.medianTapsPart1 = calculateMedianTapCount(
                 'calibrationPart1',
                 NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
                 jsPsych,
               );
-              console.log(state.medianTapsPart1)
+              // If median taps is greater than the minimum median, set state.calibrationPart1Failed to false so conditional trial does not occur
               if (state.medianTapsPart1 >= MINIMUM_CALIBRATION_MEDIAN) {
                 state.calibrationPart1Failed = false;
-                console.log(`state.calibrationPart1Failed = ${state.calibrationPart1Failed}`)
               }
             } else if (calibrationPart === 'calibrationPart2') {
+              // Increase successful trials counter for respective calibration part
               state.calibrationPart2Successes++;
+              // calculate median for respective trial
               state.medianTaps = calculateMedianTapCount(
                 'calibrationPart2',
                 NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
                 jsPsych,
               );
-              console.log(`state.medianTaps = ${state.medianTaps}`)
+              // If median taps is greater than the minimum median, set state.calibrationPart1Failed to false so conditional trial does not occur
               if (state.medianTaps >= MINIMUM_CALIBRATION_MEDIAN) {
                 state.calibrationPart2Failed = false;
-                console.log(`state.calibrationPart2Failed = ${state.calibrationPart2Failed}`)
 
               }
             }
-
-            console.log(
-              `calibrationPart1Successes: ${state.calibrationPart1Successes}`,
-            );
-            console.log(
-              `calibrationPart2Successes: ${state.calibrationPart2Successes}`,
-            );
           }
         },
       },
@@ -118,6 +114,7 @@ export const createCalibrationTrial = ({
     ],
     repetitions: repetitions,
     loop_function: function () {
+      // Ensure minimum amount of trials are done fully without releasing keys or tapping early
       const requiredSuccesses =
         calibrationPart === 'calibrationPart1'
           ? NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS
@@ -157,7 +154,7 @@ export const createConditionalCalibrationTrial = ({
         type: HtmlKeyboardResponsePlugin,
         choices: ['enter'],
         stimulus: function () {
-          // Reset success counters
+          // Reset success counters for the calibration trials completed after minimum taps not reached
           if (calibrationPart === 'calibrationPart1') {
             state.calibrationPart1Successes = 0;
           } else {
@@ -179,7 +176,7 @@ export const createConditionalCalibrationTrial = ({
         state,
       }),
       {
-        // If minimum taps is not reached in this set of conditional trials, then end trial
+        // If minimum taps is not reached in this set of conditional trials, then end experiment
         timeline: [finishExperimentEarlyTrial(jsPsych)],
         conditional_function: function () {
           if(calibrationPart === 'calibrationPart1'){
@@ -197,8 +194,6 @@ export const createConditionalCalibrationTrial = ({
     ],
     // Conditional trial section should only occur if the corresponding calibration part failed due to minimum taps previously
     conditional_function: function () {
-      console.log(`state.calibrationPart1Failed = ${state.calibrationPart1Failed}`)
-      console.log(`state.calibrationPart2Failed = ${state.calibrationPart2Failed}`)
       if(calibrationPart === 'calibrationPart1'){
         return state.calibrationPart1Failed
       } else if(calibrationPart === 'calibrationPart2'){
@@ -208,6 +203,8 @@ export const createConditionalCalibrationTrial = ({
   }
 }
 
+
+// Create actual trial sections
 export const calibrationTrialPart1 = (jsPsych: JsPsych, state: State) =>
   createCalibrationTrial({
     showThermometer: false,
