@@ -92,6 +92,7 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
                             ],
                         },
                     ],
+                    // Needed to put loop around its own timeline in order to achieve same functionality as jsPsych 7.0 
                     loop_function: function () {
                         const remainingSuccesses = NUM_DEMO_TRIALS - state.demoTrialSuccesses;
                         return remainingSuccesses > 0; // Repeat the timeline if more successes are needed
