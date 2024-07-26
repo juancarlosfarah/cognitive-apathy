@@ -194,4 +194,3 @@ export const countdownStep = {
         },
     ],
 };
-//# sourceMappingURL=countdown.js.map

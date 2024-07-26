@@ -1,4 +1,5 @@
 import { __awaiter } from "tslib";
+/** @jest-environment jsdom */
 import { initJsPsych } from 'jspsych';
 import { describe, test, expect, jest } from '@jest/globals';
 import { practiceLoop } from '../tutorial'; // Adjust the import path to your actual file
@@ -56,4 +57,3 @@ describe('practiceLoop', () => {
         expect(timeline.loop_function()).toBe(false);
     }));
 });
-//# sourceMappingURL=practiceLoop.test.js.map

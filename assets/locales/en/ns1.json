@@ -51,5 +51,6 @@
     "QUESTION_3": "Placeholder question 3 for survey 2",
     "QUESTION_4": "Placeholder question 4 for survey 2",
     "QUESTION_5": "Placeholder question 5 for survey 2"
-  }
+  },
+  "END_EXPERIMENT_MESSAGE": "Press <b>Enter</b> to end the Experiment and then, please, find your experimenter."
 }

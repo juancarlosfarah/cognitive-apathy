@@ -1,3 +1,4 @@
+/** @jest-environment jsdom */
 import { initJsPsych } from 'jspsych';
 import { describe, test, expect, jest } from '@jest/globals';
 import { practiceLoop } from '../tutorial'; // Adjust the import path to your actual file

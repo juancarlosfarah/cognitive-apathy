@@ -185,4 +185,3 @@ export const conditionalCalibrationTrialPart2 = (jsPsych, state) => createCondit
     jsPsych,
     state,
 });
-//# sourceMappingURL=calibration.js.map

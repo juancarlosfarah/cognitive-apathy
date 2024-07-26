@@ -44,4 +44,3 @@ export const loadingBarTrial = (acceptance, jsPsych) => ({
         }
     },
 });
-//# sourceMappingURL=loading-bar.js.map

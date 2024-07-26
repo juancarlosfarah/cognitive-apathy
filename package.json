@@ -32,7 +32,9 @@
     "i18next-fs-backend": "^2.3.1",
     "i18next-http-backend": "^2.5.2",
     "jspsych": "^8.0.1",
-    "simple-keyboard": "^3.7.93"
+    "simple-keyboard": "^3.7.93",
+    "jest": "29.7.0",
+    "jest-environment-jsdom": "29.7.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.9",

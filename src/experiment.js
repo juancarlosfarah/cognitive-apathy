@@ -89,4 +89,3 @@ export function run(_a) {
         return jsPsych;
     });
 }
-//# sourceMappingURL=experiment.js.map

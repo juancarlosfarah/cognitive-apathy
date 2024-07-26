@@ -356,4 +356,3 @@ export const trialsArray = (jsPsych, state) => [
 // 2 Narrow Asynchronous Blocks of 63 trials, and 2 Wide Asynchronous Blocks of 63 trials for
 // a total of 378 trials
 export const sampledArray = (jsPsych, state) => jsPsych.randomization.sampleWithoutReplacement(trialsArray(jsPsych, state), 6);
-//# sourceMappingURL=trials.js.map

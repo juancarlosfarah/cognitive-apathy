@@ -1,13 +1,12 @@
 import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
 import { saveAs } from 'file-saver';
-import { REWARD_TOTAL_MESSAGE, FAILED_VALIDATION_MESSAGE } from './constants';
+import { FAILED_VALIDATION_MESSAGE, END_EXPERIMENT_MESSAGE } from './constants';
 import { calculateTotalReward } from './utils';
 export const finishExperiment = (jsPsych) => ({
     type: HtmlKeyboardResponsePlugin,
     choices: ['enter'],
     stimulus: function () {
-        const totalSuccessfulReward = calculateTotalReward(jsPsych);
-        return `<p>${REWARD_TOTAL_MESSAGE(totalSuccessfulReward.toFixed(2))}</p>`;
+        return `<p>${END_EXPERIMENT_MESSAGE}</p>`;
     },
     data: {
         task: 'finish_experiment',
@@ -39,4 +38,3 @@ export const finishExperimentEarlyTrial = (jsPsych) => ({
         saveAs(blob, `experiment_data_${new Date().toISOString()}.json`);
     },
 });
-//# sourceMappingURL=finish.js.map

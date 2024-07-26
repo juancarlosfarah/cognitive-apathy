@@ -85,4 +85,3 @@ export const getQueryParam = (param) => {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(param);
 };
-//# sourceMappingURL=utils.js.map

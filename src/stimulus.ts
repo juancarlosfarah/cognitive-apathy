@@ -63,8 +63,8 @@ export const acceptanceThermometer = (bounds: number[], reward: number) => `
       style="position: relative; width: 100%; height: 100%; background-color: #e0e0e0;"
     >
       <div
-        id="green-area"
-        style="position: absolute; bottom: ${bounds[0]}%; height: ${bounds[1] - bounds[0]}%; width: 100%; background-color: green;"
+        id="blue-area"
+        style="position: absolute; bottom: ${bounds[0]}%; height: ${bounds[1] - bounds[0]}%; width: 100%; background-color: light-blue;"
       ></div>
       <div
         id="lower-bound"

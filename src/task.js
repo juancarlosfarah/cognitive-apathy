@@ -258,4 +258,3 @@ TaskPlugin.info = {
     },
 };
 export default TaskPlugin;
-//# sourceMappingURL=task.js.map

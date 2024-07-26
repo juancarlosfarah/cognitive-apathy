@@ -12,7 +12,7 @@
   "LIKERT_PREAMBLE": "Veuillez répondre à la question ci-dessous.",
   "FAILED_MINIMUM_DEMO_TAPS_MESSAGE": "Vous n'avez pas tapé suffisamment pendant le dernier essai de pratique. Veuillez réessayer.",
   "HOLD_KEYS_MESSAGE": "<p>Maintenez les touches <b>{{KEYS_TO_HOLD_0}}</b>, <b>{{KEYS_TO_HOLD_1}}</b> et <b>{{KEYS_TO_HOLD_2}}</b> enfoncées!</p>",
-  "RELEASE_KEYS_BACKUP_MESSAGE": "Si ce message ne disparaît pas automatiquement, appuyez sur <b>Enter</b> sur votre clavier pour continuer.",
+  "RELEASE_KEYS_BACKUP_MESSAGE": "Si ce message ne disparaît pas automatiquement, appuyez sur <b>Entrée</b> sur votre clavier pour continuer.",
   "KEY_TAPPED_EARLY_MESSAGE": "La touche a été appuyée trop tôt. Veuillez attendre le moment approprié pour appuyer sur la touche.",
   "RELEASE_KEYS_MESSAGE": "Relâchez les touches",
   "REWARD_TOTAL_MESSAGE": "La récompense totale pour les essais réussis est : CHF{{totalSuccessfulReward}}. Appuyez sur <b>Entrée</b> pour continuer.",
@@ -50,5 +50,7 @@
       "QUESTION_3": "Question de remplacement 3 pour l'enquête 2",
       "QUESTION_4": "Question de remplacement 4 pour l'enquête 2",
       "QUESTION_5": "Question de remplacement 5 pour l'enquête 2"
-    }
+    },
+    "END_EXPERIMENT_MESSAGE":"Appuyez sur <b>Entrée</b> pour terminer l'expérience, puis veuillez trouver votre expérimentateur."
+
 }
