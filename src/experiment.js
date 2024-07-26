@@ -1,3 +1,11 @@
+import { __awaiter } from "tslib";
+/**
+ * @title Cognitive Apathy Experiment
+ * @description This experiment aims to measure cognitive apathy using calibration and thermometer tasks.
+ * @version 0.1.0
+ *
+ * @assets assets/
+ */
 import PreloadPlugin from '@jspsych/plugin-preload';
 import { initJsPsych } from 'jspsych';
 import '../styles/main.scss';
@@ -32,50 +40,53 @@ import './i18n';
  * @description Main function to run the experiment
  * @param {Object} config - Configuration object for the experiment
  */
-export async function run({ assetPaths, input = {}, environment, title, version, }) {
-    const jsPsych = initJsPsych();
-    const timeline = [];
-    timeline.push({
-        type: PreloadPlugin,
-        audio: assetPaths.audio,
-        video: ['../assets/videos'],
-    });
-    timeline.push(noStimuliVideoTutorialTrial(jsPsych));
-    timeline.push(practiceLoop(jsPsych));
-    timeline.push(instructionalTrial(CALIBRATION_PART_1_DIRECTIONS));
-    timeline.push(calibrationTrialPart1(jsPsych, state)),
-        timeline.push(conditionalCalibrationTrialPart1(jsPsych, state));
-    timeline.push(stimuliVideoTutorialTrial(jsPsych));
-    timeline.push({
-        timeline: [calibrationTrialPart2(jsPsych, state)],
-    });
-    timeline.push(conditionalCalibrationTrialPart2(jsPsych, state));
-    timeline.push(validationVideoTutorialTrial(jsPsych));
-    timeline.push({
-        timeline: [validationTrialEasy(jsPsych, state)],
-    });
-    timeline.push({
-        timeline: [validationTrialMedium(jsPsych, state)],
-    });
-    timeline.push({
-        timeline: [validationTrialHard(jsPsych, state)],
-    });
-    timeline.push({
-        timeline: [validationTrialExtra(jsPsych, state)],
-        conditional_function: function () {
-            return state.extraValidationRequired;
-        },
-    });
-    timeline.push({
-        timeline: [validationResultScreen(jsPsych, state)]
-    });
-    const sampledTrials = sampledArray(jsPsych, state);
-    sampledTrials.forEach((trialBlock) => {
-        trialBlock.forEach((trial) => {
-            timeline.push(trial);
+export function run(_a) {
+    return __awaiter(this, arguments, void 0, function* ({ assetPaths, }) {
+        const jsPsych = initJsPsych();
+        const timeline = [];
+        timeline.push({
+            type: PreloadPlugin,
+            audio: assetPaths.audio,
+            video: ['../assets/videos'],
         });
+        timeline.push(noStimuliVideoTutorialTrial(jsPsych));
+        timeline.push(practiceLoop(jsPsych));
+        timeline.push(instructionalTrial(CALIBRATION_PART_1_DIRECTIONS));
+        timeline.push(calibrationTrialPart1(jsPsych, state)),
+            timeline.push(conditionalCalibrationTrialPart1(jsPsych, state));
+        timeline.push(stimuliVideoTutorialTrial(jsPsych));
+        timeline.push({
+            timeline: [calibrationTrialPart2(jsPsych, state)],
+        });
+        timeline.push(conditionalCalibrationTrialPart2(jsPsych, state));
+        timeline.push(validationVideoTutorialTrial(jsPsych));
+        timeline.push({
+            timeline: [validationTrialEasy(jsPsych, state)],
+        });
+        timeline.push({
+            timeline: [validationTrialMedium(jsPsych, state)],
+        });
+        timeline.push({
+            timeline: [validationTrialHard(jsPsych, state)],
+        });
+        timeline.push({
+            timeline: [validationTrialExtra(jsPsych, state)],
+            conditional_function: function () {
+                return state.extraValidationRequired;
+            },
+        });
+        timeline.push({
+            timeline: [validationResultScreen(jsPsych, state)]
+        });
+        const sampledTrials = sampledArray(jsPsych, state);
+        sampledTrials.forEach((trialBlock) => {
+            trialBlock.forEach((trial) => {
+                timeline.push(trial);
+            });
+        });
+        timeline.push(finishExperiment(jsPsych));
+        yield jsPsych.run(timeline);
+        return jsPsych;
     });
-    timeline.push(finishExperiment(jsPsych));
-    await jsPsych.run(timeline);
-    return jsPsych;
 }
+//# sourceMappingURL=experiment.js.map

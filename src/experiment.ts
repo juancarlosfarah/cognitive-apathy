@@ -5,15 +5,13 @@
  *
  * @assets assets/
  */
-import FullscreenPlugin from '@jspsych/plugin-fullscreen';
 import PreloadPlugin from '@jspsych/plugin-preload';
-import { initJsPsych, JsPsych } from 'jspsych';
+import { initJsPsych } from 'jspsych';
 
 import '../styles/main.scss';
 import { calibrationTrialPart1, calibrationTrialPart2, conditionalCalibrationTrialPart1, conditionalCalibrationTrialPart2 } from './calibration';
 import {
   CALIBRATION_PART_1_DIRECTIONS,
-  REWARD_TOTAL_MESSAGE,
 } from './constants';
 import { finishExperiment } from './finish';
 import { sampledArray } from './trials';
@@ -61,10 +59,6 @@ import './i18n'
  */
 export async function run({
   assetPaths,
-  input = {},
-  environment,
-  title,
-  version,
 }: any) {
   const jsPsych = initJsPsych();
 

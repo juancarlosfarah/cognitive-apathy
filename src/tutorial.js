@@ -127,3 +127,4 @@ export const practiceLoop = (jsPsych) => ({
         return keysReleasedFlag || keyTappedEarlyFlag || numberOfTaps < MINIMUM_CALIBRATION_MEDIAN;
     },
 });
+//# sourceMappingURL=tutorial.js.map

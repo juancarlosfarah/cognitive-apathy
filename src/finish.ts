@@ -37,7 +37,7 @@ export const finishExperimentEarlyTrial = (jsPsych: JsPsych) => ({
   data: {
     task: 'finish_experiment',
   },
-  on_finish: function (data: any) {
+  on_finish: function () {
     const allData = jsPsych.data.get().json();
     const blob = new Blob([allData], { type: 'application/json' });
     saveAs(blob, `experiment_data_${new Date().toISOString()}.json`);

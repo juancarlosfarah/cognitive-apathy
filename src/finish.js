@@ -33,9 +33,10 @@ export const finishExperimentEarlyTrial = (jsPsych) => ({
     data: {
         task: 'finish_experiment',
     },
-    on_finish: function (data) {
+    on_finish: function () {
         const allData = jsPsych.data.get().json();
         const blob = new Blob([allData], { type: 'application/json' });
         saveAs(blob, `experiment_data_${new Date().toISOString()}.json`);
     },
 });
+//# sourceMappingURL=finish.js.map

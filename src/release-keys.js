@@ -1,33 +1,6 @@
 import { ParameterType } from 'jspsych';
 import { KEYS_TO_HOLD, RELEASE_KEYS_MESSAGE, RELEASE_KEYS_BACKUP_MESSAGE } from './constants';
 export class ReleaseKeysPlugin {
-    static info = {
-        name: 'release-keys',
-        parameters: {
-            stimulus: {
-                type: ParameterType.HTML_STRING,
-                default: `<p>${RELEASE_KEYS_MESSAGE}</p>`,
-            },
-            valid_responses: {
-                type: ParameterType.KEYS,
-                array: true,
-                default: KEYS_TO_HOLD,
-            },
-            stimulus_duration: {
-                type: ParameterType.INT,
-                default: null,
-            },
-            trial_duration: {
-                type: ParameterType.INT,
-                default: null,
-            },
-            allow_held_key: {
-                type: ParameterType.BOOL,
-                default: true,
-            },
-        },
-    };
-    jsPsych;
     constructor(jsPsych) {
         this.jsPsych = jsPsych;
     }
@@ -85,7 +58,34 @@ export class ReleaseKeysPlugin {
         }, 3000);
     }
 }
+ReleaseKeysPlugin.info = {
+    name: 'release-keys',
+    parameters: {
+        stimulus: {
+            type: ParameterType.HTML_STRING,
+            default: `<p>${RELEASE_KEYS_MESSAGE}</p>`,
+        },
+        valid_responses: {
+            type: ParameterType.KEYS,
+            array: true,
+            default: KEYS_TO_HOLD,
+        },
+        stimulus_duration: {
+            type: ParameterType.INT,
+            default: null,
+        },
+        trial_duration: {
+            type: ParameterType.INT,
+            default: null,
+        },
+        allow_held_key: {
+            type: ParameterType.BOOL,
+            default: true,
+        },
+    },
+};
 export const releaseKeysStep = {
     type: ReleaseKeysPlugin,
     valid_responses: KEYS_TO_HOLD,
 };
+//# sourceMappingURL=release-keys.js.map

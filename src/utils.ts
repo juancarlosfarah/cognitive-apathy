@@ -1,5 +1,4 @@
 import { JsPsych } from 'jspsych';
-import { State } from './types';
 
 /**
  * Generate a random number with a bias towards the mean.

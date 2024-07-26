@@ -4,64 +4,6 @@ import { createKeyboard } from './keyboard';
 import { stimulus } from './stimulus';
 import { TRIAL_DURATION } from './constants';
 class TaskPlugin {
-    static info = {
-        name: 'task-plugin',
-        parameters: {
-            task: {
-                type: ParameterType.STRING,
-                default: '',
-            },
-            autoDecreaseAmount: {
-                type: ParameterType.FLOAT,
-                default: AUTO_DECREASE_AMOUNT,
-            },
-            autoDecreaseRate: {
-                type: ParameterType.INT,
-                default: AUTO_DECREASE_RATE,
-            },
-            autoIncreaseAmount: {
-                type: ParameterType.INT,
-                default: 10,
-            },
-            showThermometer: {
-                type: ParameterType.BOOL,
-                default: true,
-            },
-            bounds: {
-                type: ParameterType.INT,
-                array: true,
-                default: [20, 40],
-            },
-            trial_duration: {
-                type: ParameterType.INT,
-                default: TRIAL_DURATION,
-            },
-            keysReleasedFlag: {
-                type: ParameterType.BOOL,
-                default: false,
-            },
-            randomDelay: {
-                type: ParameterType.INT,
-                array: true,
-                default: [0, 0],
-            },
-            reward: {
-                type: ParameterType.FLOAT,
-                default: 0,
-            },
-            keyTappedEarlyFlag: {
-                type: ParameterType.BOOL,
-                default: false,
-            },
-            showKeyboard: {
-                type: ParameterType.BOOL,
-                default: false,
-            },
-        },
-    };
-    jsPsych;
-    mercuryHeight;
-    isKeyDown;
     constructor(jsPsych) {
         this.jsPsych = jsPsych;
         this.mercuryHeight = 0;
@@ -175,7 +117,7 @@ class TaskPlugin {
             endTime = this.jsPsych.getTotalTime();
             isRunning = false;
             errorOccurred = errorFlag;
-            display_element.innerHTML = stimulus(trial.showThermometer, this.mercuryHeight, trial.bounds[0], trial.bounds[1], error);
+            display_element.innerHTML = stimulus(trial.showThermometer, this.mercuryHeight, trial.bounds[0], trial.bounds[1]);
             updateUI();
             end_trial();
         };
@@ -219,7 +161,7 @@ class TaskPlugin {
             setTimeout(() => stopRunning(true), KEY_TAPPED_EARLY_ERROR_TIME);
             return;
         }
-        display_element.innerHTML = stimulus(trial.showThermometer, this.mercuryHeight, trial.bounds[0], trial.bounds[1], error);
+        display_element.innerHTML = stimulus(trial.showThermometer, this.mercuryHeight, trial.bounds[0], trial.bounds[1]);
         if (trial.showKeyboard) {
             const { keyboard, keyboardDiv } = createKeyboard(display_element);
             keyboardInstance = keyboard;
@@ -260,4 +202,60 @@ class TaskPlugin {
         }, trial.trial_duration);
     }
 }
+TaskPlugin.info = {
+    name: 'task-plugin',
+    parameters: {
+        task: {
+            type: ParameterType.STRING,
+            default: '',
+        },
+        autoDecreaseAmount: {
+            type: ParameterType.FLOAT,
+            default: AUTO_DECREASE_AMOUNT,
+        },
+        autoDecreaseRate: {
+            type: ParameterType.INT,
+            default: AUTO_DECREASE_RATE,
+        },
+        autoIncreaseAmount: {
+            type: ParameterType.INT,
+            default: 10,
+        },
+        showThermometer: {
+            type: ParameterType.BOOL,
+            default: true,
+        },
+        bounds: {
+            type: ParameterType.INT,
+            array: true,
+            default: [20, 40],
+        },
+        trial_duration: {
+            type: ParameterType.INT,
+            default: TRIAL_DURATION,
+        },
+        keysReleasedFlag: {
+            type: ParameterType.BOOL,
+            default: false,
+        },
+        randomDelay: {
+            type: ParameterType.INT,
+            array: true,
+            default: [0, 0],
+        },
+        reward: {
+            type: ParameterType.FLOAT,
+            default: 0,
+        },
+        keyTappedEarlyFlag: {
+            type: ParameterType.BOOL,
+            default: false,
+        },
+        showKeyboard: {
+            type: ParameterType.BOOL,
+            default: false,
+        },
+    },
+};
 export default TaskPlugin;
+//# sourceMappingURL=task.js.map

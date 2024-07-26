@@ -201,7 +201,6 @@ class TaskPlugin {
         this.mercuryHeight,
         trial.bounds[0],
         trial.bounds[1],
-        error,
       );
 
       updateUI();
@@ -261,7 +260,6 @@ class TaskPlugin {
       this.mercuryHeight,
       trial.bounds[0],
       trial.bounds[1],
-      error,
     );
 
     if (trial.showKeyboard) {

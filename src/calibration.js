@@ -6,7 +6,7 @@ import { loadingBarTrial } from './loading-bar';
 import { releaseKeysStep } from './release-keys';
 import TaskPlugin from './task';
 import { autoIncreaseAmount, calculateMedianTapCount, checkFlag, } from './utils';
-export const createCalibrationTrial = ({ showThermometer, bounds, repetitions, calibrationPart, jsPsych, state, }) => {
+export const createCalibrationTrial = ({ showThermometer, bounds, calibrationPart, jsPsych, state, }) => {
     return {
         timeline: [
             countdownStep,
@@ -128,7 +128,7 @@ export const createConditionalCalibrationTrial = ({ calibrationPart, numTrials, 
                         else
                             return true;
                     }
-                    else if (calibrationPart === 'calibrationPart2') {
+                    else {
                         console.log(`state.medianTaps for conditional trial = ${state.medianTaps}`);
                         if ((state.medianTaps >= MINIMUM_CALIBRATION_MEDIAN)) {
                             return false;
@@ -144,7 +144,7 @@ export const createConditionalCalibrationTrial = ({ calibrationPart, numTrials, 
             if (calibrationPart === 'calibrationPart1') {
                 return state.calibrationPart1Failed;
             }
-            else if (calibrationPart === 'calibrationPart2') {
+            else {
                 return state.calibrationPart2Failed;
             }
         }
@@ -185,3 +185,4 @@ export const conditionalCalibrationTrialPart2 = (jsPsych, state) => createCondit
     jsPsych,
     state,
 });
+//# sourceMappingURL=calibration.js.map

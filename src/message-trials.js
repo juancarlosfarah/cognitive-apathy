@@ -26,3 +26,4 @@ export const successScreen = (jsPsych) => ({
         task: 'success_screen',
     },
 });
+//# sourceMappingURL=message-trials.js.map

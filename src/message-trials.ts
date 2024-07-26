@@ -1,17 +1,10 @@
 import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
-import { calculateMedianTapCount } from './utils';
 
 import {
   SUCCESS_SCREEN_DURATION,
   TRIAL_FAILED,
   TRIAL_SUCCEEDED,
-  NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
-  NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
-  CALIBRATION_PART_1_ENDING_MESSAGE,
-  CALIBRATION_PART_2_ENDING_MESSAGE,
-  MINIMUM_CALIBRATION_MEDIAN,
 } from './constants';
-import { State } from './types';
 
 export const endExperimentTrial = (message: string) => ({
   type: HtmlKeyboardResponsePlugin,

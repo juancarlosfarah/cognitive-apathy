@@ -42,3 +42,4 @@ export function createKeyboard(displayElement) {
     console.log('Keyboard setup complete.');
     return { keyboard, keyboardDiv };
 }
+//# sourceMappingURL=keyboard.js.map

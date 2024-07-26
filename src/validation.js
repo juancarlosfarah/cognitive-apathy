@@ -80,3 +80,4 @@ export const validationTrialEasy = (jsPsych, state) => createValidationTrial([30
 export const validationTrialMedium = (jsPsych, state) => createValidationTrial([50, 70], 'validationMedium', NUM_VALIDATION_TRIALS, jsPsych, state);
 export const validationTrialHard = (jsPsych, state) => createValidationTrial([70, 90], 'validationHard', NUM_VALIDATION_TRIALS, jsPsych, state);
 export const validationTrialExtra = (jsPsych, state) => createValidationTrial([70, 90], 'validationExtra', NUM_EXTRA_VALIDATION_TRIALS, jsPsych, state);
+//# sourceMappingURL=validation.js.map

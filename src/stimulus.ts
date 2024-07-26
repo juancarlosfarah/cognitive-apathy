@@ -12,7 +12,6 @@ export function stimulus(
   mercuryHeight: number,
   lowerBound: number,
   upperBound: number,
-  error: string,
 ) {
   const bounds = `
     <div

@@ -8,7 +8,7 @@ export const loadingBarTrial = (acceptance, jsPsych) => ({
     on_load: function () {
         const check_percentage = () => {
             const percentage = document.querySelector('.percentage');
-            const percentageValue = +(percentage?.textContent || 0);
+            const percentageValue = +((percentage === null || percentage === void 0 ? void 0 : percentage.textContent) || 0);
             setTimeout(() => {
                 if (percentageValue < 100) {
                     update_percentage();
@@ -22,7 +22,7 @@ export const loadingBarTrial = (acceptance, jsPsych) => ({
         };
         const update_percentage = () => {
             const percentage = document.querySelector('.percentage');
-            const percentageValue = +(percentage?.textContent || 0);
+            const percentageValue = +((percentage === null || percentage === void 0 ? void 0 : percentage.textContent) || 0);
             const progress = document.querySelector('.progress');
             let increment;
             acceptance
@@ -44,3 +44,4 @@ export const loadingBarTrial = (acceptance, jsPsych) => ({
         }
     },
 });
+//# sourceMappingURL=loading-bar.js.map

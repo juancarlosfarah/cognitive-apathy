@@ -7,12 +7,11 @@ import {
   AUTO_DECREASE_RATE,
   EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
   MINIMUM_CALIBRATION_MEDIAN,
-  NUM_CALIBRATION_TRIALS,
   NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
   NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
   TRIAL_DURATION,
 } from './constants';
-import { CountdownTrialPlugin, countdownStep } from './countdown';
+import {countdownStep } from './countdown';
 import { finishExperimentEarlyTrial } from './finish';
 import { loadingBarTrial } from './loading-bar';
 import { releaseKeysStep } from './release-keys';
@@ -31,7 +30,6 @@ import {
 export const createCalibrationTrial = ({
   showThermometer,
   bounds,
-  repetitions,
   calibrationPart,
   jsPsych,
   state,
@@ -182,7 +180,7 @@ export const createConditionalCalibrationTrial = ({
             if (!(state.medianTapsPart1 >= MINIMUM_CALIBRATION_MEDIAN)) {
               return false
             } else return true
-        } else if(calibrationPart === 'calibrationPart2'){
+        } else{
             console.log(`state.medianTaps for conditional trial = ${state.medianTaps}`)
             if ((state.medianTaps >= MINIMUM_CALIBRATION_MEDIAN)) {
               return false
@@ -195,7 +193,7 @@ export const createConditionalCalibrationTrial = ({
     conditional_function: function () {
       if(calibrationPart === 'calibrationPart1'){
         return state.calibrationPart1Failed
-      } else if(calibrationPart === 'calibrationPart2'){
+      } else {
         return state.calibrationPart2Failed
       }
     }

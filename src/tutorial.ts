@@ -1,6 +1,5 @@
 import htmlButtonResponse from '@jspsych/plugin-html-button-response';
 import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
-import videoButtonResponse from '@jspsych/plugin-video-button-response';
 
 import {
   DOMINANT_HAND_MESSAGE,

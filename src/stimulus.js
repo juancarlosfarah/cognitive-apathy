@@ -1,5 +1,5 @@
 import { ACCEPTANCE_TRIAL_MESSAGE, NO_STIMULI_VIDEO_TUTORIAL_MESSAGE, STIMULI_VIDEO_TUTORIAL_MESSAGE, VALIDATION_VIDEO_TUTORIAL_MESSAGE, LOADING_BAR_MESSAGE, REWARD_TRIAL_MESSAGE } from './constants';
-export function stimulus(showThermometer, mercuryHeight, lowerBound, upperBound, error) {
+export function stimulus(showThermometer, mercuryHeight, lowerBound, upperBound) {
     const bounds = `
     <div
       id="lower-bound"
@@ -128,3 +128,4 @@ ${VALIDATION_VIDEO_TUTORIAL_MESSAGE}
   ></video>
 
 </div>`;
+//# sourceMappingURL=stimulus.js.map

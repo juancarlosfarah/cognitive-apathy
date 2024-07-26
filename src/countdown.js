@@ -3,46 +3,6 @@ import { ParameterType } from 'jspsych';
 import { COUNTDOWN_DIRECTIONS, COUNTDOWN_TIME, GO_DURATION, HOLD_KEYS_MESSAGE, KEYS_TO_HOLD, KEY_TO_PRESS, GO_MESSAGE, COUNTDOWN_TIMER_MESSAGE } from './constants';
 import { createKeyboard } from './keyboard';
 export class CountdownTrialPlugin {
-    static info = {
-        name: 'countdown-trial',
-        parameters: {
-            keystoHold: {
-                type: ParameterType.STRING,
-                array: true,
-                default: KEYS_TO_HOLD,
-            },
-            keyToPress: {
-                type: ParameterType.STRING,
-                array: false,
-                default: KEY_TO_PRESS,
-            },
-            message: {
-                type: ParameterType.HTML_STRING,
-                default: HOLD_KEYS_MESSAGE,
-            },
-            waitTime: {
-                type: ParameterType.INT,
-                default: COUNTDOWN_TIME,
-            },
-            initialText: {
-                type: ParameterType.STRING,
-                default: COUNTDOWN_TIMER_MESSAGE,
-            },
-            allow_held_key: {
-                type: ParameterType.BOOL,
-                default: true,
-            },
-            keyTappedEarlyFlag: {
-                type: ParameterType.BOOL,
-                default: false,
-            },
-            showKeyboard: {
-                type: ParameterType.BOOL,
-                default: false,
-            },
-        },
-    };
-    jsPsych;
     constructor(jsPsych) {
         this.jsPsych = jsPsych;
     }
@@ -176,6 +136,45 @@ export class CountdownTrialPlugin {
         console.log('Initial UI setup complete.');
     }
 }
+CountdownTrialPlugin.info = {
+    name: 'countdown-trial',
+    parameters: {
+        keystoHold: {
+            type: ParameterType.STRING,
+            array: true,
+            default: KEYS_TO_HOLD,
+        },
+        keyToPress: {
+            type: ParameterType.STRING,
+            array: false,
+            default: KEY_TO_PRESS,
+        },
+        message: {
+            type: ParameterType.HTML_STRING,
+            default: HOLD_KEYS_MESSAGE,
+        },
+        waitTime: {
+            type: ParameterType.INT,
+            default: COUNTDOWN_TIME,
+        },
+        initialText: {
+            type: ParameterType.STRING,
+            default: COUNTDOWN_TIMER_MESSAGE,
+        },
+        allow_held_key: {
+            type: ParameterType.BOOL,
+            default: true,
+        },
+        keyTappedEarlyFlag: {
+            type: ParameterType.BOOL,
+            default: false,
+        },
+        showKeyboard: {
+            type: ParameterType.BOOL,
+            default: false,
+        },
+    },
+};
 export const countdownStep = {
     timeline: [
         {
@@ -195,3 +194,4 @@ export const countdownStep = {
         },
     ],
 };
+//# sourceMappingURL=countdown.js.map

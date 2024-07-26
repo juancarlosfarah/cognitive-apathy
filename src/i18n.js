@@ -22,3 +22,4 @@ i18n
     },
 });
 export default i18n;
+//# sourceMappingURL=i18n.js.map
