@@ -109,9 +109,7 @@ export const practiceTrial = (jsPsych: JsPsych) => ({
     {
       type: TaskPlugin,
       showThermometer: false,
-      data: {
-        task: 'practice',
-      },
+      task: 'practice',
       on_start: function (trial: any) {
         // ADD TYPE FOR TRIAL
         const keyTappedEarlyFlag = checkFlag(

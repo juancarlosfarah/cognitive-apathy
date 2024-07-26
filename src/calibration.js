@@ -20,10 +20,6 @@ export const createCalibrationTrial = ({ showThermometer, bounds, repetitions, c
                     console.log('autoIncreaseAmount called with medianTapsPart1:', state.medianTapsPart1);
                     return autoIncreaseAmount(EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, TRIAL_DURATION, AUTO_DECREASE_RATE, AUTO_DECREASE_AMOUNT, state.medianTapsPart1);
                 },
-                data: {
-                    task: calibrationPart,
-                    bounds,
-                },
                 on_start: function (trial) {
                     const keyTappedEarlyFlag = checkFlag('countdown', 'keyTappedEarlyFlag', jsPsych);
                     // Update the trial parameters with keyTappedEarlyFlag

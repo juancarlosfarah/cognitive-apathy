@@ -2,9 +2,11 @@ import PreloadPlugin from '@jspsych/plugin-preload';
 import { initJsPsych } from 'jspsych';
 import '../styles/main.scss';
 import { calibrationTrialPart1, calibrationTrialPart2, conditionalCalibrationTrialPart1, conditionalCalibrationTrialPart2 } from './calibration';
+import { CALIBRATION_PART_1_DIRECTIONS, } from './constants';
 import { finishExperiment } from './finish';
 import { sampledArray } from './trials';
-import { stimuliVideoTutorialTrial, } from './tutorial';
+import { instructionalTrial, noStimuliVideoTutorialTrial, practiceLoop, stimuliVideoTutorialTrial, validationVideoTutorialTrial, } from './tutorial';
+import { validationResultScreen, validationTrialEasy, validationTrialExtra, validationTrialHard, validationTrialMedium, } from './validation';
 let state = {
     medianTapsPart1: 0,
     medianTaps: 0,
@@ -38,10 +40,9 @@ export async function run({ assetPaths, input = {}, environment, title, version,
         audio: assetPaths.audio,
         video: ['../assets/videos'],
     });
-    /*   timeline.push(noStimuliVideoTutorialTrial(jsPsych));
-      timeline.push(practiceLoop(jsPsych));
-    
-      timeline.push(instructionalTrial(CALIBRATION_PART_1_DIRECTIONS)); */
+    timeline.push(noStimuliVideoTutorialTrial(jsPsych));
+    timeline.push(practiceLoop(jsPsych));
+    timeline.push(instructionalTrial(CALIBRATION_PART_1_DIRECTIONS));
     timeline.push(calibrationTrialPart1(jsPsych, state)),
         timeline.push(conditionalCalibrationTrialPart1(jsPsych, state));
     timeline.push(stimuliVideoTutorialTrial(jsPsych));
@@ -49,25 +50,25 @@ export async function run({ assetPaths, input = {}, environment, title, version,
         timeline: [calibrationTrialPart2(jsPsych, state)],
     });
     timeline.push(conditionalCalibrationTrialPart2(jsPsych, state));
-    /*   timeline.push(validationVideoTutorialTrial(jsPsych));
-      timeline.push({
+    timeline.push(validationVideoTutorialTrial(jsPsych));
+    timeline.push({
         timeline: [validationTrialEasy(jsPsych, state)],
-      });
-      timeline.push({
+    });
+    timeline.push({
         timeline: [validationTrialMedium(jsPsych, state)],
-      });
-      timeline.push({
+    });
+    timeline.push({
         timeline: [validationTrialHard(jsPsych, state)],
-      });
-      timeline.push({
+    });
+    timeline.push({
         timeline: [validationTrialExtra(jsPsych, state)],
         conditional_function: function () {
-          return state.extraValidationRequired;
+            return state.extraValidationRequired;
         },
-      });
-      timeline.push({
+    });
+    timeline.push({
         timeline: [validationResultScreen(jsPsych, state)]
-      }); */
+    });
     const sampledTrials = sampledArray(jsPsych, state);
     sampledTrials.forEach((trialBlock) => {
         trialBlock.forEach((trial) => {

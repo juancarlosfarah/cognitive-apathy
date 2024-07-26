@@ -54,10 +54,6 @@ export const createCalibrationTrial = ({
             AUTO_DECREASE_AMOUNT, 
             state.medianTapsPart1)
         },
-        data: {
-          task: calibrationPart,
-          bounds,
-        },
         on_start: function (trial: any) {
           const keyTappedEarlyFlag = checkFlag(
             'countdown',
