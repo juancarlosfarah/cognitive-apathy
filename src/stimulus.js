@@ -26,7 +26,7 @@ export function stimulus(showThermometer, mercuryHeight, lowerBound, upperBound)
         ${bounds}
       </div>
     </div>`
-        : '<p style="font-size: 48px; position: absolute;">+</p>';
+        : '<div id = "no_stimuli_calibration"><p style="font-size: 48px; position: absolute;">+</p></div>';
     return `
     <div id="calibration-task" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
         ${thermometer}
