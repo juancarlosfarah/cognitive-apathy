@@ -88,12 +88,12 @@ export class ReleaseKeysPlugin {
         backupMessageElement.style.bottom = '10px';
         backupMessageElement.style.width = '100%';
         backupMessageElement.style.textAlign = 'center';
-        backupMessageElement.style.fontSize = 'small';
+        backupMessageElement.style.fontSize = 'xx-large';
         backupMessageElement.style.color = 'red';
         backupMessageElement.innerHTML = `<p>${RELEASE_KEYS_BACKUP_MESSAGE}</p>`;
         display_element.appendChild(backupMessageElement);
       }
-    }, 3000);
+    }, 1000);
   }
 }
 
