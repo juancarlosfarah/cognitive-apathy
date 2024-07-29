@@ -29,14 +29,14 @@ export function randomNumberBm(min, max, skew = 1) {
 /**
  * Calculate the auto-increase amount for the thermometer.
  *
- * @param {number} EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION - The expected maximum percentage for calibration.
+ * @param {number} EXPECTED_MAXIMUM_PERCENTAGE - The expected maximum percentage for calibration.
  * @param {number} TRIAL_DURATION - The duration of the trial.
  * @param {number} AUTO_DECREASE_RATE - The rate at which auto-decrease occurs.
  * @param {number} AUTO_DECREASE_AMOUNT - The amount by which auto-decrease occurs.
  * @returns {number} - The calculated auto-increase amount.
  */
-export function autoIncreaseAmount(EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, TRIAL_DURATION, AUTO_DECREASE_RATE, AUTO_DECREASE_AMOUNT, median) {
-    return ((EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION +
+export function autoIncreaseAmount(EXPECTED_MAXIMUM_PERCENTAGE, TRIAL_DURATION, AUTO_DECREASE_RATE, AUTO_DECREASE_AMOUNT, median) {
+    return ((EXPECTED_MAXIMUM_PERCENTAGE +
         (TRIAL_DURATION / AUTO_DECREASE_RATE) * AUTO_DECREASE_AMOUNT) /
         median);
 }

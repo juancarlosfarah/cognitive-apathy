@@ -1,6 +1,5 @@
 describe('Run Through Loop Testing Successfully', () => {
-  const pressInterval = 325; // Interval between key presses in milliseconds
-  const numberOfPresses = 5; // Total number of presses during the key hold
+
 
   beforeEach(() => {
     cy.visit('http://localhost:3000/'); // Update with the correct URL
@@ -16,8 +15,7 @@ describe('Run Through Loop Testing Successfully', () => {
 
 
 describe('Run Through Calibration Part 1', () => {
-  const pressInterval = 325; // Interval between key presses in milliseconds
-  const numberOfPresses = 5; // Total number of presses during the key hold
+
 
 
   it('Should run the practice trial and show the following directions', () => {
@@ -30,8 +28,6 @@ describe('Run Through Calibration Part 1', () => {
 const { TUTORIAL_MESSAGE_1, INTERACTIVE_KEYBOARD_TUTORIAL_MESSAGE, PREMATURE_KEY_RELEASE_ERROR_TIME, CALIBRATION_PART_1_DIRECTIONS } = require("../../src/constants");
 
 describe('Run Through Loop Testing With the keys released early', () => {
-  const pressInterval = 325; // Interval between key presses in milliseconds
-  const numberOfPresses = 5; // Total number of presses during the key hold
 
   beforeEach(() => {
     cy.visit('http://localhost:3000/'); // Update with the correct URL
