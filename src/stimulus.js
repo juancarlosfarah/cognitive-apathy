@@ -48,7 +48,7 @@ export const acceptanceThermometer = (bounds, reward) => `
     >
       <div
         id="blue-area"
-        style="position: absolute; bottom: ${bounds[0]}%; height: ${bounds[1] - bounds[0]}%; width: 100%; background-color: light-blue;"
+        style="position: absolute; bottom: ${bounds[0]}%; height: ${bounds[1] - bounds[0]}%; width: 100%; background-color: blue;"
       ></div>
       <div
         id="lower-bound"
@@ -105,7 +105,7 @@ ${STIMULI_VIDEO_TUTORIAL_MESSAGE}
   <video
     id="videoTutorial"
     title="Tutorial Video"
-    style="background-color: rgb(255, 255, 255); width: 640px; height: 400px;"
+    style="background-color: rgb(255, 255, 255); width: 600px; height: 400px;"
     src="../assets/videos/calibration-2-video.mp4"
     autoplay
     muted

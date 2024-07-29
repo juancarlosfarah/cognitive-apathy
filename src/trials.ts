@@ -4,7 +4,6 @@ import {
   AUTO_DECREASE_AMOUNT,
   AUTO_DECREASE_RATE,
   DEMO_TRIAL_MESSAGE,
-  EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
   FAILED_MINIMUM_DEMO_TAPS_DURATION,
   FAILED_MINIMUM_DEMO_TAPS_MESSAGE,
   MINIMUM_DEMO_TAPS,
@@ -13,6 +12,7 @@ import {
   PARAMETER_COMBINATIONS,
   REWARD_TOTAL_MESSAGE,
   TRIAL_DURATION,
+  EXPECTED_MAXIMUM_PERCENTAGE
 } from './constants';
 import { countdownStep } from './countdown';
 import { likertQuestions1, likertQuestions2 } from './likert';
@@ -77,7 +77,7 @@ export const createTrialBlock = ({
                 autoIncreaseAmount: function () {
                   console.log(state.medianTaps);
                   return autoIncreaseAmount(
-                    EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
+                    EXPECTED_MAXIMUM_PERCENTAGE,
                     TRIAL_DURATION,
                     AUTO_DECREASE_RATE,
                     AUTO_DECREASE_AMOUNT,
@@ -224,7 +224,7 @@ export const createTrialBlock = ({
                   task: 'block',
                   autoIncreaseAmount: function () {
                     return autoIncreaseAmount(
-                      EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
+                      EXPECTED_MAXIMUM_PERCENTAGE,
                       TRIAL_DURATION,
                       AUTO_DECREASE_RATE,
                       AUTO_DECREASE_AMOUNT,

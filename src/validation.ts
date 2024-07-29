@@ -2,12 +2,12 @@ import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
 import {
   AUTO_DECREASE_AMOUNT,
   AUTO_DECREASE_RATE,
-  EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
   FAILED_VALIDATION_MESSAGE,
   NUM_EXTRA_VALIDATION_TRIALS,
   NUM_VALIDATION_TRIALS,
   PASSED_VALIDATION_MESSAGE,
   TRIAL_DURATION,
+  EXPECTED_MAXIMUM_PERCENTAGE
 } from './constants';
 import { countdownStep } from './countdown';
 import { loadingBarTrial } from './loading-bar';
@@ -58,7 +58,7 @@ export const createValidationTrial = (
       bounds: bounds,
       autoIncreaseAmount: function () {
         return autoIncreaseAmount(
-          EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
+          EXPECTED_MAXIMUM_PERCENTAGE,
           TRIAL_DURATION,
           AUTO_DECREASE_RATE,
           AUTO_DECREASE_AMOUNT,
