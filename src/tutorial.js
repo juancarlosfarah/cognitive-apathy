@@ -42,8 +42,8 @@ export const dominantHand = {
 export const noStimuliVideoTutorial = {
     type: htmlButtonResponse,
     stimulus: [noStimuliVideo],
+    enable_button_after: 2000,
     choices: [CONTINUE_BUTTON_MESSAGE],
-    enable_button_after: 15000,
 };
 export const noStimuliVideoTutorialTrial = (jsPsych) => ({
     timeline: [noStimuliVideoTutorial],

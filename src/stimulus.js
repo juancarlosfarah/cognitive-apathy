@@ -89,8 +89,8 @@ ${NO_STIMULI_VIDEO_TUTORIAL_MESSAGE}
   <video
     id="videoTutorial"
     title="Tutorial Video"
-    style="background-color: rgb(255, 255, 255); width: 640px; height: 200px;"
-    src="../assets/videos/calibration-1-video.mp4"
+    style="background-color: rgb(255, 255, 255); width: 640px; height: 400px;"
+    src="../assets/videos/tutorial_video_no_stimuli.mp4"
     autoplay
     muted
     loop
