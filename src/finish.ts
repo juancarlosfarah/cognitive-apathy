@@ -1,5 +1,4 @@
 import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
-import { saveAs } from 'file-saver';
 import {FAILED_VALIDATION_MESSAGE, END_EXPERIMENT_MESSAGE } from './constants';
 import { calculateTotalReward } from './utils';
 import { JsPsych } from 'jspsych';
@@ -16,16 +15,12 @@ export const finishExperiment = (jsPsych: JsPsych) => ({
   on_finish: function (data: any) {
     const totalSuccessfulReward = calculateTotalReward(jsPsych);
     data.totalReward = totalSuccessfulReward;
-    const allData = jsPsych.data.get().json();
-    const blob = new Blob([allData], { type: 'application/json' });
-    saveAs(blob, `experiment_data_${new Date().toISOString()}.json`);
+    jsPsych.data.get().localSave('csv','cognitive-apathy.csv');
   },
 });
 
 export const finishExperimentEarly = (jsPsych: JsPsych) => {
-  const allData = jsPsych.data.get().json();
-  const blob = new Blob([allData], { type: 'application/json' });
-  saveAs(blob, `experiment_data_${new Date().toISOString()}.json`);
+  jsPsych.data.get().localSave('csv','cognitive-apathy.csv');
   jsPsych.abortExperiment(FAILED_VALIDATION_MESSAGE);
 }
 
@@ -37,8 +32,6 @@ export const finishExperimentEarlyTrial = (jsPsych: JsPsych) => ({
     task: 'finish_experiment',
   },
   on_finish: function () {
-    const allData = jsPsych.data.get().json();
-    const blob = new Blob([allData], { type: 'application/json' });
-    saveAs(blob, `experiment_data_${new Date().toISOString()}.json`);
+    jsPsych.data.get().localSave('csv','cognitive-apathy.csv');
   },
 });

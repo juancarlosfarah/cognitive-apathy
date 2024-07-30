@@ -122,7 +122,7 @@ export const createConditionalCalibrationTrial = ({ calibrationPart, numTrials, 
                 timeline: [finishExperimentEarlyTrial(jsPsych)],
                 conditional_function: function () {
                     if (calibrationPart === 'calibrationPart1') {
-                        if (!(state.medianTapsPart1 >= MINIMUM_CALIBRATION_MEDIAN)) {
+                        if ((state.medianTapsPart1 >= MINIMUM_CALIBRATION_MEDIAN)) {
                             return false;
                         }
                         else

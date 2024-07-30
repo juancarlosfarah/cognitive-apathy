@@ -127,12 +127,7 @@ export const createTrialBlock = ({
                     timeline: [failedMinimumDemoTapsTrial],
                     // Check if minimum taps was reached in the last trial to determine whether 'failedMinimumDemoTapsTrial' should display
                     conditional_function: function () {
-                      const lastTrialData = jsPsych.data
-                        .get()
-                        .filter({ task: 'demo' })
-                        .last(1)
-                        .values()[0];
-                      return !state.minimumDemoTapsReached && !lastTrialData.keyTappedEarlyFlag;
+                      return !state.minimumDemoTapsReached
                     },
                   },
                   {

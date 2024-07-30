@@ -14,18 +14,18 @@ export function stimulus(
   upperBound: number,
 ) {
   const bounds = `
-    <div
-      id="lower-bound"
-      style="position: absolute; bottom: ${lowerBound}%; width: 100%; height: 2px; background-color: black;"
-    ></div>
-    <div
-      id="upper-bound"
-      style="position: absolute; bottom: ${upperBound}%; width: 100%; height: 2px; background-color: black;"
-    ></div>
-  `;
+  <div
+    id="lower-bound"
+    style="position: absolute; bottom: ${lowerBound}%; width: 100%; height: 2px; background-color: black;"
+  ></div>
+  <div
+    id="upper-bound"
+    style="position: absolute; bottom: ${upperBound}%; width: 100%; height: 2px; background-color: black;"
+  ></div>
+`;
 
-  const thermometer = showThermometer
-    ? `<div
+const thermometer = showThermometer
+  ? `<div
       id="thermometer-container"
       style="display: flex; justify-content: center; align-items: center; height: 300px; width: 100px; border: 1px solid #000;"
     >
@@ -40,14 +40,17 @@ export function stimulus(
         ${bounds}
       </div>
     </div>`
-    : '<div id = "no_stimuli_calibration"><p style="font-size: 48px; position: absolute;">+</p></div>';
+  : `<div id="no_stimuli_calibration" style="position: relative; display: flex; justify-content: center; align-items: center; height: 300px; width: 100px;">
+       <p style="font-size: 48px; position: absolute;">+</p>
+     </div>`;
 
-  return `
-    <div id="calibration-task" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
-        ${thermometer}
-    </div>
-  `;
+return `
+  <div id="calibration-task" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
+    ${thermometer}
+  </div>
+`;
 }
+
 
 export const acceptanceThermometer = (bounds: number[], reward: number) => `
 <div
