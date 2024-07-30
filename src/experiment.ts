@@ -51,7 +51,11 @@ let state: State = {
   minimumDemoTapsReached: false
 };
 import './i18n'
+if ((window as any).Cypress) {
+  (window as any).state = state;
+  (window as any).appReady = true;
 
+}
 /**
  * @function run
  * @description Main function to run the experiment

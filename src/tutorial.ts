@@ -61,7 +61,7 @@ export const dominantHand = {
 export const noStimuliVideoTutorial = {
   type: htmlButtonResponse,
   stimulus: [noStimuliVideo],
-  enable_button_after: 15000,
+  enable_button_after: 0,
   choices: [CONTINUE_BUTTON_MESSAGE],
 };
 
@@ -77,7 +77,7 @@ export const stimuliVideoTutorial = {
   type: htmlButtonResponse,
   stimulus: [stimuliVideo],
   choices: [CONTINUE_BUTTON_MESSAGE],
-  enable_button_after: 15000,
+  enable_button_after: 0,
 };
 
 export const stimuliVideoTutorialTrial = (jsPsych: JsPsych) => ({
@@ -92,7 +92,7 @@ export const validationVideoTutorial = {
   type: htmlButtonResponse,
   stimulus: [validationVideo],
   choices: [CONTINUE_BUTTON_MESSAGE],
-  enable_button_after: 15000,
+  enable_button_after: 0,
 };
 
 export const validationVideoTutorialTrial = (jsPsych: JsPsych) => ({

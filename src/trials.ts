@@ -183,7 +183,9 @@ export const createTrialBlock = ({
 
       trials[i].bounds = [newCenter - (differenceBetweenBounds / 2), newCenter + (differenceBetweenBounds / 2)];
     }
-
+    if ((window as any).Cypress) {
+      (window as any).trials = trials;
+    }
     // Shuffle the order of these trials
     trials = jsPsych.randomization.shuffle(trials);
     timeline.push(
