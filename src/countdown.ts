@@ -12,12 +12,13 @@ import {
   COUNTDOWN_TIMER_MESSAGE
 } from './constants';
 import { createKeyboard } from './keyboard';
+import { State } from './types';
 
 export class CountdownTrialPlugin {
   static info = {
     name: 'countdown-trial',
     parameters: {
-      keystoHold: {
+      keysToHold: {
         type: ParameterType.STRING,
         array: true,
         default: KEYS_TO_HOLD,
@@ -57,13 +58,14 @@ export class CountdownTrialPlugin {
   jsPsych: JsPsych;
   constructor(jsPsych: JsPsych) {
     this.jsPsych = jsPsych;
+  
   }
 
   trial(displayElement: HTMLElement, trial: any) {
     console.log('Trial started with parameters:', trial);
 
     let keysState: { [key: string]: boolean } = {};
-    (trial.keystoHold || []).forEach(
+    (trial.keysToHold || []).forEach(
       (key: string) => (keysState[key.toLowerCase()] = false),
     );
 
@@ -99,7 +101,7 @@ export class CountdownTrialPlugin {
       // Event listeners to sync physical keyboard with on-screen keyboard
       document.addEventListener('keydown', (event) => {
         const key = event.key.toLowerCase();
-        if (trial.keystoHold.includes(key) && inputElement) {
+        if (trial.keysToHold.includes(key) && inputElement) {
           keyboardInstance.setInput(inputElement.value + key);
           const button = keyboardDiv.querySelector(`[data-skbtn="${key}"]`);
           if (button) {
@@ -125,7 +127,7 @@ export class CountdownTrialPlugin {
     }
 
     const setAreKeysHeld = () => {
-      areKeysHeld = (trial.keystoHold || []).every(
+      areKeysHeld = (trial.keysToHold || []).every(
         (key: string) => keysState[key.toLowerCase()],
       );
       if (areKeysHeld && !interval) {
@@ -145,18 +147,19 @@ export class CountdownTrialPlugin {
 
     const handleKeyDown = (event: KeyboardEvent) => {
       const key = event.key.toLowerCase();
-      if ((trial.keystoHold || []).includes(key)) {
+      if ((trial.keysToHold || []).includes(key)) {
         keysState[key] = true;
         setAreKeysHeld();
       }
       if (key === trial.keyToPress.toLowerCase()) {
         trial.keyTappedEarlyFlag = true;
+        state.keyTappedEarlyFlag = true;
       }
     };
 
     const handleKeyUp = (event: KeyboardEvent) => {
       const key = event.key.toLowerCase();
-      if ((trial.keystoHold || []).includes(key)) {
+      if ((trial.keysToHold || []).includes(key)) {
         keysState[key] = false;
         setAreKeysHeld();
       }
@@ -215,7 +218,9 @@ export class CountdownTrialPlugin {
   }
 }
 
-export const countdownStep = {
+
+
+export const countdownStep = (state: State) => ({
   timeline: [
     {
       type: CountdownTrialPlugin,
@@ -233,4 +238,4 @@ export const countdownStep = {
       },
     },
   ],
-};
+});

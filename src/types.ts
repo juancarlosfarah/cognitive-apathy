@@ -15,6 +15,8 @@ export interface State {
   failedMinimumDemoTapsTrial: number;
   demoTrialSuccesses: number;
   minimumDemoTapsReached: boolean;
+  keyTappedEarlyFlag: boolean;
+  keysReleasedFlag: boolean;
 }
 
 // Define the CalibrationTrialParams interface
@@ -66,3 +68,12 @@ export interface PassedTaskData {
   randomDelay: number[];
 }
 
+
+export interface CreateTrialBlockParams {
+  blockName?: string;
+  randomDelay: [number, number];
+  bounds?: [number, number];
+  includeDemo?: boolean;
+  jsPsych: JsPsych;
+  state: State;
+}

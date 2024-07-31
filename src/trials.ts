@@ -22,7 +22,7 @@ import { releaseKeysStep } from './release-keys';
 import { acceptanceThermometer } from './stimulus';
 import TaskPlugin from './task';
 import { autoIncreaseAmount, calculateTotalReward, checkFlag, randomNumberBm } from './utils';
-import { State, TaskTrialData, PassedTaskData } from './types'; // Assuming you have the appropriate types defined here
+import { State, TaskTrialData, PassedTaskData, CreateTrialBlockParams } from './types'; // Assuming you have the appropriate types defined here
 import { EASY_BOUNDS } from './constants';
 
 const failedMinimumDemoTapsTrial = {
@@ -32,14 +32,7 @@ const failedMinimumDemoTapsTrial = {
   trial_duration: FAILED_MINIMUM_DEMO_TAPS_DURATION,
 };
 
-interface CreateTrialBlockParams {
-  blockName?: string;
-  randomDelay: [number, number];
-  bounds?: [number, number];
-  includeDemo?: boolean;
-  jsPsych: JsPsych;
-  state: State;
-}
+
 
 export const createTrialBlock = ({
   blockName,
