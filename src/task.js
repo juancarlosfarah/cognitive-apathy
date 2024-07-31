@@ -49,7 +49,7 @@ class TaskPlugin {
             if (startMessageElement) {
                 startMessageElement.style.display = areKeysHeld ? 'block' : 'none';
             }
-            if (!areKeysHeld) {
+            if (!areKeysHeld && !trial.keyTappedEarlyFlag) {
                 setError(PREMATURE_KEY_RELEASE_ERROR_MESSAGE);
                 trial.keysReleasedFlag = true;
                 display_element.innerHTML = `
@@ -75,6 +75,7 @@ class TaskPlugin {
             }
         };
         const handleKeyUp = (event) => {
+            console.log(event);
             const key = event.key.toLowerCase();
             if (KEYS_TO_HOLD.includes(key)) {
                 keysState[key] = false;
@@ -134,6 +135,7 @@ class TaskPlugin {
         const end_trial = () => {
             document.removeEventListener('keydown', handleKeyDown);
             document.removeEventListener('keyup', handleKeyUp);
+            console.log(keysState);
             const trialData = {
                 tapCount,
                 startTime,
@@ -147,20 +149,11 @@ class TaskPlugin {
                 keysReleasedFlag: trial.keysReleasedFlag,
                 success: isSuccess(),
                 keyTappedEarlyFlag: trial.keyTappedEarlyFlag,
+                keysState: keysState
             };
             this.jsPsych.finishTrial(trialData);
             console.log(trialData);
         };
-        if (trial.keyTappedEarlyFlag) {
-            console.log('keyTappedEarlyActive');
-            display_element.innerHTML = `
-        <div id="status" style="margin-top: 50px;">
-          <div id="error-message" style="color: red;">${KEY_TAPPED_EARLY_MESSAGE}</div>
-        </div>
-      `;
-            setTimeout(() => stopRunning(true), KEY_TAPPED_EARLY_ERROR_TIME);
-            return;
-        }
         display_element.innerHTML = stimulus(trial.showThermometer, this.mercuryHeight, trial.bounds[0], trial.bounds[1]);
         if (trial.showKeyboard) {
             const { keyboard, keyboardDiv } = createKeyboard(display_element);
@@ -196,6 +189,16 @@ class TaskPlugin {
         }
         document.addEventListener('keydown', handleKeyDown);
         document.addEventListener('keyup', handleKeyUp);
+        if (trial.keyTappedEarlyFlag) {
+            console.log('keyTappedEarlyActive');
+            display_element.innerHTML = `
+        <div id="status" style="margin-top: 50px;">
+          <div id="error-message" style="color: red;">${KEY_TAPPED_EARLY_MESSAGE}</div>
+        </div>
+      `;
+            setTimeout(() => stopRunning(true), KEY_TAPPED_EARLY_ERROR_TIME);
+            return;
+        }
         startRunning();
         this.jsPsych.pluginAPI.setTimeout(() => {
             stopRunning();

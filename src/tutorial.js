@@ -6,7 +6,7 @@ import { loadingBarTrial } from './loading-bar';
 import { releaseKeysStep } from './release-keys';
 import { noStimuliVideo, stimuliVideo, validationVideo, videoStimulus, } from './stimulus';
 import TaskPlugin from './task';
-import { checkFlag } from './utils';
+import { checkFlag, checkKeys } from './utils';
 export const interactiveCountdown = {
     type: CountdownTrialPlugin,
     message: INTERACTIVE_KEYBOARD_TUTORIAL_MESSAGE,
@@ -94,7 +94,7 @@ export const practiceTrial = (jsPsych) => ({
         {
             timeline: [releaseKeysStep],
             conditional_function: function () {
-                return !checkFlag('practice', 'keysReleasedFlag', jsPsych);
+                return checkKeys('practice', jsPsych);
             },
         },
     ],

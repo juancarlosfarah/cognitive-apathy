@@ -9,7 +9,7 @@ export class CountdownTrialPlugin {
     trial(displayElement, trial) {
         console.log('Trial started with parameters:', trial);
         let keysState = {};
-        (trial.keystoHold || []).forEach((key) => (keysState[key.toLowerCase()] = false));
+        (trial.keysToHold || []).forEach((key) => (keysState[key.toLowerCase()] = false));
         let areKeysHeld = false;
         let interval = null;
         let keyboardInstance;
@@ -37,7 +37,7 @@ export class CountdownTrialPlugin {
             // Event listeners to sync physical keyboard with on-screen keyboard
             document.addEventListener('keydown', (event) => {
                 const key = event.key.toLowerCase();
-                if (trial.keystoHold.includes(key) && inputElement) {
+                if (trial.keysToHold.includes(key) && inputElement) {
                     keyboardInstance.setInput(inputElement.value + key);
                     const button = keyboardDiv.querySelector(`[data-skbtn="${key}"]`);
                     if (button) {
@@ -60,7 +60,7 @@ export class CountdownTrialPlugin {
             });
         }
         const setAreKeysHeld = () => {
-            areKeysHeld = (trial.keystoHold || []).every((key) => keysState[key.toLowerCase()]);
+            areKeysHeld = (trial.keysToHold || []).every((key) => keysState[key.toLowerCase()]);
             if (areKeysHeld && !interval) {
                 messageContainer.innerHTML = ''; // Hide the initial message
                 directionsContainer.innerHTML = `<p>${COUNTDOWN_DIRECTIONS}</p>`;
@@ -78,7 +78,7 @@ export class CountdownTrialPlugin {
         };
         const handleKeyDown = (event) => {
             const key = event.key.toLowerCase();
-            if ((trial.keystoHold || []).includes(key)) {
+            if ((trial.keysToHold || []).includes(key)) {
                 keysState[key] = true;
                 setAreKeysHeld();
             }
@@ -88,7 +88,7 @@ export class CountdownTrialPlugin {
         };
         const handleKeyUp = (event) => {
             const key = event.key.toLowerCase();
-            if ((trial.keystoHold || []).includes(key)) {
+            if ((trial.keysToHold || []).includes(key)) {
                 keysState[key] = false;
                 setAreKeysHeld();
             }
@@ -139,7 +139,7 @@ export class CountdownTrialPlugin {
 CountdownTrialPlugin.info = {
     name: 'countdown-trial',
     parameters: {
-        keystoHold: {
+        keysToHold: {
             type: ParameterType.STRING,
             array: true,
             default: KEYS_TO_HOLD,

@@ -93,6 +93,17 @@ export const checkFlag = (
   return false;
 };
 
+
+export const checkKeys = (
+  taskFilter: string,
+  jsPsych: JsPsych
+): boolean => {
+  const lastTrialData = jsPsych.data.get().filter({ task: taskFilter }).last(1).values()[0];
+  const keysState = lastTrialData.keysState;
+  const wereKeysHeld = Object.values(keysState).every(state => state);
+  return wereKeysHeld
+};
+
 // Function to calculate accumulated reward
 export function calculateTotalReward(jsPsych: JsPsych): number {
   const successfulTrials = jsPsych.data

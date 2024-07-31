@@ -21,7 +21,7 @@ import { successScreen } from './message-trials';
 import { releaseKeysStep } from './release-keys';
 import { acceptanceThermometer } from './stimulus';
 import TaskPlugin from './task';
-import { autoIncreaseAmount, calculateTotalReward, checkFlag, randomNumberBm } from './utils';
+import { autoIncreaseAmount, calculateTotalReward, checkFlag, randomNumberBm, checkKeys } from './utils';
 import { State, TaskTrialData, PassedTaskData, CreateTrialBlockParams } from './types'; // Assuming you have the appropriate types defined here
 import { EASY_BOUNDS } from './constants';
 
@@ -107,13 +107,7 @@ export const createTrialBlock = ({
                   {
                     timeline: [releaseKeysStep],
                     conditional_function: function () {
-                      const keysReleasedFlag = checkFlag(
-                        'demo',
-                        'keysReleasedFlag',
-                        jsPsych,
-                      );
-                      console.log(keysReleasedFlag)
-                      return !keysReleasedFlag;
+                      return checkKeys('demo', jsPsych)
                     },
                   },
                   {
@@ -254,7 +248,7 @@ export const createTrialBlock = ({
                 {
                   timeline: [releaseKeysStep],
                   conditional_function: function () {
-                    return !checkFlag('block', 'keysReleasedFlag', jsPsych);
+                    return checkKeys('block', jsPsych)
                   },
                 },
               ],

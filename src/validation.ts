@@ -14,7 +14,7 @@ import { loadingBarTrial } from './loading-bar';
 import { successScreen } from './message-trials';
 import { releaseKeysStep } from './release-keys';
 import TaskPlugin from './task';
-import { autoIncreaseAmount, checkFlag } from './utils';
+import { autoIncreaseAmount, checkKeys } from './utils';
 import { finishExperimentEarly } from './finish';
 import { State, ValidationData } from './types';
 import { JsPsych } from 'jspsych';
@@ -79,7 +79,7 @@ export const createValidationTrial = (
     {
       timeline: [releaseKeysStep],
       conditional_function: function () {
-        return !checkFlag(validationName, 'keysReleasedFlag', jsPsych);
+        return checkKeys(validationName, jsPsych)
       },
     },
     {

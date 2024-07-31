@@ -5,7 +5,7 @@ import { loadingBarTrial } from './loading-bar';
 import { successScreen } from './message-trials';
 import { releaseKeysStep } from './release-keys';
 import TaskPlugin from './task';
-import { autoIncreaseAmount, checkFlag } from './utils';
+import { autoIncreaseAmount, checkKeys } from './utils';
 import { finishExperimentEarly } from './finish';
 export const handleValidationFinish = (data, validationName, state) => {
     if (validationName !== 'validationExtra') {
@@ -53,7 +53,7 @@ export const createValidationTrial = (bounds, validationName, repetitions, jsPsy
         {
             timeline: [releaseKeysStep],
             conditional_function: function () {
-                return !checkFlag(validationName, 'keysReleasedFlag', jsPsych);
+                return checkKeys(validationName, jsPsych);
             },
         },
         {

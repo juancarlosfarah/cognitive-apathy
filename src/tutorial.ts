@@ -19,7 +19,7 @@ import {
   videoStimulus,
 } from './stimulus';
 import TaskPlugin from './task';
-import { checkFlag } from './utils';
+import { checkFlag, checkKeys } from './utils';
 import { JsPsych } from 'jspsych';
 
 export const interactiveCountdown = {
@@ -123,7 +123,7 @@ export const practiceTrial = (jsPsych: JsPsych) => ({
     {
       timeline: [releaseKeysStep],
       conditional_function: function () {
-        return !checkFlag('practice', 'keysReleasedFlag', jsPsych);
+        return checkKeys('practice', jsPsych)
       },
     },
   ],

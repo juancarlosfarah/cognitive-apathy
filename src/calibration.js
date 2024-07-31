@@ -5,7 +5,7 @@ import { finishExperimentEarlyTrial } from './finish';
 import { loadingBarTrial } from './loading-bar';
 import { releaseKeysStep } from './release-keys';
 import TaskPlugin from './task';
-import { autoIncreaseAmount, calculateMedianTapCount, checkFlag, } from './utils';
+import { autoIncreaseAmount, calculateMedianTapCount, checkFlag, checkKeys } from './utils';
 export const createCalibrationTrial = ({ showThermometer, bounds, calibrationPart, jsPsych, state, }) => {
     return {
         timeline: [
@@ -55,7 +55,7 @@ export const createCalibrationTrial = ({ showThermometer, bounds, calibrationPar
             {
                 timeline: [releaseKeysStep],
                 conditional_function: function () {
-                    return !checkFlag(calibrationPart, 'keysReleasedFlag', jsPsych);
+                    return checkKeys(calibrationPart, jsPsych);
                 },
             },
             {

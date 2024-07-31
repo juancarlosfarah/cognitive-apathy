@@ -1,5 +1,5 @@
 import { ParameterType, JsPsych } from 'jspsych';
-import { KEYS_TO_HOLD, RELEASE_KEYS_MESSAGE, RELEASE_KEYS_BACKUP_MESSAGE } from './constants';
+import { KEYS_TO_HOLD, RELEASE_KEYS_MESSAGE } from './constants';
 
 export class ReleaseKeysPlugin {
   static info = {
@@ -40,7 +40,6 @@ export class ReleaseKeysPlugin {
       keysState[key.toLowerCase()] = true;
     });
     let errorOccurred = false;
-    let activeTrial = true;
 
     display_element.innerHTML = trial.stimulus;
 
@@ -68,7 +67,6 @@ export class ReleaseKeysPlugin {
     };
 
     const endTrial = () => {
-      activeTrial = false;
       document.removeEventListener('keyup', handleKeyUp);
       document.removeEventListener('keydown', handleKeyDown);
       display_element.innerHTML = '';
@@ -79,21 +77,6 @@ export class ReleaseKeysPlugin {
     document.addEventListener('keyup', handleKeyUp);
     document.addEventListener('keydown', handleKeyDown);
 
-
-    // Add backup in case trial does not end as it should
-    setTimeout(() => {
-      if (activeTrial) { // Ensure the trial is still active
-        const backupMessageElement = document.createElement('div');
-        backupMessageElement.style.position = 'absolute';
-        backupMessageElement.style.bottom = '10px';
-        backupMessageElement.style.width = '100%';
-        backupMessageElement.style.textAlign = 'center';
-        backupMessageElement.style.fontSize = 'xx-large';
-        backupMessageElement.style.color = 'red';
-        backupMessageElement.innerHTML = `<p>${RELEASE_KEYS_BACKUP_MESSAGE}</p>`;
-        display_element.appendChild(backupMessageElement);
-      }
-    }, 1000);
   }
 }
 

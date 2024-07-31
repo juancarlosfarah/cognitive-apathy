@@ -25,6 +25,7 @@ import {
   autoIncreaseAmount,
   calculateMedianTapCount,
   checkFlag,
+  checkKeys
 } from './utils';
 
 export const createCalibrationTrial = ({
@@ -99,7 +100,7 @@ export const createCalibrationTrial = ({
       {
         timeline: [releaseKeysStep],
         conditional_function: function () {
-          return !checkFlag(calibrationPart, 'keysReleasedFlag', jsPsych);
+          return checkKeys(calibrationPart, jsPsych)
         },
       },
       {

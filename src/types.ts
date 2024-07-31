@@ -57,6 +57,7 @@ export interface TaskTrialData {
   accepted?: boolean; // Added accepted as optional
   response?: string;
   minimumTapsReached?: boolean;
+  keysState?: { [key: string]: boolean }
 }
 
 export interface PassedTaskData {
