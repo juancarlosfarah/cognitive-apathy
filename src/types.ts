@@ -15,8 +15,6 @@ export interface State {
   failedMinimumDemoTapsTrial: number;
   demoTrialSuccesses: number;
   minimumDemoTapsReached: boolean;
-  keyTappedEarlyFlag: boolean;
-  keysReleasedFlag: boolean;
 }
 
 // Define the CalibrationTrialParams interface

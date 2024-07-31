@@ -12,7 +12,6 @@ import {
   COUNTDOWN_TIMER_MESSAGE
 } from './constants';
 import { createKeyboard } from './keyboard';
-import { State } from './types';
 
 export class CountdownTrialPlugin {
   static info = {
@@ -153,7 +152,6 @@ export class CountdownTrialPlugin {
       }
       if (key === trial.keyToPress.toLowerCase()) {
         trial.keyTappedEarlyFlag = true;
-        state.keyTappedEarlyFlag = true;
       }
     };
 
@@ -220,7 +218,7 @@ export class CountdownTrialPlugin {
 
 
 
-export const countdownStep = (state: State) => ({
+export const countdownStep = {
   timeline: [
     {
       type: CountdownTrialPlugin,
@@ -238,4 +236,4 @@ export const countdownStep = (state: State) => ({
       },
     },
   ],
-});
+};
