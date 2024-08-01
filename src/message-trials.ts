@@ -1,10 +1,17 @@
 import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
-
+import htmlButtonResponse from '@jspsych/plugin-html-button-response';
+import FullscreenPlugin from '@jspsych/plugin-fullscreen';
 import {
   SUCCESS_SCREEN_DURATION,
   TRIAL_FAILED,
   TRIAL_SUCCEEDED,
+  CONTINUE_BUTTON_MESSAGE,
+  EXPERIMENT_BEGIN_MESSAGE,
+  TUTORIAL_INTRODUCTION_MESSAGE,
+  PROGRESS_BAR
 } from './constants';
+import { changeProgressBar } from './utils';
+import { JsPsych } from 'jspsych';
 
 export const endExperimentTrial = (message: string) => ({
   type: HtmlKeyboardResponsePlugin,
@@ -33,6 +40,21 @@ export const successScreen = (jsPsych: any) => ({
   },
 });
 
+export const experimentBeginTrial = {
+  type: FullscreenPlugin,
+  choices: [CONTINUE_BUTTON_MESSAGE],
+  message: [EXPERIMENT_BEGIN_MESSAGE],
+  fullscreen_mode: true
+};
+
+export const tutorialIntroductionTrial = (jsPsych: JsPsych) => ({
+  type: htmlButtonResponse,
+  choices: [CONTINUE_BUTTON_MESSAGE],
+  stimulus: [TUTORIAL_INTRODUCTION_MESSAGE],
+  on_finish: function(){
+    changeProgressBar(PROGRESS_BAR.PROGRESS_BAR_TUTORIAL, .05, jsPsych )
+  }
+})
 
 
 

@@ -11,7 +11,7 @@ import { initJsPsych } from 'jspsych';
 import '../styles/main.scss';
 import { calibrationTrialPart1, calibrationTrialPart2, conditionalCalibrationTrialPart1, conditionalCalibrationTrialPart2 } from './calibration';
 import {
-  CALIBRATION_PART_1_DIRECTIONS,
+  CALIBRATION_PART_1_DIRECTIONS, PROGRESS_BAR,
 } from './constants';
 import { finishExperiment } from './finish';
 import { sampledArray } from './trials';
@@ -54,8 +54,8 @@ import './i18n'
 if ((window as any).Cypress) {
   (window as any).state = state;
   (window as any).appReady = true;
-
 }
+import { experimentBeginTrial, tutorialIntroductionTrial } from './message-trials';
 /**
  * @function run
  * @description Main function to run the experiment
@@ -64,7 +64,7 @@ if ((window as any).Cypress) {
 export async function run({
   assetPaths,
 }: any) {
-  const jsPsych = initJsPsych();
+  const jsPsych = initJsPsych({ show_progress_bar: true, auto_update_progress_bar: false, message_progress_bar: PROGRESS_BAR.PROGRESS_BAR_INTRODUCTION});
 
   const timeline: any[] = [];
 
@@ -74,8 +74,11 @@ export async function run({
     video: ['../assets/videos'],
   });
 
+  timeline.push(experimentBeginTrial)
+  timeline.push(tutorialIntroductionTrial(jsPsych))
   timeline.push(noStimuliVideoTutorialTrial(jsPsych));
   timeline.push(practiceLoop(jsPsych));
+
 
   timeline.push(instructionalTrial(CALIBRATION_PART_1_DIRECTIONS));
 

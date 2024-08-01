@@ -17,12 +17,11 @@
   "RELEASE_KEYS_MESSAGE": "Relâchez les touches",
   "RELEASE_KEYS_BACKUP_MESSAGE": "Si ce message ne disparaît pas automatiquement, appuyez sur la touche <b>Entrée</b> de votre clavier pour continuer.",
   "REWARD_TOTAL_MESSAGE": "La récompense totale pour les essais réussis est : CHF {{totalSuccessfulReward}}. Appuyez sur la touche <b>Entrée</b> pour continuer.",
-  "TUTORIAL_MESSAGE_1": "Bienvenue dans l'expérience. Veuillez suivre les instructions. Appuyez sur la touche <b>Entrée</b> pour commencer.",
+  "EXPERIMENT_BEGIN_MESSAGE": "Bienvenue dans l'expérience. Veuillez suivre les instructions. Appuyez sur <b>Continuer</b> pour commencer.",
   "NO_STIMULI_VIDEO_TUTORIAL_MESSAGE": "La vidéo ci-dessous montre comment l'expérience sera réalisée.<br><br> Vous placerez votre petit doigt sur la touche <b>{{KEYS_TO_HOLD_0}}</b>, votre annulaire sur la touche <b>{{KEYS_TO_HOLD_1}}</b>, et votre majeur sur la touche <b>{{KEYS_TO_HOLD_2}}</b>.<br> Tout en maintenant ces touches simultanément, lorsque vous verrez le <b>GO!</b>, appuyez sur la touche <b>{{KEY_TO_PRESS}}</b>, <b>répétitivement</b> avec votre index aussi vite que possible !<br> N'appuyez pas sur la touche <b>{{KEY_TO_PRESS}}</b> avant que le <b>GO!</b> apparaisse.<br><br>Après avoir cliqué sur le bouton <b>Continuer</b>, vous aurez l'occasion de vous entraîner avant de commencer l'expérience.",
   "STIMULI_VIDEO_TUTORIAL_MESSAGE": "<br> Faites monter la barre rouge aussi haut que possible avec vos appuis !<br> N'appuyez pas sur la touche <b>{{KEY_TO_PRESS}}</b> avant que le <b>GO!</b> apparaisse.<br><br> La vidéo ci-dessous montre comment la prochaine section de l'expérience sera réalisée.<br> Cliquez sur <b>Continuer</b> après avoir regardé la vidéo",
   "VALIDATION_VIDEO_TUTORIAL_MESSAGE": "<br> Faites entrer la barre rouge dans la zone cible avec vos appuis !<br> N'appuyez pas sur la touche <b>{{KEY_TO_PRESS}}</b> avant que le <b>GO!</b> apparaisse.<br> La vidéo ci-dessous montre comment la prochaine section de l'expérience sera réalisée.<br> Cliquez sur <b>Continuer</b> après avoir regardé la vidéo",
   "INTERACTIVE_KEYBOARD_TUTORIAL_MESSAGE": "<br> <b>PRATIQUE</b><br>Sur votre clavier physique :<br>Placez votre <b>petit doigt</b> sur la touche <b>{{KEYS_TO_HOLD_0}}</b>, placez votre <b>annulaire</b> sur la touche <b>{{KEYS_TO_HOLD_1}}</b>, et placez votre <b>majeur</b> sur la touche <b>{{KEYS_TO_HOLD_2}}</b>.<br> Tout en maintenant ces touches simultanément, lorsque vous verrez le <b>GO!</b>, appuyez sur la touche <b>{{KEY_TO_PRESS}}</b>, <b>répétitivement</b>, avec votre index aussi vite que possible !",
-  "COUNTDOWN_DIRECTIONS": "Continuez à maintenir avec ces doigts ! <br>Lorsque vous verrez le <b>GO!</b>, appuyez sur la touche <b>{{KEY_TO_PRESS}}</b>, <b>répétitivement</b>, avec votre index aussi vite que possible !",
   "DEMO_TRIAL_MESSAGE": "<br>La prochaine série d'essais que vous allez compléter sont des essais pratiques.<br><br>Faites monter la barre rouge aussi haut que possible pendant les essais pratiques.<br><br>Rappelez-vous de maintenir les touches jusqu'à ce que cela vous soit demandé.<br>Rappelez-vous de n'appuyer que lorsque le <b>GO!</b> apparaît.<br><br> Appuyez sur la touche <b>Entrée</b> pour continuer.",
   "ACCEPTANCE_TRIAL_MESSAGE": "<br>La hauteur cible et la récompense sont indiquées ci-dessus.<br><br>Appuyez sur la <b>Flèche gauche</b> de votre clavier pour accepter l'essai<br>Ou<br>Appuyez sur la <b>Flèche droite</b> de votre clavier pour refuser l'essai",
   "DOMINANT_HAND_MESSAGE": "Sélectionnez votre main dominante.",
@@ -34,23 +33,30 @@
   "COUNTDOWN_TIMER_MESSAGE": "La prochaine partie de l'expérience commencera dans : ",
   "REWARD_TRIAL_MESSAGE": "Récompense : ",
   "LIKERT_RESPONSES": {
-  "STRONGLY_DISAGREE": "Tout à fait en désaccord",
-  "DISAGREE": "En désaccord",
-  "NEUTRAL": "Neutre",
-  "AGREE": "D'accord",
-  "STRONGLY_AGREE": "Tout à fait d'accord"
+    "STRONGLY_DISAGREE": "Tout à fait en désaccord",
+    "DISAGREE": "En désaccord",
+    "NEUTRAL": "Neutre",
+    "AGREE": "D'accord",
+    "STRONGLY_AGREE": "Tout à fait d'accord"
   },
   "LIKERT_SURVEY_1_QUESTIONS": {
-  "QUESTION_1": "Question factice 1 pour l'enquête 1",
-  "QUESTION_2": "Question factice 2 pour l'enquête 1",
-  "QUESTION_3": "Question factice 3 pour l'enquête 1"
+    "QUESTION_1": "Question factice 1 pour l'enquête 1",
+    "QUESTION_2": "Question factice 2 pour l'enquête 1",
+    "QUESTION_3": "Question factice 3 pour l'enquête 1"
   },
   "LIKERT_SURVEY_2_QUESTIONS": {
-  "QUESTION_1": "Question factice 1 pour l'enquête 2",
-  "QUESTION_2": "Question factice 2 pour l'enquête 2",
-  "QUESTION_3": "Question factice 3 pour l'enquête 2",
-  "QUESTION_4": "Question factice 4 pour l'enquête 2",
-  "QUESTION_5": "Question factice 5 pour l'enquête 2"
+    "QUESTION_1": "Question factice 1 pour l'enquête 2",
+    "QUESTION_2": "Question factice 2 pour l'enquête 2",
+    "QUESTION_3": "Question factice 3 pour l'enquête 2",
+    "QUESTION_4": "Question factice 4 pour l'enquête 2",
+    "QUESTION_5": "Question factice 5 pour l'enquête 2"
   },
-  "END_EXPERIMENT_MESSAGE": "Appuyez sur la touche <b>Entrée</b> pour terminer l'expérience puis, veuillez, trouver votre expérimentateur."
-  }
+  "END_EXPERIMENT_MESSAGE": "Appuyez sur la touche <b>Entrée</b> pour terminer l'expérience puis, veuillez, trouver votre expérimentateur.",
+  "PROGRESS_BAR": {
+    "PROGRESS_BAR_INTRODUCTION": "Introduction",
+    "PROGRESS_BAR_TUTORIAL": "Tutoriel",
+    "PROGRESS_BAR_CALIBRATION": "Étalonnage",
+    "PROGRESS_BAR_TRIAL_BLOCKS": "Bloc d'essai "
+  },
+  "TUTORIAL_INTRODUCTION_MESSAGE": "La première partie de l'expérience se composera de 2 sections différentes :<br><br>1. Une section de pratique pour vous familiariser avec la tâche que vous allez effectuer.<br>2. Une section de calibration pour personnaliser l'expérience pour vous<br><br>Suivez attentivement les instructions tout au long de chaque section.<br>Appuyez sur le bouton <b>Continuer</b> pour commencer."
+}

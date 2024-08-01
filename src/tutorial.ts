@@ -2,12 +2,12 @@ import htmlButtonResponse from '@jspsych/plugin-html-button-response';
 import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
 
 import {
-  DOMINANT_HAND_MESSAGE,
   GO_DURATION,
   INTERACTIVE_KEYBOARD_TUTORIAL_MESSAGE,
   CONTINUE_BUTTON_MESSAGE,
   GO_MESSAGE,
-  MINIMUM_CALIBRATION_MEDIAN
+  MINIMUM_CALIBRATION_MEDIAN,
+  PROGRESS_BAR
 } from './constants';
 import { CountdownTrialPlugin } from './countdown';
 import { loadingBarTrial } from './loading-bar';
@@ -19,7 +19,7 @@ import {
   videoStimulus,
 } from './stimulus';
 import TaskPlugin from './task';
-import { checkFlag, checkKeys } from './utils';
+import { changeProgressBar, checkFlag, checkKeys } from './utils';
 import { JsPsych } from 'jspsych';
 
 export const interactiveCountdown = {
@@ -39,24 +39,6 @@ export const instructionalTrial = (message: string) => ({
   },
 });
 
-export let DOMINANT_HAND = 'right';
-export const dominantHand = {
-  type: htmlButtonResponse,
-  stimulus: DOMINANT_HAND_MESSAGE,
-  choices: ['Left handed', 'Right handed'],
-  data: {
-    task: 'dominant-hand',
-  },
-  on_finish: function (data: any)
-  // ADD TYPE FOR DATA
-  {
-    if (data.response === 0) {
-      DOMINANT_HAND = 'left';
-    } else {
-      DOMINANT_HAND = 'right';
-    }
-  },
-};
 
 export const noStimuliVideoTutorial = {
   type: htmlButtonResponse,
@@ -70,6 +52,7 @@ export const noStimuliVideoTutorialTrial = (jsPsych: JsPsych) => ({
   on_finish: function () {
     // Clear the display element
     jsPsych.getDisplayElement().innerHTML = '';
+    // Change progress bar
   },
 });
 
@@ -161,3 +144,4 @@ export const practiceLoop = (jsPsych: JsPsych) => ({
     return keysReleasedFlag || keyTappedEarlyFlag || numberOfTaps < MINIMUM_CALIBRATION_MEDIAN;
   },
 });
+

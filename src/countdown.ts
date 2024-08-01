@@ -2,7 +2,6 @@ import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
 import { ParameterType, JsPsych } from 'jspsych';
 
 import {
-  COUNTDOWN_DIRECTIONS,
   COUNTDOWN_TIME,
   GO_DURATION,
   HOLD_KEYS_MESSAGE,
@@ -131,7 +130,6 @@ export class CountdownTrialPlugin {
       );
       if (areKeysHeld && !interval) {
         messageContainer.innerHTML = ''; // Hide the initial message
-        directionsContainer.innerHTML = `<p>${COUNTDOWN_DIRECTIONS}</p>`;
         startCountdown();
       } else if (!areKeysHeld && interval) {
         clearInterval(interval);

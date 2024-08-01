@@ -10,7 +10,7 @@ import PreloadPlugin from '@jspsych/plugin-preload';
 import { initJsPsych } from 'jspsych';
 import '../styles/main.scss';
 import { calibrationTrialPart1, calibrationTrialPart2, conditionalCalibrationTrialPart1, conditionalCalibrationTrialPart2 } from './calibration';
-import { CALIBRATION_PART_1_DIRECTIONS, } from './constants';
+import { CALIBRATION_PART_1_DIRECTIONS, PROGRESS_BAR, } from './constants';
 import { finishExperiment } from './finish';
 import { sampledArray } from './trials';
 import { instructionalTrial, noStimuliVideoTutorialTrial, practiceLoop, stimuliVideoTutorialTrial, validationVideoTutorialTrial, } from './tutorial';
@@ -39,6 +39,7 @@ if (window.Cypress) {
     window.state = state;
     window.appReady = true;
 }
+import { experimentBeginTrial, tutorialIntroductionTrial } from './message-trials';
 /**
  * @function run
  * @description Main function to run the experiment
@@ -46,13 +47,15 @@ if (window.Cypress) {
  */
 export function run(_a) {
     return __awaiter(this, arguments, void 0, function* ({ assetPaths, }) {
-        const jsPsych = initJsPsych();
+        const jsPsych = initJsPsych({ show_progress_bar: true, auto_update_progress_bar: false, message_progress_bar: PROGRESS_BAR.PROGRESS_BAR_INTRODUCTION });
         const timeline = [];
         timeline.push({
             type: PreloadPlugin,
             audio: assetPaths.audio,
             video: ['../assets/videos'],
         });
+        timeline.push(experimentBeginTrial);
+        timeline.push(tutorialIntroductionTrial(jsPsych));
         timeline.push(noStimuliVideoTutorialTrial(jsPsych));
         timeline.push(practiceLoop(jsPsych));
         timeline.push(instructionalTrial(CALIBRATION_PART_1_DIRECTIONS));

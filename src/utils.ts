@@ -118,3 +118,9 @@ export const getQueryParam = (param: string) => {
   const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get(param);
 };
+
+export const changeProgressBar = (name: string, percent: number, jsPsych: JsPsych) => {
+  const progressBarMessageElement = document.querySelector('#jspsych-progressbar-message');
+  jsPsych.progressBar!.progress = percent
+  progressBarMessageElement!.innerHTML = name;
+}
