@@ -13,7 +13,8 @@ import {
   REWARD_TOTAL_MESSAGE,
   TRIAL_DURATION,
   EXPECTED_MAXIMUM_PERCENTAGE,
-  PROGRESS_BAR
+  PROGRESS_BAR,
+  CONTINUE_BUTTON_MESSAGE
 } from './constants';
 import { countdownStep } from './countdown';
 import { likertQuestions1, likertQuestions2 } from './likert';
@@ -25,7 +26,7 @@ import TaskPlugin from './task';
 import { autoIncreaseAmount, calculateTotalReward, checkFlag, randomNumberBm, checkKeys, changeProgressBar } from './utils';
 import { State, TaskTrialData, PassedTaskData, CreateTrialBlockParams } from './types'; // Assuming you have the appropriate types defined here
 import { EASY_BOUNDS } from './constants';
-
+import htmlButtonResponse from '@jspsych/plugin-html-button-response';
 const failedMinimumDemoTapsTrial = {
   type: HtmlKeyboardResponsePlugin,
   stimulus: `<p style="color: red;">${FAILED_MINIMUM_DEMO_TAPS_MESSAGE}</p>`,
@@ -47,13 +48,11 @@ export const createTrialBlock = ({
 
   if (includeDemo) {
     state.demoTrialSuccesses = 0; // Reset demo successes before starting
-
     timeline.push(
-      // Alert before demo
       {
-        type: HtmlKeyboardResponsePlugin,
+        type: htmlButtonResponse,
         stimulus: () => `<p>${DEMO_TRIAL_MESSAGE}</p>`,
-        choices: ['enter'],
+        choices: [CONTINUE_BUTTON_MESSAGE],
       },
       // Demo trials
       {
@@ -84,6 +83,11 @@ export const createTrialBlock = ({
                   bounds: bounds,
                 },
                 on_start: function (data: any) {
+                  changeProgressBar(
+                    `${PROGRESS_BAR.PROGRESS_BAR_TRIAL_BLOCKS} Demo Part ${state.completedBlockCount}`, 
+                    jsPsych.progressBar?.progress || 0, 
+                    jsPsych
+                  )
                   const keyTappedEarlyFlag = checkFlag(
                     'countdown',
                     'keyTappedEarlyFlag',
@@ -133,7 +137,9 @@ export const createTrialBlock = ({
         ],
       },
       // Likert scale survey after demo
-      ...likertQuestions1,
+      {
+        timeline: [{ ...likertQuestions1 }],
+      },
     );
   }
 
@@ -283,8 +289,8 @@ export const createTrialBlock = ({
 // Function to create a trial that displays the accumulated reward to the user
 export function createRewardDisplayTrial(jsPsych: JsPsych, state: State) {
   return {
-    type: HtmlKeyboardResponsePlugin,
-    choices: ['enter'],
+    type: htmlButtonResponse,
+    choices: [CONTINUE_BUTTON_MESSAGE],
     stimulus: function () {
       const totalSuccessfulReward = calculateTotalReward(jsPsych);
       return `<p>${REWARD_TOTAL_MESSAGE(totalSuccessfulReward.toFixed(2))}</p>`;
@@ -296,7 +302,7 @@ export function createRewardDisplayTrial(jsPsych: JsPsych, state: State) {
       const totalSuccessfulReward = calculateTotalReward(jsPsych);
       data.totalReward = totalSuccessfulReward;
       state.completedBlockCount++
-      changeProgressBar((`${PROGRESS_BAR.PROGRESS_BAR_TRIAL_BLOCKS} ${state.completedBlockCount}`), ((state.completedBlockCount*12)+25), jsPsych )
+      changeProgressBar((`${PROGRESS_BAR.PROGRESS_BAR_TRIAL_BLOCKS} Part ${state.completedBlockCount}`), ((state.completedBlockCount*12)+25), jsPsych )
     },
   };
 }

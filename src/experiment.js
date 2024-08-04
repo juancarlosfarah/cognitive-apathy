@@ -41,7 +41,7 @@ if (window.Cypress) {
     window.state = state;
     window.appReady = true;
 }
-import { calibrationSectionDirectionTrial, experimentBeginTrial, tutorialIntroductionTrial } from './message-trials';
+import { calibrationSectionDirectionTrial, experimentBeginTrial, trialBlocksDirection, tutorialIntroductionTrial } from './message-trials';
 /**
  * @function run
  * @description Main function to run the experiment
@@ -105,6 +105,9 @@ export function run(_a) {
         });
         timeline.push({
             timeline: [validationResultScreen(jsPsych, state)],
+        });
+        timeline.push({
+            timeline: [trialBlocksDirection(jsPsych)]
         });
         const sampledTrials = sampledArray(jsPsych, state);
         sampledTrials.forEach((trialBlock) => {

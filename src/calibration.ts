@@ -224,7 +224,7 @@ export const calibrationTrialPart1 = (jsPsych: JsPsych, state: State) => ({
   ],
   on_timeline_finish: function() {
     if(state.calibrationPart1Failed === false){
-      changeProgressBar(PROGRESS_BAR.PROGRESS_BAR_CALIBRATION + '2', 0.15, jsPsych);
+      changeProgressBar(PROGRESS_BAR.PROGRESS_BAR_CALIBRATION + ' Part 2', 0.2, jsPsych);
     }
   }
 });
@@ -241,7 +241,7 @@ export const conditionalCalibrationTrialPart1 = (jsPsych: JsPsych, state: State)
   ],
   on_timeline_finish: function() {
     if(state.calibrationPart1Failed === false){
-      changeProgressBar(PROGRESS_BAR.PROGRESS_BAR_CALIBRATION + '2', 0.15, jsPsych);
+      changeProgressBar(PROGRESS_BAR.PROGRESS_BAR_CALIBRATION + ' Part 2', 0.23, jsPsych);
     }
   }
 });
@@ -262,7 +262,7 @@ export const calibrationTrialPart2 = (jsPsych: JsPsych, state: State) => ({
   ],
   on_timeline_finish: function() {
     if (state.calibrationPart2Failed === false) {
-      changeProgressBar(PROGRESS_BAR.PROGRESS_BAR_CALIBRATION + '3', 0.3, jsPsych);
+      changeProgressBar(PROGRESS_BAR.PROGRESS_BAR_CALIBRATION + ' Part 3', 0.5, jsPsych);
     }
   }
 });
@@ -278,7 +278,7 @@ export const conditionalCalibrationTrialPart2 = (jsPsych: JsPsych, state: State)
   ],
   on_timeline_finish: function() {
     if (state.calibrationPart2Failed === false) {
-      changeProgressBar(PROGRESS_BAR.PROGRESS_BAR_CALIBRATION + '3', 0.3, jsPsych);
+      changeProgressBar(PROGRESS_BAR.PROGRESS_BAR_CALIBRATION + ' Part 3', 0.53, jsPsych);
     }
   }
 });

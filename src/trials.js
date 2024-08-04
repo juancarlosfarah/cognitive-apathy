@@ -1,5 +1,5 @@
 import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
-import { AUTO_DECREASE_AMOUNT, AUTO_DECREASE_RATE, DEMO_TRIAL_MESSAGE, FAILED_MINIMUM_DEMO_TAPS_DURATION, FAILED_MINIMUM_DEMO_TAPS_MESSAGE, MINIMUM_DEMO_TAPS, NUM_DEMO_TRIALS, NUM_TRIALS, PARAMETER_COMBINATIONS, REWARD_TOTAL_MESSAGE, TRIAL_DURATION, EXPECTED_MAXIMUM_PERCENTAGE, PROGRESS_BAR } from './constants';
+import { AUTO_DECREASE_AMOUNT, AUTO_DECREASE_RATE, DEMO_TRIAL_MESSAGE, FAILED_MINIMUM_DEMO_TAPS_DURATION, FAILED_MINIMUM_DEMO_TAPS_MESSAGE, MINIMUM_DEMO_TAPS, NUM_DEMO_TRIALS, NUM_TRIALS, PARAMETER_COMBINATIONS, REWARD_TOTAL_MESSAGE, TRIAL_DURATION, EXPECTED_MAXIMUM_PERCENTAGE, PROGRESS_BAR, CONTINUE_BUTTON_MESSAGE } from './constants';
 import { countdownStep } from './countdown';
 import { likertQuestions1, likertQuestions2 } from './likert';
 import { loadingBarTrial } from './loading-bar';
@@ -9,6 +9,7 @@ import { acceptanceThermometer } from './stimulus';
 import TaskPlugin from './task';
 import { autoIncreaseAmount, calculateTotalReward, checkFlag, randomNumberBm, checkKeys, changeProgressBar } from './utils';
 import { EASY_BOUNDS } from './constants';
+import htmlButtonResponse from '@jspsych/plugin-html-button-response';
 const failedMinimumDemoTapsTrial = {
     type: HtmlKeyboardResponsePlugin,
     stimulus: `<p style="color: red;">${FAILED_MINIMUM_DEMO_TAPS_MESSAGE}</p>`,
@@ -19,12 +20,10 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
     const timeline = [];
     if (includeDemo) {
         state.demoTrialSuccesses = 0; // Reset demo successes before starting
-        timeline.push(
-        // Alert before demo
-        {
-            type: HtmlKeyboardResponsePlugin,
+        timeline.push({
+            type: htmlButtonResponse,
             stimulus: () => `<p>${DEMO_TRIAL_MESSAGE}</p>`,
-            choices: ['enter'],
+            choices: [CONTINUE_BUTTON_MESSAGE],
         }, 
         // Demo trials
         {
@@ -49,6 +48,8 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
                                 bounds: bounds,
                             },
                             on_start: function (data) {
+                                var _a;
+                                changeProgressBar(`${PROGRESS_BAR.PROGRESS_BAR_TRIAL_BLOCKS} Demo Part ${state.completedBlockCount}`, ((_a = jsPsych.progressBar) === null || _a === void 0 ? void 0 : _a.progress) || 0, jsPsych);
                                 const keyTappedEarlyFlag = checkFlag('countdown', 'keyTappedEarlyFlag', jsPsych);
                                 // Update the trial parameters with keyTappedEarlyFlag
                                 data.keyTappedEarlyFlag = keyTappedEarlyFlag;
@@ -94,7 +95,9 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
             ],
         }, 
         // Likert scale survey after demo
-        ...likertQuestions1);
+        {
+            timeline: [Object.assign({}, likertQuestions1)],
+        });
     }
     // If a block created is an actual trial
     if (blockName) {
@@ -216,8 +219,8 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
 // Function to create a trial that displays the accumulated reward to the user
 export function createRewardDisplayTrial(jsPsych, state) {
     return {
-        type: HtmlKeyboardResponsePlugin,
-        choices: ['enter'],
+        type: htmlButtonResponse,
+        choices: [CONTINUE_BUTTON_MESSAGE],
         stimulus: function () {
             const totalSuccessfulReward = calculateTotalReward(jsPsych);
             return `<p>${REWARD_TOTAL_MESSAGE(totalSuccessfulReward.toFixed(2))}</p>`;
@@ -229,7 +232,7 @@ export function createRewardDisplayTrial(jsPsych, state) {
             const totalSuccessfulReward = calculateTotalReward(jsPsych);
             data.totalReward = totalSuccessfulReward;
             state.completedBlockCount++;
-            changeProgressBar((`${PROGRESS_BAR.PROGRESS_BAR_TRIAL_BLOCKS} ${state.completedBlockCount}`), ((state.completedBlockCount * 12) + 25), jsPsych);
+            changeProgressBar((`${PROGRESS_BAR.PROGRESS_BAR_TRIAL_BLOCKS} Part ${state.completedBlockCount}`), ((state.completedBlockCount * 12) + 25), jsPsych);
         },
     };
 }

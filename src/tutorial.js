@@ -35,7 +35,7 @@ export const noStimuliVideoTutorialTrial = (jsPsych) => ({
         // Clear the display element
         jsPsych.getDisplayElement().innerHTML = '';
         // Change progress bar
-        changeProgressBar(PROGRESS_BAR.PROGRESS_BAR_PRACTICE + ' 1', 0.07, jsPsych);
+        changeProgressBar(PROGRESS_BAR.PROGRESS_BAR_PRACTICE + ' Part 1', 0.07, jsPsych);
     },
 });
 export const stimuliVideoTutorial = {
@@ -119,11 +119,11 @@ export const practiceLoop = (jsPsych, state) => ({
     on_timeline_finish: function () {
         state.numberOfPracticeLoopsCompleted++;
         let progressBarProgress = jsPsych.progressBar.progress;
-        if (state.numberOfPracticeLoopsCompleted === 3) {
-            changeProgressBar(PROGRESS_BAR.PROGRESS_BAR_CALIBRATION, .11, jsPsych);
+        if (state.numberOfPracticeLoopsCompleted === 4) {
+            changeProgressBar(PROGRESS_BAR.PROGRESS_BAR_CALIBRATION, 0, jsPsych);
         }
         else {
-            changeProgressBar(PROGRESS_BAR.PROGRESS_BAR_PRACTICE + `${state.numberOfPracticeLoopsCompleted}`, progressBarProgress + .03, jsPsych);
+            changeProgressBar(PROGRESS_BAR.PROGRESS_BAR_PRACTICE + ` Part ${state.numberOfPracticeLoopsCompleted}`, progressBarProgress + .25, jsPsych);
         }
     }
 });

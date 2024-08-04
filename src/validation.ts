@@ -1,4 +1,3 @@
-import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
 import {
   AUTO_DECREASE_AMOUNT,
   AUTO_DECREASE_RATE,
@@ -8,7 +7,8 @@ import {
   PASSED_VALIDATION_MESSAGE,
   TRIAL_DURATION,
   EXPECTED_MAXIMUM_PERCENTAGE,
-  PROGRESS_BAR
+  PROGRESS_BAR,
+  CONTINUE_BUTTON_MESSAGE
 } from './constants';
 import { countdownStep } from './countdown';
 import { loadingBarTrial } from './loading-bar';
@@ -19,7 +19,7 @@ import { autoIncreaseAmount, checkKeys, changeProgressBar } from './utils';
 import { finishExperimentEarly } from './finish';
 import { State, ValidationData } from './types';
 import { JsPsych } from 'jspsych';
-
+import htmlButtonResponse from '@jspsych/plugin-html-button-response';
 export const handleValidationFinish = (data: ValidationData, validationName: string, state: State) => {
   if (validationName !== 'validationExtra') {
     if (!data.success) {
@@ -91,8 +91,8 @@ export const createValidationTrial = (
 });
 
 export const validationResultScreen = (jsPsych: JsPsych, state: State) => ({
-  type: HtmlKeyboardResponsePlugin,
-  choices: ['enter'],
+  type: htmlButtonResponse,
+  choices: [CONTINUE_BUTTON_MESSAGE],
   stimulus: function () {
     return state.validationSuccess
       ? PASSED_VALIDATION_MESSAGE
@@ -105,23 +105,36 @@ export const validationResultScreen = (jsPsych: JsPsych, state: State) => ({
   },
 });
 
-export const validationTrialEasy = (jsPsych: JsPsych, state: State) =>
-  createValidationTrial(
-    [30, 50],
-    'validationEasy',
-    NUM_VALIDATION_TRIALS,
-    jsPsych,
-    state,
-  );
+export const validationTrialEasy = (jsPsych: JsPsych, state: State) => ({
+  timeline: [
+    createValidationTrial(
+      [30, 50],
+      'validationEasy',
+      NUM_VALIDATION_TRIALS,
+      jsPsych,
+      state,
+    ),
+  ],
+  on_timeline_finish: function() {
+      changeProgressBar(`${PROGRESS_BAR.PROGRESS_BAR_CALIBRATION} Part 3`, 0.65, jsPsych);
+  }
+});
 
-export const validationTrialMedium = (jsPsych: JsPsych, state: State) =>
-  createValidationTrial(
-    [50, 70],
-    'validationMedium',
-    NUM_VALIDATION_TRIALS,
-    jsPsych,
-    state,
-  );
+export const validationTrialMedium = (jsPsych: JsPsych, state: State) => ({
+  timeline: [
+    createValidationTrial(
+      [50, 70],
+      'validationMedium',
+      NUM_VALIDATION_TRIALS,
+      jsPsych,
+      state,
+    ),
+  ],
+  on_timeline_finish: function() {
+    changeProgressBar(`${PROGRESS_BAR.PROGRESS_BAR_CALIBRATION} Part 3`, 0.85, jsPsych);
+}
+});
+
 export const validationTrialHard = (jsPsych: JsPsych, state: State) => ({
   timeline: [
     createValidationTrial(
@@ -134,7 +147,7 @@ export const validationTrialHard = (jsPsych: JsPsych, state: State) => ({
   ],
   on_timeline_finish: function() {
     if (state.extraValidationRequired === false) {
-      changeProgressBar(PROGRESS_BAR.PROGRESS_BAR_TRIAL_BLOCKS, 0.45, jsPsych);
+      changeProgressBar(`${PROGRESS_BAR.PROGRESS_BAR_TRIAL_BLOCKS}`, 0, jsPsych);
     }
   }
 });
@@ -151,7 +164,7 @@ export const validationTrialExtra = (jsPsych: JsPsych, state: State) => ({
   ],
   on_timeline_finish: function() {
     if (state.validationExtraFailures >= 3) {
-      changeProgressBar(PROGRESS_BAR.PROGRESS_BAR_TRIAL_BLOCKS, 0.45, jsPsych);
+      changeProgressBar(`${PROGRESS_BAR.PROGRESS_BAR_TRIAL_BLOCKS}`, 0, jsPsych);
     }
   }
 });
