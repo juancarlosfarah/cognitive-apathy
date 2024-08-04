@@ -1,5 +1,5 @@
 import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
-import { AUTO_DECREASE_AMOUNT, AUTO_DECREASE_RATE, DEMO_TRIAL_MESSAGE, FAILED_MINIMUM_DEMO_TAPS_DURATION, FAILED_MINIMUM_DEMO_TAPS_MESSAGE, MINIMUM_DEMO_TAPS, NUM_DEMO_TRIALS, NUM_TRIALS, PARAMETER_COMBINATIONS, REWARD_TOTAL_MESSAGE, TRIAL_DURATION, EXPECTED_MAXIMUM_PERCENTAGE } from './constants';
+import { AUTO_DECREASE_AMOUNT, AUTO_DECREASE_RATE, DEMO_TRIAL_MESSAGE, FAILED_MINIMUM_DEMO_TAPS_DURATION, FAILED_MINIMUM_DEMO_TAPS_MESSAGE, MINIMUM_DEMO_TAPS, NUM_DEMO_TRIALS, NUM_TRIALS, PARAMETER_COMBINATIONS, REWARD_TOTAL_MESSAGE, TRIAL_DURATION, EXPECTED_MAXIMUM_PERCENTAGE, PROGRESS_BAR } from './constants';
 import { countdownStep } from './countdown';
 import { likertQuestions1, likertQuestions2 } from './likert';
 import { loadingBarTrial } from './loading-bar';
@@ -7,7 +7,7 @@ import { successScreen } from './message-trials';
 import { releaseKeysStep } from './release-keys';
 import { acceptanceThermometer } from './stimulus';
 import TaskPlugin from './task';
-import { autoIncreaseAmount, calculateTotalReward, checkFlag, randomNumberBm, checkKeys } from './utils';
+import { autoIncreaseAmount, calculateTotalReward, checkFlag, randomNumberBm, checkKeys, changeProgressBar } from './utils';
 import { EASY_BOUNDS } from './constants';
 const failedMinimumDemoTapsTrial = {
     type: HtmlKeyboardResponsePlugin,
@@ -214,7 +214,7 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
     return { timeline };
 };
 // Function to create a trial that displays the accumulated reward to the user
-export function createRewardDisplayTrial(jsPsych) {
+export function createRewardDisplayTrial(jsPsych, state) {
     return {
         type: HtmlKeyboardResponsePlugin,
         choices: ['enter'],
@@ -228,6 +228,8 @@ export function createRewardDisplayTrial(jsPsych) {
         on_finish: function (data) {
             const totalSuccessfulReward = calculateTotalReward(jsPsych);
             data.totalReward = totalSuccessfulReward;
+            state.completedBlockCount++;
+            changeProgressBar((`${PROGRESS_BAR.PROGRESS_BAR_TRIAL_BLOCKS} ${state.completedBlockCount}`), ((state.completedBlockCount * 12) + 25), jsPsych);
         },
     };
 }
@@ -250,7 +252,7 @@ export const trialsArray = (jsPsych, state) => [
             state,
         }),
         // Display accumulated reward in between trials
-        createRewardDisplayTrial(jsPsych),
+        createRewardDisplayTrial(jsPsych, state),
     ],
     [
         // Demo trials
@@ -269,7 +271,7 @@ export const trialsArray = (jsPsych, state) => [
             state,
         }),
         // Display accumulated reward
-        createRewardDisplayTrial(jsPsych),
+        createRewardDisplayTrial(jsPsych, state),
     ],
     [
         // Demo trials
@@ -288,7 +290,7 @@ export const trialsArray = (jsPsych, state) => [
             state,
         }),
         // Display accumulated reward
-        createRewardDisplayTrial(jsPsych),
+        createRewardDisplayTrial(jsPsych, state),
     ],
     [
         createTrialBlock({
@@ -307,7 +309,7 @@ export const trialsArray = (jsPsych, state) => [
             state,
         }),
         // Display accumulated reward
-        createRewardDisplayTrial(jsPsych),
+        createRewardDisplayTrial(jsPsych, state),
     ],
     [
         createTrialBlock({
@@ -326,7 +328,7 @@ export const trialsArray = (jsPsych, state) => [
             state,
         }),
         // Display accumulated reward
-        createRewardDisplayTrial(jsPsych),
+        createRewardDisplayTrial(jsPsych, state),
     ],
     [
         createTrialBlock({
@@ -345,7 +347,7 @@ export const trialsArray = (jsPsych, state) => [
             state,
         }),
         // Display accumulated reward
-        createRewardDisplayTrial(jsPsych),
+        createRewardDisplayTrial(jsPsych, state),
     ],
 ];
 // Randomly sample from the 3x3x3 factorial design to display 2 Synchronous Blocks of 63 trials,

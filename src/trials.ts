@@ -12,7 +12,8 @@ import {
   PARAMETER_COMBINATIONS,
   REWARD_TOTAL_MESSAGE,
   TRIAL_DURATION,
-  EXPECTED_MAXIMUM_PERCENTAGE
+  EXPECTED_MAXIMUM_PERCENTAGE,
+  PROGRESS_BAR
 } from './constants';
 import { countdownStep } from './countdown';
 import { likertQuestions1, likertQuestions2 } from './likert';
@@ -21,7 +22,7 @@ import { successScreen } from './message-trials';
 import { releaseKeysStep } from './release-keys';
 import { acceptanceThermometer } from './stimulus';
 import TaskPlugin from './task';
-import { autoIncreaseAmount, calculateTotalReward, checkFlag, randomNumberBm, checkKeys } from './utils';
+import { autoIncreaseAmount, calculateTotalReward, checkFlag, randomNumberBm, checkKeys, changeProgressBar } from './utils';
 import { State, TaskTrialData, PassedTaskData, CreateTrialBlockParams } from './types'; // Assuming you have the appropriate types defined here
 import { EASY_BOUNDS } from './constants';
 
@@ -280,7 +281,7 @@ export const createTrialBlock = ({
 
 
 // Function to create a trial that displays the accumulated reward to the user
-export function createRewardDisplayTrial(jsPsych: JsPsych) {
+export function createRewardDisplayTrial(jsPsych: JsPsych, state: State) {
   return {
     type: HtmlKeyboardResponsePlugin,
     choices: ['enter'],
@@ -294,6 +295,8 @@ export function createRewardDisplayTrial(jsPsych: JsPsych) {
     on_finish: function (data: any) {
       const totalSuccessfulReward = calculateTotalReward(jsPsych);
       data.totalReward = totalSuccessfulReward;
+      state.completedBlockCount++
+      changeProgressBar((`${PROGRESS_BAR.PROGRESS_BAR_TRIAL_BLOCKS} ${state.completedBlockCount}`), ((state.completedBlockCount*12)+25), jsPsych )
     },
   };
 }
@@ -317,7 +320,7 @@ export const trialsArray = (jsPsych: JsPsych, state: State) => [
       state,
     }),
     // Display accumulated reward in between trials
-    createRewardDisplayTrial(jsPsych),
+    createRewardDisplayTrial(jsPsych, state),
   ],
   [
     // Demo trials
@@ -336,7 +339,7 @@ export const trialsArray = (jsPsych: JsPsych, state: State) => [
       state,
     }),
     // Display accumulated reward
-    createRewardDisplayTrial(jsPsych),
+    createRewardDisplayTrial(jsPsych, state),
   ],
   [
     // Demo trials
@@ -355,7 +358,7 @@ export const trialsArray = (jsPsych: JsPsych, state: State) => [
       state,
     }),
     // Display accumulated reward
-    createRewardDisplayTrial(jsPsych),
+    createRewardDisplayTrial(jsPsych, state),
   ],
   [
     createTrialBlock({
@@ -374,7 +377,7 @@ export const trialsArray = (jsPsych: JsPsych, state: State) => [
       state,
     }),
     // Display accumulated reward
-    createRewardDisplayTrial(jsPsych),
+    createRewardDisplayTrial(jsPsych, state),
   ],
   [
     createTrialBlock({
@@ -393,7 +396,7 @@ export const trialsArray = (jsPsych: JsPsych, state: State) => [
       state,
     }),
     // Display accumulated reward
-    createRewardDisplayTrial(jsPsych),
+    createRewardDisplayTrial(jsPsych, state),
   ],
   [
     createTrialBlock({
@@ -412,7 +415,7 @@ export const trialsArray = (jsPsych: JsPsych, state: State) => [
       state,
     }),
     // Display accumulated reward
-    createRewardDisplayTrial(jsPsych),
+    createRewardDisplayTrial(jsPsych, state),
   ],
 ];
 

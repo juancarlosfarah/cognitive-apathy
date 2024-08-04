@@ -6,8 +6,8 @@ body {
   width: 100%;
   margin: 0;
   padding: 0;
-  overflow-y: hidden;
-  overflow-x: hidden
+  overflow-y: disabled;
+  overflow-x: disabled
 }
 
 .jspsych-display-element {
@@ -20,6 +20,8 @@ body {
   width: 100%;
   margin: 0;
   padding: 0;
+  overflow-y: disabled;
+  overflow-x: disabled
 }
 
 .jspsych-content-wrapper {
@@ -29,6 +31,8 @@ body {
   align-items: center;
   height: 100vh;
   width: 100vw;
+  overflow-y: disabled;
+  overflow-x: disabled
 }
 
 .jspsych-content {
@@ -93,4 +97,10 @@ body {
 
 .hg-activeButton {
   background-color: blue;
+}
+
+#clock {
+  display: block; /* Ensure it is displayed as a block element */
+  font-size: 2em; /* Make the font size larger */
+  margin-top: 10px; /* Add some space above the clock */
 }

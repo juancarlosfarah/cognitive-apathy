@@ -15,6 +15,8 @@ export interface State {
   failedMinimumDemoTapsTrial: number;
   demoTrialSuccesses: number;
   minimumDemoTapsReached: boolean;
+  completedBlockCount: number;
+  numberOfPracticeLoopsCompleted: number;
 }
 
 // Define the CalibrationTrialParams interface

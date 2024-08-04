@@ -19,9 +19,10 @@ import {
   videoStimulus,
 } from './stimulus';
 import TaskPlugin from './task';
-import { changeProgressBar, checkFlag, checkKeys } from './utils';
+import {checkFlag, checkKeys } from './utils';
 import { JsPsych } from 'jspsych';
-
+import { changeProgressBar } from './utils';
+import { State } from './types';
 export const interactiveCountdown = {
   type: CountdownTrialPlugin,
   message: INTERACTIVE_KEYBOARD_TUTORIAL_MESSAGE,
@@ -32,8 +33,8 @@ export const interactiveCountdown = {
 };
 
 export const instructionalTrial = (message: string) => ({
-  type: HtmlKeyboardResponsePlugin,
-  choices: ['Enter'],
+  type: htmlButtonResponse,
+  choices: [CONTINUE_BUTTON_MESSAGE],
   stimulus: function () {
     return videoStimulus(message);
   },
@@ -53,6 +54,7 @@ export const noStimuliVideoTutorialTrial = (jsPsych: JsPsych) => ({
     // Clear the display element
     jsPsych.getDisplayElement().innerHTML = '';
     // Change progress bar
+    changeProgressBar(PROGRESS_BAR.PROGRESS_BAR_PRACTICE + ' 1', 0.07, jsPsych);
   },
 });
 
@@ -69,6 +71,7 @@ export const stimuliVideoTutorialTrial = (jsPsych: JsPsych) => ({
     // Clear the display element
     jsPsych.getDisplayElement().innerHTML = '';
   },
+
 });
 
 export const validationVideoTutorial = {
@@ -112,8 +115,10 @@ export const practiceTrial = (jsPsych: JsPsych) => ({
   ],
 });
 
-export const practiceLoop = (jsPsych: JsPsych) => ({
+export const practiceLoop = (jsPsych: JsPsych, state: State) => ({
   timeline: [
+    {
+    timeline: [
     interactiveCountdown,
     {
       type: HtmlKeyboardResponsePlugin,
@@ -143,5 +148,14 @@ export const practiceLoop = (jsPsych: JsPsych) => ({
     .tapCount;
     return keysReleasedFlag || keyTappedEarlyFlag || numberOfTaps < MINIMUM_CALIBRATION_MEDIAN;
   },
-});
+}],
+on_timeline_finish: function(){
+  state.numberOfPracticeLoopsCompleted++
+  let progressBarProgress = jsPsych.progressBar!.progress
+  if(state.numberOfPracticeLoopsCompleted === 3){
+    changeProgressBar(PROGRESS_BAR.PROGRESS_BAR_CALIBRATION, .11, jsPsych)
+  } else{
+  changeProgressBar(PROGRESS_BAR.PROGRESS_BAR_PRACTICE + `${state.numberOfPracticeLoopsCompleted}`, progressBarProgress +.03, jsPsych);
+  }
+}});
 
