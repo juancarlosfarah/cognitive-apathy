@@ -48,7 +48,7 @@ import { calibrationSectionDirectionTrial, experimentBeginTrial, tutorialIntrodu
  * @param {Object} config - Configuration object for the experiment
  */
 export function run(_a) {
-    return __awaiter(this, arguments, void 0, function* ({ assetPaths, }) {
+    return __awaiter(this, arguments, void 0, function* ({ assetPaths }) {
         const jsPsych = initJsPsych({
             show_progress_bar: true,
             auto_update_progress_bar: false,
@@ -59,10 +59,18 @@ export function run(_a) {
             type: PreloadPlugin,
             images: assetPaths.images,
             audio: assetPaths.audio,
-            video: assetPaths.video,
-            show_progress_bar: true,
-            message: 'Loading experiment files...',
-            continue_after_error: false,
+            video: [
+                './assets/videos/calibration-2-video.mp4',
+                './assets/videos/tutorial_video_no_stimuli.mp4',
+                './assets/videos/validation-video.mp4'
+            ],
+            max_load_time: 120000, // Increased timeout to 120 seconds
+            on_success: function (file) {
+                console.log(`Successfully preloaded: ${file}`);
+            },
+            on_error: function (file) {
+                console.error(`Failed to preload: ${file}`);
+            }
         });
         timeline.push(experimentBeginTrial);
         timeline.push(tutorialIntroductionTrial(jsPsych));

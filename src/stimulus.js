@@ -67,7 +67,7 @@ export const acceptanceThermometer = (bounds, reward) => `
 </div>
 `;
 export const videoStimulus = (message) => {
-    let stimulusHTML = `<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; text-align: center;">
+    let stimulusHTML = `<div style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
                         <p style="margin-bottom: 20px;">${message}</p>`;
     stimulusHTML += '</div>';
     return stimulusHTML;
@@ -92,7 +92,7 @@ ${NO_STIMULI_VIDEO_TUTORIAL_MESSAGE}
     id="videoTutorial"
     title="Tutorial Video"
     style="background-color: rgb(255, 255, 255); width: 640px; height: 400px;"
-    src="../assets/videos/tutorial_video_no_stimuli.mp4"
+    src="./assets/videos/tutorial_video_no_stimuli.mp4"
     autoplay
     muted
     loop
@@ -108,7 +108,7 @@ ${STIMULI_VIDEO_TUTORIAL_MESSAGE}
     id="videoTutorial"
     title="Tutorial Video"
     style="background-color: rgb(255, 255, 255); width: 600px; height: 400px;"
-    src="../assets/videos/calibration-2-video.mp4"
+    src="./assets/videos/calibration-2-video.mp4"
     autoplay
     muted
     loop
@@ -123,7 +123,7 @@ ${VALIDATION_VIDEO_TUTORIAL_MESSAGE}
     id="videoTutorial"
     title="Tutorial Video"
     style="background-color: rgb(255, 255, 255); width: 640px; height: 400px;"
-    src="../assets/videos/validation-video.mp4"
+    src="./assets/videos/validation-video.mp4"
     autoplay
     muted
     loop
