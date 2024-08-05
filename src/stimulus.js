@@ -42,11 +42,11 @@ export const acceptanceThermometer = (bounds, reward) => `
 >
   <div
     id="thermometer-container"
-    style="justify-content: center; align-items: center; height: 300px; width: 100px; border: 1px solid #000; margin-bottom: 10px;"
+    style="display: flex; justify-content: center; align-items: center; height: 300px; width: 100px; border: 1px solid #000; margin-bottom: 10px; box-sizing: border-box;"
   >
     <div
       id="thermometer"
-      style="position: relative; width: 100%; height: 100%; background-color: #e0e0e0;"
+      style="position: relative; width: 100%; height: 100%; background-color: #e0e0e0; box-sizing: border-box;"
     >
       <div
         id="blue-area"
