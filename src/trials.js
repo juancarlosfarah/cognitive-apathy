@@ -24,6 +24,10 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
             type: htmlButtonResponse,
             stimulus: () => `<p>${DEMO_TRIAL_MESSAGE}</p>`,
             choices: [CONTINUE_BUTTON_MESSAGE],
+            on_start: function () {
+                var _a;
+                changeProgressBar(`${PROGRESS_BAR.PROGRESS_BAR_TRIAL_BLOCKS}`, ((((_a = jsPsych.progressBar) === null || _a === void 0 ? void 0 : _a.progress) || 0) + .15), jsPsych);
+            }
         }, 
         // Demo trials
         {
@@ -48,8 +52,6 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
                                 bounds: bounds,
                             },
                             on_start: function (data) {
-                                var _a;
-                                changeProgressBar(`${PROGRESS_BAR.PROGRESS_BAR_TRIAL_BLOCKS} Demo Part ${state.completedBlockCount}`, ((_a = jsPsych.progressBar) === null || _a === void 0 ? void 0 : _a.progress) || 0, jsPsych);
                                 const keyTappedEarlyFlag = checkFlag('countdown', 'keyTappedEarlyFlag', jsPsych);
                                 // Update the trial parameters with keyTappedEarlyFlag
                                 data.keyTappedEarlyFlag = keyTappedEarlyFlag;
@@ -228,7 +230,6 @@ export function createRewardDisplayTrial(jsPsych, state) {
             const totalSuccessfulReward = calculateTotalReward(jsPsych);
             data.totalReward = totalSuccessfulReward;
             state.completedBlockCount++;
-            changeProgressBar((`${PROGRESS_BAR.PROGRESS_BAR_TRIAL_BLOCKS} Part ${state.completedBlockCount}`), (0), jsPsych);
         },
     };
 }

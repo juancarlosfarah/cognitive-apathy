@@ -99,9 +99,6 @@ export const changeProgressBar = (name, percent, jsPsych) => {
 export function showEndScreen(message) {
     const screen = document.createElement('div');
     screen.classList.add('custom-overlay');
-    screen.innerHTML = message;
+    screen.innerHTML = `<h2 style="text-align: center; top: 50%;">${message}</h2>`;
     document.body.appendChild(screen);
-    if (document.fullscreenElement) {
-        document.exitFullscreen();
-    }
 }

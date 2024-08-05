@@ -79,7 +79,7 @@ export const validationTrialEasy = (jsPsych, state) => ({
         createValidationTrial([30, 50], 'validationEasy', NUM_VALIDATION_TRIALS, jsPsych, state),
     ],
     on_timeline_finish: function () {
-        changeProgressBar(`${PROGRESS_BAR.PROGRESS_BAR_CALIBRATION} Part 3`, 0.65, jsPsych);
+        changeProgressBar(`${PROGRESS_BAR.PROGRESS_BAR_CALIBRATION}`, 0.60, jsPsych);
     }
 });
 export const validationTrialMedium = (jsPsych, state) => ({
@@ -87,7 +87,7 @@ export const validationTrialMedium = (jsPsych, state) => ({
         createValidationTrial([50, 70], 'validationMedium', NUM_VALIDATION_TRIALS, jsPsych, state),
     ],
     on_timeline_finish: function () {
-        changeProgressBar(`${PROGRESS_BAR.PROGRESS_BAR_CALIBRATION} Part 3`, 0.85, jsPsych);
+        changeProgressBar(`${PROGRESS_BAR.PROGRESS_BAR_CALIBRATION}`, 0.75, jsPsych);
     }
 });
 export const validationTrialHard = (jsPsych, state) => ({
@@ -96,7 +96,7 @@ export const validationTrialHard = (jsPsych, state) => ({
     ],
     on_timeline_finish: function () {
         if (state.extraValidationRequired === false) {
-            changeProgressBar(`${PROGRESS_BAR.PROGRESS_BAR_TRIAL_BLOCKS}`, 0, jsPsych);
+            changeProgressBar(`${PROGRESS_BAR.PROGRESS_BAR_TRIAL_BLOCKS}`, .90, jsPsych);
         }
     }
 });

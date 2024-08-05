@@ -1,11 +1,11 @@
-import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
-import {FAILED_VALIDATION_MESSAGE, END_EXPERIMENT_MESSAGE } from './constants';
+import {FAILED_VALIDATION_MESSAGE, END_EXPERIMENT_MESSAGE, CONTINUE_BUTTON_MESSAGE, EXPERIMENT_HAS_ENDED_MESSAGE } from './constants';
 import { calculateTotalReward, showEndScreen } from './utils';
 import { JsPsych } from 'jspsych';
+import htmlButtonResponse from '@jspsych/plugin-html-button-response';
 
 export const finishExperiment = (jsPsych: JsPsych) => ({
-  type: HtmlKeyboardResponsePlugin,
-  choices: ['enter'],
+  type: htmlButtonResponse,
+  choices: [CONTINUE_BUTTON_MESSAGE],
   stimulus: function () {
     return `<p>${END_EXPERIMENT_MESSAGE}</p>`;
   },
@@ -24,19 +24,19 @@ export const finishExperiment = (jsPsych: JsPsych) => ({
 export const finishExperimentEarly = (jsPsych: JsPsych) => {
   jsPsych.data.get().localSave('csv','cognitive-apathy.csv');
   jsPsych.abortExperiment(FAILED_VALIDATION_MESSAGE);
-  showEndScreen('experiment ended')
+  showEndScreen(EXPERIMENT_HAS_ENDED_MESSAGE)
 
 }
 
 export const finishExperimentEarlyTrial = (jsPsych: JsPsych) => ({
-  type: HtmlKeyboardResponsePlugin,
-  choices: ['enter'],
+  type: htmlButtonResponse,
+  choices: [CONTINUE_BUTTON_MESSAGE],
   stimulus: FAILED_VALIDATION_MESSAGE,
   data: {
     task: 'finish_experiment',
   },
   on_finish: function () {
     jsPsych.data.get().localSave('csv','cognitive-apathy.csv');
-    showEndScreen('experiment ended')
+    showEndScreen(EXPERIMENT_HAS_ENDED_MESSAGE)
   },
 });

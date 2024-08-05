@@ -55,11 +55,11 @@ return `
 export const acceptanceThermometer = (bounds: number[], reward: number) => `
 <div
   id="acceptance-container"
-  style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; border: 1px solid #000;"
+  style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;"
 >
   <div
     id="thermometer-container"
-    style="display: flex; justify-content: center; align-items: center; height: 300px; width: 100px; border: 1px solid #000; margin-bottom: 10px;"
+    style="justify-content: center; align-items: center; height: 300px; width: 100px; border: 1px solid #000; margin-bottom: 10px;"
   >
     <div
       id="thermometer"
@@ -83,6 +83,7 @@ export const acceptanceThermometer = (bounds: number[], reward: number) => `
   <p style="text-align: center;">${ACCEPTANCE_TRIAL_MESSAGE}</p>
 </div>
 `;
+
 
 
 export const videoStimulus = (message: string) => {

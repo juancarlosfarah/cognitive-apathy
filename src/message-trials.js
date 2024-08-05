@@ -31,7 +31,7 @@ export const calibrationSectionDirectionTrial = (jsPsych) => ({
     choices: [CONTINUE_BUTTON_MESSAGE],
     stimulus: [CALIBRATION_SECTION_MESSAGE],
     on_finish: function () {
-        changeProgressBar(`${PROGRESS_BAR.PROGRESS_BAR_CALIBRATION} Part 1`, .11, jsPsych);
+        changeProgressBar(`${PROGRESS_BAR.PROGRESS_BAR_CALIBRATION}`, .11, jsPsych);
     }
 });
 export const calibrationPart1DirectionTrial = {
@@ -44,6 +44,6 @@ export const trialBlocksDirection = (jsPsych) => ({
     choices: [CONTINUE_BUTTON_MESSAGE],
     stimulus: [TRIAL_BLOCKS_DIRECTIONS],
     on_finish: function () {
-        changeProgressBar(`${PROGRESS_BAR.PROGRESS_BAR_TRIAL_BLOCKS} Demo Part 1`, .11, jsPsych);
+        changeProgressBar(`${PROGRESS_BAR.PROGRESS_BAR_TRIAL_BLOCKS}`, .11, jsPsych);
     }
 });

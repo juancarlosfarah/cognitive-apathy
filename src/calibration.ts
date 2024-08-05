@@ -1,6 +1,6 @@
 import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
 import { JsPsych } from 'jspsych';
-
+import htmlButtonResponse from '@jspsych/plugin-html-button-response';
 import {
   ADDITIONAL_CALIBRATION_PART_1_DIRECTIONS,
   AUTO_DECREASE_AMOUNT,
@@ -10,7 +10,8 @@ import {
   NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
   NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
   TRIAL_DURATION,
-  PROGRESS_BAR
+  PROGRESS_BAR,
+  CONTINUE_BUTTON_MESSAGE
 } from './constants';
 import { countdownStep } from './countdown';
 import { finishExperimentEarlyTrial } from './finish';
@@ -153,8 +154,8 @@ export const createConditionalCalibrationTrial = ({
   return {
     timeline: [
       {
-        type: HtmlKeyboardResponsePlugin,
-        choices: ['enter'],
+        type: htmlButtonResponse,
+        choices: [CONTINUE_BUTTON_MESSAGE],
         stimulus: function () {
           // Reset success counters for the calibration trials completed after minimum taps not reached
           if (calibrationPart === 'calibrationPart1') {
@@ -224,7 +225,7 @@ export const calibrationTrialPart1 = (jsPsych: JsPsych, state: State) => ({
   ],
   on_timeline_finish: function() {
     if(state.calibrationPart1Failed === false){
-      changeProgressBar(PROGRESS_BAR.PROGRESS_BAR_CALIBRATION + ' Part 2', 0.2, jsPsych);
+      changeProgressBar(PROGRESS_BAR.PROGRESS_BAR_CALIBRATION, 0.2, jsPsych);
     }
   }
 });
@@ -241,7 +242,7 @@ export const conditionalCalibrationTrialPart1 = (jsPsych: JsPsych, state: State)
   ],
   on_timeline_finish: function() {
     if(state.calibrationPart1Failed === false){
-      changeProgressBar(PROGRESS_BAR.PROGRESS_BAR_CALIBRATION + ' Part 2', 0.23, jsPsych);
+      changeProgressBar(PROGRESS_BAR.PROGRESS_BAR_CALIBRATION, 0.23, jsPsych);
     }
   }
 });
@@ -262,7 +263,7 @@ export const calibrationTrialPart2 = (jsPsych: JsPsych, state: State) => ({
   ],
   on_timeline_finish: function() {
     if (state.calibrationPart2Failed === false) {
-      changeProgressBar(PROGRESS_BAR.PROGRESS_BAR_CALIBRATION + ' Part 3', 0.5, jsPsych);
+      changeProgressBar(PROGRESS_BAR.PROGRESS_BAR_CALIBRATION, 0.35, jsPsych);
     }
   }
 });
@@ -278,7 +279,7 @@ export const conditionalCalibrationTrialPart2 = (jsPsych: JsPsych, state: State)
   ],
   on_timeline_finish: function() {
     if (state.calibrationPart2Failed === false) {
-      changeProgressBar(PROGRESS_BAR.PROGRESS_BAR_CALIBRATION + ' Part 3', 0.53, jsPsych);
+      changeProgressBar(PROGRESS_BAR.PROGRESS_BAR_CALIBRATION, 0.45, jsPsych);
     }
   }
 });
