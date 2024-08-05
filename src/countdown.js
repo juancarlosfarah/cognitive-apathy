@@ -81,7 +81,7 @@ export class CountdownTrialPlugin {
                 keysState[key] = true;
                 setAreKeysHeld();
             }
-            if (key === trial.keyToPress.toLowerCase()) {
+            if (key === trial.keyToPress.toLowerCase() && interval) {
                 trial.keyTappedEarlyFlag = true;
             }
         };

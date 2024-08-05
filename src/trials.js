@@ -181,9 +181,7 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
                                     console.log(data);
                                 },
                             },
-                            {
-                                timeline: [successScreen(jsPsych)],
-                            },
+                            successScreen(jsPsych),
                             {
                                 timeline: [releaseKeysStep],
                                 conditional_function: function () {
