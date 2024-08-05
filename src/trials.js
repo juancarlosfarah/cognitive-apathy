@@ -1,9 +1,9 @@
 import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
 import { AUTO_DECREASE_AMOUNT, AUTO_DECREASE_RATE, DEMO_TRIAL_MESSAGE, FAILED_MINIMUM_DEMO_TAPS_DURATION, FAILED_MINIMUM_DEMO_TAPS_MESSAGE, MINIMUM_DEMO_TAPS, NUM_DEMO_TRIALS, NUM_TRIALS, PARAMETER_COMBINATIONS, REWARD_TOTAL_MESSAGE, TRIAL_DURATION, EXPECTED_MAXIMUM_PERCENTAGE, PROGRESS_BAR, CONTINUE_BUTTON_MESSAGE } from './constants';
 import { countdownStep } from './countdown';
-import { likertQuestions1, likertQuestions2 } from './likert';
+import { likertQuestions1, likertQuestions2Randomized } from './likert';
 import { loadingBarTrial } from './loading-bar';
-import { successScreen } from './message-trials';
+import { successScreen } from './success';
 import { releaseKeysStep } from './release-keys';
 import { acceptanceThermometer } from './stimulus';
 import TaskPlugin from './task';
@@ -95,9 +95,7 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
             ],
         }, 
         // Likert scale survey after demo
-        {
-            timeline: [Object.assign({}, likertQuestions1)],
-        });
+        likertQuestions1);
     }
     // If a block created is an actual trial
     if (blockName) {
@@ -189,7 +187,7 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
                             {
                                 timeline: [releaseKeysStep],
                                 conditional_function: function () {
-                                    return checkKeys('block', jsPsych);
+                                    return checkKeys('success', jsPsych);
                                 },
                             },
                         ],
@@ -212,7 +210,7 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
             },
         }, 
         // Likert scale survey after block
-        ...likertQuestions2);
+        ...likertQuestions2Randomized(jsPsych));
     }
     return { timeline };
 };
@@ -232,7 +230,7 @@ export function createRewardDisplayTrial(jsPsych, state) {
             const totalSuccessfulReward = calculateTotalReward(jsPsych);
             data.totalReward = totalSuccessfulReward;
             state.completedBlockCount++;
-            changeProgressBar((`${PROGRESS_BAR.PROGRESS_BAR_TRIAL_BLOCKS} Part ${state.completedBlockCount}`), ((state.completedBlockCount * 12) + 25), jsPsych);
+            changeProgressBar((`${PROGRESS_BAR.PROGRESS_BAR_TRIAL_BLOCKS} Part ${state.completedBlockCount}`), (0), jsPsych);
         },
     };
 }

@@ -33,7 +33,7 @@ export const createCalibrationTrial = ({ showThermometer, bounds, calibrationPar
                             state.calibrationPart1Successes++;
                             console.log(state.calibrationPart1Successes);
                             // calculate median for respective trial
-                            state.medianTapsPart1 = calculateMedianTapCount('calibrationPart1', NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS, jsPsych);
+                            state.medianTapsPart1 = calculateMedianTapCount('calibrationPart1', NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS - 1, jsPsych);
                             // If median taps is greater than the minimum median, set state.calibrationPart1Failed to false so conditional trial does not occur
                             if (state.medianTapsPart1 >= MINIMUM_CALIBRATION_MEDIAN) {
                                 state.calibrationPart1Failed = false;
@@ -43,7 +43,7 @@ export const createCalibrationTrial = ({ showThermometer, bounds, calibrationPar
                             // Increase successful trials counter for respective calibration part
                             state.calibrationPart2Successes++;
                             // calculate median for respective trial
-                            state.medianTaps = calculateMedianTapCount('calibrationPart2', NUM_CALIBRATION_WITH_FEEDBACK_TRIALS, jsPsych);
+                            state.medianTaps = calculateMedianTapCount('calibrationPart2', NUM_CALIBRATION_WITH_FEEDBACK_TRIALS - 1, jsPsych);
                             // If median taps is greater than the minimum median, set state.calibrationPart1Failed to false so conditional trial does not occur
                             if (state.medianTaps >= MINIMUM_CALIBRATION_MEDIAN) {
                                 state.calibrationPart2Failed = false;

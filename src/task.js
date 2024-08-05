@@ -14,7 +14,10 @@ class TaskPlugin {
         let startTime = 0;
         let endTime = 0;
         let error = '';
-        let keysState = { a: true, w: true, e: true };
+        let keysState = {};
+        KEYS_TO_HOLD.forEach(key => {
+            keysState[key] = true;
+        });
         let errorOccurred = false;
         let isRunning = false;
         let trialEnded = false;
@@ -44,7 +47,7 @@ class TaskPlugin {
         const setAreKeysHeld = () => {
             if (trialEnded)
                 return;
-            const areKeysHeld = keysState.a && keysState.w && keysState.e;
+            const areKeysHeld = KEYS_TO_HOLD.every(key => keysState[key]);
             const startMessageElement = document.getElementById('start-message');
             if (startMessageElement) {
                 startMessageElement.style.display = areKeysHeld ? 'block' : 'none';

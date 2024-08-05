@@ -55,7 +55,7 @@ return `
 export const acceptanceThermometer = (bounds: number[], reward: number) => `
 <div
   id="acceptance-container"
-  style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;"
+  style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; border: 1px solid #000;"
 >
   <div
     id="thermometer-container"

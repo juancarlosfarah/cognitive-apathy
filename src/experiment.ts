@@ -136,7 +136,7 @@ export async function run({
   });
   timeline.push({
     timeline: [validationResultScreen(jsPsych, state)],
-  });
+  });``
 timeline.push({
   timeline: [trialBlocksDirection(jsPsych)]
 })

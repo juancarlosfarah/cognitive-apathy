@@ -52,8 +52,8 @@ export function calculateMedianTapCount(taskType, numTrials, jsPsych) {
     const filteredTrials = jsPsych.data
         .get()
         .filter({ task: taskType })
-        .last(numTrials)
         .filter({ keysReleasedFlag: false, keyTappedEarlyFlag: false })
+        .last(numTrials)
         .select('tapCount');
     const medianValue = filteredTrials.median(); // Calculate the median
     return medianValue;
@@ -96,3 +96,12 @@ export const changeProgressBar = (name, percent, jsPsych) => {
     jsPsych.progressBar.progress = percent;
     progressBarMessageElement.innerHTML = name;
 };
+export function showEndScreen(message) {
+    const screen = document.createElement('div');
+    screen.classList.add('custom-overlay');
+    screen.innerHTML = message;
+    document.body.appendChild(screen);
+    if (document.fullscreenElement) {
+        document.exitFullscreen();
+    }
+}

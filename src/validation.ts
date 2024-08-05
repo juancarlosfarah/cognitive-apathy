@@ -12,7 +12,7 @@ import {
 } from './constants';
 import { countdownStep } from './countdown';
 import { loadingBarTrial } from './loading-bar';
-import { successScreen } from './message-trials';
+import { successScreen } from './success';
 import { releaseKeysStep } from './release-keys';
 import TaskPlugin from './task';
 import { autoIncreaseAmount, checkKeys, changeProgressBar } from './utils';
@@ -74,13 +74,11 @@ export const createValidationTrial = (
         handleValidationFinish(data, validationName, state);
       },
     },
-    {
-      timeline: [successScreen(jsPsych)],
-    },
+    successScreen(jsPsych),
     {
       timeline: [releaseKeysStep],
       conditional_function: function () {
-        return checkKeys(validationName, jsPsych)
+        return checkKeys('success', jsPsych)
       },
     },
     {

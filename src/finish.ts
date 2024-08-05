@@ -1,6 +1,6 @@
 import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
 import {FAILED_VALIDATION_MESSAGE, END_EXPERIMENT_MESSAGE } from './constants';
-import { calculateTotalReward } from './utils';
+import { calculateTotalReward, showEndScreen } from './utils';
 import { JsPsych } from 'jspsych';
 
 export const finishExperiment = (jsPsych: JsPsych) => ({
@@ -13,15 +13,19 @@ export const finishExperiment = (jsPsych: JsPsych) => ({
     task: 'finish_experiment',
   },
   on_finish: function (data: any) {
+    
     const totalSuccessfulReward = calculateTotalReward(jsPsych);
     data.totalReward = totalSuccessfulReward;
     jsPsych.data.get().localSave('csv','cognitive-apathy.csv');
+    showEndScreen('experiment ended')
   },
 });
 
 export const finishExperimentEarly = (jsPsych: JsPsych) => {
   jsPsych.data.get().localSave('csv','cognitive-apathy.csv');
   jsPsych.abortExperiment(FAILED_VALIDATION_MESSAGE);
+  showEndScreen('experiment ended')
+
 }
 
 export const finishExperimentEarlyTrial = (jsPsych: JsPsych) => ({
@@ -33,5 +37,6 @@ export const finishExperimentEarlyTrial = (jsPsych: JsPsych) => ({
   },
   on_finish: function () {
     jsPsych.data.get().localSave('csv','cognitive-apathy.csv');
+    showEndScreen('experiment ended')
   },
 });

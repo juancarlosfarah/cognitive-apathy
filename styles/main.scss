@@ -104,3 +104,13 @@ body {
   font-size: 2em; /* Make the font size larger */
   margin-top: 10px; /* Add some space above the clock */
 }
+
+.custom-overlay {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background: black;
+  display: flex;
+  justify-content: center;
+  backdrop-filter: blur(5px);
+}

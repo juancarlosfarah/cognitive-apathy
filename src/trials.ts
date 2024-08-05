@@ -17,9 +17,9 @@ import {
   CONTINUE_BUTTON_MESSAGE
 } from './constants';
 import { countdownStep } from './countdown';
-import { likertQuestions1, likertQuestions2 } from './likert';
+import { likertQuestions1, likertQuestions2Randomized } from './likert';
 import { loadingBarTrial } from './loading-bar';
-import { successScreen } from './message-trials';
+import { successScreen } from './success';
 import { releaseKeysStep } from './release-keys';
 import { acceptanceThermometer } from './stimulus';
 import TaskPlugin from './task';
@@ -137,9 +137,7 @@ export const createTrialBlock = ({
         ],
       },
       // Likert scale survey after demo
-      {
-        timeline: [{ ...likertQuestions1 }],
-      },
+        likertQuestions1,
     );
   }
 
@@ -249,13 +247,11 @@ export const createTrialBlock = ({
                     console.log(data);
                   },
                 },
-                {
-                  timeline: [successScreen(jsPsych)],
-                },
+                  successScreen(jsPsych),
                 {
                   timeline: [releaseKeysStep],
                   conditional_function: function () {
-                    return checkKeys('block', jsPsych)
+                    return checkKeys('success',jsPsych)
                   },
                 },
               ],
@@ -278,7 +274,7 @@ export const createTrialBlock = ({
         },
       },
       // Likert scale survey after block
-      ...likertQuestions2,
+      ...likertQuestions2Randomized(jsPsych),
     );
   }
 
@@ -302,7 +298,7 @@ export function createRewardDisplayTrial(jsPsych: JsPsych, state: State) {
       const totalSuccessfulReward = calculateTotalReward(jsPsych);
       data.totalReward = totalSuccessfulReward;
       state.completedBlockCount++
-      changeProgressBar((`${PROGRESS_BAR.PROGRESS_BAR_TRIAL_BLOCKS} Part ${state.completedBlockCount}`), ((state.completedBlockCount*12)+25), jsPsych )
+      changeProgressBar((`${PROGRESS_BAR.PROGRESS_BAR_TRIAL_BLOCKS} Part ${state.completedBlockCount}`), (0), jsPsych )
     },
   };
 }

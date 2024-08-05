@@ -1,7 +1,7 @@
 import { AUTO_DECREASE_AMOUNT, AUTO_DECREASE_RATE, FAILED_VALIDATION_MESSAGE, NUM_EXTRA_VALIDATION_TRIALS, NUM_VALIDATION_TRIALS, PASSED_VALIDATION_MESSAGE, TRIAL_DURATION, EXPECTED_MAXIMUM_PERCENTAGE, PROGRESS_BAR, CONTINUE_BUTTON_MESSAGE } from './constants';
 import { countdownStep } from './countdown';
 import { loadingBarTrial } from './loading-bar';
-import { successScreen } from './message-trials';
+import { successScreen } from './success';
 import { releaseKeysStep } from './release-keys';
 import TaskPlugin from './task';
 import { autoIncreaseAmount, checkKeys, changeProgressBar } from './utils';
@@ -47,13 +47,11 @@ export const createValidationTrial = (bounds, validationName, repetitions, jsPsy
                 handleValidationFinish(data, validationName, state);
             },
         },
-        {
-            timeline: [successScreen(jsPsych)],
-        },
+        successScreen(jsPsych),
         {
             timeline: [releaseKeysStep],
             conditional_function: function () {
-                return checkKeys(validationName, jsPsych);
+                return checkKeys('success', jsPsych);
             },
         },
         {

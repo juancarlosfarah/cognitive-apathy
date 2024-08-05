@@ -106,6 +106,7 @@ export function run(_a) {
         timeline.push({
             timeline: [validationResultScreen(jsPsych, state)],
         });
+        ``;
         timeline.push({
             timeline: [trialBlocksDirection(jsPsych)]
         });

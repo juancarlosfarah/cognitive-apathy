@@ -1,7 +1,7 @@
 import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
 import htmlButtonResponse from '@jspsych/plugin-html-button-response';
 import FullscreenPlugin from '@jspsych/plugin-fullscreen';
-import { SUCCESS_SCREEN_DURATION, TRIAL_FAILED, TRIAL_SUCCEEDED, CONTINUE_BUTTON_MESSAGE, EXPERIMENT_BEGIN_MESSAGE, TUTORIAL_INTRODUCTION_MESSAGE, CALIBRATION_PART_1_DIRECTIONS, CALIBRATION_SECTION_MESSAGE, PROGRESS_BAR, TRIAL_BLOCKS_DIRECTIONS } from './constants';
+import { CONTINUE_BUTTON_MESSAGE, EXPERIMENT_BEGIN_MESSAGE, TUTORIAL_INTRODUCTION_MESSAGE, CALIBRATION_PART_1_DIRECTIONS, CALIBRATION_SECTION_MESSAGE, PROGRESS_BAR, TRIAL_BLOCKS_DIRECTIONS } from './constants';
 import { changeProgressBar } from './utils';
 export const endExperimentTrial = (message) => ({
     type: HtmlKeyboardResponsePlugin,
@@ -10,23 +10,6 @@ export const endExperimentTrial = (message) => ({
     on_finish: function (jsPsych) {
         console.log('Experiment ended:', message);
         jsPsych.endExperiment(message);
-    },
-});
-export const successScreen = (jsPsych) => ({
-    type: HtmlKeyboardResponsePlugin,
-    stimulus: function () {
-        const previousTrial = jsPsych.data.get().last(1).values()[0];
-        if (previousTrial.success) {
-            return `<p style="color: green; font-size: 48px;">${TRIAL_SUCCEEDED}</p>`;
-        }
-        else {
-            return `<p style="color: red; font-size: 48px;">${TRIAL_FAILED}</p>`;
-        }
-    },
-    choices: 'NO_KEYS',
-    trial_duration: SUCCESS_SCREEN_DURATION,
-    data: {
-        task: 'success_screen',
     },
 });
 export const experimentBeginTrial = {

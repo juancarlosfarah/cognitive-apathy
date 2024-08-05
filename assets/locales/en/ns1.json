@@ -1,13 +1,13 @@
 {
-  "PASSED_VALIDATION_MESSAGE": "<br>You will now enter the next phase of the experiment.<br><br> Press the <b>Enter</b> key to continue.",
+  "PASSED_VALIDATION_MESSAGE": "<br>You will now enter the next phase of the experiment.<br><br> Press the <b>Continue</b> button to continue.",
   "FAILED_VALIDATION_MESSAGE": "<br>Unfortunately, you are not eligible for this experiment.<br>Please find your experimenter, and let them know.",
   "CALIBRATION_PART_1_DIRECTIONS": "Calibration Part 1 is the same task as the practice section. <br>You will place your pinky on the <b>{{KEYS_TO_HOLD_0}}</b> key<br>2. Place your ring finger on the <b>{{KEYS_TO_HOLD_1}}</b> key<br>3. Place your middle finger on the <b>{{KEYS_TO_HOLD_2}}</b> key<br>4. While still holding down with these fingers, simultaneously, when you see the <b>GO!</b>, tap the <b>{{KEY_TO_PRESS}}</b> key, <b>repeatedly</b> with your index finger <b>as fast as you can!</b><br><br>Note:<br> Do not tap the <b>{{KEY_TO_PRESS}}</b> key until the <b>GO!</b> appears and do not release the <b>{{KEYS_TO_HOLD_0}}</b>, <b>{{KEYS_TO_HOLD_1}}</b>, <b>{{KEYS_TO_HOLD_2}}</b> until prompted.",
   "CALIBRATION_SECTION_MESSAGE": "<br> The next phase of the experiment is the <b>Calibration</b> section consisting of:<br>1. Calibration Part 1<br>2. Calibration Part 2<br>3. Calibration Part 3 <br>Press the <b>Continue</b> button and follow the instructions.",
-  "ADDITIONAL_CALIBRATION_PART_1_DIRECTIONS": "<br>You will now perform more additional tasks which are the same as you just completed<br><br>Make sure you are tapping the <b>{{KEY_TO_PRESS}}</b> key as fast as you can after the <b>GO!</b> appears.<br><br> During the trial, remember to continue holding the <b>{{KEYS_TO_HOLD_0}}</b>, <b>{{KEYS_TO_HOLD_1}}</b>, and <b>{{KEYS_TO_HOLD_2}}</b> until told to release them.<br> Do not tap the <b>{{KEY_TO_PRESS}}</b> key until the <b>GO!</b> appears.<br><br> Press the <b>Enter</b> key to begin.",
-  "CALIBRATION_PART_1_ENDING_MESSAGE": "<br>You will now enter the next phase of the experiment.<br><br> Press the <b>Enter</b> key to continue.",
+  "ADDITIONAL_CALIBRATION_PART_1_DIRECTIONS": "<br>You will now perform more additional tasks which are the same as you just completed<br><br>Make sure you are tapping the <b>{{KEY_TO_PRESS}}</b> key as fast as you can after the <b>GO!</b> appears.<br><br> During the trial, remember to continue holding the <b>{{KEYS_TO_HOLD_0}}</b>, <b>{{KEYS_TO_HOLD_1}}</b>, and <b>{{KEYS_TO_HOLD_2}}</b> until told to release them.<br> Do not tap the <b>{{KEY_TO_PRESS}}</b> key until the <b>GO!</b> appears.<br><br> Press the <b>Continue</b> button to begin.",
+  "CALIBRATION_PART_1_ENDING_MESSAGE": "<br>You will now enter the next phase of the experiment.<br><br> Press the <b>Continue</b> button to continue.",
   "CALIBRATION_PART_2_DIRECTIONS": "",
-  "TRIAL_BLOCKS_DIRECTIONS": "<br>During this next phase of the experiment, you will have the choice to accept or deny a trial.<br><br> You may either accept a trial with the <b>Left Arrow</b> on your keyboard<br> Or<br> You may deny the trial with the <b>Right Arrow</b> on your keyboard<br><br>The required target area will be shown in green and corresponding reward will be shown during the decision phase. <br>If you accept the trial and the red bar ends in the target area, you will receive the reward designated in the experiment.<br><br>Before a set of trials begins, you will have a set of practice trials to familiarize yourself.<br><br>Press the <b>Enter</b> key to continue.",
-  "CALIBRATION_PART_2_ENDING_MESSAGE": "<br>You will now enter the next phase of the experiment.<br><br> Press the <b>Enter</b> key to continue.",
+  "TRIAL_BLOCKS_DIRECTIONS": "<br>During this next phase of the experiment, you will have the choice to accept or deny a trial.<br><br> You may either accept a trial with the <b>Left Arrow</b> on your keyboard<br> Or<br> You may deny the trial with the <b>Right Arrow</b> on your keyboard<br><br>The required target area will be shown in green and corresponding reward will be shown during the decision phase. <br>If you accept the trial and the red bar ends in the target area, you will receive the reward designated in the experiment.<br><br>Before a set of trials begins, you will have a set of practice trials to familiarize yourself.<br><br>Press the <b>Continue</b> button to continue.",
+  "CALIBRATION_PART_2_ENDING_MESSAGE": "<br>You will now enter the next phase of the experiment.<br><br> Press the <b>Continue</b> button to continue.",
   "CALIBRATION_FINISHED_DIRECTIONS": "You have finished the first set of trials... INSERT MORE HERE",
   "VALIDATION_DIRECTIONS": "INSERT VALIDATION DIRECTIONS HERE",
   "PREMATURE_KEY_RELEASE_ERROR_MESSAGE": "You released the keys early!",
@@ -16,7 +16,7 @@
   "HOLD_KEYS_MESSAGE": "<p>Hold the <b>{{KEYS_TO_HOLD_0}}</b>, <b>{{KEYS_TO_HOLD_1}}</b>, and <b>{{KEYS_TO_HOLD_2}}</b> keys!</p>",
   "KEY_TAPPED_EARLY_MESSAGE": "Key was tapped too early. Please wait for the appropriate time to press the key.",
   "RELEASE_KEYS_MESSAGE": "Release the Keys",
-  "REWARD_TOTAL_MESSAGE": "Total reward for successful trials is: CHF {{totalSuccessfulReward}}. Press <b>Enter</b> to continue.",
+  "REWARD_TOTAL_MESSAGE": "Total reward for successful trials is: CHF {{totalSuccessfulReward}}. Press the <b>Continue</b> button to continue..",
   "EXPERIMENT_BEGIN_MESSAGE": "Welcome to the experiment. Please follow the directions.<br>Press Continue to begin.",
   "NO_STIMULI_VIDEO_TUTORIAL_MESSAGE": "The video below demonstrates how the practice will be performed.<br><br>1. You will place your pinky on the <b>{{KEYS_TO_HOLD_0}}</b> key<br>2. Place your ring finger on the <b>{{KEYS_TO_HOLD_1}}</b> key<br>3. Place your middle finger on the <b>{{KEYS_TO_HOLD_2}}</b> key<br>4. While still holding down with these fingers, simultaneously, when you see the <b>GO!</b>, tap the <b>{{KEY_TO_PRESS}}</b> key, <b>repeatedly</b> with your index finger as fast as you can!<br><br>Note:<br> Do not tap the <b>{{KEY_TO_PRESS}}</b> key until the <b>GO!</b> appears and do not release the <b>{{KEYS_TO_HOLD_0}}</b>, <b>{{KEYS_TO_HOLD_1}}</b>, <b>{{KEYS_TO_HOLD_2}}</b> until prompted. <br> After clicking the <b>Continue</b> button, you will complete <b>3</b> practice trials.",
   "STIMULI_VIDEO_TUTORIAL_MESSAGE": "<br> Get the red bar as high as possible with your taps!<br> Do not tap the <b>{{KEY_TO_PRESS}}</b> key until the <b>GO!</b> appears.<br><br> The video below demonstrates how the next section of the experiment will be performed.<br> Click <b>Continue</b> after watching the video",
@@ -35,26 +35,28 @@
   "LIKERT_RESPONSES": {
     "STRONGLY_DISAGREE": "Strongly Disagree",
     "DISAGREE": "Disagree",
+    "SOMEWHAT_DISAGREE": "Somewhat Disagree",
     "NEUTRAL": "Neutral",
     "AGREE": "Agree",
+    "SOMEWHAT_AGREE": "Somewhat Agree",
     "STRONGLY_AGREE": "Strongly Agree"
   },
   "LIKERT_SURVEY_1_QUESTIONS": {
-    "QUESTION_1": "Placeholder question 1 for survey 1",
+    "QUESTION_1": "I felt I was in control of the bars movement."
   },
   "LIKERT_SURVEY_2_QUESTIONS": {
-    "QUESTION_1": "Placeholder question 1 for survey 2",
-    "QUESTION_2": "Placeholder question 2 for survey 2",
-    "QUESTION_3": "Placeholder question 3 for survey 2",
-    "QUESTION_4": "Placeholder question 4 for survey 2",
-    "QUESTION_5": "Placeholder question 5 for survey 2"
+    "QUESTION_1": "It was difficult to work out what I had to do to complete the task successfully",
+    "QUESTION_2": "I found it difficult to keep my mind on the task",
+    "QUESTION_3": "I set myself the goal to perform the task better",
+    "QUESTION_4": "I felt that I needed a push to continue tapping until the end of the task",
+    "QUESTION_5": "I feel motivated to continue the task"
   },
-  "END_EXPERIMENT_MESSAGE": "Press <b>Enter</b> to end the Experiment and then, please, find your experimenter.",
+  "END_EXPERIMENT_MESSAGE": "Press <b>Continue</b> to end the Experiment and then, please, find your experimenter.",
   "PROGRESS_BAR": {
     "PROGRESS_BAR_INTRODUCTION": "Introduction",
     "PROGRESS_BAR_PRACTICE": "Practice",
     "PROGRESS_BAR_CALIBRATION": "Calibration",
-    "PROGRESS_BAR_TRIAL_BLOCKS": "Trial Block "
+    "PROGRESS_BAR_TRIAL_BLOCKS": "Trial Block"
   },
   "TUTORIAL_INTRODUCTION_MESSAGE": "The first part of the experiment will consist of 2 different sections:<br><br>1. Practice section so you can acclimate to the task you will be performing.<br>2. Calibration section to personalize the experiment to you<br><br>Follow the instructions throughout each section carefully.<br>Press the <b>Continue</b> button to begin."
 }
