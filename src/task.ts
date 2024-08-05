@@ -171,6 +171,7 @@ class TaskPlugin {
           increaseMercury();
         }
       }
+      console.log(`keys state on keyup: ${JSON.stringify(keysState)}`);
     };
 
     const startRunning = () => {
@@ -228,7 +229,6 @@ class TaskPlugin {
     const end_trial = () => {
       document.removeEventListener('keydown', handleKeyDown);
       document.removeEventListener('keyup', handleKeyUp);
-      console.log(keysState)
       const trialData: TaskTrialData = {
         tapCount,
         startTime,

@@ -56,7 +56,7 @@ export const createTrialBlock = ({
         on_start: function(){
           changeProgressBar(
             `${PROGRESS_BAR.PROGRESS_BAR_TRIAL_BLOCKS}`, 
-            ((jsPsych.progressBar?.progress || 0)+.15), 
+            ((jsPsych.progressBar?.progress || 0)+.1), 
             jsPsych
           )
         }
@@ -114,7 +114,7 @@ export const createTrialBlock = ({
                   {
                     timeline: [releaseKeysStep],
                     conditional_function: function () {
-                      return checkKeys('demo', jsPsych)
+                      return checkKeys('demo', jsPsych) && checkKeys('success', jsPsych)
                     },
                   },
                   {
@@ -253,7 +253,7 @@ export const createTrialBlock = ({
                 {
                   timeline: [releaseKeysStep],
                   conditional_function: function () {
-                    return checkKeys('success',jsPsych)
+                    return checkKeys('success',jsPsych) && checkKeys('block', jsPsych)
                   },
                 },
               ],

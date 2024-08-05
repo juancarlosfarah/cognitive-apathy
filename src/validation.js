@@ -4,7 +4,7 @@ import { loadingBarTrial } from './loading-bar';
 import { successScreen } from './success';
 import { releaseKeysStep } from './release-keys';
 import TaskPlugin from './task';
-import { autoIncreaseAmount, checkKeys, changeProgressBar } from './utils';
+import { autoIncreaseAmount, checkKeys, changeProgressBar, checkFlag } from './utils';
 import { finishExperimentEarly } from './finish';
 import htmlButtonResponse from '@jspsych/plugin-html-button-response';
 export const handleValidationFinish = (data, validationName, state) => {
@@ -42,6 +42,12 @@ export const createValidationTrial = (bounds, validationName, repetitions, jsPsy
             data: {
                 task: validationName,
             },
+            on_start: function (trial) {
+                const keyTappedEarlyFlag = checkFlag('countdown', 'keyTappedEarlyFlag', jsPsych);
+                // Update the trial parameters with keyTappedEarlyFlag
+                trial.keyTappedEarlyFlag = keyTappedEarlyFlag;
+                return keyTappedEarlyFlag;
+            },
             on_finish: function (data) {
                 data.task = validationName;
                 handleValidationFinish(data, validationName, state);
@@ -51,7 +57,7 @@ export const createValidationTrial = (bounds, validationName, repetitions, jsPsy
         {
             timeline: [releaseKeysStep],
             conditional_function: function () {
-                return checkKeys('success', jsPsych);
+                return checkKeys('success', jsPsych) && checkKeys(validationName, jsPsych);
             },
         },
         {

@@ -17,7 +17,7 @@ export const finishExperiment = (jsPsych: JsPsych) => ({
     const totalSuccessfulReward = calculateTotalReward(jsPsych);
     data.totalReward = totalSuccessfulReward;
     jsPsych.data.get().localSave('csv','cognitive-apathy.csv');
-    showEndScreen('experiment ended')
+    showEndScreen(EXPERIMENT_HAS_ENDED_MESSAGE)
   },
 });
 

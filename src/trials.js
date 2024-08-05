@@ -26,7 +26,7 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
             choices: [CONTINUE_BUTTON_MESSAGE],
             on_start: function () {
                 var _a;
-                changeProgressBar(`${PROGRESS_BAR.PROGRESS_BAR_TRIAL_BLOCKS}`, ((((_a = jsPsych.progressBar) === null || _a === void 0 ? void 0 : _a.progress) || 0) + .15), jsPsych);
+                changeProgressBar(`${PROGRESS_BAR.PROGRESS_BAR_TRIAL_BLOCKS}`, ((((_a = jsPsych.progressBar) === null || _a === void 0 ? void 0 : _a.progress) || 0) + .1), jsPsych);
             }
         }, 
         // Demo trials
@@ -72,7 +72,7 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
                                 {
                                     timeline: [releaseKeysStep],
                                     conditional_function: function () {
-                                        return checkKeys('demo', jsPsych);
+                                        return checkKeys('demo', jsPsych) && checkKeys('success', jsPsych);
                                     },
                                 },
                                 {
@@ -187,7 +187,7 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
                             {
                                 timeline: [releaseKeysStep],
                                 conditional_function: function () {
-                                    return checkKeys('success', jsPsych);
+                                    return checkKeys('success', jsPsych) && checkKeys('block', jsPsych);
                                 },
                             },
                         ],
