@@ -120,9 +120,10 @@ export const getQueryParam = (param: string) => {
 };
 
 export const changeProgressBar = (name: string, percent: number, jsPsych: JsPsych) => {
-  const progressBarMessageElement = document.querySelector('#jspsych-progressbar-message');
+
+  const messageSpan = document.getElementById('jspsych-progressbar-message');
   jsPsych.progressBar!.progress = percent
-  progressBarMessageElement!.innerHTML = name;
+  messageSpan!.innerText = name;
 }
 
 export function showEndScreen(message: string): void {

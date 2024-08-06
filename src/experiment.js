@@ -54,6 +54,12 @@ export function run(_a) {
             auto_update_progress_bar: false,
             message_progress_bar: PROGRESS_BAR.PROGRESS_BAR_INTRODUCTION
         });
+        const progressBarMessageSpan = document.createElement('span');
+        progressBarMessageSpan.id = 'jspsych-progressbar-message';
+        const progressBarContainer = document.querySelector('#jspsych-progressbar-container');
+        if (progressBarContainer) {
+            progressBarContainer.insertBefore(progressBarMessageSpan, progressBarContainer.firstChild);
+        }
         const timeline = [];
         timeline.push({
             type: PreloadPlugin,

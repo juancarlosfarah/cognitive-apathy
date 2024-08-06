@@ -92,9 +92,9 @@ export const getQueryParam = (param) => {
     return urlParams.get(param);
 };
 export const changeProgressBar = (name, percent, jsPsych) => {
-    const progressBarMessageElement = document.querySelector('#jspsych-progressbar-message');
+    const messageSpan = document.getElementById('jspsych-progressbar-message');
     jsPsych.progressBar.progress = percent;
-    progressBarMessageElement.innerHTML = name;
+    messageSpan.innerText = name;
 };
 export function showEndScreen(message) {
     const screen = document.createElement('div');
