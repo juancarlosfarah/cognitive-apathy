@@ -14,7 +14,9 @@ import {
   TRIAL_DURATION,
   EXPECTED_MAXIMUM_PERCENTAGE,
   PROGRESS_BAR,
-  CONTINUE_BUTTON_MESSAGE
+  CONTINUE_BUTTON_MESSAGE,
+  MEDIUM_BOUNDS,
+  HARD_BOUNDS
 } from './constants';
 import { countdownStep } from './countdown';
 import { likertQuestions1, likertQuestions2Randomized } from './likert';
@@ -73,7 +75,15 @@ export const createTrialBlock = ({
                 duration: TRIAL_DURATION,
                 showThermometer: true,
                 randomDelay,
-                bounds,
+                bounds: function () {
+                  if (state.demoTrialSuccesses === 0){
+                    return EASY_BOUNDS
+                  } else if (state.demoTrialSuccesses === 1){
+                    return MEDIUM_BOUNDS
+                  } else if (state.demoTrialSuccesses === 2){
+                    return HARD_BOUNDS
+                  } else return [0,0]
+                },
                 autoIncreaseAmount: function () {
                   console.log(state.medianTaps);
                   return autoIncreaseAmount(
@@ -114,7 +124,7 @@ export const createTrialBlock = ({
                   {
                     timeline: [releaseKeysStep],
                     conditional_function: function () {
-                      return checkKeys('demo', jsPsych) && checkKeys('success', jsPsych)
+                      return checkKeys('demo', jsPsych)
                     },
                   },
                   {
@@ -310,7 +320,6 @@ export const trialsArray = (jsPsych: JsPsych, state: State) => [
     // Demo trials
     createTrialBlock({
       randomDelay: [0, 0],
-      bounds: [0, 0],
       includeDemo: true,
       jsPsych,
       state,
@@ -329,7 +338,6 @@ export const trialsArray = (jsPsych: JsPsych, state: State) => [
     // Demo trials
     createTrialBlock({
       randomDelay: [0, 0],
-      bounds: [0, 0],
       includeDemo: true,
       jsPsych,
       state,
@@ -348,7 +356,6 @@ export const trialsArray = (jsPsych: JsPsych, state: State) => [
     // Demo trials
     createTrialBlock({
       randomDelay: [400, 600],
-      bounds: [0, 0],
       includeDemo: true,
       jsPsych,
       state,
@@ -367,7 +374,6 @@ export const trialsArray = (jsPsych: JsPsych, state: State) => [
     createTrialBlock({
       // Demo trials
       randomDelay: [400, 600],
-      bounds: [0, 0],
       includeDemo: true,
       jsPsych,
       state,
@@ -386,7 +392,6 @@ export const trialsArray = (jsPsych: JsPsych, state: State) => [
     createTrialBlock({
       // Demo trials
       randomDelay: [0, 1000],
-      bounds: [0, 0],
       includeDemo: true,
       jsPsych,
       state,
@@ -405,7 +410,6 @@ export const trialsArray = (jsPsych: JsPsych, state: State) => [
     createTrialBlock({
       // Demo trials
       randomDelay: [0, 1000],
-      bounds: [0, 0],
       includeDemo: true,
       jsPsych,
       state,

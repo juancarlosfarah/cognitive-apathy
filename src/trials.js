@@ -1,5 +1,5 @@
 import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
-import { AUTO_DECREASE_AMOUNT, AUTO_DECREASE_RATE, DEMO_TRIAL_MESSAGE, FAILED_MINIMUM_DEMO_TAPS_DURATION, FAILED_MINIMUM_DEMO_TAPS_MESSAGE, MINIMUM_DEMO_TAPS, NUM_DEMO_TRIALS, NUM_TRIALS, PARAMETER_COMBINATIONS, REWARD_TOTAL_MESSAGE, TRIAL_DURATION, EXPECTED_MAXIMUM_PERCENTAGE, PROGRESS_BAR, CONTINUE_BUTTON_MESSAGE } from './constants';
+import { AUTO_DECREASE_AMOUNT, AUTO_DECREASE_RATE, DEMO_TRIAL_MESSAGE, FAILED_MINIMUM_DEMO_TAPS_DURATION, FAILED_MINIMUM_DEMO_TAPS_MESSAGE, MINIMUM_DEMO_TAPS, NUM_DEMO_TRIALS, NUM_TRIALS, PARAMETER_COMBINATIONS, REWARD_TOTAL_MESSAGE, TRIAL_DURATION, EXPECTED_MAXIMUM_PERCENTAGE, PROGRESS_BAR, CONTINUE_BUTTON_MESSAGE, MEDIUM_BOUNDS, HARD_BOUNDS } from './constants';
 import { countdownStep } from './countdown';
 import { likertQuestions1, likertQuestions2Randomized } from './likert';
 import { loadingBarTrial } from './loading-bar';
@@ -41,7 +41,19 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
                             duration: TRIAL_DURATION,
                             showThermometer: true,
                             randomDelay,
-                            bounds,
+                            bounds: function () {
+                                if (state.demoTrialSuccesses === 0) {
+                                    return EASY_BOUNDS;
+                                }
+                                else if (state.demoTrialSuccesses === 1) {
+                                    return MEDIUM_BOUNDS;
+                                }
+                                else if (state.demoTrialSuccesses === 2) {
+                                    return HARD_BOUNDS;
+                                }
+                                else
+                                    return [0, 0];
+                            },
                             autoIncreaseAmount: function () {
                                 console.log(state.medianTaps);
                                 return autoIncreaseAmount(EXPECTED_MAXIMUM_PERCENTAGE, TRIAL_DURATION, AUTO_DECREASE_RATE, AUTO_DECREASE_AMOUNT, state.medianTaps);
@@ -72,7 +84,7 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
                                 {
                                     timeline: [releaseKeysStep],
                                     conditional_function: function () {
-                                        return checkKeys('demo', jsPsych) && checkKeys('success', jsPsych);
+                                        return checkKeys('demo', jsPsych);
                                     },
                                 },
                                 {
@@ -239,7 +251,6 @@ export const trialsArray = (jsPsych, state) => [
         // Demo trials
         createTrialBlock({
             randomDelay: [0, 0],
-            bounds: [0, 0],
             includeDemo: true,
             jsPsych,
             state,
@@ -258,7 +269,6 @@ export const trialsArray = (jsPsych, state) => [
         // Demo trials
         createTrialBlock({
             randomDelay: [0, 0],
-            bounds: [0, 0],
             includeDemo: true,
             jsPsych,
             state,
@@ -277,7 +287,6 @@ export const trialsArray = (jsPsych, state) => [
         // Demo trials
         createTrialBlock({
             randomDelay: [400, 600],
-            bounds: [0, 0],
             includeDemo: true,
             jsPsych,
             state,
@@ -296,7 +305,6 @@ export const trialsArray = (jsPsych, state) => [
         createTrialBlock({
             // Demo trials
             randomDelay: [400, 600],
-            bounds: [0, 0],
             includeDemo: true,
             jsPsych,
             state,
@@ -315,7 +323,6 @@ export const trialsArray = (jsPsych, state) => [
         createTrialBlock({
             // Demo trials
             randomDelay: [0, 1000],
-            bounds: [0, 0],
             includeDemo: true,
             jsPsych,
             state,
@@ -334,7 +341,6 @@ export const trialsArray = (jsPsych, state) => [
         createTrialBlock({
             // Demo trials
             randomDelay: [0, 1000],
-            bounds: [0, 0],
             includeDemo: true,
             jsPsych,
             state,
