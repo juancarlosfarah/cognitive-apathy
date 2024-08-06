@@ -19,7 +19,7 @@ import {
   HARD_BOUNDS
 } from './constants';
 import { countdownStep } from './countdown';
-import { likertQuestions1, likertQuestions2Randomized } from './likert';
+import { likertFinalQuestion, likertIntro, likertQuestions1, likertQuestions2Randomized } from './likert';
 import { loadingBarTrial } from './loading-bar';
 import { successScreen } from './success';
 import { releaseKeysStep } from './release-keys';
@@ -49,7 +49,6 @@ export const createTrialBlock = ({
   const timeline: any[] = [];
 
   if (includeDemo) {
-    state.demoTrialSuccesses = 0; // Reset demo successes before starting
     timeline.push(
       {
         type: htmlButtonResponse,
@@ -61,6 +60,7 @@ export const createTrialBlock = ({
             ((jsPsych.progressBar?.progress || 0)+.1), 
             jsPsych
           )
+          state.demoTrialSuccesses = 0; // Reset demo successes before starting
         }
       },
       // Demo trials
@@ -149,7 +149,8 @@ export const createTrialBlock = ({
         ],
       },
       // Likert scale survey after demo
-        likertQuestions1,
+      likertIntro,
+      likertQuestions1,
     );
   }
 
@@ -286,7 +287,9 @@ export const createTrialBlock = ({
         },
       },
       // Likert scale survey after block
+      likertIntro,
       ...likertQuestions2Randomized(jsPsych),
+      likertFinalQuestion
     );
   }
 

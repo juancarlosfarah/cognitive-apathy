@@ -1,11 +1,17 @@
 import surveyLikert from '@jspsych/plugin-survey-likert';
-import { LIKERT_PREAMBLE, CONTINUE_BUTTON_MESSAGE, LIKERT_SURVEY_1_QUESTIONS, LIKERT_SURVEY_2_QUESTIONS, LIKERT_RESPONSES } from './constants';
+import { LIKERT_PREAMBLE, CONTINUE_BUTTON_MESSAGE, LIKERT_SURVEY_1_QUESTIONS, LIKERT_SURVEY_2_QUESTIONS, LIKERT_RESPONSES, LIKERT_PREAMBLE_DEMO, LIKERT_INTRO } from './constants';
+import htmlButtonResponse from '@jspsych/plugin-html-button-response';
 // ALL LIKERT STILL NEEDS TO BE TRANSLATED BUT AM WAIT ON JEVITA QUESTIONS + ANSWERS TO TRANSLATE
+export const likertIntro = {
+    type: htmlButtonResponse,
+    choices: [CONTINUE_BUTTON_MESSAGE],
+    stimulus: [LIKERT_INTRO],
+};
 export const likertQuestions1 = {
     type: surveyLikert,
     questions: [
         {
-            prompt: `${LIKERT_PREAMBLE}<br><br>${LIKERT_SURVEY_1_QUESTIONS.QUESTION_1}`,
+            prompt: `${LIKERT_PREAMBLE_DEMO}<br><br><b>${LIKERT_SURVEY_1_QUESTIONS.QUESTION_1}</b>`,
             labels: [
                 LIKERT_RESPONSES.STRONGLY_DISAGREE,
                 LIKERT_RESPONSES.SOMEWHAT_DISAGREE,
@@ -27,7 +33,7 @@ export const likertQuestions2 = [
         type: surveyLikert,
         questions: [
             {
-                prompt: `${LIKERT_PREAMBLE}<br><br>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_1}`,
+                prompt: `${LIKERT_PREAMBLE}<br><br><b>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_1}</b>`,
                 labels: [
                     LIKERT_RESPONSES.STRONGLY_DISAGREE,
                     LIKERT_RESPONSES.SOMEWHAT_DISAGREE,
@@ -48,7 +54,7 @@ export const likertQuestions2 = [
         type: surveyLikert,
         questions: [
             {
-                prompt: `${LIKERT_PREAMBLE}<br><br>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_2}`,
+                prompt: `${LIKERT_PREAMBLE}<br><br><b>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_2}</b>`,
                 labels: [
                     LIKERT_RESPONSES.STRONGLY_DISAGREE,
                     LIKERT_RESPONSES.SOMEWHAT_DISAGREE,
@@ -69,7 +75,7 @@ export const likertQuestions2 = [
         type: surveyLikert,
         questions: [
             {
-                prompt: `${LIKERT_PREAMBLE}<br><br>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_3}`,
+                prompt: `${LIKERT_PREAMBLE}<br><br><b>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_3}</b>`,
                 labels: [
                     LIKERT_RESPONSES.STRONGLY_DISAGREE,
                     LIKERT_RESPONSES.SOMEWHAT_DISAGREE,
@@ -90,7 +96,7 @@ export const likertQuestions2 = [
         type: surveyLikert,
         questions: [
             {
-                prompt: `${LIKERT_PREAMBLE}<br><br>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_4}`,
+                prompt: `${LIKERT_PREAMBLE}<br><br><b>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_4}</b>`,
                 labels: [
                     LIKERT_RESPONSES.STRONGLY_DISAGREE,
                     LIKERT_RESPONSES.SOMEWHAT_DISAGREE,
@@ -107,11 +113,13 @@ export const likertQuestions2 = [
         randomize_question_order: false,
         button_label: CONTINUE_BUTTON_MESSAGE,
     },
+];
+export const likertFinalQuestion = [
     {
         type: surveyLikert,
         questions: [
             {
-                prompt: `${LIKERT_PREAMBLE}<br><br>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_5}`,
+                prompt: `<b>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_5}</b>`,
                 labels: [
                     LIKERT_RESPONSES.STRONGLY_DISAGREE,
                     LIKERT_RESPONSES.SOMEWHAT_DISAGREE,
@@ -129,4 +137,4 @@ export const likertQuestions2 = [
         button_label: CONTINUE_BUTTON_MESSAGE,
     },
 ];
-export const likertQuestions2Randomized = (jsPsych) => jsPsych.randomization.sampleWithoutReplacement(likertQuestions2, 5);
+export const likertQuestions2Randomized = (jsPsych) => jsPsych.randomization.sampleWithoutReplacement(likertQuestions2, 4);
