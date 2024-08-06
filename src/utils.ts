@@ -131,3 +131,8 @@ export function showEndScreen(message: string): void {
   screen.innerHTML = `<h2 style="text-align: center; top: 50%;">${message}</h2>`;
   document.body.appendChild(screen);
 } 
+
+export function saveDataToLocalStorage(jsPsych: JsPsych) {
+  const jsonData = jsPsych.data.get().json();
+  localStorage.setItem('jspsych-data', jsonData);
+}

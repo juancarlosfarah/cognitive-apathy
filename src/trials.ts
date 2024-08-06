@@ -25,7 +25,7 @@ import { successScreen } from './success';
 import { releaseKeysStep } from './release-keys';
 import { acceptanceThermometer } from './stimulus';
 import TaskPlugin from './task';
-import { autoIncreaseAmount, calculateTotalReward, checkFlag, randomNumberBm, checkKeys, changeProgressBar } from './utils';
+import { autoIncreaseAmount, calculateTotalReward, checkFlag, randomNumberBm, checkKeys, changeProgressBar, saveDataToLocalStorage } from './utils';
 import { State, TaskTrialData, PassedTaskData, CreateTrialBlockParams } from './types'; // Assuming you have the appropriate types defined here
 import { EASY_BOUNDS } from './constants';
 import htmlButtonResponse from '@jspsych/plugin-html-button-response';
@@ -258,6 +258,7 @@ export const createTrialBlock = ({
                   },
                   on_finish: function (data: TaskTrialData) {
                     console.log(data);
+                    saveDataToLocalStorage(jsPsych)
                   },
                 },
                   successScreen(jsPsych),

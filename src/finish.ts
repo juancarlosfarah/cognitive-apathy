@@ -25,7 +25,6 @@ export const finishExperimentEarly = (jsPsych: JsPsych) => {
   jsPsych.data.get().localSave('csv','cognitive-apathy.csv');
   jsPsych.abortExperiment(FAILED_VALIDATION_MESSAGE);
   showEndScreen(EXPERIMENT_HAS_ENDED_MESSAGE)
-
 }
 
 export const finishExperimentEarlyTrial = (jsPsych: JsPsych) => ({

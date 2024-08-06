@@ -7,7 +7,7 @@ import { successScreen } from './success';
 import { releaseKeysStep } from './release-keys';
 import { acceptanceThermometer } from './stimulus';
 import TaskPlugin from './task';
-import { autoIncreaseAmount, calculateTotalReward, checkFlag, randomNumberBm, checkKeys, changeProgressBar } from './utils';
+import { autoIncreaseAmount, calculateTotalReward, checkFlag, randomNumberBm, checkKeys, changeProgressBar, saveDataToLocalStorage } from './utils';
 import { EASY_BOUNDS } from './constants';
 import htmlButtonResponse from '@jspsych/plugin-html-button-response';
 const failedMinimumDemoTapsTrial = {
@@ -193,6 +193,7 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
                                 },
                                 on_finish: function (data) {
                                     console.log(data);
+                                    saveDataToLocalStorage(jsPsych);
                                 },
                             },
                             successScreen(jsPsych),
