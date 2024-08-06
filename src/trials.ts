@@ -19,7 +19,7 @@ import {
   HARD_BOUNDS
 } from './constants';
 import { countdownStep } from './countdown';
-import { likertFinalQuestion, likertIntro, likertQuestions1, likertQuestions2Randomized } from './likert';
+import { likertFinalQuestion, likertIntro, likertIntroDemo, likertQuestions1, likertQuestions2Randomized } from './likert';
 import { loadingBarTrial } from './loading-bar';
 import { successScreen } from './success';
 import { releaseKeysStep } from './release-keys';
@@ -149,7 +149,7 @@ export const createTrialBlock = ({
         ],
       },
       // Likert scale survey after demo
-      likertIntro,
+      likertIntroDemo,
       likertQuestions1,
     );
   }

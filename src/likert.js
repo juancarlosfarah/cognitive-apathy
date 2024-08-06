@@ -1,11 +1,16 @@
 import surveyLikert from '@jspsych/plugin-survey-likert';
-import { LIKERT_PREAMBLE, CONTINUE_BUTTON_MESSAGE, LIKERT_SURVEY_1_QUESTIONS, LIKERT_SURVEY_2_QUESTIONS, LIKERT_RESPONSES, LIKERT_PREAMBLE_DEMO, LIKERT_INTRO } from './constants';
+import { LIKERT_PREAMBLE, CONTINUE_BUTTON_MESSAGE, LIKERT_SURVEY_1_QUESTIONS, LIKERT_SURVEY_2_QUESTIONS, LIKERT_RESPONSES, LIKERT_PREAMBLE_DEMO, LIKERT_INTRO, LIKERT_INTRO_DEMO } from './constants';
 import htmlButtonResponse from '@jspsych/plugin-html-button-response';
 // ALL LIKERT STILL NEEDS TO BE TRANSLATED BUT AM WAIT ON JEVITA QUESTIONS + ANSWERS TO TRANSLATE
 export const likertIntro = {
     type: htmlButtonResponse,
     choices: [CONTINUE_BUTTON_MESSAGE],
     stimulus: [LIKERT_INTRO],
+};
+export const likertIntroDemo = {
+    type: htmlButtonResponse,
+    choices: [CONTINUE_BUTTON_MESSAGE],
+    stimulus: [LIKERT_INTRO_DEMO],
 };
 export const likertQuestions1 = {
     type: surveyLikert,

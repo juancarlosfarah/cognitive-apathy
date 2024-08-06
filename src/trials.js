@@ -1,7 +1,7 @@
 import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
 import { AUTO_DECREASE_AMOUNT, AUTO_DECREASE_RATE, DEMO_TRIAL_MESSAGE, FAILED_MINIMUM_DEMO_TAPS_DURATION, FAILED_MINIMUM_DEMO_TAPS_MESSAGE, MINIMUM_DEMO_TAPS, NUM_DEMO_TRIALS, NUM_TRIALS, PARAMETER_COMBINATIONS, REWARD_TOTAL_MESSAGE, TRIAL_DURATION, EXPECTED_MAXIMUM_PERCENTAGE, PROGRESS_BAR, CONTINUE_BUTTON_MESSAGE, MEDIUM_BOUNDS, HARD_BOUNDS } from './constants';
 import { countdownStep } from './countdown';
-import { likertFinalQuestion, likertIntro, likertQuestions1, likertQuestions2Randomized } from './likert';
+import { likertFinalQuestion, likertIntro, likertIntroDemo, likertQuestions1, likertQuestions2Randomized } from './likert';
 import { loadingBarTrial } from './loading-bar';
 import { successScreen } from './success';
 import { releaseKeysStep } from './release-keys';
@@ -109,7 +109,7 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
             ],
         }, 
         // Likert scale survey after demo
-        likertIntro, likertQuestions1);
+        likertIntroDemo, likertQuestions1);
     }
     // If a block created is an actual trial
     if (blockName) {

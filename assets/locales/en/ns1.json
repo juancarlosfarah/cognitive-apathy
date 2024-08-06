@@ -61,6 +61,6 @@
   },
   "TUTORIAL_INTRODUCTION_MESSAGE": "The first part of the experiment will consist of 2 different sections:<br><br>1. Practice section so you can acclimate to the task you will be performing.<br>2. Calibration section to personalize the experiment to you<br><br>Follow the instructions throughout each section carefully.<br>Press the <b>Continue</b> button to begin.",
   "EXPERIMENT_HAS_ENDED_MESSAGE": "The experiment has now ended. Please find your experimenter and let them know.",
-  "LIKERT_INTRO": "You will now answer a few questions. Press <b>Continue</b> to proceed."
-
+  "LIKERT_INTRO": "You will now answer a few questions. Press <b>Continue</b> to proceed.",
+  "LIKERT_INTRO_DEMO": "You will now answer a question. Press <b>Continue</b> to proceed."
 }

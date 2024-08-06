@@ -42,6 +42,11 @@ if (window.Cypress) {
     window.appReady = true;
 }
 import { calibrationSectionDirectionTrial, experimentBeginTrial, trialBlocksDirection, tutorialIntroductionTrial } from './message-trials';
+window.addEventListener("beforeunload", function (event) {
+    event.preventDefault();
+    event.returnValue = ''; // Modern browsers require returnValue to be set
+    return '';
+});
 /**
  * @function run
  * @description Main function to run the experiment
@@ -75,8 +80,9 @@ export function run(_a) {
         timeline.push(experimentBeginTrial);
         timeline.push(tutorialIntroductionTrial(jsPsych));
         timeline.push(noStimuliVideoTutorialTrial(jsPsych));
-        timeline.push(practiceLoop(jsPsych, state));
-        timeline.push(practiceLoop(jsPsych, state));
+        /*   timeline.push(practiceLoop(jsPsych, state));
+          
+          timeline.push(practiceLoop(jsPsych, state)); */
         timeline.push(practiceLoop(jsPsych, state));
         timeline.push(calibrationSectionDirectionTrial(jsPsych));
         timeline.push(instructionalTrial(CALIBRATION_PART_1_DIRECTIONS));

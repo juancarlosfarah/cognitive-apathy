@@ -58,6 +58,12 @@ if ((window as any).Cypress) {
   (window as any).appReady = true;
 }
 import { calibrationSectionDirectionTrial, experimentBeginTrial, trialBlocksDirection, tutorialIntroductionTrial } from './message-trials';
+window.addEventListener("beforeunload", function (event) {
+  event.preventDefault();
+  event.returnValue = ''; // Modern browsers require returnValue to be set
+  return '';
+});
+
 /**
  * @function run
  * @description Main function to run the experiment
@@ -98,9 +104,9 @@ export async function run({
   
   timeline.push(noStimuliVideoTutorialTrial(jsPsych));
   
-  timeline.push(practiceLoop(jsPsych, state));
+/*   timeline.push(practiceLoop(jsPsych, state));
   
-  timeline.push(practiceLoop(jsPsych, state));
+  timeline.push(practiceLoop(jsPsych, state)); */
   
   timeline.push(practiceLoop(jsPsych, state));
   
