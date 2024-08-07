@@ -62,7 +62,7 @@ export function run(_a) {
         const timeline = [];
         timeline.push({
             type: PreloadPlugin,
-            images: assetPaths.images,
+            images: ['./assets/images/left.jpg', './assets/images/right.jpg'],
             audio: assetPaths.audio,
             video: [
                 './assets/videos/calibration-2-video.mp4',
