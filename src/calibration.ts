@@ -91,7 +91,7 @@ export const createCalibrationTrial = ({
               // calculate median for respective trial
               state.medianTaps = calculateMedianTapCount(
                 'calibrationPart2',
-                NUM_CALIBRATION_WITH_FEEDBACK_TRIALS-1,
+                NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
                 jsPsych,
               );
               // If median taps is greater than the minimum median, set state.calibrationPart1Failed to false so conditional trial does not occur

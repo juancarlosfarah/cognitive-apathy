@@ -165,7 +165,7 @@ class TaskPlugin {
       } else if (key === KEY_TO_PRESS && isRunning) {
         this.isKeyDown = false;
         tapCount++;
-        if (trial.task === 'demo' || trial.task === 'block') {
+        if ((trial.task === 'demo' || trial.task === 'block') && tapCount > 2) {
           this.jsPsych.pluginAPI.setTimeout(() => increaseMercury(), getRandomDelay());
         } else {
           increaseMercury();

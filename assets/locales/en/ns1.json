@@ -16,7 +16,7 @@
   "FAILED_MINIMUM_DEMO_TAPS_MESSAGE": "You did not tap enough during the last practice trial. Please try again.",
   "HOLD_KEYS_MESSAGE": "<p>Hold the <b>{{KEYS_TO_HOLD_0}}</b>, <b>{{KEYS_TO_HOLD_1}}</b>, and <b>{{KEYS_TO_HOLD_2}}</b> keys!</p>",
   "KEY_TAPPED_EARLY_MESSAGE": "Key was tapped too early. Please wait for the appropriate time to press the key.",
-  "RELEASE_KEYS_MESSAGE": "Release the Keys",
+  "RELEASE_KEYS_MESSAGE": "Release All Keys",
   "REWARD_TOTAL_MESSAGE": "Total reward for successful trials is: CHF {{totalSuccessfulReward}}. Press the <b>Continue</b> button to proceed to the next block of trials.",
   "EXPERIMENT_BEGIN_MESSAGE": "Welcome to the experiment. Please follow the directions.<br>Press Continue to begin.",
   "NO_STIMULI_VIDEO_TUTORIAL_MESSAGE": "The video below demonstrates how the practice will be performed.<br><br>1. You will place your pinky on the <b>{{KEYS_TO_HOLD_0}}</b> key<br>2. Place your ring finger on the <b>{{KEYS_TO_HOLD_1}}</b> key<br>3. Place your middle finger on the <b>{{KEYS_TO_HOLD_2}}</b> key<br>4. While still holding down with these fingers, simultaneously, when you see the <b>GO!</b>, tap the <b>{{KEY_TO_PRESS}}</b> key, <b>repeatedly</b> with your index finger as fast as you can!<br><br>Note:<br> Do not tap the <b>{{KEY_TO_PRESS}}</b> key until the <b>GO!</b> appears and do not release the <b>{{KEYS_TO_HOLD_0}}</b>, <b>{{KEYS_TO_HOLD_1}}</b>, <b>{{KEYS_TO_HOLD_2}}</b> until prompted. <br> After clicking the <b>Continue</b> button, you will complete <b>3</b> practice trials.",
@@ -38,8 +38,8 @@
     "DISAGREE": "Disagree",
     "SOMEWHAT_DISAGREE": "Somewhat Disagree",
     "NEUTRAL": "Neutral",
-    "AGREE": "Agree",
     "SOMEWHAT_AGREE": "Somewhat Agree",
+    "AGREE": "Agree",
     "STRONGLY_AGREE": "Strongly Agree"
   },
   "LIKERT_SURVEY_1_QUESTIONS": {
