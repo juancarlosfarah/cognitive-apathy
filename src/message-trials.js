@@ -1,8 +1,9 @@
 import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
 import htmlButtonResponse from '@jspsych/plugin-html-button-response';
 import FullscreenPlugin from '@jspsych/plugin-fullscreen';
-import { CONTINUE_BUTTON_MESSAGE, EXPERIMENT_BEGIN_MESSAGE, TUTORIAL_INTRODUCTION_MESSAGE, CALIBRATION_PART_1_DIRECTIONS, CALIBRATION_SECTION_MESSAGE, PROGRESS_BAR, TRIAL_BLOCKS_DIRECTIONS, FINAL_CALIBRATION_SECTION_DIRECTIONS_PART_1, FINAL_CALIBRATION_SECTION_DIRECTIONS_PART_2 } from './constants';
+import { CONTINUE_BUTTON_MESSAGE, EXPERIMENT_BEGIN_MESSAGE, TUTORIAL_INTRODUCTION_MESSAGE, CALIBRATION_PART_1_DIRECTIONS, CALIBRATION_SECTION_MESSAGE, PROGRESS_BAR, TRIAL_BLOCKS_DIRECTIONS } from './constants';
 import { changeProgressBar } from './utils';
+import { finalNoStimuliVideo, finalStimuliVideo } from './stimulus';
 export const endExperimentTrial = (message) => ({
     type: HtmlKeyboardResponsePlugin,
     choices: ['enter'],
@@ -42,12 +43,12 @@ export const calibrationPart1DirectionTrial = {
 export const finalCalibrationSectionPart1 = {
     type: htmlButtonResponse,
     choices: [CONTINUE_BUTTON_MESSAGE],
-    stimulus: [FINAL_CALIBRATION_SECTION_DIRECTIONS_PART_1],
+    stimulus: [finalNoStimuliVideo],
 };
 export const finalCalibrationSectionPart2 = {
     type: htmlButtonResponse,
     choices: [CONTINUE_BUTTON_MESSAGE],
-    stimulus: [FINAL_CALIBRATION_SECTION_DIRECTIONS_PART_2],
+    stimulus: [finalStimuliVideo],
 };
 export const trialBlocksDirection = (jsPsych) => ({
     type: htmlButtonResponse,

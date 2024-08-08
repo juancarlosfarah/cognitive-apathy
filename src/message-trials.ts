@@ -14,6 +14,7 @@ import {
 } from './constants';
 import { changeProgressBar } from './utils';
 import { JsPsych } from 'jspsych';
+import { finalNoStimuliVideo, finalStimuliVideo } from './stimulus';
 
 export const endExperimentTrial = (message: string) => ({
   type: HtmlKeyboardResponsePlugin,
@@ -60,13 +61,13 @@ export const calibrationPart1DirectionTrial = {
 export const finalCalibrationSectionPart1 = {
   type: htmlButtonResponse,
   choices: [CONTINUE_BUTTON_MESSAGE],
-  stimulus: [FINAL_CALIBRATION_SECTION_DIRECTIONS_PART_1],
+  stimulus: [finalNoStimuliVideo],
 }
 
 export const finalCalibrationSectionPart2 = {
   type: htmlButtonResponse,
   choices: [CONTINUE_BUTTON_MESSAGE],
-  stimulus: [FINAL_CALIBRATION_SECTION_DIRECTIONS_PART_2],
+  stimulus: [finalStimuliVideo],
 }
 
 export const trialBlocksDirection = (jsPsych: JsPsych) => ({

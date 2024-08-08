@@ -102,7 +102,8 @@ export async function run({
   timeline.push(noStimuliVideoTutorialTrial(jsPsych));
   timeline.push(stimuliVideoTutorialTrial(jsPsych));
   timeline.push(validationVideoTutorialTrial(jsPsych));
-
+  timeline.push(finalCalibrationSectionPart1)
+  timeline.push(finalCalibrationSectionPart2)
 
   timeline.push(experimentBeginTrial);
   timeline.push(tutorialIntroductionTrial(jsPsych));

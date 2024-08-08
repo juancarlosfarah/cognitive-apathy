@@ -5,7 +5,9 @@ import {
   VALIDATION_VIDEO_TUTORIAL_MESSAGE,
   LOADING_BAR_MESSAGE,
   REWARD_TRIAL_MESSAGE,
-  GO_MESSAGE
+  GO_MESSAGE,
+  FINAL_CALIBRATION_SECTION_DIRECTIONS_PART_1,
+  FINAL_CALIBRATION_SECTION_DIRECTIONS_PART_2
 } from './constants';
 
 export function stimulus(
@@ -155,5 +157,36 @@ ${VALIDATION_VIDEO_TUTORIAL_MESSAGE}
     muted
     loop
   ></video>
+</div>`;
 
+export const finalNoStimuliVideo =`
+<div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+<p style=font-size: 18px; color: #333; max-width: 80%; line-height: 1.5;">
+${FINAL_CALIBRATION_SECTION_DIRECTIONS_PART_1}
+</p>
+  <video
+    id="videoTutorial"
+    title="Tutorial Video"
+    style="background-color: rgb(255, 255, 255); width: 500px; height: 400px;"
+    src="./assets/videos/calibration-part1.mp4"
+    autoplay
+    muted
+    loop
+  ></video>
+</div>`;
+
+export const finalStimuliVideo =`
+<div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+<p style=font-size: 18px; color: #333; max-width: 80%; line-height: 1.5;">
+${FINAL_CALIBRATION_SECTION_DIRECTIONS_PART_2}
+</p>
+  <video
+    id="videoTutorial"
+    title="Tutorial Video"
+    style="background-color: rgb(255, 255, 255); width: 500px; height: 400px;"
+    src="./assets/videos/calibration-part2.mp4"
+    autoplay
+    muted
+    loop
+  ></video>
 </div>`;
