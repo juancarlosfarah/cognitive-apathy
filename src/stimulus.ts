@@ -116,8 +116,8 @@ ${NO_STIMULI_VIDEO_TUTORIAL_MESSAGE}
   <video
     id="videoTutorial"
     title="Tutorial Video"
-    style="background-color: rgb(255, 255, 255); width: 640px; height: 400px;"
-    src="./assets/videos/calibrationpart1.mp4"
+    style="background-color: rgb(255, 255, 255); width: 640px; height: 300px;"
+    src="./assets/videos/calibration-part1.mp4"
     autoplay
     muted
     loop
@@ -133,8 +133,8 @@ ${STIMULI_VIDEO_TUTORIAL_MESSAGE}
   <video
     id="videoTutorial"
     title="Tutorial Video"
-    style="background-color: rgb(255, 255, 255); width: 600px; height: 400px;"
-    src="./assets/videos/calibrationpart2.mp4"
+    style="background-color: rgb(255, 255, 255); width: 500px; height: 400px;"
+    src="./assets/videos/calibration-part2.mp4"
     autoplay
     muted
     loop
@@ -149,7 +149,7 @@ ${VALIDATION_VIDEO_TUTORIAL_MESSAGE}
   <video
     id="videoTutorial"
     title="Tutorial Video"
-    style="background-color: rgb(255, 255, 255); width: 640px; height: 400px;"
+    style="background-color: rgb(255, 255, 255); width: 500px; height: 400px;"
     src="./assets/videos/validation.mp4"
     autoplay
     muted

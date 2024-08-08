@@ -86,9 +86,9 @@ export async function run({
     images: ['./assets/images/left.jpg','./assets/images/right.jpg'],
     audio: assetPaths.audio,
     video: [
-      './assets/videos/calibration-2-video.mp4', 
-      './assets/videos/tutorial_video_no_stimuli.mp4', 
-      './assets/videos/validation-video.mp4'
+      './assets/videos/calibration-part1.mp4', 
+      './assets/videos/calibration-part2.mp4', 
+      './assets/videos/validation.mp4'
     ],
     max_load_time: 120000, // Increased timeout to 120 seconds
     on_success: function(file: string) {
