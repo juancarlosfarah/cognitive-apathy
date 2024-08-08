@@ -198,7 +198,7 @@ export const createTrialBlock = ({
               stimulus: function () {
                 return `${acceptanceThermometer(trialData.bounds, trialData.reward)}`;
               },
-              choices: ['arrowleft', 'arrowright'],
+              choices: ['arrowright', 'arrowleft'],
               data: {
                 task: 'accept',
                 reward: trialData.reward,
@@ -210,7 +210,7 @@ export const createTrialBlock = ({
                 // ADD TYPE FOR DATA
                 data.accepted = jsPsych.pluginAPI.compareKeys(
                   data.response,
-                  'arrowleft',
+                  'arrowright',
                 );
                 trialData.accepted = data.accepted; // Pass accepted to trialData
               },

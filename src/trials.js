@@ -146,7 +146,7 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
                         stimulus: function () {
                             return `${acceptanceThermometer(trialData.bounds, trialData.reward)}`;
                         },
-                        choices: ['arrowleft', 'arrowright'],
+                        choices: ['arrowright', 'arrowleft'],
                         data: {
                             task: 'accept',
                             reward: trialData.reward,
@@ -155,7 +155,7 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
                         },
                         on_finish: (data) => {
                             // ADD TYPE FOR DATA
-                            data.accepted = jsPsych.pluginAPI.compareKeys(data.response, 'arrowleft');
+                            data.accepted = jsPsych.pluginAPI.compareKeys(data.response, 'arrowright');
                             trialData.accepted = data.accepted; // Pass accepted to trialData
                         },
                     },
