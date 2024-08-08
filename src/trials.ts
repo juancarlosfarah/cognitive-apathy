@@ -245,6 +245,7 @@ export const createTrialBlock = ({
                       return acceptanceData ? acceptanceData.accepted : null;
                     },
                     reward: trialData.reward,
+                    medianTaps: {'Median Taps Calibration Part 1: ': state.medianTapsPart1, 'Median Taps Calibration Part 2: ': state.medianTaps}
                   },
                   on_start: function (trial: TaskTrialData) {
                     const keyTappedEarlyFlag = checkFlag(

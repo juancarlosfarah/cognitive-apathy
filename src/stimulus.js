@@ -1,4 +1,4 @@
-import { ACCEPTANCE_TRIAL_MESSAGE, NO_STIMULI_VIDEO_TUTORIAL_MESSAGE, STIMULI_VIDEO_TUTORIAL_MESSAGE, VALIDATION_VIDEO_TUTORIAL_MESSAGE, LOADING_BAR_MESSAGE, REWARD_TRIAL_MESSAGE } from './constants';
+import { ACCEPTANCE_TRIAL_MESSAGE, NO_STIMULI_VIDEO_TUTORIAL_MESSAGE, STIMULI_VIDEO_TUTORIAL_MESSAGE, VALIDATION_VIDEO_TUTORIAL_MESSAGE, LOADING_BAR_MESSAGE, REWARD_TRIAL_MESSAGE, GO_MESSAGE } from './constants';
 export function stimulus(showThermometer, mercuryHeight, lowerBound, upperBound) {
     const bounds = `
   <div
@@ -30,10 +30,11 @@ export function stimulus(showThermometer, mercuryHeight, lowerBound, upperBound)
        <p style="font-size: 48px; position: absolute;">+</p>
      </div>`;
     return `
-  <div id="calibration-task" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
-    ${thermometer}
-  </div>
-`;
+     <div id="go-message" style="position: absolute; top: 20%; font-size: 160px; color: green; visibility: hidden; transform: translateX(-50%); left: 50%; white-space: nowrap;">${GO_MESSAGE}</div>
+     <div id="task-container" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; position: relative; padding: 0 20px;">
+       ${thermometer}
+     </div>
+   `;
 }
 export const acceptanceThermometer = (bounds, reward) => `
 <div

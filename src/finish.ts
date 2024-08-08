@@ -1,19 +1,20 @@
 import {FAILED_VALIDATION_MESSAGE, END_EXPERIMENT_MESSAGE, CONTINUE_BUTTON_MESSAGE, EXPERIMENT_HAS_ENDED_MESSAGE } from './constants';
-import { calculateTotalReward, showEndScreen } from './utils';
+import { calculateTotalReward, saveDataToLocalStorage, showEndScreen } from './utils';
 import { JsPsych } from 'jspsych';
 import htmlButtonResponse from '@jspsych/plugin-html-button-response';
+import { State } from './types';
 
-export const finishExperiment = (jsPsych: JsPsych) => ({
+export const finishExperiment = (jsPsych: JsPsych, state: State) => ({
   type: htmlButtonResponse,
   choices: [CONTINUE_BUTTON_MESSAGE],
   stimulus: function () {
+    saveDataToLocalStorage(jsPsych)
     return `<p>${END_EXPERIMENT_MESSAGE}</p>`;
   },
   data: {
     task: 'finish_experiment',
   },
   on_finish: function (data: any) {
-    
     const totalSuccessfulReward = calculateTotalReward(jsPsych);
     data.totalReward = totalSuccessfulReward;
     jsPsych.data.get().localSave('csv','cognitive-apathy.csv');

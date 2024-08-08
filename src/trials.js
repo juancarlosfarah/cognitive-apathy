@@ -184,6 +184,7 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
                                         return acceptanceData ? acceptanceData.accepted : null;
                                     },
                                     reward: trialData.reward,
+                                    medianTaps: { 'Median Taps Calibration Part 1: ': state.medianTapsPart1, 'Median Taps Calibration Part 2: ': state.medianTaps }
                                 },
                                 on_start: function (trial) {
                                     const keyTappedEarlyFlag = checkFlag('countdown', 'keyTappedEarlyFlag', jsPsych);

@@ -2,10 +2,12 @@ import { ParameterType, JsPsych } from 'jspsych';
 import {
   AUTO_DECREASE_AMOUNT,
   AUTO_DECREASE_RATE,
+  GO_DURATION,
   KEYS_TO_HOLD,
   KEY_TAPPED_EARLY_ERROR_TIME,
   KEY_TAPPED_EARLY_MESSAGE,
   KEY_TO_PRESS,
+  NUM_TAPS_WITHOUT_DELAY,
   PREMATURE_KEY_RELEASE_ERROR_MESSAGE,
   PREMATURE_KEY_RELEASE_ERROR_TIME,
 } from './constants';
@@ -96,6 +98,7 @@ class TaskPlugin {
     let keyboardInstance: any;
     let inputElement: HTMLInputElement | undefined;
 
+
     const getRandomDelay = () => {
       const [min, max] = trial.randomDelay;
       return Math.random() * (max - min) + min;
@@ -157,7 +160,6 @@ class TaskPlugin {
     };
 
     const handleKeyUp = (event: KeyboardEvent) => {
-      console.log(event)
       const key = event.key.toLowerCase();
       if (KEYS_TO_HOLD.includes(key)) {
         keysState[key] = false;
@@ -165,25 +167,28 @@ class TaskPlugin {
       } else if (key === KEY_TO_PRESS && isRunning) {
         this.isKeyDown = false;
         tapCount++;
-        if ((trial.task === 'demo' || trial.task === 'block') && tapCount > 2) {
+        if ((trial.task === 'demo' || trial.task === 'block') && tapCount > NUM_TAPS_WITHOUT_DELAY) {
           this.jsPsych.pluginAPI.setTimeout(() => increaseMercury(), getRandomDelay());
         } else {
           increaseMercury();
         }
       }
-      console.log(`keys state on keyup: ${JSON.stringify(keysState)}`);
     };
 
     const startRunning = () => {
       isRunning = true;
       startTime = this.jsPsych.getTotalTime();
-      const startMessageElement = document.getElementById('start-message');
-      if (startMessageElement) startMessageElement.style.visibility = 'hidden';
       tapCount = 0;
       this.mercuryHeight = 0;
       error = '';
       updateUI();
-
+      const goElement = document.getElementById('go-message');
+      if (goElement) {
+        goElement.style.visibility = 'visible';
+        this.jsPsych.pluginAPI.setTimeout(() => {
+          goElement.style.visibility = 'hidden';
+        }, GO_DURATION);
+      }
       const decreaseInterval = () => {
         this.mercuryHeight = Math.max(this.mercuryHeight - trial.autoDecreaseAmount, 0);
         updateUI();
@@ -196,11 +201,15 @@ class TaskPlugin {
 
     const stopRunning = (errorFlag = false) => {
       if (trialEnded) return;
+      //REMOVE GO IN CASE IT IS SHOWING FOR SOME REASON BEFORE TRIAL ENDS
       trialEnded = true;
       endTime = this.jsPsych.getTotalTime();
       isRunning = false;
       errorOccurred = errorFlag;
-
+      const goElement = document.getElementById('go-message');
+      if (goElement) {
+        goElement.style.visibility = 'hidden';
+      }
       display_element.innerHTML = stimulus(
         trial.showThermometer,
         this.mercuryHeight,

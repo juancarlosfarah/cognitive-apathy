@@ -224,14 +224,5 @@ export const countdownStep = {
         task: 'countdown',
       },
     },
-    {
-      type: HtmlKeyboardResponsePlugin,
-      stimulus: `<p style="color: green; font-size: 48px;">${GO_MESSAGE}</p>`,
-      choices: 'NO_KEYS',
-      trial_duration: GO_DURATION, // Display "GO" for 1 second
-      data: {
-        task: 'go_screen',
-      },
-    },
   ],
 };

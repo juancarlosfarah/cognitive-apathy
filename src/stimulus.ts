@@ -4,7 +4,8 @@ import {
   STIMULI_VIDEO_TUTORIAL_MESSAGE,
   VALIDATION_VIDEO_TUTORIAL_MESSAGE,
   LOADING_BAR_MESSAGE,
-  REWARD_TRIAL_MESSAGE
+  REWARD_TRIAL_MESSAGE,
+  GO_MESSAGE
 } from './constants';
 
 export function stimulus(
@@ -43,12 +44,13 @@ const thermometer = showThermometer
   : `<div id="no_stimuli_calibration" style="position: relative; display: flex; justify-content: center; align-items: center; height: 300px; width: 100px;">
        <p style="font-size: 48px; position: absolute;">+</p>
      </div>`;
-
-return `
-  <div id="calibration-task" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
-    ${thermometer}
-  </div>
-`;
+     return `
+     <div id="go-message" style="position: absolute; top: 20%; font-size: 160px; color: green; visibility: hidden; transform: translateX(-50%); left: 50%; white-space: nowrap;">${GO_MESSAGE}</div>
+     <div id="task-container" style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; position: relative; padding: 0 20px;">
+       ${thermometer}
+     </div>
+   `;
+   
 }
 
 

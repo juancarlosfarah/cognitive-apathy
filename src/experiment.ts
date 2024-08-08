@@ -9,7 +9,7 @@ import PreloadPlugin from '@jspsych/plugin-preload';
 import { initJsPsych } from 'jspsych';
 
 import '../styles/main.scss';
-import { calibrationTrialPart1, calibrationTrialPart2, conditionalCalibrationTrialPart1, conditionalCalibrationTrialPart2 } from './calibration';
+import { calibrationTrialPart1, calibrationTrialPart2, conditionalCalibrationTrialPart1, conditionalCalibrationTrialPart2, finalCalibrationTrialPart1, finalCalibrationTrialPart2 } from './calibration';
 import {
   CALIBRATION_PART_1_DIRECTIONS, PROGRESS_BAR,
 } from './constants';
@@ -51,13 +51,15 @@ let state: State = {
   minimumDemoTapsReached: false,
   completedBlockCount: 1,
   numberOfPracticeLoopsCompleted: 1,
+  finalMedianTapsPart1: 0,
+  finalMedianTapsPart2: 0,
 };
 import './i18n'
 if ((window as any).Cypress) {
   (window as any).state = state;
   (window as any).appReady = true;
 }
-import { calibrationSectionDirectionTrial, experimentBeginTrial, trialBlocksDirection, tutorialIntroductionTrial } from './message-trials';
+import { calibrationSectionDirectionTrial, experimentBeginTrial, finalCalibrationSectionPart1, finalCalibrationSectionPart2, trialBlocksDirection, tutorialIntroductionTrial } from './message-trials';
 window.addEventListener("beforeunload", function (event) {
   event.preventDefault();
   event.returnValue = ''; // Modern browsers require returnValue to be set
@@ -96,7 +98,9 @@ export async function run({
       console.error(`Failed to preload: ${file}`);
     }
   });
-  
+
+
+
   timeline.push(experimentBeginTrial);
   timeline.push(tutorialIntroductionTrial(jsPsych));
 
@@ -152,7 +156,13 @@ timeline.push({
     });
   });
 
-  timeline.push(finishExperiment(jsPsych));
+  timeline.push(finalCalibrationSectionPart1)
+  timeline.push(finalCalibrationTrialPart1(jsPsych, state));
+  timeline.push(finalCalibrationSectionPart2)
+  timeline.push({
+    timeline: [finalCalibrationTrialPart2(jsPsych, state)],
+  });
+  timeline.push(finishExperiment(jsPsych, state));
 
   await jsPsych.run(timeline);
 

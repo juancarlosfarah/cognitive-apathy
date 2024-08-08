@@ -1,6 +1,5 @@
-import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
 import { ParameterType } from 'jspsych';
-import { COUNTDOWN_TIME, GO_DURATION, HOLD_KEYS_MESSAGE, KEYS_TO_HOLD, KEY_TO_PRESS, GO_MESSAGE, COUNTDOWN_TIMER_MESSAGE } from './constants';
+import { COUNTDOWN_TIME, HOLD_KEYS_MESSAGE, KEYS_TO_HOLD, KEY_TO_PRESS, COUNTDOWN_TIMER_MESSAGE } from './constants';
 import { createKeyboard } from './keyboard';
 export class CountdownTrialPlugin {
     constructor(jsPsych) {
@@ -180,15 +179,6 @@ export const countdownStep = {
             type: CountdownTrialPlugin,
             data: {
                 task: 'countdown',
-            },
-        },
-        {
-            type: HtmlKeyboardResponsePlugin,
-            stimulus: `<p style="color: green; font-size: 48px;">${GO_MESSAGE}</p>`,
-            choices: 'NO_KEYS',
-            trial_duration: GO_DURATION, // Display "GO" for 1 second
-            data: {
-                task: 'go_screen',
             },
         },
     ],
