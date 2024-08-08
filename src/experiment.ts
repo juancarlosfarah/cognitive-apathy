@@ -99,6 +99,9 @@ export async function run({
     }
   });
 
+  timeline.push(noStimuliVideoTutorialTrial(jsPsych));
+  timeline.push(stimuliVideoTutorialTrial(jsPsych));
+  timeline.push(validationVideoTutorialTrial(jsPsych));
 
 
   timeline.push(experimentBeginTrial);

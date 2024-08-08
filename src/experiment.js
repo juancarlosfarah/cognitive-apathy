@@ -79,6 +79,9 @@ export function run(_a) {
                 console.error(`Failed to preload: ${file}`);
             }
         });
+        timeline.push(noStimuliVideoTutorialTrial(jsPsych));
+        timeline.push(stimuliVideoTutorialTrial(jsPsych));
+        timeline.push(validationVideoTutorialTrial(jsPsych));
         timeline.push(experimentBeginTrial);
         timeline.push(tutorialIntroductionTrial(jsPsych));
         timeline.push(noStimuliVideoTutorialTrial(jsPsych));

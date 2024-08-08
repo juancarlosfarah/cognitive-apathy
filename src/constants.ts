@@ -22,8 +22,8 @@ export const MEDIUM_BOUNDS = [50, 70];
 export const HARD_BOUNDS = [70, 90];
 export const BOUND_OPTIONS = [EASY_BOUNDS, MEDIUM_BOUNDS, HARD_BOUNDS];
 
-export const NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS = 4; //4 default
-export const NUM_CALIBRATION_WITH_FEEDBACK_TRIALS = 3; //3 default
+export const NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS = 2; //4 default
+export const NUM_CALIBRATION_WITH_FEEDBACK_TRIALS = 1; //3 default
 export const NUM_CALIBRATION_TRIALS =
   NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS +
   NUM_CALIBRATION_WITH_FEEDBACK_TRIALS;
@@ -42,7 +42,7 @@ export const MINIMUM_DEMO_TAPS = 10;
 export const FAILED_MINIMUM_DEMO_TAPS_DURATION = 3000;
 
 export const NUM_TRIALS = 63; //63 default 
-export const TRIAL_DURATION = 7000; //7000 default
+export const TRIAL_DURATION = 5000; //7000 default
 export const PARAMETER_COMBINATIONS = fastCartesian([
   REWARD_OPTIONS,
   BOUND_OPTIONS,
@@ -171,5 +171,5 @@ export const PROGRESS_BAR = {
 
 export const EXPERIMENT_HAS_ENDED_MESSAGE = i18n.t('EXPERIMENT_HAS_ENDED_MESSAGE')
 
-export const ENABLE_BUTTON_AFTER_TIME = 15000 // default is 15000 ms
+export const ENABLE_BUTTON_AFTER_TIME = 0 // default is 15000 ms
 
