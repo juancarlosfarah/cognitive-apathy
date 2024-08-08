@@ -79,11 +79,19 @@ export function run(_a) {
                 console.error(`Failed to preload: ${file}`);
             }
         });
+        timeline.push(experimentBeginTrial);
+        timeline.push(tutorialIntroductionTrial(jsPsych));
         timeline.push(noStimuliVideoTutorialTrial(jsPsych));
+        timeline.push(calibrationSectionDirectionTrial(jsPsych));
+        timeline.push(instructionalTrial(CALIBRATION_PART_1_DIRECTIONS));
         timeline.push(stimuliVideoTutorialTrial(jsPsych));
         timeline.push(validationVideoTutorialTrial(jsPsych));
+        timeline.push({
+            timeline: [trialBlocksDirection(jsPsych)]
+        });
         timeline.push(finalCalibrationSectionPart1);
         timeline.push(finalCalibrationSectionPart2);
+        timeline.push(finishExperiment(jsPsych, state));
         timeline.push(experimentBeginTrial);
         timeline.push(tutorialIntroductionTrial(jsPsych));
         timeline.push(noStimuliVideoTutorialTrial(jsPsych));

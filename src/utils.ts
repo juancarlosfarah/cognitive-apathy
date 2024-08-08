@@ -1,4 +1,5 @@
 import { JsPsych } from 'jspsych';
+import random
 
 /**
  * Generate a random number with a bias towards the mean.
@@ -136,3 +137,7 @@ export function saveDataToLocalStorage(jsPsych: JsPsych) {
   const jsonData = jsPsych.data.get().json();
   localStorage.setItem('jspsych-data', jsonData);
 }
+
+/* export function randomAcceptance(){
+  randomAc
+} */

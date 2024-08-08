@@ -1,4 +1,4 @@
-import { ACCEPTANCE_TRIAL_MESSAGE, NO_STIMULI_VIDEO_TUTORIAL_MESSAGE, STIMULI_VIDEO_TUTORIAL_MESSAGE, VALIDATION_VIDEO_TUTORIAL_MESSAGE, LOADING_BAR_MESSAGE, REWARD_TRIAL_MESSAGE, GO_MESSAGE, FINAL_CALIBRATION_SECTION_DIRECTIONS_PART_1, FINAL_CALIBRATION_SECTION_DIRECTIONS_PART_2 } from './constants';
+import { ACCEPTANCE_TRIAL_MESSAGE, NO_STIMULI_VIDEO_TUTORIAL_MESSAGE, STIMULI_VIDEO_TUTORIAL_MESSAGE, VALIDATION_VIDEO_TUTORIAL_MESSAGE, LOADING_BAR_MESSAGE, REWARD_TRIAL_MESSAGE, GO_MESSAGE, FINAL_CALIBRATION_SECTION_DIRECTIONS_PART_1, FINAL_CALIBRATION_SECTION_DIRECTIONS_PART_2, CLICK_BUTTON_TO_PROCEED_MESSAGE } from './constants';
 export function stimulus(showThermometer, mercuryHeight, lowerBound, upperBound) {
     const bounds = `
   <div
@@ -85,78 +85,132 @@ export const loadingBar = () => `
   </div>
 `;
 export const noStimuliVideo = `
-<div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
-<p style=font-size: 18px; color: #333; max-width: 80%; line-height: 1.5;">
-${NO_STIMULI_VIDEO_TUTORIAL_MESSAGE}
-</p>
-  <video
-    id="videoTutorial"
-    title="Tutorial Video"
-    style="background-color: rgb(255, 255, 255); width: 640px; height: 300px;"
-    src="./assets/videos/calibration-part1.mp4"
-    autoplay
-    muted
-    loop
-  ></video>
-
+<div style="overflow: hidden; height: calc(100vh - 200px); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px 0;">
+  <div style="text-align: center; margin-bottom: 2%;">
+    <p style="font-size: 1.5vw; color: #333; max-width: 80%; margin: 0 auto; line-height: 1.5;">
+      ${NO_STIMULI_VIDEO_TUTORIAL_MESSAGE}
+    </p>
+  </div>
+  <div style="flex-grow: 1; display: flex; justify-content: center; align-items: center;">
+    <div style="width: 60%; max-width: 640px; height: auto; background-color: rgb(255, 255, 255);">
+      <video
+        id="videoTutorial"
+        title="Tutorial Video"
+        style="width: 100%; height: auto;"
+        src="./assets/videos/calibration-part1.mp4"
+        autoplay
+        muted
+        loop
+      ></video>
+    </div>
+  </div>
+  <div style="text-align: center; margin-top: 2%;">
+    <p>
+      ${CLICK_BUTTON_TO_PROCEED_MESSAGE}
+    </p>
+  </div>
 </div>`;
 export const stimuliVideo = `
-<div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
-<p style=font-size: 18px; color: #333; max-width: 80%; line-height: 1.5;">
-${STIMULI_VIDEO_TUTORIAL_MESSAGE}
-</p>
-  <video
-    id="videoTutorial"
-    title="Tutorial Video"
-    style="background-color: rgb(255, 255, 255); width: 500px; height: 400px;"
-    src="./assets/videos/calibration-part2.mp4"
-    autoplay
-    muted
-    loop
-  ></video>
+<div style="overflow: hidden; height: calc(100vh - 200px); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px 0;">
+  <div style="text-align: center; margin-bottom: 2%;">
+    <p>
+      ${STIMULI_VIDEO_TUTORIAL_MESSAGE}
+    </p>
+  </div>
+  <div style="flex-grow: 1; display: flex; justify-content: center; align-items: center;">
+    <div style="width: 70%; max-width: 700px; height: auto; background-color: rgb(255, 255, 255);">
+      <video
+        id="videoTutorial"
+        title="Tutorial Video"
+        style="width: 100%; height: auto;"
+        src="./assets/videos/calibration-part2.mp4"
+        autoplay
+        muted
+        loop
+      ></video>
+    </div>
+  </div>
+  <div style="text-align: center; margin-top: 2%;">
+    <p>
+      ${CLICK_BUTTON_TO_PROCEED_MESSAGE}
+    </p>
+  </div>
 </div>`;
 export const validationVideo = `
-<div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
-<p style=font-size: 18px; color: #333; max-width: 80%; line-height: 1.5;">
-${VALIDATION_VIDEO_TUTORIAL_MESSAGE}
-</p>
-  <video
-    id="videoTutorial"
-    title="Tutorial Video"
-    style="background-color: rgb(255, 255, 255); width: 500px; height: 400px;"
-    src="./assets/videos/validation.mp4"
-    autoplay
-    muted
-    loop
-  ></video>
+<div style="overflow: hidden; height: calc(100vh - 200px); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px 0;">
+  <div style="text-align: center; margin-bottom: 2%;">
+    <p>
+      ${VALIDATION_VIDEO_TUTORIAL_MESSAGE}
+    </p>
+  </div>
+  <div style="flex-grow: 1; display: flex; justify-content: center; align-items: center;">
+    <div style="width: 100%; max-width: 500px; height: auto; background-color: rgb(255, 255, 255);">
+      <video
+        id="videoTutorial"
+        title="Tutorial Video"
+        style="width: 100%; height: auto;"
+        src="./assets/videos/validation.mp4"
+        autoplay
+        muted
+        loop
+      ></video>
+    </div>
+  </div>
+  <div style="text-align: center; margin-top: 2%;">
+    <p>
+      ${CLICK_BUTTON_TO_PROCEED_MESSAGE}
+    </p>
+  </div>
 </div>`;
 export const finalNoStimuliVideo = `
-<div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
-<p style=font-size: 18px; color: #333; max-width: 80%; line-height: 1.5;">
-${FINAL_CALIBRATION_SECTION_DIRECTIONS_PART_1}
-</p>
-  <video
-    id="videoTutorial"
-    title="Tutorial Video"
-    style="background-color: rgb(255, 255, 255); width: 500px; height: 400px;"
-    src="./assets/videos/calibration-part1.mp4"
-    autoplay
-    muted
-    loop
-  ></video>
+<div style="overflow: hidden; height: calc(100vh - 200px); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px 0;">
+  <div style="text-align: center; margin-bottom: 2%;">
+    <p">
+      ${FINAL_CALIBRATION_SECTION_DIRECTIONS_PART_1}
+    </p>
+  </div>
+  <div style="flex-grow: 1; display: flex; justify-content: center; align-items: center;">
+    <div style="width: 70%; max-width: 500px; height: auto; background-color: rgb(255, 255, 255);">
+      <video
+        id="videoTutorial"
+        title="Tutorial Video"
+        style="width: 100%; height: auto;"
+        src="./assets/videos/calibration-part1.mp4"
+        autoplay
+        muted
+        loop
+      ></video>
+    </div>
+  </div>
+  <div style="text-align: center; margin-top: 2%;">
+    <p>
+      ${CLICK_BUTTON_TO_PROCEED_MESSAGE}
+    </p>
+  </div>
 </div>`;
 export const finalStimuliVideo = `
-<div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
-<p style=font-size: 18px; color: #333; max-width: 80%; line-height: 1.5;">
-${FINAL_CALIBRATION_SECTION_DIRECTIONS_PART_2}
-</p>
-  <video
-    id="videoTutorial"
-    title="Tutorial Video"
-    style="background-color: rgb(255, 255, 255); width: 500px; height: 400px;"
-    src="./assets/videos/calibration-part2.mp4"
-    autoplay
-    muted
-    loop
-  ></video>
+<div style="overflow: hidden; height: calc(100vh - 200px); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px 0;">
+  <div style="text-align: center; margin-bottom: 2%;">
+    <p">
+      ${FINAL_CALIBRATION_SECTION_DIRECTIONS_PART_2}
+    </p>
+  </div>
+  <div style="flex-grow: 1; display: flex; justify-content: center; align-items: center;">
+    <div style="width: 70%; max-width: 500px; height: auto; background-color: rgb(255, 255, 255);">
+      <video
+        id="videoTutorial"
+        title="Tutorial Video"
+        style="width: 100%; height: auto;"
+        src="./assets/videos/calibration-part2.mp4"
+        autoplay
+        muted
+        loop
+      ></video>
+    </div>
+  </div>
+  <div style="text-align: center; margin-top: 2%;">
+    <p style="color: #333; max-width: 80%; margin: 0 auto; line-height: 1.5;">
+      ${CLICK_BUTTON_TO_PROCEED_MESSAGE}
+    </p>
+  </div>
 </div>`;

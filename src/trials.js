@@ -150,6 +150,8 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
                         data: {
                             task: 'accept',
                             reward: trialData.reward,
+                            randomChanceAccepted: function () {
+                            }
                         },
                         on_finish: (data) => {
                             // ADD TYPE FOR DATA

@@ -202,6 +202,9 @@ export const createTrialBlock = ({
               data: {
                 task: 'accept',
                 reward: trialData.reward,
+                randomChanceAccepted: function(){
+                  
+                }
               },
               on_finish: (data: any) => {
                 // ADD TYPE FOR DATA

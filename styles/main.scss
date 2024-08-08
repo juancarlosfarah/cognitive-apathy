@@ -20,8 +20,8 @@ body {
   width: 100%;
   margin: 0;
   padding: 0;
-  overflow-y: disabled;
-  overflow-x: disabled
+  overflow-y: hidden;
+  overflow-x: hidden
 }
 
 .jspsych-content-wrapper {
@@ -31,8 +31,8 @@ body {
   align-items: center;
   height: 100vh;
   width: 100vw;
-  overflow-y: disabled;
-  overflow-x: disabled
+  overflow-y: hidden;
+  overflow-x: hidden;
 }
 
 .jspsych-content {
@@ -42,6 +42,7 @@ body {
   align-items: center;
   height: auto;
   width: auto;
+  overflow-y: hidden;
 }
 #thermometer {
   width: 200px;
@@ -116,4 +117,48 @@ body {
 }
 .hg-activeButton {
   background:	#008000 !important
+}
+
+ol {
+  list-style-position: inside;
+  margin: 0 auto;
+  padding: 0;
+  text-align: center;
+  display: inline-block;
+}
+ol li {
+  text-align: center;
+}
+
+ul.warning {
+  list-style: none; /* Remove the default bullets */
+  list-style-position: inside;
+  margin: 0 auto;
+  padding: 0;
+  text-align: center;
+  display: inline-block;
+}
+
+ul.warning li {
+  text-align: center;
+  color: red;
+  position: relative;
+  padding-left: 1.5em; /* Add space for the emoji */
+}
+
+ul.warning li::before {
+  content: "⚠️"; /* Emoji as the bullet point */
+  position: absolute;
+  left: 0;
+}
+
+ul {
+  list-style-position: inside;
+  margin: 0 auto;
+  padding: 0;
+  text-align: left;
+  display: inline-block;
+}
+ul li {
+  text-align: center;
 }

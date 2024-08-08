@@ -69,6 +69,7 @@ export interface PassedTaskData {
   reward: number;
   accepted?: boolean; // Added accepted as optional
   randomDelay: number[];
+  randomChanceAccepted?: boolean
 }
 
 

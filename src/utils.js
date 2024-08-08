@@ -106,3 +106,6 @@ export function saveDataToLocalStorage(jsPsych) {
     const jsonData = jsPsych.data.get().json();
     localStorage.setItem('jspsych-data', jsonData);
 }
+/* export function randomAcceptance(){
+  randomAc
+} */ 
