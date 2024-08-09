@@ -268,6 +268,10 @@ TaskPlugin.info = {
             type: ParameterType.BOOL,
             default: false,
         },
+        randomChanceAccepted: {
+            type: ParameterType.BOOL,
+            default: false
+        }
     },
 };
 export default TaskPlugin;

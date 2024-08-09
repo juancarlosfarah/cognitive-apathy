@@ -2,10 +2,8 @@ import htmlButtonResponse from '@jspsych/plugin-html-button-response';
 import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
 
 import {
-  GO_DURATION,
   INTERACTIVE_KEYBOARD_TUTORIAL_MESSAGE,
   CONTINUE_BUTTON_MESSAGE,
-  GO_MESSAGE,
   MINIMUM_CALIBRATION_MEDIAN,
   PROGRESS_BAR,
   ENABLE_BUTTON_AFTER_TIME
@@ -121,15 +119,6 @@ export const practiceLoop = (jsPsych: JsPsych, state: State) => ({
     {
     timeline: [
     interactiveCountdown,
-    {
-      type: HtmlKeyboardResponsePlugin,
-      stimulus: `<p style="color: green; font-size: 48px;">${GO_MESSAGE}</p>`,
-      choices: 'NO_KEYS',
-      trial_duration: GO_DURATION, // Display "GO" for 1 second
-      data: {
-        task: 'go_screen',
-      },
-    },
     practiceTrial(jsPsych),
     loadingBarTrial(true, jsPsych),
   ],

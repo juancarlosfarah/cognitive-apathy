@@ -17,7 +17,13 @@ export const createCalibrationTrial = ({ showThermometer, bounds, calibrationPar
                 showThermometer,
                 bounds,
                 autoIncreaseAmount: function () {
-                    let medianTapsToUse = calibrationPart === 'finalCalibrationPart2' ? state.finalMedianTapsPart1 : state.medianTapsPart1;
+                    let medianTapsToUse;
+                    if (calibrationPart === 'finalCalibrationPart2') {
+                        medianTapsToUse = state.finalMedianTapsPart1;
+                    }
+                    else {
+                        medianTapsToUse = state.medianTapsPart1;
+                    }
                     console.log('autoIncreaseAmount called with medianTapsPart1:', medianTapsToUse);
                     return autoIncreaseAmount(EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION, TRIAL_DURATION, AUTO_DECREASE_RATE, AUTO_DECREASE_AMOUNT, medianTapsToUse);
                 },
@@ -231,6 +237,7 @@ export const calibrationTrialPart2 = (jsPsych, state) => ({
         }),
     ],
     on_timeline_finish: function () {
+        jsPsych.data.get().localSave('csv', 'cognitive-apathy.csv');
         if (state.calibrationPart2Failed === false) {
             changeProgressBar(PROGRESS_BAR.PROGRESS_BAR_CALIBRATION, 0.35, jsPsych);
         }

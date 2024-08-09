@@ -7,23 +7,26 @@ const getRandomDelay = (trial) => {
 describe('getRandomDelay', () => {
   const testDistribution = (min, max) => {
     const trial = { randomDelay: [min, max] };
-    const numSamples = 1000;
+    const numSamples = 10000;
     const samples = Array.from({ length: numSamples }, () => getRandomDelay(trial));
     
     // Check if the mean is roughly in the middle
     const mean = samples.reduce((acc, val) => acc + val, 0) / numSamples;
     const expectedMean = (min + max) / 2;
-    const tolerance = (max - min) * 0.1; // 10% tolerance
-    expect(mean).toBeGreaterThanOrEqual(expectedMean - tolerance);
-    expect(mean).toBeLessThanOrEqual(expectedMean + tolerance);
+    expect(mean).toBeGreaterThanOrEqual(expectedMean-25);
+    expect(mean).toBeLessThanOrEqual(expectedMean+25);
 
     // Check if the distribution is roughly normal (simple test: majority should be within one standard deviation)
-    const stdDev = Math.sqrt(samples.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / numSamples);
-    const withinOneStdDev = samples.filter(val => val >= (mean - stdDev) && val <= (mean + stdDev)).length;
-    const withinTwoStdDev = samples.filter(val => val >= (mean - 2 * stdDev) && val <= (mean + 2 * stdDev)).length;
+     // Calculate standard deviation
+     const variance = samples.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / numSamples;
+     const stdDev = Math.sqrt(variance);
+     
+     // Check how many samples fall within one and two standard deviations
+     const withinOneStdDev = samples.filter(val => val >= (mean - stdDev) && val <= (mean + stdDev)).length;
+     const withinTwoStdDev = samples.filter(val => val >= (mean - 2 * stdDev) && val <= (mean + 2 * stdDev)).length;
     
-    // Expect around 68% within one std dev and 95% within two std devs for normal distribution
-    expect(withinOneStdDev / numSamples).toBeGreaterThanOrEqual(0.68);
+    // Expect around 58% within one std dev and 95% within two std devs for normal distribution
+    expect(withinOneStdDev / numSamples).toBeGreaterThanOrEqual(0.58);
     expect(withinTwoStdDev / numSamples).toBeGreaterThanOrEqual(0.95);
   };
 

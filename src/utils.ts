@@ -1,5 +1,4 @@
 import { JsPsych } from 'jspsych';
-import random
 
 /**
  * Generate a random number with a bias towards the mean.
@@ -112,7 +111,12 @@ export function calculateTotalReward(jsPsych: JsPsych): number {
     .filter({ task: 'block', success: true });
   console.log(successfulTrials);
   console.log(successfulTrials.select('reward'));
-  return successfulTrials.select('reward').sum();
+  const accceptedSkippedTrials = jsPsych.data
+    .get()
+    .filter({ task: 'block', accept: true, randomChanceAccepted: true, success: false});
+    console.log(accceptedSkippedTrials)
+    console.log(accceptedSkippedTrials.select('reward'));
+  return (successfulTrials.select('reward').sum()+accceptedSkippedTrials.select('reward').sum());
 }
 
 export const getQueryParam = (param: string) => {
@@ -138,6 +142,9 @@ export function saveDataToLocalStorage(jsPsych: JsPsych) {
   localStorage.setItem('jspsych-data', jsonData);
 }
 
-/* export function randomAcceptance(){
-  randomAc
-} */
+export function randomAcceptance(){
+  let randomChance = Math.random()
+  if(randomChance > .5){
+    return true
+  } else return false
+}

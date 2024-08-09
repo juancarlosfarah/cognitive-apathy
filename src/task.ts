@@ -70,6 +70,10 @@ class TaskPlugin {
         type: ParameterType.BOOL,
         default: false,
       },
+      randomChanceAccepted: {
+        type: ParameterType.BOOL,
+        default: false
+      }
     },
   };
 

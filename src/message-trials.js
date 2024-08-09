@@ -1,9 +1,9 @@
 import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
 import htmlButtonResponse from '@jspsych/plugin-html-button-response';
 import FullscreenPlugin from '@jspsych/plugin-fullscreen';
-import { CONTINUE_BUTTON_MESSAGE, EXPERIMENT_BEGIN_MESSAGE, TUTORIAL_INTRODUCTION_MESSAGE, CALIBRATION_PART_1_DIRECTIONS, CALIBRATION_SECTION_MESSAGE, PROGRESS_BAR, TRIAL_BLOCKS_DIRECTIONS } from './constants';
+import { CONTINUE_BUTTON_MESSAGE, EXPERIMENT_BEGIN_MESSAGE, TUTORIAL_INTRODUCTION_MESSAGE, CALIBRATION_PART_1_DIRECTIONS, CALIBRATION_SECTION_MESSAGE, PROGRESS_BAR, TRIAL_BLOCKS_DIRECTIONS, START_BUTTON_MESSAGE } from './constants';
 import { changeProgressBar } from './utils';
-import { finalNoStimuliVideo, finalStimuliVideo } from './stimulus';
+import { finalNoStimuliVideo, finalStimuliVideo, sitComfortablyStimuli } from './stimulus';
 export const endExperimentTrial = (message) => ({
     type: HtmlKeyboardResponsePlugin,
     choices: ['enter'],
@@ -15,7 +15,7 @@ export const endExperimentTrial = (message) => ({
 });
 export const experimentBeginTrial = {
     type: FullscreenPlugin,
-    choices: [CONTINUE_BUTTON_MESSAGE],
+    choices: [START_BUTTON_MESSAGE],
     message: [EXPERIMENT_BEGIN_MESSAGE],
     fullscreen_mode: true
 };
@@ -49,6 +49,11 @@ export const finalCalibrationSectionPart2 = {
     type: htmlButtonResponse,
     choices: [CONTINUE_BUTTON_MESSAGE],
     stimulus: [finalStimuliVideo],
+};
+export const sitComfortably = {
+    type: htmlButtonResponse,
+    choices: [CONTINUE_BUTTON_MESSAGE],
+    stimulus: [sitComfortablyStimuli],
 };
 export const trialBlocksDirection = (jsPsych) => ({
     type: htmlButtonResponse,

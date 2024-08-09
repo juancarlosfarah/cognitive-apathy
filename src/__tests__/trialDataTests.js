@@ -1,6 +1,45 @@
-// randomNumberBm.test.ts
-import { randomNumberBm } from '../utils'
+import fastCartesian from 'fast-cartesian';
 
+// randomNumberBm.test.ts
+function randomNumberBm(min, max, skew = 1) {
+  let u = 0;
+  let v = 0;
+  // Converting [0,1) to (0,1)
+  while (u === 0) u = Math.random();
+  while (v === 0) v = Math.random();
+  let num = Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v);
+
+  num = num / 10.0 + 0.5; // Translate to 0 -> 1
+  if (num > 1 || num < 0) {
+    num = randomNumberBm(min, max, skew); // Resample between 0 and 1 if out of range
+  } else {
+    num = Math.pow(num, skew); // Apply skew
+    num *= max - min; // Stretch to fill range
+    num += min; // Offset to min
+  }
+  return num;
+}
+
+const PARAMETER_COMBINATIONS = fastCartesian([
+  REWARD_OPTIONS,
+  BOUND_OPTIONS,
+]).map(([reward, bounds]) => ({
+  reward,
+  bounds,
+}));
+export const PARAMETER_COMBINATIONS_TOTAL = Math.floor(
+  NUM_TRIALS / PARAMETER_COMBINATIONS.length,
+);
+const LOW_REWARDS = [0.01, 0.02, 0.03];
+const MEDIUM_REWARDS = [0.05, 0.06, 0.07];
+const HIGH_REWARDS = [0.10, 0.11, 0.12];
+const REWARD_OPTIONS = [LOW_REWARDS, MEDIUM_REWARDS, HIGH_REWARDS];
+
+
+EASY_BOUNDS = [30, 50];
+MEDIUM_BOUNDS = [50, 70];
+HARD_BOUNDS = [70, 90];
+BOUND_OPTIONS = [EASY_BOUNDS, MEDIUM_BOUNDS, HARD_BOUNDS];
 describe('randomNumberBm', () => {
   it('should return a number within the specified range', () => {
     const min = 0;
@@ -21,7 +60,6 @@ describe('randomNumberBm', () => {
 });
 
 // trials.test.ts
-import { PARAMETER_COMBINATIONS } from '../constants';
 
 describe('Trial bounds adjustment', () => {
   jest.mock('./path_to_your_function', () => ({

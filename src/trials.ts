@@ -25,7 +25,7 @@ import { successScreen } from './success';
 import { releaseKeysStep } from './release-keys';
 import { acceptanceThermometer } from './stimulus';
 import TaskPlugin from './task';
-import { autoIncreaseAmount, calculateTotalReward, checkFlag, randomNumberBm, checkKeys, changeProgressBar, saveDataToLocalStorage } from './utils';
+import { autoIncreaseAmount, calculateTotalReward, checkFlag, randomNumberBm, checkKeys, changeProgressBar, saveDataToLocalStorage, randomAcceptance } from './utils';
 import { State, TaskTrialData, PassedTaskData, CreateTrialBlockParams } from './types'; // Assuming you have the appropriate types defined here
 import { EASY_BOUNDS } from './constants';
 import htmlButtonResponse from '@jspsych/plugin-html-button-response';
@@ -171,6 +171,7 @@ export const createTrialBlock = ({
           )[0],
           randomDelay: randomDelay,
           bounds: combination.bounds,
+          randomChanceAccepted: randomAcceptance()
         })),
     );
     // Add 10% variation of bounds while keeping distance the same
@@ -202,9 +203,6 @@ export const createTrialBlock = ({
               data: {
                 task: 'accept',
                 reward: trialData.reward,
-                randomChanceAccepted: function(){
-                  
-                }
               },
               on_finish: (data: any) => {
                 // ADD TYPE FOR DATA
@@ -226,6 +224,7 @@ export const createTrialBlock = ({
                   randomDelay: trialData.randomDelay,
                   bounds: trialData.bounds,
                   reward: trialData.reward,
+                  randomChanceAccepted: trialData.randomChanceAccepted,
                   task: 'block',
                   autoIncreaseAmount: function () {
                     return autoIncreaseAmount(
@@ -239,6 +238,7 @@ export const createTrialBlock = ({
                   data: {
                     task: 'block',
                     blockType: blockName,
+                    randomChanceAccepted: trialData.randomChanceAccepted,
                     accept: () => {
                       const acceptanceData = jsPsych.data
                         .get()
@@ -248,7 +248,6 @@ export const createTrialBlock = ({
                       return acceptanceData ? acceptanceData.accepted : null;
                     },
                     reward: trialData.reward,
-                    medianTaps: {'Median Taps Calibration Part 1: ': state.medianTapsPart1, 'Median Taps Calibration Part 2: ': state.medianTaps}
                   },
                   on_start: function (trial: TaskTrialData) {
                     const keyTappedEarlyFlag = checkFlag(
@@ -261,6 +260,7 @@ export const createTrialBlock = ({
                     return keyTappedEarlyFlag;
                   },
                   on_finish: function (data: TaskTrialData) {
+                    data.medianTaps = {calibrationPart1Median: state.medianTapsPart1, calibrationPart2Median: state.medianTaps}
                     console.log(data);
                     saveDataToLocalStorage(jsPsych)
                   },
@@ -273,7 +273,7 @@ export const createTrialBlock = ({
                   },
                 },
               ],
-              conditional_function: () => trialData.accepted, // Use trialData.accepted in the conditional function
+              conditional_function: () => trialData.accepted && trialData.randomChanceAccepted, // Use trialData.accepted in the conditional function
             },
             {
               timeline: [loadingBarTrial(false, jsPsych)],

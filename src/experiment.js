@@ -13,7 +13,7 @@ import { calibrationTrialPart1, calibrationTrialPart2, conditionalCalibrationTri
 import { CALIBRATION_PART_1_DIRECTIONS, PROGRESS_BAR, } from './constants';
 import { finishExperiment } from './finish';
 import { sampledArray } from './trials';
-import { instructionalTrial, stimuliVideoTutorialTrial, } from './tutorial';
+import { instructionalTrial, noStimuliVideoTutorialTrial, practiceLoop, stimuliVideoTutorialTrial, } from './tutorial';
 let state = {
     medianTapsPart1: 0,
     medianTaps: 0,
@@ -42,7 +42,7 @@ if (window.Cypress) {
     window.state = state;
     window.appReady = true;
 }
-import { calibrationSectionDirectionTrial, finalCalibrationSectionPart1, finalCalibrationSectionPart2, trialBlocksDirection } from './message-trials';
+import { calibrationSectionDirectionTrial, experimentBeginTrial, finalCalibrationSectionPart1, finalCalibrationSectionPart2, sitComfortably, trialBlocksDirection, tutorialIntroductionTrial } from './message-trials';
 window.addEventListener("beforeunload", function (event) {
     event.preventDefault();
     event.returnValue = ''; // Modern browsers require returnValue to be set
@@ -63,7 +63,7 @@ export function run(_a) {
         const timeline = [];
         timeline.push({
             type: PreloadPlugin,
-            images: ['./assets/images/left.jpg', './assets/images/right.jpg'],
+            images: ['./assets/images/left.jpg', './assets/images/right.jpg', './assets/images/tip.png'],
             audio: assetPaths.audio,
             video: [
                 './assets/videos/calibration-part1.mp4',
@@ -78,17 +78,13 @@ export function run(_a) {
                 console.error(`Failed to preload: ${file}`);
             }
         });
-        /*  timeline.push(experimentBeginTrial);
-         timeline.push(tutorialIntroductionTrial(jsPsych));
-       
-         
-         timeline.push(noStimuliVideoTutorialTrial(jsPsych));
-         
-         timeline.push(practiceLoop(jsPsych, state));
-         
-         timeline.push(practiceLoop(jsPsych, state));
-         
-         timeline.push(practiceLoop(jsPsych, state)); */
+        timeline.push(experimentBeginTrial);
+        timeline.push(sitComfortably);
+        timeline.push(tutorialIntroductionTrial(jsPsych));
+        timeline.push(noStimuliVideoTutorialTrial(jsPsych));
+        timeline.push(practiceLoop(jsPsych, state));
+        timeline.push(practiceLoop(jsPsych, state));
+        timeline.push(practiceLoop(jsPsych, state));
         timeline.push(calibrationSectionDirectionTrial(jsPsych));
         timeline.push(instructionalTrial(CALIBRATION_PART_1_DIRECTIONS));
         timeline.push(calibrationTrialPart1(jsPsych, state));
@@ -98,26 +94,25 @@ export function run(_a) {
             timeline: [calibrationTrialPart2(jsPsych, state)],
         });
         timeline.push(conditionalCalibrationTrialPart2(jsPsych, state));
-        /*
-          timeline.push(validationVideoTutorialTrial(jsPsych));
-          timeline.push({
-            timeline: [validationTrialEasy(jsPsych, state)],
-          });
-          timeline.push({
-            timeline: [validationTrialMedium(jsPsych, state)],
-          });
-          timeline.push({
-            timeline: [validationTrialHard(jsPsych, state)],
-          });
-          timeline.push({
-            timeline: [validationTrialExtra(jsPsych, state)],
-            conditional_function: function () {
-              return state.extraValidationRequired;
-            },
-          });
-          timeline.push({
-            timeline: [validationResultScreen(jsPsych, state)],
-          }); */
+        /* timeline.push(validationVideoTutorialTrial(jsPsych));
+        timeline.push({
+          timeline: [validationTrialEasy(jsPsych, state)],
+        });
+        timeline.push({
+          timeline: [validationTrialMedium(jsPsych, state)],
+        });
+        timeline.push({
+          timeline: [validationTrialHard(jsPsych, state)],
+        });
+        timeline.push({
+          timeline: [validationTrialExtra(jsPsych, state)],
+          conditional_function: function () {
+            return state.extraValidationRequired;
+          },
+        });
+        timeline.push({
+          timeline: [validationResultScreen(jsPsych, state)],
+        }); */
         timeline.push({
             timeline: [trialBlocksDirection(jsPsych)]
         });

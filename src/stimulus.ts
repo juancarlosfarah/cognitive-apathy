@@ -8,7 +8,9 @@ import {
   GO_MESSAGE,
   FINAL_CALIBRATION_SECTION_DIRECTIONS_PART_1,
   FINAL_CALIBRATION_SECTION_DIRECTIONS_PART_2,
-  CLICK_BUTTON_TO_PROCEED_MESSAGE
+  CLICK_BUTTON_TO_PROCEED_MESSAGE,
+  SIT_COMFORTABLY_MESSAGE,
+  INTRODUCTION_HEADER
 } from './constants';
 
 export function stimulus(
@@ -245,3 +247,16 @@ export const finalStimuliVideo = `
     </p>
   </div>
 </div>`;
+
+export const sitComfortablyStimuli = `
+<h2>${INTRODUCTION_HEADER}</h2>
+<p1>${SIT_COMFORTABLY_MESSAGE}</p1>
+<img src="./assets/images/tip.png" alt="Description of the image" style="width:800px;height:auto; display:block; margin: 10px auto;">
+<div style="text-align: center; margin-top: 2%;">
+    <p style="color: #333; max-width: 80%; margin: 0 auto; line-height: 1.5;">
+      ${CLICK_BUTTON_TO_PROCEED_MESSAGE}
+    </p>
+</div>
+`;
+
+
