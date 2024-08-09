@@ -13,7 +13,8 @@ import { calibrationTrialPart1, calibrationTrialPart2, conditionalCalibrationTri
 import { CALIBRATION_PART_1_DIRECTIONS, PROGRESS_BAR, } from './constants';
 import { finishExperiment } from './finish';
 import { sampledArray } from './trials';
-import { instructionalTrial, noStimuliVideoTutorialTrial, practiceLoop, stimuliVideoTutorialTrial, } from './tutorial';
+import { instructionalTrial, noStimuliVideoTutorialTrial, practiceLoop, stimuliVideoTutorialTrial, validationVideoTutorialTrial, } from './tutorial';
+import { validationResultScreen, validationTrialEasy, validationTrialExtra, validationTrialHard, validationTrialMedium, } from './validation';
 let state = {
     medianTapsPart1: 0,
     medianTaps: 0,
@@ -94,25 +95,25 @@ export function run(_a) {
             timeline: [calibrationTrialPart2(jsPsych, state)],
         });
         timeline.push(conditionalCalibrationTrialPart2(jsPsych, state));
-        /* timeline.push(validationVideoTutorialTrial(jsPsych));
+        timeline.push(validationVideoTutorialTrial(jsPsych));
         timeline.push({
-          timeline: [validationTrialEasy(jsPsych, state)],
+            timeline: [validationTrialEasy(jsPsych, state)],
         });
         timeline.push({
-          timeline: [validationTrialMedium(jsPsych, state)],
+            timeline: [validationTrialMedium(jsPsych, state)],
         });
         timeline.push({
-          timeline: [validationTrialHard(jsPsych, state)],
+            timeline: [validationTrialHard(jsPsych, state)],
         });
         timeline.push({
-          timeline: [validationTrialExtra(jsPsych, state)],
-          conditional_function: function () {
-            return state.extraValidationRequired;
-          },
+            timeline: [validationTrialExtra(jsPsych, state)],
+            conditional_function: function () {
+                return state.extraValidationRequired;
+            },
         });
         timeline.push({
-          timeline: [validationResultScreen(jsPsych, state)],
-        }); */
+            timeline: [validationResultScreen(jsPsych, state)],
+        });
         timeline.push({
             timeline: [trialBlocksDirection(jsPsych)]
         });
@@ -128,7 +129,7 @@ export function run(_a) {
         timeline.push({
             timeline: [finalCalibrationTrialPart2(jsPsych, state)],
         });
-        timeline.push(finishExperiment(jsPsych, state));
+        timeline.push(finishExperiment(jsPsych));
         yield jsPsych.run(timeline);
         return jsPsych;
     });

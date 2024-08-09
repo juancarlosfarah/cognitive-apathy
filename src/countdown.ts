@@ -1,13 +1,10 @@
-import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
 import { ParameterType, JsPsych } from 'jspsych';
 
 import {
   COUNTDOWN_TIME,
-  GO_DURATION,
   HOLD_KEYS_MESSAGE,
   KEYS_TO_HOLD,
   KEY_TO_PRESS,
-  GO_MESSAGE,
   COUNTDOWN_TIMER_MESSAGE
 } from './constants';
 import { createKeyboard } from './keyboard';

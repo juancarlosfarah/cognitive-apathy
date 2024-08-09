@@ -1,4 +1,5 @@
 {
+  "name": "cognitive-apathy",
   "private": true,
   "homepage": "https://juancarlosfarah.github.io/cognitive-apathy",
   "scripts": {
@@ -9,8 +10,8 @@
     "unzip": "extract-zip ./packaged/*.zip",
     "predeploy": "run-s build unzip",
     "deploy": "gh-pages -d experiment",
-    "test": "jest",
-    "test:watch": "jest --watch"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch"
   },
   "dependencies": {
     "@jspsych/plugin-call-function": "^1.1.3",

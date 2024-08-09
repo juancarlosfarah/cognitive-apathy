@@ -34,15 +34,15 @@ export const NUM_FINAL_CALIBRATION_TRIALS_PART_2 = 3
 export const MINIMUM_CALIBRATION_MEDIAN = 15;
 export const EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION = 50;
 
-export const NUM_VALIDATION_TRIALS = 1; //4 default
+export const NUM_VALIDATION_TRIALS = 4; //4 default
 export const NUM_EXTRA_VALIDATION_TRIALS = 3; //3 default
 
 export const NUM_DEMO_TRIALS = 3; //3 default
-export const MINIMUM_DEMO_TAPS = 10;
+export const MINIMUM_DEMO_TAPS = 15;
 export const FAILED_MINIMUM_DEMO_TAPS_DURATION = 3000;
 
 export const NUM_TRIALS = 63; //63 default 
-export const TRIAL_DURATION = 5000; //7000 default
+export const TRIAL_DURATION = 7000; //7000 default
 export const PARAMETER_COMBINATIONS = fastCartesian([
   REWARD_OPTIONS,
   BOUND_OPTIONS,

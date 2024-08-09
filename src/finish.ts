@@ -1,10 +1,9 @@
-import {FAILED_VALIDATION_MESSAGE, END_EXPERIMENT_MESSAGE, CONTINUE_BUTTON_MESSAGE, EXPERIMENT_HAS_ENDED_MESSAGE, FINISH_BUTTON_MESSAGE } from './constants';
+import {FAILED_VALIDATION_MESSAGE, END_EXPERIMENT_MESSAGE, EXPERIMENT_HAS_ENDED_MESSAGE, FINISH_BUTTON_MESSAGE } from './constants';
 import { calculateTotalReward, saveDataToLocalStorage, showEndScreen } from './utils';
 import { JsPsych } from 'jspsych';
 import htmlButtonResponse from '@jspsych/plugin-html-button-response';
-import { State } from './types';
 
-export const finishExperiment = (jsPsych: JsPsych, state: State) => ({
+export const finishExperiment = (jsPsych: JsPsych) => ({
   type: htmlButtonResponse,
   choices: [FINISH_BUTTON_MESSAGE],
   stimulus: function () {

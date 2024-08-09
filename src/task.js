@@ -3,6 +3,7 @@ import { AUTO_DECREASE_AMOUNT, AUTO_DECREASE_RATE, GO_DURATION, KEYS_TO_HOLD, KE
 import { createKeyboard } from './keyboard';
 import { stimulus } from './stimulus';
 import { TRIAL_DURATION } from './constants';
+import { randomNumberBm } from './utils';
 class TaskPlugin {
     constructor(jsPsych) {
         this.jsPsych = jsPsych;
@@ -25,7 +26,7 @@ class TaskPlugin {
         let inputElement;
         const getRandomDelay = () => {
             const [min, max] = trial.randomDelay;
-            return Math.random() * (max - min) + min;
+            return randomNumberBm(min, max);
         };
         const updateUI = () => {
             if (trial.showThermometer) {

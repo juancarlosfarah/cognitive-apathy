@@ -15,6 +15,7 @@ import { createKeyboard } from './keyboard';
 import { stimulus } from './stimulus';
 import { TaskTrialData } from './types';
 import { TRIAL_DURATION } from './constants';
+import { randomNumberBm } from './utils';
 
 class TaskPlugin {
   static info = {
@@ -105,7 +106,7 @@ class TaskPlugin {
 
     const getRandomDelay = () => {
       const [min, max] = trial.randomDelay;
-      return Math.random() * (max - min) + min;
+      return randomNumberBm(min,max)
     };
 
     const updateUI = () => {
