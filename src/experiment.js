@@ -83,8 +83,9 @@ export function run(_a) {
         timeline.push(sitComfortably);
         timeline.push(tutorialIntroductionTrial(jsPsych));
         timeline.push(noStimuliVideoTutorialTrial(jsPsych));
-        timeline.push(practiceLoop(jsPsych, state));
-        timeline.push(practiceLoop(jsPsych, state));
+        /* timeline.push(practiceLoop(jsPsych, state));
+        
+        timeline.push(practiceLoop(jsPsych, state)); */
         timeline.push(practiceLoop(jsPsych, state));
         timeline.push(calibrationSectionDirectionTrial(jsPsych));
         timeline.push(instructionalTrial(CALIBRATION_PART_1_DIRECTIONS));

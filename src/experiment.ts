@@ -108,9 +108,9 @@ export async function run({
   
   timeline.push(noStimuliVideoTutorialTrial(jsPsych));
   
-  timeline.push(practiceLoop(jsPsych, state));
+  /* timeline.push(practiceLoop(jsPsych, state));
   
-  timeline.push(practiceLoop(jsPsych, state));
+  timeline.push(practiceLoop(jsPsych, state)); */
   
   timeline.push(practiceLoop(jsPsych, state));
   
