@@ -127,7 +127,7 @@ ol {
   display: inline-block;
 }
 ol li {
-  text-align: center;
+  text-align: left;
 }
 
 ul.warning {
@@ -177,6 +177,8 @@ ul li {
 }
 
 .jspsych-btn {
-  background-color: #13960b;
+  background-color: rgb(11, 107, 203);
+  color: white;
+  border: none;
 }
 

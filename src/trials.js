@@ -7,7 +7,7 @@ import { successScreen } from './success';
 import { releaseKeysStep } from './release-keys';
 import { acceptanceThermometer } from './stimulus';
 import TaskPlugin from './task';
-import { autoIncreaseAmount, calculateTotalReward, checkFlag, randomNumberBm, checkKeys, changeProgressBar, saveDataToLocalStorage, randomAcceptance } from './utils';
+import { autoIncreaseAmount, calculateTotalReward, checkFlag, randomNumberBm, checkKeys, changeProgressBar, saveDataToLocalStorage, /* randomAcceptance */ } from './utils';
 import { EASY_BOUNDS } from './constants';
 import htmlButtonResponse from '@jspsych/plugin-html-button-response';
 const failedMinimumDemoTapsTrial = {
@@ -91,7 +91,7 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
                                     timeline: [failedMinimumDemoTapsTrial],
                                     // Check if minimum taps was reached in the last trial to determine whether 'failedMinimumDemoTapsTrial' should display
                                     conditional_function: function () {
-                                        return !state.minimumDemoTapsReached;
+                                        return (!state.minimumDemoTapsReached && !checkFlag('demo', 'keyTappedEarlyFlag', jsPsych) && !checkFlag('demo', 'keysReleasedFlag', jsPsych));
                                     },
                                 },
                                 {
@@ -122,7 +122,7 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
             reward: jsPsych.randomization.sampleWithReplacement(combination.reward, 1)[0],
             randomDelay: randomDelay,
             bounds: combination.bounds,
-            randomChanceAccepted: randomAcceptance()
+            /* randomChanceAccepted: randomAcceptance() */
         })));
         // Add 10% variation of bounds while keeping distance the same
         let differenceBetweenBounds = EASY_BOUNDS[1] - EASY_BOUNDS[0];
@@ -169,16 +169,16 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
                                 randomDelay: trialData.randomDelay,
                                 bounds: trialData.bounds,
                                 reward: trialData.reward,
-                                randomChanceAccepted: trialData.randomChanceAccepted,
-                                task: 'block',
+                                /*                   randomChanceAccepted: trialData.randomChanceAccepted,
+                                 */ task: 'block',
                                 autoIncreaseAmount: function () {
                                     return autoIncreaseAmount(EXPECTED_MAXIMUM_PERCENTAGE, TRIAL_DURATION, AUTO_DECREASE_RATE, AUTO_DECREASE_AMOUNT, state.medianTaps);
                                 },
                                 data: {
                                     task: 'block',
                                     blockType: blockName,
-                                    randomChanceAccepted: trialData.randomChanceAccepted,
-                                    accept: () => {
+                                    /*                     randomChanceAccepted: trialData.randomChanceAccepted,
+                                     */ accept: () => {
                                         const acceptanceData = jsPsych.data
                                             .get()
                                             .filter({ task: 'accept' })
@@ -208,7 +208,7 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
                                 },
                             },
                         ],
-                        conditional_function: () => trialData.accepted && trialData.randomChanceAccepted, // Use trialData.accepted in the conditional function
+                        conditional_function: () => trialData.accepted /* && trialData.randomChanceAccepted */, // Use trialData.accepted in the conditional function
                     },
                     {
                         timeline: [loadingBarTrial(false, jsPsych)],

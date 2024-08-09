@@ -126,6 +126,48 @@ export const likertQuestions2 = [
     randomize_question_order: false,
     button_label: CONTINUE_BUTTON_MESSAGE,
   },
+  {
+    type: surveyLikert,
+    questions: [
+      {
+        prompt: `${LIKERT_PREAMBLE}<br><br><b>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_5}</b>`,
+        labels: [
+          LIKERT_RESPONSES.STRONGLY_DISAGREE,
+          LIKERT_RESPONSES.DISAGREE,
+          LIKERT_RESPONSES.SOMEWHAT_DISAGREE,
+          LIKERT_RESPONSES.NEUTRAL,
+          LIKERT_RESPONSES.SOMEWHAT_AGREE,
+          LIKERT_RESPONSES.AGREE,
+          LIKERT_RESPONSES.STRONGLY_AGREE,
+        ],
+        name: LIKERT_SURVEY_2_QUESTIONS.QUESTION_5,
+        required: true,
+      },
+    ],
+    randomize_question_order: false,
+    button_label: CONTINUE_BUTTON_MESSAGE,
+  },
+  {
+    type: surveyLikert,
+    questions: [
+      {
+        prompt: `${LIKERT_PREAMBLE}<br><br><b>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_6}</b>`,
+        labels: [
+          LIKERT_RESPONSES.STRONGLY_DISAGREE,
+          LIKERT_RESPONSES.DISAGREE,
+          LIKERT_RESPONSES.SOMEWHAT_DISAGREE,
+          LIKERT_RESPONSES.NEUTRAL,
+          LIKERT_RESPONSES.SOMEWHAT_AGREE,
+          LIKERT_RESPONSES.AGREE,
+          LIKERT_RESPONSES.STRONGLY_AGREE,
+        ],
+        name: LIKERT_SURVEY_2_QUESTIONS.QUESTION_6,
+        required: true,
+      },
+    ],
+    randomize_question_order: false,
+    button_label: CONTINUE_BUTTON_MESSAGE,
+  },
 ];
 
 export const likertFinalQuestion = [
@@ -133,7 +175,7 @@ export const likertFinalQuestion = [
   type: surveyLikert,
   questions: [
     {
-      prompt: `<b>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_5}</b>`,
+      prompt: `<b>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_7}</b>`,
       labels: [
         LIKERT_RESPONSES.STRONGLY_DISAGREE,
         LIKERT_RESPONSES.DISAGREE,
@@ -143,12 +185,36 @@ export const likertFinalQuestion = [
         LIKERT_RESPONSES.AGREE,
         LIKERT_RESPONSES.STRONGLY_AGREE,
       ],
-      name: LIKERT_SURVEY_2_QUESTIONS.QUESTION_5,
+      name: LIKERT_SURVEY_2_QUESTIONS.QUESTION_7,
       required: true,
     },
   ],
   randomize_question_order: false,
   button_label: CONTINUE_BUTTON_MESSAGE,
 },
+{
+  type: surveyLikert,
+  questions: [
+    {
+      prompt: `<b>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_8}</b>`,
+      labels: [
+        LIKERT_RESPONSES.STRONGLY_DISAGREE,
+        LIKERT_RESPONSES.DISAGREE,
+        LIKERT_RESPONSES.SOMEWHAT_DISAGREE,
+        LIKERT_RESPONSES.NEUTRAL,
+        LIKERT_RESPONSES.SOMEWHAT_AGREE,
+        LIKERT_RESPONSES.AGREE,
+        LIKERT_RESPONSES.STRONGLY_AGREE,
+      ],
+      name: LIKERT_SURVEY_2_QUESTIONS.QUESTION_8,
+      required: true,
+    },
+  ],
+  randomize_question_order: false,
+  button_label: CONTINUE_BUTTON_MESSAGE,
+  },
+
 ]
-export const likertQuestions2Randomized = (jsPsych: JsPsych) => jsPsych.randomization.sampleWithoutReplacement(likertQuestions2, 4);
+export const likertQuestions2Randomized = (jsPsych: JsPsych) => jsPsych.randomization.sampleWithoutReplacement(likertQuestions2, 6);
+
+

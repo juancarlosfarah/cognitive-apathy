@@ -10,7 +10,9 @@ import {
   FINAL_CALIBRATION_SECTION_DIRECTIONS_PART_2,
   CLICK_BUTTON_TO_PROCEED_MESSAGE,
   SIT_COMFORTABLY_MESSAGE,
-  INTRODUCTION_HEADER
+  INTRODUCTION_HEADER,
+  TUTORIAL_HEADER,
+  HAND_TUTORIAL_MESSAGE
 } from './constants';
 
 export function stimulus(
@@ -133,7 +135,7 @@ export const noStimuliVideo = `
       ></video>
     </div>
   </div>
-  <div style="text-align: center; margin-top: 2%;">
+  <div style="text-align: center; margin-top: 0%;">
     <p>
       ${CLICK_BUTTON_TO_PROCEED_MESSAGE}
     </p>
@@ -142,7 +144,7 @@ export const noStimuliVideo = `
 
 export const stimuliVideo = `
 <div style="overflow: hidden; height: calc(100vh - 200px); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px 0;">
-  <div style="text-align: center; margin-bottom: 2%;">
+  <div style="text-align: center; margin-bottom: 0%;">
     <p>
       ${STIMULI_VIDEO_TUTORIAL_MESSAGE}
     </p>
@@ -160,7 +162,7 @@ export const stimuliVideo = `
       ></video>
     </div>
   </div>
-  <div style="text-align: center; margin-top: 2%;">
+  <div style="text-align: center; margin-top: 0%;">
     <p>
       ${CLICK_BUTTON_TO_PROCEED_MESSAGE}
     </p>
@@ -169,7 +171,7 @@ export const stimuliVideo = `
 
 export const validationVideo = `
 <div style="overflow: hidden; height: calc(100vh - 200px); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px 0;">
-  <div style="text-align: center; margin-bottom: 2%;">
+  <div style="text-align: center; margin-bottom: 0%;">
     <p>
       ${VALIDATION_VIDEO_TUTORIAL_MESSAGE}
     </p>
@@ -187,7 +189,7 @@ export const validationVideo = `
       ></video>
     </div>
   </div>
-  <div style="text-align: center; margin-top: 2%;">
+  <div style="text-align: center; margin-top: 0%;">
     <p>
       ${CLICK_BUTTON_TO_PROCEED_MESSAGE}
     </p>
@@ -196,7 +198,7 @@ export const validationVideo = `
 
 export const finalNoStimuliVideo = `
 <div style="overflow: hidden; height: calc(100vh - 200px); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px 0;">
-  <div style="text-align: center; margin-bottom: 2%;">
+  <div style="text-align: center; margin-bottom: 0%;">
     <p">
       ${FINAL_CALIBRATION_SECTION_DIRECTIONS_PART_1}
     </p>
@@ -214,7 +216,7 @@ export const finalNoStimuliVideo = `
       ></video>
     </div>
   </div>
-  <div style="text-align: center; margin-top: 2%;">
+  <div style="text-align: center; margin-top: 0%;">
     <p>
       ${CLICK_BUTTON_TO_PROCEED_MESSAGE}
     </p>
@@ -223,7 +225,7 @@ export const finalNoStimuliVideo = `
 
 export const finalStimuliVideo = `
 <div style="overflow: hidden; height: calc(100vh - 200px); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px 0;">
-  <div style="text-align: center; margin-bottom: 2%;">
+  <div style="text-align: center; margin-bottom: 0%;">
     <p">
       ${FINAL_CALIBRATION_SECTION_DIRECTIONS_PART_2}
     </p>
@@ -241,7 +243,7 @@ export const finalStimuliVideo = `
       ></video>
     </div>
   </div>
-  <div style="text-align: center; margin-top: 2%;">
+  <div style="text-align: center; margin-top: 0%;">
     <p style="color: #333; max-width: 80%; margin: 0 auto; line-height: 1.5;">
       ${CLICK_BUTTON_TO_PROCEED_MESSAGE}
     </p>
@@ -252,7 +254,18 @@ export const sitComfortablyStimuli = `
 <h2>${INTRODUCTION_HEADER}</h2>
 <p1>${SIT_COMFORTABLY_MESSAGE}</p1>
 <img src="./assets/images/tip.png" alt="Description of the image" style="width:800px;height:auto; display:block; margin: 10px auto;">
-<div style="text-align: center; margin-top: 2%;">
+<div style="text-align: center; margin-top: 0%;">
+    <p style="color: #333; max-width: 80%; margin: 0 auto; line-height: 1.5;">
+      ${CLICK_BUTTON_TO_PROCEED_MESSAGE}
+    </p>
+</div>
+`;
+
+export const handTutorial = `
+<h2>${TUTORIAL_HEADER}</h2>
+<p1>${HAND_TUTORIAL_MESSAGE}</p1>
+<img src='./assets/images/hand.png' alt="Description of the image" style="width:500px;height:auto; display:block; margin: 10px auto;">
+<div style="text-align: center; margin-top: 0%;">
     <p style="color: #333; max-width: 80%; margin: 0 auto; line-height: 1.5;">
       ${CLICK_BUTTON_TO_PROCEED_MESSAGE}
     </p>

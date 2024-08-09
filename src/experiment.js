@@ -43,7 +43,7 @@ if (window.Cypress) {
     window.state = state;
     window.appReady = true;
 }
-import { calibrationSectionDirectionTrial, experimentBeginTrial, finalCalibrationSectionPart1, finalCalibrationSectionPart2, sitComfortably, trialBlocksDirection, tutorialIntroductionTrial } from './message-trials';
+import { calibrationSectionDirectionTrial, experimentBeginTrial, finalCalibrationSectionPart1, finalCalibrationSectionPart2, handTutorialTrial, sitComfortably, trialBlocksDirection, tutorialIntroductionTrial } from './message-trials';
 window.addEventListener("beforeunload", function (event) {
     event.preventDefault();
     event.returnValue = ''; // Modern browsers require returnValue to be set
@@ -64,7 +64,7 @@ export function run(_a) {
         const timeline = [];
         timeline.push({
             type: PreloadPlugin,
-            images: ['./assets/images/left.jpg', './assets/images/right.jpg', './assets/images/tip.png'],
+            images: ['./assets/images/left.jpg', './assets/images/right.jpg', './assets/images/tip.png', './assets/images/hand.png'],
             audio: assetPaths.audio,
             video: [
                 './assets/videos/calibration-part1.mp4',
@@ -83,9 +83,9 @@ export function run(_a) {
         timeline.push(sitComfortably);
         timeline.push(tutorialIntroductionTrial(jsPsych));
         timeline.push(noStimuliVideoTutorialTrial(jsPsych));
-        /* timeline.push(practiceLoop(jsPsych, state));
-        
-        timeline.push(practiceLoop(jsPsych, state)); */
+        timeline.push(handTutorialTrial);
+        timeline.push(practiceLoop(jsPsych, state));
+        timeline.push(practiceLoop(jsPsych, state));
         timeline.push(practiceLoop(jsPsych, state));
         timeline.push(calibrationSectionDirectionTrial(jsPsych));
         timeline.push(instructionalTrial(CALIBRATION_PART_1_DIRECTIONS));

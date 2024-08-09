@@ -1,9 +1,9 @@
 import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
 import htmlButtonResponse from '@jspsych/plugin-html-button-response';
 import FullscreenPlugin from '@jspsych/plugin-fullscreen';
-import { CONTINUE_BUTTON_MESSAGE, EXPERIMENT_BEGIN_MESSAGE, TUTORIAL_INTRODUCTION_MESSAGE, CALIBRATION_PART_1_DIRECTIONS, CALIBRATION_SECTION_MESSAGE, PROGRESS_BAR, TRIAL_BLOCKS_DIRECTIONS, START_BUTTON_MESSAGE } from './constants';
+import { CONTINUE_BUTTON_MESSAGE, EXPERIMENT_BEGIN_MESSAGE, TUTORIAL_INTRODUCTION_MESSAGE, CALIBRATION_PART_1_DIRECTIONS, CALIBRATION_SECTION_MESSAGE, PROGRESS_BAR, TRIAL_BLOCKS_DIRECTIONS, START_BUTTON_MESSAGE, ENABLE_BUTTON_AFTER_TIME } from './constants';
 import { changeProgressBar } from './utils';
-import { finalNoStimuliVideo, finalStimuliVideo, sitComfortablyStimuli } from './stimulus';
+import { finalNoStimuliVideo, finalStimuliVideo, handTutorial, sitComfortablyStimuli } from './stimulus';
 export const endExperimentTrial = (message) => ({
     type: HtmlKeyboardResponsePlugin,
     choices: ['enter'],
@@ -33,22 +33,25 @@ export const calibrationSectionDirectionTrial = (jsPsych) => ({
     stimulus: [CALIBRATION_SECTION_MESSAGE],
     on_finish: function () {
         changeProgressBar(`${PROGRESS_BAR.PROGRESS_BAR_CALIBRATION}`, .11, jsPsych);
-    }
+    },
 });
 export const calibrationPart1DirectionTrial = {
     type: htmlButtonResponse,
     choices: [CONTINUE_BUTTON_MESSAGE],
     stimulus: [CALIBRATION_PART_1_DIRECTIONS],
+    enable_button_after: ENABLE_BUTTON_AFTER_TIME,
 };
 export const finalCalibrationSectionPart1 = {
     type: htmlButtonResponse,
     choices: [CONTINUE_BUTTON_MESSAGE],
     stimulus: [finalNoStimuliVideo],
+    enable_button_after: ENABLE_BUTTON_AFTER_TIME,
 };
 export const finalCalibrationSectionPart2 = {
     type: htmlButtonResponse,
     choices: [CONTINUE_BUTTON_MESSAGE],
     stimulus: [finalStimuliVideo],
+    enable_button_after: ENABLE_BUTTON_AFTER_TIME,
 };
 export const sitComfortably = {
     type: htmlButtonResponse,
@@ -59,7 +62,14 @@ export const trialBlocksDirection = (jsPsych) => ({
     type: htmlButtonResponse,
     choices: [CONTINUE_BUTTON_MESSAGE],
     stimulus: [TRIAL_BLOCKS_DIRECTIONS],
+    enable_button_after: ENABLE_BUTTON_AFTER_TIME,
     on_finish: function () {
         changeProgressBar(`${PROGRESS_BAR.PROGRESS_BAR_TRIAL_BLOCKS}`, .11, jsPsych);
     }
 });
+export const handTutorialTrial = {
+    type: htmlButtonResponse,
+    choices: [CONTINUE_BUTTON_MESSAGE],
+    stimulus: [handTutorial],
+    enable_button_after: ENABLE_BUTTON_AFTER_TIME,
+};

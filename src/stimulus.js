@@ -1,4 +1,4 @@
-import { ACCEPTANCE_TRIAL_MESSAGE, NO_STIMULI_VIDEO_TUTORIAL_MESSAGE, STIMULI_VIDEO_TUTORIAL_MESSAGE, VALIDATION_VIDEO_TUTORIAL_MESSAGE, LOADING_BAR_MESSAGE, REWARD_TRIAL_MESSAGE, GO_MESSAGE, FINAL_CALIBRATION_SECTION_DIRECTIONS_PART_1, FINAL_CALIBRATION_SECTION_DIRECTIONS_PART_2, CLICK_BUTTON_TO_PROCEED_MESSAGE, SIT_COMFORTABLY_MESSAGE, INTRODUCTION_HEADER } from './constants';
+import { ACCEPTANCE_TRIAL_MESSAGE, NO_STIMULI_VIDEO_TUTORIAL_MESSAGE, STIMULI_VIDEO_TUTORIAL_MESSAGE, VALIDATION_VIDEO_TUTORIAL_MESSAGE, LOADING_BAR_MESSAGE, REWARD_TRIAL_MESSAGE, GO_MESSAGE, FINAL_CALIBRATION_SECTION_DIRECTIONS_PART_1, FINAL_CALIBRATION_SECTION_DIRECTIONS_PART_2, CLICK_BUTTON_TO_PROCEED_MESSAGE, SIT_COMFORTABLY_MESSAGE, INTRODUCTION_HEADER, TUTORIAL_HEADER, HAND_TUTORIAL_MESSAGE } from './constants';
 export function stimulus(showThermometer, mercuryHeight, lowerBound, upperBound) {
     const bounds = `
   <div
@@ -104,7 +104,7 @@ export const noStimuliVideo = `
       ></video>
     </div>
   </div>
-  <div style="text-align: center; margin-top: 2%;">
+  <div style="text-align: center; margin-top: 0%;">
     <p>
       ${CLICK_BUTTON_TO_PROCEED_MESSAGE}
     </p>
@@ -112,7 +112,7 @@ export const noStimuliVideo = `
 </div>`;
 export const stimuliVideo = `
 <div style="overflow: hidden; height: calc(100vh - 200px); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px 0;">
-  <div style="text-align: center; margin-bottom: 2%;">
+  <div style="text-align: center; margin-bottom: 0%;">
     <p>
       ${STIMULI_VIDEO_TUTORIAL_MESSAGE}
     </p>
@@ -130,7 +130,7 @@ export const stimuliVideo = `
       ></video>
     </div>
   </div>
-  <div style="text-align: center; margin-top: 2%;">
+  <div style="text-align: center; margin-top: 0%;">
     <p>
       ${CLICK_BUTTON_TO_PROCEED_MESSAGE}
     </p>
@@ -138,7 +138,7 @@ export const stimuliVideo = `
 </div>`;
 export const validationVideo = `
 <div style="overflow: hidden; height: calc(100vh - 200px); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px 0;">
-  <div style="text-align: center; margin-bottom: 2%;">
+  <div style="text-align: center; margin-bottom: 0%;">
     <p>
       ${VALIDATION_VIDEO_TUTORIAL_MESSAGE}
     </p>
@@ -156,7 +156,7 @@ export const validationVideo = `
       ></video>
     </div>
   </div>
-  <div style="text-align: center; margin-top: 2%;">
+  <div style="text-align: center; margin-top: 0%;">
     <p>
       ${CLICK_BUTTON_TO_PROCEED_MESSAGE}
     </p>
@@ -164,7 +164,7 @@ export const validationVideo = `
 </div>`;
 export const finalNoStimuliVideo = `
 <div style="overflow: hidden; height: calc(100vh - 200px); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px 0;">
-  <div style="text-align: center; margin-bottom: 2%;">
+  <div style="text-align: center; margin-bottom: 0%;">
     <p">
       ${FINAL_CALIBRATION_SECTION_DIRECTIONS_PART_1}
     </p>
@@ -182,7 +182,7 @@ export const finalNoStimuliVideo = `
       ></video>
     </div>
   </div>
-  <div style="text-align: center; margin-top: 2%;">
+  <div style="text-align: center; margin-top: 0%;">
     <p>
       ${CLICK_BUTTON_TO_PROCEED_MESSAGE}
     </p>
@@ -190,7 +190,7 @@ export const finalNoStimuliVideo = `
 </div>`;
 export const finalStimuliVideo = `
 <div style="overflow: hidden; height: calc(100vh - 200px); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 10px 0;">
-  <div style="text-align: center; margin-bottom: 2%;">
+  <div style="text-align: center; margin-bottom: 0%;">
     <p">
       ${FINAL_CALIBRATION_SECTION_DIRECTIONS_PART_2}
     </p>
@@ -208,7 +208,7 @@ export const finalStimuliVideo = `
       ></video>
     </div>
   </div>
-  <div style="text-align: center; margin-top: 2%;">
+  <div style="text-align: center; margin-top: 0%;">
     <p style="color: #333; max-width: 80%; margin: 0 auto; line-height: 1.5;">
       ${CLICK_BUTTON_TO_PROCEED_MESSAGE}
     </p>
@@ -218,7 +218,17 @@ export const sitComfortablyStimuli = `
 <h2>${INTRODUCTION_HEADER}</h2>
 <p1>${SIT_COMFORTABLY_MESSAGE}</p1>
 <img src="./assets/images/tip.png" alt="Description of the image" style="width:800px;height:auto; display:block; margin: 10px auto;">
-<div style="text-align: center; margin-top: 2%;">
+<div style="text-align: center; margin-top: 0%;">
+    <p style="color: #333; max-width: 80%; margin: 0 auto; line-height: 1.5;">
+      ${CLICK_BUTTON_TO_PROCEED_MESSAGE}
+    </p>
+</div>
+`;
+export const handTutorial = `
+<h2>${TUTORIAL_HEADER}</h2>
+<p1>${HAND_TUTORIAL_MESSAGE}</p1>
+<img src='./assets/images/hand.png' alt="Description of the image" style="width:500px;height:auto; display:block; margin: 10px auto;">
+<div style="text-align: center; margin-top: 0%;">
     <p style="color: #333; max-width: 80%; margin: 0 auto; line-height: 1.5;">
       ${CLICK_BUTTON_TO_PROCEED_MESSAGE}
     </p>

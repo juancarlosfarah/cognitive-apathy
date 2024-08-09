@@ -85,12 +85,12 @@ export function calculateTotalReward(jsPsych) {
         .filter({ task: 'block', success: true });
     console.log(successfulTrials);
     console.log(successfulTrials.select('reward'));
-    const accceptedSkippedTrials = jsPsych.data
+    /*   const accceptedSkippedTrials = jsPsych.data
         .get()
-        .filter({ task: 'block', accept: true, randomChanceAccepted: true, success: false });
-    console.log(accceptedSkippedTrials);
-    console.log(accceptedSkippedTrials.select('reward'));
-    return (successfulTrials.select('reward').sum() + accceptedSkippedTrials.select('reward').sum());
+        .filter({ task: 'block', accept: true, randomChanceAccepted: true, success: false});
+        console.log(accceptedSkippedTrials)
+        console.log(accceptedSkippedTrials.select('reward')); */
+    return (successfulTrials.select('reward').sum() /* +accceptedSkippedTrials.select('reward').sum() */);
 }
 export const getQueryParam = (param) => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -111,11 +111,9 @@ export function saveDataToLocalStorage(jsPsych) {
     const jsonData = jsPsych.data.get().json();
     localStorage.setItem('jspsych-data', jsonData);
 }
-export function randomAcceptance() {
-    let randomChance = Math.random();
-    if (randomChance > .5) {
-        return true;
-    }
-    else
-        return false;
-}
+/* export function randomAcceptance(){
+  let randomChance = Math.random()
+  if(randomChance > .5){
+    return true
+  } else return false
+} */ 
