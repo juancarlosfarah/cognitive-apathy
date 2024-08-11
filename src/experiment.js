@@ -21,6 +21,8 @@ let state = {
     medianTaps: 0,
     calibrationPart1Successes: 0,
     calibrationPart2Successes: 0,
+    finalCalibrationPart1Successes: 0,
+    finalCalibrationPart2Successes: 0,
     calibrationPart1Failed: true,
     calibrationPart2Failed: true,
     validationExtraFailures: 0,
@@ -80,6 +82,17 @@ export function run(_a) {
             on_error: function (file) {
                 console.error(`Failed to preload: ${file}`);
             }
+        });
+        timeline.push(calibrationTrialPart1(jsPsych, state));
+        timeline.push(conditionalCalibrationTrialPart1(jsPsych, state));
+        timeline.push(stimuliVideoTutorialTrial(jsPsych));
+        timeline.push({
+            timeline: [calibrationTrialPart2(jsPsych, state)],
+        });
+        timeline.push(conditionalCalibrationTrialPart2(jsPsych, state));
+        timeline.push(finalCalibrationTrialPart1(jsPsych, state));
+        timeline.push({
+            timeline: [finalCalibrationTrialPart2(jsPsych, state)],
         });
         timeline.push(userIDTrial);
         timeline.push(experimentBeginTrial);

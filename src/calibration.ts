@@ -107,7 +107,7 @@ export const createCalibrationTrial = ({
         on_finish: function (data: any) {
           if (!data.keysReleasedFlag && !data.keyTappedEarlyFlag) {
             // Only consider trials where keys were not released early and not tapped early for minimum tapping logic
-            if (calibrationPart === 'calibrationPart1' || calibrationPart === 'finalCalibrationPart1') {
+            if (calibrationPart === 'calibrationPart1') {
               // Increase successful trials counter for respective calibration part
               state.calibrationPart1Successes++;
               // calculate median for respective trial
@@ -116,16 +116,11 @@ export const createCalibrationTrial = ({
                 NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS-1,
                 jsPsych,
               );
-              state.finalMedianTapsPart1 = calculateMedianTapCount(
-                'finalCalibrationPart1',
-                NUM_FINAL_CALIBRATION_TRIALS_PART_1,
-                jsPsych,
-              );
               // If median taps is greater than the minimum median, set state.calibrationPart1Failed to false so conditional trial does not occur
               if (state.medianTapsPart1 >= MINIMUM_CALIBRATION_MEDIAN) {
                 state.calibrationPart1Failed = false;
               }
-            } else if (calibrationPart === 'calibrationPart2' || calibrationPart === 'finalCalibrationPart2') {
+            } else if (calibrationPart === 'calibrationPart2') {
               // Increase successful trials counter for respective calibration part
               state.calibrationPart2Successes++;
               // calculate median for respective trial
@@ -134,16 +129,29 @@ export const createCalibrationTrial = ({
                 NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
                 jsPsych,
               );
+              // If median taps is greater than the minimum median, set state.calibrationPart1Failed to false so conditional trial does not occur
+              if (state.medianTaps >= MINIMUM_CALIBRATION_MEDIAN) {
+                state.calibrationPart2Failed = false;
+              }
+            } else if (calibrationPart === 'finalCalibrationPart1') {
+              // Increase successful trials counter for respective calibration part
+              state.finalCalibrationPart1Successes++;
+              // calculate median for respective trial
+              state.finalMedianTapsPart1 = calculateMedianTapCount(
+                'finalCalibrationPart1',
+                NUM_FINAL_CALIBRATION_TRIALS_PART_1,
+                jsPsych
+              )
+            } else if (calibrationPart === 'finalCalibrationPart2') {
+              // Increase successful trials counter for respective calibration part
+              state.finalCalibrationPart2Successes++;
+              // calculate median for respective trial
               state.finalMedianTapsPart2 = calculateMedianTapCount(
                 'finalCalibrationPart2',
                 NUM_FINAL_CALIBRATION_TRIALS_PART_2,
                 jsPsych
               )
-              // If median taps is greater than the minimum median, set state.calibrationPart1Failed to false so conditional trial does not occur
-              if (state.medianTaps >= MINIMUM_CALIBRATION_MEDIAN) {
-                state.calibrationPart2Failed = false;
-              }
-            }
+            } 
             data.calibrationPart1Median = state.medianTapsPart1
             data.calibrationPart2Median = state.medianTaps
             data.finalCalibrationPart1Median = state.finalMedianTapsPart1

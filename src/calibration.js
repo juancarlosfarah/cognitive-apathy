@@ -61,27 +61,37 @@ export const createCalibrationTrial = ({ showThermometer, bounds, calibrationPar
                 on_finish: function (data) {
                     if (!data.keysReleasedFlag && !data.keyTappedEarlyFlag) {
                         // Only consider trials where keys were not released early and not tapped early for minimum tapping logic
-                        if (calibrationPart === 'calibrationPart1' || calibrationPart === 'finalCalibrationPart1') {
+                        if (calibrationPart === 'calibrationPart1') {
                             // Increase successful trials counter for respective calibration part
                             state.calibrationPart1Successes++;
                             // calculate median for respective trial
                             state.medianTapsPart1 = calculateMedianTapCount('calibrationPart1', NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS - 1, jsPsych);
-                            state.finalMedianTapsPart1 = calculateMedianTapCount('finalCalibrationPart1', NUM_FINAL_CALIBRATION_TRIALS_PART_1, jsPsych);
                             // If median taps is greater than the minimum median, set state.calibrationPart1Failed to false so conditional trial does not occur
                             if (state.medianTapsPart1 >= MINIMUM_CALIBRATION_MEDIAN) {
                                 state.calibrationPart1Failed = false;
                             }
                         }
-                        else if (calibrationPart === 'calibrationPart2' || calibrationPart === 'finalCalibrationPart2') {
+                        else if (calibrationPart === 'calibrationPart2') {
                             // Increase successful trials counter for respective calibration part
                             state.calibrationPart2Successes++;
                             // calculate median for respective trial
                             state.medianTaps = calculateMedianTapCount('calibrationPart2', NUM_CALIBRATION_WITH_FEEDBACK_TRIALS, jsPsych);
-                            state.finalMedianTapsPart2 = calculateMedianTapCount('finalCalibrationPart2', NUM_FINAL_CALIBRATION_TRIALS_PART_2, jsPsych);
                             // If median taps is greater than the minimum median, set state.calibrationPart1Failed to false so conditional trial does not occur
                             if (state.medianTaps >= MINIMUM_CALIBRATION_MEDIAN) {
                                 state.calibrationPart2Failed = false;
                             }
+                        }
+                        else if (calibrationPart === 'finalCalibrationPart1') {
+                            // Increase successful trials counter for respective calibration part
+                            state.finalCalibrationPart1Successes++;
+                            // calculate median for respective trial
+                            state.finalMedianTapsPart1 = calculateMedianTapCount('finalCalibrationPart1', NUM_FINAL_CALIBRATION_TRIALS_PART_1, jsPsych);
+                        }
+                        else if (calibrationPart === 'finalCalibrationPart2') {
+                            // Increase successful trials counter for respective calibration part
+                            state.finalCalibrationPart2Successes++;
+                            // calculate median for respective trial
+                            state.finalMedianTapsPart2 = calculateMedianTapCount('finalCalibrationPart2', NUM_FINAL_CALIBRATION_TRIALS_PART_2, jsPsych);
                         }
                         data.calibrationPart1Median = state.medianTapsPart1;
                         data.calibrationPart2Median = state.medianTaps;
@@ -120,11 +130,20 @@ export const createCalibrationTrial = ({ showThermometer, bounds, calibrationPar
                     return 0;
             })();
             const currentSuccesses = (() => {
-                if (calibrationPart === 'calibrationPart1' || calibrationPart === 'finalCalibrationPart1') {
+                if (calibrationPart === 'calibrationPart1') {
                     return state.calibrationPart1Successes;
                 }
-                else
+                else if (calibrationPart === 'calibrationPart2') {
                     return state.calibrationPart2Successes;
+                }
+                else if (calibrationPart === 'finalCalibrationPart1') {
+                    return state.finalCalibrationPart1Successes;
+                }
+                else if (calibrationPart === 'finalCalibrationPart2') {
+                    return state.finalCalibrationPart2Successes;
+                }
+                else
+                    return 0;
             })();
             const remainingSuccesses = requiredSuccesses - currentSuccesses;
             if (remainingSuccesses <= 0) {
