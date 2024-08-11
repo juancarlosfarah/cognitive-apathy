@@ -64,11 +64,9 @@ export const createCalibrationTrial = ({ showThermometer, bounds, calibrationPar
                         if (calibrationPart === 'calibrationPart1' || calibrationPart === 'finalCalibrationPart1') {
                             // Increase successful trials counter for respective calibration part
                             state.calibrationPart1Successes++;
-                            console.log(`part 1 successes: ${state.calibrationPart1Successes}`);
                             // calculate median for respective trial
                             state.medianTapsPart1 = calculateMedianTapCount('calibrationPart1', NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS - 1, jsPsych);
                             state.finalMedianTapsPart1 = calculateMedianTapCount('finalCalibrationPart1', NUM_FINAL_CALIBRATION_TRIALS_PART_1, jsPsych);
-                            console.log(state.finalMedianTapsPart1);
                             // If median taps is greater than the minimum median, set state.calibrationPart1Failed to false so conditional trial does not occur
                             if (state.medianTapsPart1 >= MINIMUM_CALIBRATION_MEDIAN) {
                                 state.calibrationPart1Failed = false;
@@ -77,7 +75,6 @@ export const createCalibrationTrial = ({ showThermometer, bounds, calibrationPar
                         else if (calibrationPart === 'calibrationPart2' || calibrationPart === 'finalCalibrationPart2') {
                             // Increase successful trials counter for respective calibration part
                             state.calibrationPart2Successes++;
-                            console.log(`part 2 successes: ${state.calibrationPart2Successes}`);
                             // calculate median for respective trial
                             state.medianTaps = calculateMedianTapCount('calibrationPart2', NUM_CALIBRATION_WITH_FEEDBACK_TRIALS, jsPsych);
                             state.finalMedianTapsPart2 = calculateMedianTapCount('finalCalibrationPart2', NUM_FINAL_CALIBRATION_TRIALS_PART_2, jsPsych);
@@ -106,7 +103,6 @@ export const createCalibrationTrial = ({ showThermometer, bounds, calibrationPar
         ],
         loop_function: function () {
             // Ensure minimum amount of trials are done fully without releasing keys or tapping early
-            console.log({ 'Median Taps Calibration Part 1: ': state.medianTapsPart1, 'Median Taps Calibration Part 2: ': state.medianTaps, 'Final Median Taps Calibration Part 1: ': state.finalMedianTapsPart1, 'Final Median Taps Calibration Part 2: ': state.finalMedianTapsPart2, });
             const requiredSuccesses = (() => {
                 if (calibrationPart === 'calibrationPart1') {
                     return NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS;
@@ -130,12 +126,8 @@ export const createCalibrationTrial = ({ showThermometer, bounds, calibrationPar
                 else
                     return state.calibrationPart2Successes;
             })();
-            console.log(`Required success for ${calibrationPart}: ${requiredSuccesses}`);
-            console.log(`Current successes for ${calibrationPart}: ${currentSuccesses}`);
             const remainingSuccesses = requiredSuccesses - currentSuccesses;
-            console.log(`Remaining successes for ${calibrationPart}: ${remainingSuccesses}`);
             if (remainingSuccesses <= 0) {
-                console.log('Stopping loop');
                 return false;
             }
             else {
@@ -177,7 +169,6 @@ export const createConditionalCalibrationTrial = ({ calibrationPart, jsPsych, st
                     else {
                         state.calibrationPart2Successes = 0;
                     }
-                    console.log(`Reset successes for ${calibrationPart}`);
                     return `<p>${ADDITIONAL_CALIBRATION_PART_1_DIRECTIONS}</p>`;
                 },
             },
