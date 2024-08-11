@@ -203,6 +203,7 @@ export const createTrialBlock = ({
               data: {
                 task: 'accept',
                 reward: trialData.reward,
+                bounds: trialData.bounds
               },
               on_finish: (data: any) => {
                 // ADD TYPE FOR DATA
