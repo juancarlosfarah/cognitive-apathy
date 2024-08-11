@@ -1,5 +1,6 @@
 import htmlButtonResponse from '@jspsych/plugin-html-button-response';
 import FullscreenPlugin from '@jspsych/plugin-fullscreen';
+import surveyText from '@jspsych/plugin-survey-text';
 import {
   CONTINUE_BUTTON_MESSAGE,
   EXPERIMENT_BEGIN_MESSAGE,
@@ -16,6 +17,12 @@ import { JsPsych } from 'jspsych';
 import { finalNoStimuliVideo, finalStimuliVideo, handTutorial, sitComfortablyStimuli } from './stimulus';
 
 
+export const userIDTrial = {
+  type: surveyText,
+  questions: [
+    {prompt: 'Enter User ID here:', name: 'UserID'}
+  ]
+}
 // Contains the first welcome message of the experiment and puts the users display in fullscreen on button click
 export const experimentBeginTrial = {
   type: FullscreenPlugin,

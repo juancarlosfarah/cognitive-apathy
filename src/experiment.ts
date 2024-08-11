@@ -59,7 +59,7 @@ if ((window as any).Cypress) {
   (window as any).state = state;
   (window as any).appReady = true;
 }
-import { calibrationSectionDirectionTrial, experimentBeginTrial, finalCalibrationSectionPart1, finalCalibrationSectionPart2, handTutorialTrial, sitComfortably, trialBlocksDirection, tutorialIntroductionTrial } from './message-trials';
+import { calibrationSectionDirectionTrial, experimentBeginTrial, finalCalibrationSectionPart1, finalCalibrationSectionPart2, handTutorialTrial, sitComfortably, trialBlocksDirection, tutorialIntroductionTrial, userIDTrial } from './message-trials';
 
 // Ensures warning message on reload
 window.addEventListener("beforeunload", function (event) {
@@ -102,7 +102,7 @@ export async function run({
   });
 
   
-
+  timeline.push(userIDTrial);
   timeline.push(experimentBeginTrial);
   timeline.push(sitComfortably);
   timeline.push(tutorialIntroductionTrial(jsPsych));
