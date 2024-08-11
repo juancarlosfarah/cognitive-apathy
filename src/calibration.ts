@@ -32,6 +32,33 @@ import {
   changeProgressBar
 } from './utils';
 
+
+/**
+ * Creates a calibration trial object.
+ * 
+ * @param {Object} params - The parameters for creating the calibration trial.
+ * @param {boolean} params.showThermometer - A flag indicating whether to display the thermometer during the trial.
+ * @param {Object} params.bounds - The bounds for the calibration task, used to control the difficulty or thresholds for success.
+ * @param {string} params.calibrationPart - The part of the calibration process this trial is for, e.g., 'calibrationPart1', 'finalCalibrationPart2'.
+ * @param {Object} params.jsPsych - The jsPsych instance used to control the experiment's flow.
+ * @param {Object} params.state - The state object to track and store various pieces of data during the trial, such as median tap counts and success counters.
+ *
+ * @returns {Object} - A jsPsych trial object with a timeline and looping logic for running a calibration task.
+ *
+ * The trial consists of the following steps:
+ * - CountdownStep: Displays "hold the keys and the following countdown." If the user clicks the key early at this step, a flag will be set and detected at the next trial start.
+ * - TaskPlugin: The main calibration task, where the subject's taps and key presses are recorded (with or without stimuli).
+ * - ReleaseKeysStep: The release the keys message (conditionally appears based on if user released keys at the end of the trial)
+ * - LoadingBarTrial: Creates a fake loading bar If the parameter is set to true, loadingBarTrial(true, jsPsych), the loading bar speed will be slower, giving the user a longer break. 
+ *
+ * Key Functions:
+ * - `autoIncreaseAmount`: Calculates the amount by which the mercury should raise on every tap based on a calculated median tap.
+ * - `on_start`: Updates keyTappedEarlyFlag trial parameter  if the key was tapped early during CountdownStep.
+ * - `on_finish`: Updates median tap count based on which calibration trial is being created and updates state variables related to calibration failures.
+ * - `loop_function`: Repeats a trial if the keys were tapped early or if the keys were released early.
+ *
+ * This function is designed to create a customizable calibration trial object and handle logic related to calibration failures and successes. 
+ */
 export const createCalibrationTrial = ({
   showThermometer,
   bounds,
@@ -182,13 +209,25 @@ export const createCalibrationTrial = ({
 
 /**
  * @function createConditionalCalibrationTrial
- * @description Create a conditional calibration trial
- * @param {ConditionalCalibrationTrialParams} params - The parameters for the conditional calibration trial
- * @returns {Object} - jsPsych trial object
+ * @description Creates a conditional calibration trial that only occurs if certain calibration conditions are not met in a prior trial.
+ * 
+ * @param {Object} params - The parameters for creating the conditional calibration trial.
+ * @param {string} params.calibrationPart - The part of the calibration process this trial is for, e.g., 'calibrationPart1', 'calibrationPart2'.
+ * @param {Object} params.jsPsych - The jsPsych instance used to control the experiment's flow.
+ * @param {Object} params.state - The state object to track and store various pieces of data during the trial, such as median tap counts and success counters.
+ * 
+ * @returns {Object} - A jsPsych trial object with a timeline and conditional logic for running a calibration task only if certain conditions are met.
+ * 
+ * The trial consists of the following steps:
+ * - Displays additional instructions for the participant to prepare for the trial.
+ * - Resets the success counters if a calibration part is repeated.
+ * - Runs the calibration trial using the `createCalibrationTrial` function.
+ * - Checks if the median tap count meets the minimum requirement; if not, it ends the experiment early.
+ * 
+ * The entire trial is conditionally run based on whether the corresponding calibration part failed in a previous trial due to not reaching the minimum median taps.
  */
 export const createConditionalCalibrationTrial = ({
   calibrationPart,
-  numTrials,
   jsPsych,
   state,
 }: ConditionalCalibrationTrialParams) => {
@@ -214,7 +253,6 @@ export const createConditionalCalibrationTrial = ({
           EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
           EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
         ],
-        repetitions: numTrials,
         calibrationPart,
         jsPsych,
         state,
@@ -249,7 +287,19 @@ export const createConditionalCalibrationTrial = ({
   };
 };
 
-// Create actual trial sections
+/**
+ * @function calibrationTrialPart1
+ * @description Creates the first calibration task, repeated
+ * 
+ * @param {Object} jsPsych - The jsPsych instance used to control the experiment's flow.
+ * @param {Object} state - The state object to track and store various pieces of data during the trial, such as median tap counts and success counters.
+ * 
+ * @returns {Object} - A jsPsych trial object that runs the first part of the calibration trial.
+ * 
+ * The trial timeline includes the following:
+ * - Runs a calibration trial using the `createCalibrationTrial` function without displaying a thermometer.
+ * - Adjusts the progress bar upon successful completion of the trial.
+ */
 export const calibrationTrialPart1 = (jsPsych: JsPsych, state: State) => ({
   timeline: [
     createCalibrationTrial({
@@ -258,7 +308,6 @@ export const calibrationTrialPart1 = (jsPsych: JsPsych, state: State) => ({
         EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
         EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
       ],
-      repetitions: NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
       calibrationPart: 'calibrationPart1',
       jsPsych,
       state,
@@ -272,11 +321,23 @@ export const calibrationTrialPart1 = (jsPsych: JsPsych, state: State) => ({
 });
 
 
+/**
+ * @function conditionalCalibrationTrialPart1
+ * @description Creates a conditional copy of the first calibration task
+ * 
+ * @param {Object} jsPsych - The jsPsych instance used to control the experiment's flow.
+ * @param {Object} state - The state object to track and store various pieces of data during the trial, such as median tap counts and success counters.
+ * 
+ * @returns {Object} - A jsPsych trial object that runs a no-stimuli calibration trial only if the first calibration trial's median was below the minimum median required.
+ * 
+ * The trial timeline includes the following:
+ * - Runs a calibration trial using the `createConditionalCalibrationTrial` function without displaying a thermometer.
+ * - Adjusts the progress bar upon successful completion of the trial.
+ */
 export const conditionalCalibrationTrialPart1 = (jsPsych: JsPsych, state: State) => ({
   timeline: [
     createConditionalCalibrationTrial({
       calibrationPart: 'calibrationPart1',
-      numTrials: NUM_CALIBRATION_WITHOUT_FEEDBACK_TRIALS,
       jsPsych,
       state,
     }),
@@ -288,6 +349,20 @@ export const conditionalCalibrationTrialPart1 = (jsPsych: JsPsych, state: State)
   }
 });
 
+/**
+ * @function calibrationTrialPart2
+ * @description Creates the second calibration task, repeated
+ * 
+ * @param {Object} jsPsych - The jsPsych instance used to control the experiment's flow.
+ * @param {Object} state - The state object to track and store various pieces of data during the trial, such as median tap counts and success counters.
+ * 
+ * @returns {Object} - A jsPsych trial object that runs the first part of the calibration trial.
+ * 
+ * The trial timeline includes the following:
+ * - Runs a calibration trial using the `createCalibrationTrial` function with displaying a thermometer.
+ * - Adjusts the progress bar upon successful completion of the trial.
+ */
+
 export const calibrationTrialPart2 = (jsPsych: JsPsych, state: State) => ({
   timeline: [
     createCalibrationTrial({
@@ -296,7 +371,6 @@ export const calibrationTrialPart2 = (jsPsych: JsPsych, state: State) => ({
         EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
         EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
       ],
-      repetitions: NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
       calibrationPart: 'calibrationPart2',
       jsPsych,
       state,
@@ -310,11 +384,24 @@ export const calibrationTrialPart2 = (jsPsych: JsPsych, state: State) => ({
   }
 });
 
+/**
+ * @function conditionalCalibrationTrialPart2
+ * @description Creates a conditional copy of the second calibration task
+ * 
+ * @param {Object} jsPsych - The jsPsych instance used to control the experiment's flow.
+ * @param {Object} state - The state object to track and store various pieces of data during the trial, such as median tap counts and success counters.
+ * 
+ * @returns {Object} - A jsPsych trial object that runs a calibration trial with stimuli and using the median from the first calibration trial only if the first calibration trial's median was below the minimum median required.
+ * 
+ * The trial timeline includes the following:
+ * - Runs a calibration trial using the `createConditionalCalibrationTrial` function with displaying a thermometer.
+ * - Adjusts the progress bar upon successful completion of the trial.
+ */
+
 export const conditionalCalibrationTrialPart2 = (jsPsych: JsPsych, state: State) => ({
   timeline: [
     createConditionalCalibrationTrial({
       calibrationPart: 'calibrationPart2',
-      numTrials: NUM_CALIBRATION_WITH_FEEDBACK_TRIALS,
       jsPsych,
       state,
     }),
@@ -327,6 +414,19 @@ export const conditionalCalibrationTrialPart2 = (jsPsych: JsPsych, state: State)
 });
 
 
+/**
+ * @function finalCalibrationTrialPart1
+ * @description Creates the first calibration task, repeated
+ * 
+ * @param {Object} jsPsych - The jsPsych instance used to control the experiment's flow.
+ * @param {Object} state - The state object to track and store various pieces of data during the trial, such as median tap counts and success counters.
+ * 
+ * @returns {Object} - A jsPsych trial object that runs the first part of the calibration trial.
+ * 
+ * The trial timeline includes the following:
+ * - Runs a calibration trial using the `createCalibrationTrial` function without displaying a thermometer.
+ * - Adjusts the progress bar upon successful completion of the trial.
+ */
 
 export const finalCalibrationTrialPart1 = (jsPsych: JsPsych, state: State) => ({
   timeline: [
@@ -336,7 +436,6 @@ export const finalCalibrationTrialPart1 = (jsPsych: JsPsych, state: State) => ({
         EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
         EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
       ],
-      repetitions: NUM_FINAL_CALIBRATION_TRIALS_PART_1,
       calibrationPart: 'finalCalibrationPart1',
       jsPsych,
       state,
@@ -347,6 +446,19 @@ export const finalCalibrationTrialPart1 = (jsPsych: JsPsych, state: State) => ({
   }
 });
 
+/**
+ * @function finalCalibrationTrialPart2
+ * @description Creates the second calibration task, repeated
+ * 
+ * @param {Object} jsPsych - The jsPsych instance used to control the experiment's flow.
+ * @param {Object} state - The state object to track and store various pieces of data during the trial, such as median tap counts and success counters.
+ * 
+ * @returns {Object} - A jsPsych trial object that runs the first part of the calibration trial.
+ * 
+ * The trial timeline includes the following:
+ * - Runs a calibration trial using the `createCalibrationTrial` function with displaying a thermometer.
+ * - Adjusts the progress bar upon successful completion of the trial.
+ */
 export const finalCalibrationTrialPart2 = (jsPsych: JsPsych, state: State) => ({
   timeline: [
     createCalibrationTrial({
@@ -355,7 +467,6 @@ export const finalCalibrationTrialPart2 = (jsPsych: JsPsych, state: State) => ({
         EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
         EXPECTED_MAXIMUM_PERCENTAGE_FOR_CALIBRATION,
       ],
-      repetitions: NUM_FINAL_CALIBRATION_TRIALS_PART_2,
       calibrationPart: 'finalCalibrationPart2',
       jsPsych,
       state,

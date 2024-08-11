@@ -25,7 +25,6 @@ export interface State {
 export interface CalibrationTrialParams {
   showThermometer: boolean;
   bounds: number[];
-  repetitions: number;
   calibrationPart: string;
   jsPsych: JsPsych;
   state: State;
@@ -34,7 +33,6 @@ export interface CalibrationTrialParams {
 // Define the ConditionalCalibrationTrialParams interface
 export interface ConditionalCalibrationTrialParams {
   calibrationPart: string;
-  numTrials: number;
   jsPsych: JsPsych;
   state: State;
 }
@@ -70,6 +68,7 @@ export interface TaskTrialData {
 
 export interface PassedTaskData {
   bounds: number[];
+  originalBounds: number[];
   reward: number;
   accepted?: boolean; // Added accepted as optional
   randomDelay: number[];

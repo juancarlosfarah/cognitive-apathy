@@ -1,4 +1,3 @@
-import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
 import htmlButtonResponse from '@jspsych/plugin-html-button-response';
 import FullscreenPlugin from '@jspsych/plugin-fullscreen';
 import {
@@ -16,18 +15,8 @@ import { changeProgressBar } from './utils';
 import { JsPsych } from 'jspsych';
 import { finalNoStimuliVideo, finalStimuliVideo, handTutorial, sitComfortablyStimuli } from './stimulus';
 
-export const endExperimentTrial = (message: string) => ({
-  type: HtmlKeyboardResponsePlugin,
-  choices: ['enter'],
-  stimulus: `<p>${message}</p>`,
-  on_finish: function (jsPsych: any) {
-    console.log('Experiment ended:', message);
-    jsPsych.endExperiment(message);
-  },
-});
 
-
-
+// Contains the first welcome message of the experiment and puts the users display in fullscreen on button click
 export const experimentBeginTrial = {
   type: FullscreenPlugin,
   choices: [START_BUTTON_MESSAGE],
@@ -35,6 +24,7 @@ export const experimentBeginTrial = {
   fullscreen_mode: true
 };
 
+// Contains the preamble before the tutorial at the start of the experiment
 export const tutorialIntroductionTrial = (jsPsych: JsPsych) => ({
   type: htmlButtonResponse,
   choices: [CONTINUE_BUTTON_MESSAGE],
@@ -43,6 +33,8 @@ export const tutorialIntroductionTrial = (jsPsych: JsPsych) => ({
     changeProgressBar(PROGRESS_BAR.PROGRESS_BAR_PRACTICE, 0.05, jsPsych);
   }
 })
+
+// Contains the preamble before the calibration at the start of the experiment
 export const calibrationSectionDirectionTrial = (jsPsych: JsPsych) => ({
   type: htmlButtonResponse,
   choices: [CONTINUE_BUTTON_MESSAGE],
@@ -53,6 +45,7 @@ export const calibrationSectionDirectionTrial = (jsPsych: JsPsych) => ({
 
 })
 
+// Contains the directions before the calibration part 1 at the start of the experiment
 export const calibrationPart1DirectionTrial = {
   type: htmlButtonResponse,
   choices: [CONTINUE_BUTTON_MESSAGE],
@@ -61,6 +54,7 @@ export const calibrationPart1DirectionTrial = {
 
 }
 
+// Contains the directions before the calibration part 1 after the 6 blocks of 63 trials
 export const finalCalibrationSectionPart1 = {
   type: htmlButtonResponse,
   choices: [CONTINUE_BUTTON_MESSAGE],
@@ -69,6 +63,7 @@ export const finalCalibrationSectionPart1 = {
 
 }
 
+// Contains the directions before the calibration part 2 after the 6 blocks of 63 trials
 export const finalCalibrationSectionPart2 = {
   type: htmlButtonResponse,
   choices: [CONTINUE_BUTTON_MESSAGE],
@@ -77,11 +72,14 @@ export const finalCalibrationSectionPart2 = {
 
 }
 
+// Contains the directions to show the user how/where they should sit
 export const sitComfortably = {
   type: htmlButtonResponse,
   choices: [CONTINUE_BUTTON_MESSAGE],
   stimulus: [sitComfortablyStimuli],
 }
+
+// Contains the directions before the 6 blocks of 63 trials
 export const trialBlocksDirection = (jsPsych: JsPsych) => ({
   type: htmlButtonResponse,
   choices: [CONTINUE_BUTTON_MESSAGE],
@@ -92,6 +90,7 @@ export const trialBlocksDirection = (jsPsych: JsPsych) => ({
   }
 })
 
+// Directional trial that contains the image to show users finger placement
 export const handTutorialTrial = {
   type: htmlButtonResponse,
   choices: [CONTINUE_BUTTON_MESSAGE],

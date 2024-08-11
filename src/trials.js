@@ -122,6 +122,7 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
             reward: jsPsych.randomization.sampleWithReplacement(combination.reward, 1)[0],
             randomDelay: randomDelay,
             bounds: combination.bounds,
+            originalBounds: combination.bounds
             /* randomChanceAccepted: randomAcceptance() */
         })));
         // Add 10% variation of bounds while keeping distance the same
@@ -151,6 +152,9 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
                         data: {
                             task: 'accept',
                             reward: trialData.reward,
+                            bounds: trialData.bounds,
+                            originalBounds: trialData.originalBounds,
+                            delay: trialData.randomDelay
                         },
                         on_finish: (data) => {
                             // ADD TYPE FOR DATA
