@@ -52,7 +52,7 @@ export function autoIncreaseAmount(
 
 /**
  * @function calculateMedianTapCount
- * @description Calculate the median tap count for a given task type and number of trials
+ * @description Calculate the median tap count for a given task type and number of trials that were successful (no keys released early and key was not tapped early)
  * @param {string} taskType - The task type to filter data by
  * @param {number} numTrials - The number of trials to consider
  * @param {JsPsych} jsPsych - The jsPsych instance

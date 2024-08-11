@@ -178,9 +178,16 @@ export const createCalibrationTrial = ({
 
 
       const currentSuccesses = (() => {
-        if (calibrationPart === 'calibrationPart1' || calibrationPart === 'finalCalibrationPart1') {
+        if (calibrationPart === 'calibrationPart1') {
           return state.calibrationPart1Successes;
-        } else return state.calibrationPart2Successes;
+        } 
+        else if(calibrationPart === 'calibrationPart2'){
+          return state.calibrationPart2Successes
+        }else if(calibrationPart === 'finalCalibrationPart1'){
+          return state.finalCalibrationPart1Successes
+        }else if(calibrationPart === 'finalCalibrationPart2'){
+          return state.finalCalibrationPart2Successes
+        }else return 0
       })();
 
       const remainingSuccesses = requiredSuccesses - currentSuccesses;

@@ -36,6 +36,8 @@ let state: State = {
   medianTaps: 0,
   calibrationPart1Successes: 0,
   calibrationPart2Successes: 0,
+  finalCalibrationPart1Successes: 0,
+  finalCalibrationPart2Successes: 0,
   calibrationPart1Failed: true,
   calibrationPart2Failed: true,
   validationExtraFailures: 0,

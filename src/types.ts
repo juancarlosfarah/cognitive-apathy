@@ -8,6 +8,8 @@ export interface State {
   calibrationPart2Failed: boolean;
   calibrationPart1Successes: number;
   calibrationPart2Successes: number;
+  finalCalibrationPart1Successes: number;
+  finalCalibrationPart2Successes: number;
   validationExtraFailures: number;
   validationSuccess: boolean;
   extraValidationRequired: boolean;

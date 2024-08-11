@@ -183,7 +183,7 @@ export const createTrialBlock = ({
       },
       // Likert scale survey after demo
       likertIntroDemo,
-      likertQuestions1,
+      likertQuestions1(blockName!),
     );
   }
 
@@ -330,7 +330,7 @@ export const createTrialBlock = ({
       },
       // Likert scale survey after block
       likertIntro,
-      ...likertQuestions2Randomized(jsPsych),
+      ...likertQuestions2Randomized(jsPsych, blockName),
       likertFinalQuestion,
     );
   }

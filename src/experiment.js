@@ -44,7 +44,7 @@ if (window.Cypress) {
     window.state = state;
     window.appReady = true;
 }
-import { calibrationSectionDirectionTrial, experimentBeginTrial, finalCalibrationSectionPart1, finalCalibrationSectionPart2, handTutorialTrial, sitComfortably, trialBlocksDirection, tutorialIntroductionTrial } from './message-trials';
+import { calibrationSectionDirectionTrial, experimentBeginTrial, finalCalibrationSectionPart1, finalCalibrationSectionPart2, handTutorialTrial, sitComfortably, trialBlocksDirection, tutorialIntroductionTrial, userIDTrial } from './message-trials';
 // Ensures warning message on reload
 window.addEventListener("beforeunload", function (event) {
     event.preventDefault();
@@ -81,6 +81,7 @@ export function run(_a) {
                 console.error(`Failed to preload: ${file}`);
             }
         });
+        timeline.push(userIDTrial);
         timeline.push(experimentBeginTrial);
         timeline.push(sitComfortably);
         timeline.push(tutorialIntroductionTrial(jsPsych));
