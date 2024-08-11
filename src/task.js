@@ -4,6 +4,48 @@ import { createKeyboard } from './keyboard';
 import { stimulus } from './stimulus';
 import { TRIAL_DURATION } from './constants';
 import { randomNumberBm } from './utils';
+/**
+ * @class TaskPlugin
+ * @description A custom jsPsych plugin that creates a task where participants must hold specific keys and tap another key to increase a virtual "mercury" level within bounds. The task monitors key presses, detects errors, and provides feedback.
+ *
+ * The trial includes:
+ * - Displays a thermometer (if `showThermometer` is true) with a mercury level that participants aim to control by tapping a key.
+ * - Monitoring the state of specified keys (`KEYS_TO_HOLD`) to ensure they are held down during the task.
+ * - Providing real-time feedback to participants by increasing or decreasing the mercury level based on key presses.
+ * - Handling errors such as premature key release or early key taps, displaying error messages, and terminating the trial if necessary.
+ * - Recording detailed trial data, including the number of taps, time taken, mercury height, and success or failure of the task.
+ *
+ * @param {Object} jsPsych - The jsPsych instance used to control the experiment's flow.
+ *
+ * @method trial - Executes the trial, handling UI setup, key event monitoring, real-time feedback, and trial termination.
+ *
+ * Parameters:
+ * - `task` (STRING): A label for the task being executed (e.g., 'demo', 'block').
+ * - `autoDecreaseAmount` (FLOAT): The amount by which the mercury level decreases over every autoDecreaseRate amount of time.
+ * - `autoDecreaseRate` (INT): The rate (in milliseconds) at which the mercury level decreases.
+ * - `autoIncreaseAmount` (INT): The amount by which the mercury level increases with each valid key tap.
+ * - `showThermometer` (BOOL): A flag indicating whether to display the thermometer UI.
+ * - `bounds` (INT[]): An array specifying the lower and upper bounds for the mercury level to be considered successful.
+ * - `trial_duration` (INT): The total duration of the trial before it ends automatically.
+ * - `keysReleasedFlag` (BOOL): A flag indicating whether the participant released the keys prematurely.
+ * - `randomDelay` (INT[]): An array specifying the minimum and maximum delay (in milliseconds) for increasing the mercury level after a key tap.
+ * - `reward` (FLOAT): The reward value associated with the trial.
+ * - `keyTappedEarlyFlag` (BOOL): A flag indicating whether the key was tapped too early during the countdown.
+ * - `showKeyboard` (BOOL): A flag indicating whether to display an on-screen keyboard for participants to interact with.
+ * - `randomChanceAccepted` (BOOL): A flag indicating whether the random chance criteria were met.
+ *
+ * @method handleKeyDown - Handles the `keydown` event, updating the state of held keys and starting the mercury increase process.
+ * @method handleKeyUp - Handles the `keyup` event, updating the state of held keys and increasing the mercury level if the correct key is tapped.
+ * @method startRunning - Initializes the task, starting the mercury level monitoring and real-time feedback.
+ * @method stopRunning - Terminates the task, recording the outcome and cleaning up event listeners.
+ * @method increaseMercury - Increases the mercury level by the specified amount, updating the UI accordingly.
+ * @method setAreKeysHeld - Checks if all specified keys are being held down, displaying an error and stopping the trial if they are released prematurely.
+ * @method setError - Sets an error message and updates the UI.
+ * @method isSuccess - Determines whether the trial was successful based on the final mercury height and whether any errors occurred.
+ * @method end_trial - Ends the trial, saves the trial data, and sends it to jsPsych for storage.
+ *
+ * @param {HTMLElement} display_element - The DOM element where the task's UI elements are rendered.
+ */
 class TaskPlugin {
     constructor(jsPsych) {
         this.jsPsych = jsPsych;
@@ -201,7 +243,6 @@ class TaskPlugin {
         document.addEventListener('keydown', handleKeyDown);
         document.addEventListener('keyup', handleKeyUp);
         if (trial.keyTappedEarlyFlag) {
-            console.log('keyTappedEarlyActive');
             display_element.innerHTML = `
         <div id="status" style="margin-top: 50px;">
           <div id="error-message" style="color: red;">${KEY_TAPPED_EARLY_MESSAGE}</div>

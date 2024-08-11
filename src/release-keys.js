@@ -1,5 +1,31 @@
 import { ParameterType } from 'jspsych';
 import { KEYS_TO_HOLD, RELEASE_KEYS_MESSAGE } from './constants';
+/**
+ * @class ReleaseKeysPlugin
+ * @description A custom jsPsych plugin that creates a trial where participants are instructed to release specific keys before proceeding.
+ *
+ * The trial includes:
+ * - Displaying a stimulus (message) that instructs participants to release specific keys.
+ * - Monitoring the specified keys to detect when they are released.
+ * - Ending the trial automatically when all specified keys are released or when the "Enter" key is pressed.
+ * - Optionally setting a duration for the stimulus display or the entire trial.
+ *
+ * @param {Object} jsPsych - The jsPsych instance used to control the experiment's flow.
+ *
+ * @method trial - Executes the trial, handling UI setup, key event monitoring, and trial termination.
+ *
+ * Parameters:
+ * - `stimulus` (HTML_STRING): The message displayed to the participant instructing them to release the keys.
+ * - `valid_responses` (KEYS[]): The keys that are monitored during the trial to ensure they are released.
+ * - `stimulus_duration` (INT): The duration the stimulus is displayed before it is removed (optional).
+ * - `trial_duration` (INT): The duration of the entire trial before it ends automatically (optional).
+ * - `allow_held_key` (BOOL): A flag indicating whether held keys are allowed (default is true).
+ *
+ * @method handleKeyUp - Handles the `keyup` event, updating the keys' state and checking if all monitored keys have been released.
+ * @method handleKeyDown - Handles the `keydown` event, updating the keys' state if they are pressed again.
+ * @method checkIfAllKeysReleased - Checks if all specified keys have been released and ends the trial if they have.
+ * @method endTrial - Ends the trial, cleans up event listeners, and sends the recorded data to jsPsych.
+ */
 export class ReleaseKeysPlugin {
     constructor(jsPsych) {
         this.jsPsych = jsPsych;

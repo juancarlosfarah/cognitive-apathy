@@ -15,6 +15,7 @@ import { finishExperiment } from './finish';
 import { sampledArray } from './trials';
 import { instructionalTrial, noStimuliVideoTutorialTrial, practiceLoop, stimuliVideoTutorialTrial, validationVideoTutorialTrial, } from './tutorial';
 import { validationResultScreen, validationTrialEasy, validationTrialExtra, validationTrialHard, validationTrialMedium, } from './validation';
+// State variable that is passed throughout trials to ensure variables are updated universally
 let state = {
     medianTapsPart1: 0,
     medianTaps: 0,
@@ -44,6 +45,7 @@ if (window.Cypress) {
     window.appReady = true;
 }
 import { calibrationSectionDirectionTrial, experimentBeginTrial, finalCalibrationSectionPart1, finalCalibrationSectionPart2, handTutorialTrial, sitComfortably, trialBlocksDirection, tutorialIntroductionTrial } from './message-trials';
+// Ensures warning message on reload
 window.addEventListener("beforeunload", function (event) {
     event.preventDefault();
     event.returnValue = ''; // Modern browsers require returnValue to be set

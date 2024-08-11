@@ -10,12 +10,45 @@ import TaskPlugin from './task';
 import { autoIncreaseAmount, calculateTotalReward, checkFlag, randomNumberBm, checkKeys, changeProgressBar, saveDataToLocalStorage, /* randomAcceptance */ } from './utils';
 import { EASY_BOUNDS } from './constants';
 import htmlButtonResponse from '@jspsych/plugin-html-button-response';
+/**
+ * @const failedMinimumDemoTapsTrial
+ * @description A jsPsych trial that displays a failure message when the participant fails to reach the minimum number of taps during a demo trial.
+ *
+ * This trial includes:
+ * - Displaying a red-colored failure message to the participant.
+ * - Automatically ending the trial after a specified duration without requiring any key press.
+ *
+ * @property {string} type - The plugin used for this trial (`HtmlKeyboardResponsePlugin`).
+ * @property {string} stimulus - The failure message displayed to the participant.
+ * @property {Array} choices - Specifies that no keys are allowed during this trial.
+ * @property {number} trial_duration - The duration for which the failure message is displayed, in milliseconds.
+ */
 const failedMinimumDemoTapsTrial = {
     type: HtmlKeyboardResponsePlugin,
     stimulus: `<p style="color: red;">${FAILED_MINIMUM_DEMO_TAPS_MESSAGE}</p>`,
     choices: ['NO_KEYS'],
     trial_duration: FAILED_MINIMUM_DEMO_TAPS_DURATION,
 };
+/**
+ * @function createTrialBlock
+ * @description Creates a block of trials, optionally including demo trials, and randomizes trial parameters according to specified conditions.
+ *
+ * This function includes:
+ * - Optionally adding demo trials, each 3 with a different bound level (easy, medium, and hard) with a likert survey question afterwards.
+ * - Adding acceptance and task performance phases to the timeline, with conditions for whether the trial proceeds based on participant input.
+ * - Randomizing and shuffling trials based on different parameter combinations (reward, bounds).
+ * - Returning a timeline that includes the trials and Likert scale surveys after each block.
+ *
+ * @param {Object} params - The parameters for creating the trial block.
+ * @param {string} params.blockName - The name of the block (e.g., 'Synchronous Block', 'Narrow Asynchronous Block').
+ * @param {Array} params.randomDelay - An array specifying the minimum and maximum delay for increasing the mercury level after a key tap.
+ * @param {Array} params.bounds - The bounds for the mercury level during the task.
+ * @param {boolean} params.includeDemo - Whether to include demo trials at the beginning of the block.
+ * @param {JsPsych} params.jsPsych - The jsPsych instance used to control the experiment's flow.
+ * @param {Object} params.state - An object for storing and tracking state data during the trials.
+ *
+ * @returns {Object} - An object containing the timeline of trials, including demo trials, task performance phases, and Likert scale surveys.
+ */
 export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo = false, jsPsych, state, }) => {
     const timeline = [];
     if (includeDemo) {
@@ -235,8 +268,21 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
     }
     return { timeline };
 };
-// Function to create a trial that displays the accumulated reward to the user
-export function createRewardDisplayTrial(jsPsych, state) {
+/**
+ * @function createRewardDisplayTrial
+ * @description Creates a trial that displays the accumulated reward to the participant after completing a block of trials.
+ *
+ * This function includes:
+ * - Calculating the total reward based on the participant's performance across trials.
+ * - Displaying the reward to the participant in a message.
+ * - Allowing the participant to proceed by clicking a button.
+ * - Incrementing the count of completed blocks in the state object (for the sake of the progress bar control)
+ *
+ * @param {JsPsych} jsPsych - The jsPsych instance used to control the experiment's flow.
+ * @param {Object} state - An object for storing and tracking state data during the trials.
+ *
+ * @returns {Object} - A jsPsych trial object that displays the accumulated reward and allows the participant to proceed.
+ */ export function createRewardDisplayTrial(jsPsych, state) {
     return {
         type: htmlButtonResponse,
         choices: [CONTINUE_BUTTON_MESSAGE],
@@ -254,8 +300,21 @@ export function createRewardDisplayTrial(jsPsych, state) {
         },
     };
 }
-// Array of trials that generates a 6 new random orders of the (3x3 factorial designed blocks of 63 trials) to complete the 3x3x3 factorial design.
-export const trialsArray = (jsPsych, state) => [
+/**
+ * @function trialsArray
+ * @description Generates an array of trial blocks that includes demo trials, task performance trials, and reward display trials.
+ *
+ * This array includes:
+ * - Two blocks of synchronous trials (with and without delay).
+ * - Two blocks of narrow asynchronous trials.
+ * - Two blocks of wide asynchronous trials.
+ * - Each block is preceded by demo trials and followed by a reward display trial.
+ *
+ * @param {JsPsych} jsPsych - The jsPsych instance used to control the experiment's flow.
+ * @param {Object} state - An object for storing and tracking state data during the trials.
+ *
+ * @returns {Array} - An array of arrays, where each sub-array contains the timeline for one of the trial blocks.
+ */ export const trialsArray = (jsPsych, state) => [
     [
         // Demo trials
         createTrialBlock({
@@ -365,7 +424,17 @@ export const trialsArray = (jsPsych, state) => [
         createRewardDisplayTrial(jsPsych, state),
     ],
 ];
-// Randomly sample from the 3x3x3 factorial design to display 2 Synchronous Blocks of 63 trials,
-// 2 Narrow Asynchronous Blocks of 63 trials, and 2 Wide Asynchronous Blocks of 63 trials for
-// a total of 378 trials
+/**
+ * @function sampledArray
+ * @description Randomly samples six trial blocks from the 3x3x3 factorial design, resulting in a total of 378 trials.
+ *
+ * This function includes:
+ * - Randomly selecting two blocks of synchronous trials, two blocks of narrow asynchronous trials, and two blocks of wide asynchronous trials.
+ * - Ensuring that no trial blocks are repeated by sampling without replacement.
+ *
+ * @param {JsPsych} jsPsych - The jsPsych instance used to control the experiment's flow.
+ * @param {Object} state - An object for storing and tracking state data during the trials.
+ *
+ * @returns {Array} - An array containing the sampled trial blocks, ready to be used in the experiment's timeline.
+ */
 export const sampledArray = (jsPsych, state) => jsPsych.randomization.sampleWithoutReplacement(trialsArray(jsPsych, state), 6);
