@@ -10,10 +10,11 @@ import PreloadPlugin from '@jspsych/plugin-preload';
 import { initJsPsych } from 'jspsych';
 import '../styles/main.scss';
 import { calibrationTrialPart1, calibrationTrialPart2, conditionalCalibrationTrialPart1, conditionalCalibrationTrialPart2, finalCalibrationTrialPart1, finalCalibrationTrialPart2 } from './calibration';
-import { PROGRESS_BAR, } from './constants';
+import { CALIBRATION_PART_1_DIRECTIONS, PROGRESS_BAR, } from './constants';
 import { finishExperiment } from './finish';
 import { sampledArray } from './trials';
-import { validationResultScreen, validationTrialExtra, } from './validation';
+import { instructionalTrial, noStimuliVideoTutorialTrial, practiceLoop, stimuliVideoTutorialTrial, validationVideoTutorialTrial, } from './tutorial';
+import { validationResultScreen, validationTrialEasy, validationTrialExtra, validationTrialHard, validationTrialMedium, } from './validation';
 // State variable that is passed throughout trials to ensure variables are updated universally
 let state = {
     medianTapsPart1: 0,
@@ -45,7 +46,7 @@ if (window.Cypress) {
     window.state = state;
     window.appReady = true;
 }
-import { calibrationSectionDirectionTrial, finalCalibrationSectionPart1, finalCalibrationSectionPart2, trialBlocksDirection } from './message-trials';
+import { calibrationSectionDirectionTrial, experimentBeginTrial, finalCalibrationSectionPart1, finalCalibrationSectionPart2, handTutorialTrial, sitComfortably, trialBlocksDirection, tutorialIntroductionTrial, userIDTrial } from './message-trials';
 // Ensures warning message on reload
 window.addEventListener("beforeunload", function (event) {
     event.preventDefault();
@@ -82,41 +83,34 @@ export function run(_a) {
                 console.error(`Failed to preload: ${file}`);
             }
         });
-        /*   timeline.push(userIDTrial);
-          timeline.push(experimentBeginTrial);
-          timeline.push(sitComfortably);
-          timeline.push(tutorialIntroductionTrial(jsPsych));
-          
-          timeline.push(noStimuliVideoTutorialTrial(jsPsych));
-          timeline.push(handTutorialTrial)
-        
-          
-          timeline.push(practiceLoop(jsPsych, state));
-          
-          timeline.push(practiceLoop(jsPsych, state));
-          
-          timeline.push(practiceLoop(jsPsych, state));
-           */
+        timeline.push(userIDTrial);
+        timeline.push(experimentBeginTrial);
+        timeline.push(sitComfortably);
+        timeline.push(tutorialIntroductionTrial(jsPsych));
+        timeline.push(noStimuliVideoTutorialTrial(jsPsych));
+        timeline.push(handTutorialTrial);
+        timeline.push(practiceLoop(jsPsych, state));
+        timeline.push(practiceLoop(jsPsych, state));
+        timeline.push(practiceLoop(jsPsych, state));
         timeline.push(calibrationSectionDirectionTrial(jsPsych));
-        /*   timeline.push(instructionalTrial(CALIBRATION_PART_1_DIRECTIONS));
-         */
+        timeline.push(instructionalTrial(CALIBRATION_PART_1_DIRECTIONS));
         timeline.push(calibrationTrialPart1(jsPsych, state));
         timeline.push(conditionalCalibrationTrialPart1(jsPsych, state));
-        /*   timeline.push(stimuliVideoTutorialTrial(jsPsych));
-         */ timeline.push({
+        timeline.push(stimuliVideoTutorialTrial(jsPsych));
+        timeline.push({
             timeline: [calibrationTrialPart2(jsPsych, state)],
         });
         timeline.push(conditionalCalibrationTrialPart2(jsPsych, state));
-        /*   timeline.push(validationVideoTutorialTrial(jsPsych));
-          timeline.push({
+        timeline.push(validationVideoTutorialTrial(jsPsych));
+        timeline.push({
             timeline: [validationTrialEasy(jsPsych, state)],
-          });
-          timeline.push({
+        });
+        timeline.push({
             timeline: [validationTrialMedium(jsPsych, state)],
-          });
-          timeline.push({
+        });
+        timeline.push({
             timeline: [validationTrialHard(jsPsych, state)],
-          }); */
+        });
         timeline.push({
             timeline: [validationTrialExtra(jsPsych, state)],
             conditional_function: function () {
