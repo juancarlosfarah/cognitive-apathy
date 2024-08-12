@@ -26,29 +26,31 @@ export const likertIntroDemo = {
  *
  * This is used to collect participant responses on a specific question in the Likert survey after the 3 demo trials.
  */
-export const likertQuestions1 = (blockName) => ({
-    type: surveyLikert,
-    questions: [
-        {
-            prompt: `${LIKERT_PREAMBLE_DEMO}<br><br><b>${LIKERT_SURVEY_1_QUESTIONS.QUESTION_1}</b>`,
-            labels: [
-                LIKERT_RESPONSES.STRONGLY_DISAGREE,
-                LIKERT_RESPONSES.DISAGREE,
-                LIKERT_RESPONSES.SOMEWHAT_DISAGREE,
-                LIKERT_RESPONSES.NEUTRAL,
-                LIKERT_RESPONSES.SOMEWHAT_AGREE,
-                LIKERT_RESPONSES.AGREE,
-                LIKERT_RESPONSES.STRONGLY_AGREE,
+export const likertQuestions1 = (delay) => ({
+    timeline: [{
+            type: surveyLikert,
+            questions: [
+                {
+                    prompt: `${LIKERT_PREAMBLE_DEMO}<br><br><b>${LIKERT_SURVEY_1_QUESTIONS.QUESTION_1}</b>`,
+                    labels: [
+                        LIKERT_RESPONSES.STRONGLY_DISAGREE,
+                        LIKERT_RESPONSES.DISAGREE,
+                        LIKERT_RESPONSES.SOMEWHAT_DISAGREE,
+                        LIKERT_RESPONSES.NEUTRAL,
+                        LIKERT_RESPONSES.SOMEWHAT_AGREE,
+                        LIKERT_RESPONSES.AGREE,
+                        LIKERT_RESPONSES.STRONGLY_AGREE,
+                    ],
+                    name: LIKERT_SURVEY_1_QUESTIONS.QUESTION_1,
+                    required: true,
+                },
             ],
-            name: LIKERT_SURVEY_1_QUESTIONS.QUESTION_1,
-            required: true,
-        },
-    ],
-    data: {
-        blockName: blockName
-    },
-    randomize_question_order: false,
-    button_label: CONTINUE_BUTTON_MESSAGE,
+            on_finish: function (data) {
+                data.delay = delay;
+            },
+            randomize_question_order: false,
+            button_label: CONTINUE_BUTTON_MESSAGE,
+        }],
 });
 /**
  * @const likertQuestions2
@@ -68,152 +70,154 @@ export const likertQuestions1 = (blockName) => ({
  *
  * This is used to collect participant responses on a set of questions in the second Likert survey after a block of trials.
  */
-export const likertQuestions2 = (blockName) => ([
-    {
-        type: surveyLikert,
-        questions: [
-            {
-                prompt: `${LIKERT_PREAMBLE}<br><br><b>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_1}</b>`,
-                labels: [
-                    LIKERT_RESPONSES.STRONGLY_DISAGREE,
-                    LIKERT_RESPONSES.DISAGREE,
-                    LIKERT_RESPONSES.SOMEWHAT_DISAGREE,
-                    LIKERT_RESPONSES.NEUTRAL,
-                    LIKERT_RESPONSES.SOMEWHAT_AGREE,
-                    LIKERT_RESPONSES.AGREE,
-                    LIKERT_RESPONSES.STRONGLY_AGREE,
-                ],
-                name: LIKERT_SURVEY_2_QUESTIONS.QUESTION_1,
-                required: true,
+export const likertQuestions2 = (delay) => ({
+    timeline: [
+        {
+            type: surveyLikert,
+            questions: [
+                {
+                    prompt: `${LIKERT_PREAMBLE}<br><br><b>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_1}</b>`,
+                    labels: [
+                        LIKERT_RESPONSES.STRONGLY_DISAGREE,
+                        LIKERT_RESPONSES.DISAGREE,
+                        LIKERT_RESPONSES.SOMEWHAT_DISAGREE,
+                        LIKERT_RESPONSES.NEUTRAL,
+                        LIKERT_RESPONSES.SOMEWHAT_AGREE,
+                        LIKERT_RESPONSES.AGREE,
+                        LIKERT_RESPONSES.STRONGLY_AGREE,
+                    ],
+                    name: LIKERT_SURVEY_2_QUESTIONS.QUESTION_1,
+                    required: true,
+                },
+            ],
+            on_finish: function (data) {
+                data.delay = delay;
             },
-        ],
-        data: {
-            blockName: blockName
+            randomize_question_order: false,
+            button_label: CONTINUE_BUTTON_MESSAGE,
         },
-        randomize_question_order: false,
-        button_label: CONTINUE_BUTTON_MESSAGE,
-    },
-    {
-        type: surveyLikert,
-        questions: [
-            {
-                prompt: `${LIKERT_PREAMBLE}<br><br><b>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_2}</b>`,
-                labels: [
-                    LIKERT_RESPONSES.STRONGLY_DISAGREE,
-                    LIKERT_RESPONSES.DISAGREE,
-                    LIKERT_RESPONSES.SOMEWHAT_DISAGREE,
-                    LIKERT_RESPONSES.NEUTRAL,
-                    LIKERT_RESPONSES.SOMEWHAT_AGREE,
-                    LIKERT_RESPONSES.AGREE,
-                    LIKERT_RESPONSES.STRONGLY_AGREE,
-                ],
-                name: LIKERT_SURVEY_2_QUESTIONS.QUESTION_2,
-                required: true,
+        {
+            type: surveyLikert,
+            questions: [
+                {
+                    prompt: `${LIKERT_PREAMBLE}<br><br><b>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_2}</b>`,
+                    labels: [
+                        LIKERT_RESPONSES.STRONGLY_DISAGREE,
+                        LIKERT_RESPONSES.DISAGREE,
+                        LIKERT_RESPONSES.SOMEWHAT_DISAGREE,
+                        LIKERT_RESPONSES.NEUTRAL,
+                        LIKERT_RESPONSES.SOMEWHAT_AGREE,
+                        LIKERT_RESPONSES.AGREE,
+                        LIKERT_RESPONSES.STRONGLY_AGREE,
+                    ],
+                    name: LIKERT_SURVEY_2_QUESTIONS.QUESTION_2,
+                    required: true,
+                },
+            ],
+            on_finish: function (data) {
+                data.delay = delay;
             },
-        ],
-        data: {
-            blockName: blockName
+            randomize_question_order: false,
+            button_label: CONTINUE_BUTTON_MESSAGE,
         },
-        randomize_question_order: false,
-        button_label: CONTINUE_BUTTON_MESSAGE,
-    },
-    {
-        type: surveyLikert,
-        questions: [
-            {
-                prompt: `${LIKERT_PREAMBLE}<br><br><b>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_3}</b>`,
-                labels: [
-                    LIKERT_RESPONSES.STRONGLY_DISAGREE,
-                    LIKERT_RESPONSES.DISAGREE,
-                    LIKERT_RESPONSES.SOMEWHAT_DISAGREE,
-                    LIKERT_RESPONSES.NEUTRAL,
-                    LIKERT_RESPONSES.SOMEWHAT_AGREE,
-                    LIKERT_RESPONSES.AGREE,
-                    LIKERT_RESPONSES.STRONGLY_AGREE,
-                ],
-                name: LIKERT_SURVEY_2_QUESTIONS.QUESTION_3,
-                required: true,
+        {
+            type: surveyLikert,
+            questions: [
+                {
+                    prompt: `${LIKERT_PREAMBLE}<br><br><b>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_3}</b>`,
+                    labels: [
+                        LIKERT_RESPONSES.STRONGLY_DISAGREE,
+                        LIKERT_RESPONSES.DISAGREE,
+                        LIKERT_RESPONSES.SOMEWHAT_DISAGREE,
+                        LIKERT_RESPONSES.NEUTRAL,
+                        LIKERT_RESPONSES.SOMEWHAT_AGREE,
+                        LIKERT_RESPONSES.AGREE,
+                        LIKERT_RESPONSES.STRONGLY_AGREE,
+                    ],
+                    name: LIKERT_SURVEY_2_QUESTIONS.QUESTION_3,
+                    required: true,
+                },
+            ],
+            on_finish: function (data) {
+                data.delay = delay;
             },
-        ],
-        data: {
-            blockName: blockName
+            randomize_question_order: false,
+            button_label: CONTINUE_BUTTON_MESSAGE,
         },
-        randomize_question_order: false,
-        button_label: CONTINUE_BUTTON_MESSAGE,
-    },
-    {
-        type: surveyLikert,
-        questions: [
-            {
-                prompt: `${LIKERT_PREAMBLE}<br><br><b>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_4}</b>`,
-                labels: [
-                    LIKERT_RESPONSES.STRONGLY_DISAGREE,
-                    LIKERT_RESPONSES.DISAGREE,
-                    LIKERT_RESPONSES.SOMEWHAT_DISAGREE,
-                    LIKERT_RESPONSES.NEUTRAL,
-                    LIKERT_RESPONSES.SOMEWHAT_AGREE,
-                    LIKERT_RESPONSES.AGREE,
-                    LIKERT_RESPONSES.STRONGLY_AGREE,
-                ],
-                name: LIKERT_SURVEY_2_QUESTIONS.QUESTION_4,
-                required: true,
+        {
+            type: surveyLikert,
+            questions: [
+                {
+                    prompt: `${LIKERT_PREAMBLE}<br><br><b>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_4}</b>`,
+                    labels: [
+                        LIKERT_RESPONSES.STRONGLY_DISAGREE,
+                        LIKERT_RESPONSES.DISAGREE,
+                        LIKERT_RESPONSES.SOMEWHAT_DISAGREE,
+                        LIKERT_RESPONSES.NEUTRAL,
+                        LIKERT_RESPONSES.SOMEWHAT_AGREE,
+                        LIKERT_RESPONSES.AGREE,
+                        LIKERT_RESPONSES.STRONGLY_AGREE,
+                    ],
+                    name: LIKERT_SURVEY_2_QUESTIONS.QUESTION_4,
+                    required: true,
+                },
+            ],
+            on_finish: function (data) {
+                data.delay = delay;
             },
-        ],
-        data: {
-            blockName: blockName
+            randomize_question_order: false,
+            button_label: CONTINUE_BUTTON_MESSAGE,
         },
-        randomize_question_order: false,
-        button_label: CONTINUE_BUTTON_MESSAGE,
-    },
-    {
-        type: surveyLikert,
-        questions: [
-            {
-                prompt: `${LIKERT_PREAMBLE}<br><br><b>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_5}</b>`,
-                labels: [
-                    LIKERT_RESPONSES.STRONGLY_DISAGREE,
-                    LIKERT_RESPONSES.DISAGREE,
-                    LIKERT_RESPONSES.SOMEWHAT_DISAGREE,
-                    LIKERT_RESPONSES.NEUTRAL,
-                    LIKERT_RESPONSES.SOMEWHAT_AGREE,
-                    LIKERT_RESPONSES.AGREE,
-                    LIKERT_RESPONSES.STRONGLY_AGREE,
-                ],
-                name: LIKERT_SURVEY_2_QUESTIONS.QUESTION_5,
-                required: true,
+        {
+            type: surveyLikert,
+            questions: [
+                {
+                    prompt: `${LIKERT_PREAMBLE}<br><br><b>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_5}</b>`,
+                    labels: [
+                        LIKERT_RESPONSES.STRONGLY_DISAGREE,
+                        LIKERT_RESPONSES.DISAGREE,
+                        LIKERT_RESPONSES.SOMEWHAT_DISAGREE,
+                        LIKERT_RESPONSES.NEUTRAL,
+                        LIKERT_RESPONSES.SOMEWHAT_AGREE,
+                        LIKERT_RESPONSES.AGREE,
+                        LIKERT_RESPONSES.STRONGLY_AGREE,
+                    ],
+                    name: LIKERT_SURVEY_2_QUESTIONS.QUESTION_5,
+                    required: true,
+                },
+            ],
+            on_finish: function (data) {
+                data.delay = delay;
             },
-        ],
-        data: {
-            blockName: blockName
+            randomize_question_order: false,
+            button_label: CONTINUE_BUTTON_MESSAGE,
         },
-        randomize_question_order: false,
-        button_label: CONTINUE_BUTTON_MESSAGE,
-    },
-    {
-        type: surveyLikert,
-        questions: [
-            {
-                prompt: `${LIKERT_PREAMBLE}<br><br><b>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_6}</b>`,
-                labels: [
-                    LIKERT_RESPONSES.STRONGLY_DISAGREE,
-                    LIKERT_RESPONSES.DISAGREE,
-                    LIKERT_RESPONSES.SOMEWHAT_DISAGREE,
-                    LIKERT_RESPONSES.NEUTRAL,
-                    LIKERT_RESPONSES.SOMEWHAT_AGREE,
-                    LIKERT_RESPONSES.AGREE,
-                    LIKERT_RESPONSES.STRONGLY_AGREE,
-                ],
-                name: LIKERT_SURVEY_2_QUESTIONS.QUESTION_6,
-                required: true,
+        {
+            type: surveyLikert,
+            questions: [
+                {
+                    prompt: `${LIKERT_PREAMBLE}<br><br><b>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_6}</b>`,
+                    labels: [
+                        LIKERT_RESPONSES.STRONGLY_DISAGREE,
+                        LIKERT_RESPONSES.DISAGREE,
+                        LIKERT_RESPONSES.SOMEWHAT_DISAGREE,
+                        LIKERT_RESPONSES.NEUTRAL,
+                        LIKERT_RESPONSES.SOMEWHAT_AGREE,
+                        LIKERT_RESPONSES.AGREE,
+                        LIKERT_RESPONSES.STRONGLY_AGREE,
+                    ],
+                    name: LIKERT_SURVEY_2_QUESTIONS.QUESTION_6,
+                    required: true,
+                },
+            ],
+            on_finish: function (data) {
+                data.delay = delay;
             },
-        ],
-        data: {
-            blockName: blockName
+            randomize_question_order: false,
+            button_label: CONTINUE_BUTTON_MESSAGE,
         },
-        randomize_question_order: false,
-        button_label: CONTINUE_BUTTON_MESSAGE,
-    },
-]);
+    ],
+});
 /**
  * @const likertFinalQuestion
  * @description An array of jsPsych trial objects representing the final 2 likert questions asked in non-random order after a trial block.
@@ -228,7 +232,7 @@ export const likertQuestions2 = (blockName) => ([
  *
  * This is used to collect participant responses on the final set of questions in the Likert survey after the first 6 randomized-order questions are completed after a block of trials.
  */
-export const likertFinalQuestion = (blockName) => ([
+export const likertFinalQuestion = (delay) => ([
     {
         type: surveyLikert,
         questions: [
@@ -247,8 +251,8 @@ export const likertFinalQuestion = (blockName) => ([
                 required: true,
             },
         ],
-        data: {
-            blockName: blockName
+        on_finish: function (data) {
+            data.delay = delay;
         },
         randomize_question_order: false,
         button_label: CONTINUE_BUTTON_MESSAGE,
@@ -271,12 +275,14 @@ export const likertFinalQuestion = (blockName) => ([
                 required: true,
             },
         ],
-        data: {
-            blockName: blockName
+        on_finish: function (data) {
+            data.delay = delay;
         },
         randomize_question_order: false,
         button_label: CONTINUE_BUTTON_MESSAGE,
     },
 ]);
 // Randomizes the first 6 likert questions asked after a trial block. 
-export const likertQuestions2Randomized = (jsPsych, blockName) => jsPsych.randomization.sampleWithoutReplacement(likertQuestions2(blockName), 6);
+export const likertQuestions2Randomized = (jsPsych, delay) => ({
+    timeline: jsPsych.randomization.sampleWithoutReplacement(likertQuestions2(delay).timeline, 6),
+});

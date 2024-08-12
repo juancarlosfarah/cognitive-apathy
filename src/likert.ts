@@ -33,8 +33,8 @@ export const likertIntroDemo= {
  * 
  * This is used to collect participant responses on a specific question in the Likert survey after the 3 demo trials.
  */
-export const likertQuestions1 = (blockName: string) => (
-  {
+export const likertQuestions1 = (delay: number[]) => ({
+  timeline: [{
     type: surveyLikert,
     questions: [
       {
@@ -52,12 +52,13 @@ export const likertQuestions1 = (blockName: string) => (
         required: true,
       },
     ],
-    data: {
-      blockName: blockName
+    on_finish: function(data: any){
+      data.delay = delay
     },
     randomize_question_order: false,
     button_label: CONTINUE_BUTTON_MESSAGE,
-  });
+  }],
+});
 /**
  * @const likertQuestions2
  * @description An array of jsPsych trial objects representing the first 6 questions asked after a trial block (in a random order).
@@ -76,7 +77,8 @@ export const likertQuestions1 = (blockName: string) => (
  * 
  * This is used to collect participant responses on a set of questions in the second Likert survey after a block of trials.
  */
-export const likertQuestions2 = (blockName: string) => ([
+export const likertQuestions2 = (delay: number[]) => ({
+  timeline: [
   {
     type: surveyLikert,
     questions: [
@@ -95,8 +97,8 @@ export const likertQuestions2 = (blockName: string) => ([
         required: true,
       },
     ],
-    data: {
-      blockName: blockName
+    on_finish: function(data: any){
+      data.delay = delay
     },
     randomize_question_order: false,
     button_label: CONTINUE_BUTTON_MESSAGE,
@@ -119,8 +121,8 @@ export const likertQuestions2 = (blockName: string) => ([
         required: true,
       },
     ],
-    data: {
-      blockName: blockName
+    on_finish: function(data: any){
+      data.delay = delay
     },
     randomize_question_order: false,
     button_label: CONTINUE_BUTTON_MESSAGE,
@@ -143,8 +145,8 @@ export const likertQuestions2 = (blockName: string) => ([
         required: true,
       },
     ],
-    data: {
-      blockName: blockName
+    on_finish: function(data: any){
+      data.delay = delay
     },
     randomize_question_order: false,
     button_label: CONTINUE_BUTTON_MESSAGE,
@@ -167,8 +169,8 @@ export const likertQuestions2 = (blockName: string) => ([
         required: true,
       },
     ],
-    data: {
-      blockName: blockName
+    on_finish: function(data: any){
+      data.delay = delay
     },
     randomize_question_order: false,
     button_label: CONTINUE_BUTTON_MESSAGE,
@@ -191,8 +193,8 @@ export const likertQuestions2 = (blockName: string) => ([
         required: true,
       },
     ],
-    data: {
-      blockName: blockName
+    on_finish: function(data: any){
+      data.delay = delay
     },
     randomize_question_order: false,
     button_label: CONTINUE_BUTTON_MESSAGE,
@@ -215,13 +217,14 @@ export const likertQuestions2 = (blockName: string) => ([
         required: true,
       },
     ],
-    data: {
-      blockName: blockName
+    on_finish: function(data: any){
+      data.delay = delay
     },
     randomize_question_order: false,
     button_label: CONTINUE_BUTTON_MESSAGE,
-  },
-]);
+    },
+  ],
+});
 
 
 /**
@@ -238,7 +241,7 @@ export const likertQuestions2 = (blockName: string) => ([
  * 
  * This is used to collect participant responses on the final set of questions in the Likert survey after the first 6 randomized-order questions are completed after a block of trials.
  */
-export const likertFinalQuestion = (blockName: string) => ([
+export const likertFinalQuestion = (delay: number[]) => ([
 {
   type: surveyLikert,
   questions: [
@@ -257,8 +260,8 @@ export const likertFinalQuestion = (blockName: string) => ([
       required: true,
     },
   ],
-  data: {
-    blockName: blockName
+  on_finish: function(data: any){
+    data.delay = delay
   },
   randomize_question_order: false,
   button_label: CONTINUE_BUTTON_MESSAGE,
@@ -281,8 +284,8 @@ export const likertFinalQuestion = (blockName: string) => ([
       required: true,
     },
   ],
-  data: {
-    blockName: blockName
+  on_finish: function(data: any){
+    data.delay = delay
   },
   randomize_question_order: false,
   button_label: CONTINUE_BUTTON_MESSAGE,
@@ -290,6 +293,8 @@ export const likertFinalQuestion = (blockName: string) => ([
 
 ]);
 // Randomizes the first 6 likert questions asked after a trial block. 
-export const likertQuestions2Randomized = (jsPsych: JsPsych, blockName: string) => jsPsych.randomization.sampleWithoutReplacement(likertQuestions2(blockName), 6);
+export const likertQuestions2Randomized = (jsPsych: JsPsych, delay: number[]) => ({
+  timeline: jsPsych.randomization.sampleWithoutReplacement(likertQuestions2(delay).timeline, 6),
+});
 
 

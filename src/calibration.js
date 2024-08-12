@@ -320,7 +320,6 @@ export const calibrationTrialPart2 = (jsPsych, state) => ({
         }),
     ],
     on_timeline_finish: function () {
-        jsPsych.data.get().localSave('csv', 'cognitive-apathy.csv');
         if (state.calibrationPart2Failed === false) {
             changeProgressBar(PROGRESS_BAR.PROGRESS_BAR_CALIBRATION, 0.35, jsPsych);
         }

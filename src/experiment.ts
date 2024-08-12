@@ -13,7 +13,7 @@ import { calibrationTrialPart1, calibrationTrialPart2, conditionalCalibrationTri
 import {
   CALIBRATION_PART_1_DIRECTIONS, PROGRESS_BAR,
 } from './constants';
-import { finishExperiment } from './finish';
+import { finishExperiment, finishExperimentEarlyTrial } from './finish';
 import { sampledArray } from './trials';
 import {
   instructionalTrial,
@@ -62,6 +62,7 @@ if ((window as any).Cypress) {
   (window as any).appReady = true;
 }
 import { calibrationSectionDirectionTrial, experimentBeginTrial, finalCalibrationSectionPart1, finalCalibrationSectionPart2, handTutorialTrial, sitComfortably, trialBlocksDirection, tutorialIntroductionTrial, userIDTrial } from './message-trials';
+import { likertQuestions1, likertQuestions2Randomized } from './likert';
 
 // Ensures warning message on reload
 window.addEventListener("beforeunload", function (event) {
@@ -102,22 +103,7 @@ export async function run({
       console.error(`Failed to preload: ${file}`);
     }
   });
-  timeline.push(calibrationTrialPart1(jsPsych, state));
-  timeline.push(conditionalCalibrationTrialPart1(jsPsych, state));
-  
-  timeline.push(stimuliVideoTutorialTrial(jsPsych));
-  timeline.push({
-    timeline: [calibrationTrialPart2(jsPsych, state)],
-  });
-  
-  timeline.push(conditionalCalibrationTrialPart2(jsPsych, state));
-  timeline.push(finalCalibrationTrialPart1(jsPsych, state));
-  timeline.push({
-    timeline: [finalCalibrationTrialPart2(jsPsych, state)],
-  });
 
-
-  
   timeline.push(userIDTrial);
   timeline.push(experimentBeginTrial);
   timeline.push(sitComfortably);

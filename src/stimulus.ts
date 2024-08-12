@@ -122,8 +122,8 @@ export const noStimuliVideo = `
       ${NO_STIMULI_VIDEO_TUTORIAL_MESSAGE}
     </p>
   </div>
-  <div style="flex-grow: 1; display: flex; justify-content: center; align-items: center;">
-    <div style="width: 60%; max-width: 640px; height: auto; background-color: rgb(255, 255, 255);">
+  <div style="flex-grow: 1; display: flex; justify-content: center; align-items: center; margin: 0 auto;">
+    <div style="width: 60%; max-width: 550px; height: auto; background-color: rgb(255, 255, 255);">
       <video
         id="videoTutorial"
         title="Tutorial Video"
@@ -135,11 +135,9 @@ export const noStimuliVideo = `
       ></video>
     </div>
   </div>
-  <div style="text-align: center; margin-top: 0%;">
     <p>
       ${CLICK_BUTTON_TO_PROCEED_MESSAGE}
     </p>
-  </div>
 </div>`;
 
 export const stimuliVideo = `

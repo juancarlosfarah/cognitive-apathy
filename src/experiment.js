@@ -83,17 +83,6 @@ export function run(_a) {
                 console.error(`Failed to preload: ${file}`);
             }
         });
-        timeline.push(calibrationTrialPart1(jsPsych, state));
-        timeline.push(conditionalCalibrationTrialPart1(jsPsych, state));
-        timeline.push(stimuliVideoTutorialTrial(jsPsych));
-        timeline.push({
-            timeline: [calibrationTrialPart2(jsPsych, state)],
-        });
-        timeline.push(conditionalCalibrationTrialPart2(jsPsych, state));
-        timeline.push(finalCalibrationTrialPart1(jsPsych, state));
-        timeline.push({
-            timeline: [finalCalibrationTrialPart2(jsPsych, state)],
-        });
         timeline.push(userIDTrial);
         timeline.push(experimentBeginTrial);
         timeline.push(sitComfortably);
