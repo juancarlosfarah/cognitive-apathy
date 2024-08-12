@@ -13,7 +13,7 @@ import { calibrationTrialPart1, calibrationTrialPart2, conditionalCalibrationTri
 import {
   CALIBRATION_PART_1_DIRECTIONS, PROGRESS_BAR,
 } from './constants';
-import { finishExperiment, finishExperimentEarlyTrial } from './finish';
+import { finishExperiment } from './finish';
 import { sampledArray } from './trials';
 import {
   instructionalTrial,
@@ -62,7 +62,6 @@ if ((window as any).Cypress) {
   (window as any).appReady = true;
 }
 import { calibrationSectionDirectionTrial, experimentBeginTrial, finalCalibrationSectionPart1, finalCalibrationSectionPart2, handTutorialTrial, sitComfortably, trialBlocksDirection, tutorialIntroductionTrial, userIDTrial } from './message-trials';
-import { likertQuestions1, likertQuestions2Randomized } from './likert';
 
 // Ensures warning message on reload
 window.addEventListener("beforeunload", function (event) {

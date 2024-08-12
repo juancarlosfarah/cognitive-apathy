@@ -142,7 +142,7 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
             ],
         }, 
         // Likert scale survey after demo
-        likertIntroDemo, likertQuestions1(randomDelay));
+        likertIntroDemo, likertQuestions1);
     }
     // If a block created is an actual trial
     if (blockName) {
@@ -264,7 +264,7 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
             },
         }, 
         // Likert scale survey after block
-        likertIntro, timeline.push([likertQuestions2Randomized(jsPsych, randomDelay)]), likertFinalQuestion);
+        likertIntro, ...likertQuestions2Randomized(jsPsych), likertFinalQuestion);
     }
     return { timeline };
 };
