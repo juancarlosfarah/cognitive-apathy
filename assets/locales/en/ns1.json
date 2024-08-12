@@ -23,7 +23,7 @@
   "HOLD_KEYS_MESSAGE": "<p>Hold the <b>{{KEYS_TO_HOLD_0}}</b>, <b>{{KEYS_TO_HOLD_1}}</b>, and <b>{{KEYS_TO_HOLD_2}}</b> keys!</p>",
   "KEY_TAPPED_EARLY_MESSAGE": "Key was tapped too early. Please wait for the appropriate time to press the key.",
   "RELEASE_KEYS_MESSAGE": "Release All Keys",
-  "REWARD_TOTAL_MESSAGE": "Total reward for successful trials is: CHF {{totalSuccessfulReward}}. Press the button below to proceed to the next block of trials.",
+  "REWARD_TOTAL_MESSAGE": "You have earned: CHF {{totalSuccessfulReward}} total. Press the button below to proceed to the next block of trials.",
   "EXPERIMENT_BEGIN_MESSAGE": "<h1>Welcome to the Experiment</h1>Press the button below to start.",
   "NO_STIMULI_VIDEO_TUTORIAL_MESSAGE": "<h2>Tutorial</h2>The video below demonstrates how the task will be performed.<br><br><ol><li> You will place your pinky on the <b>{{KEYS_TO_HOLD_0}}</b> key<br></li><li> Place your ring finger on the <b>{{KEYS_TO_HOLD_1}}</b> key<br></li> <li>Place your middle finger on the <b>{{KEYS_TO_HOLD_2}}</b> key<br></li></ol><p>While still holding down with these fingers, simultaneously, when you see the <b>GO!</b>, tap the <b>{{KEY_TO_PRESS}}</b> key, <b>repeatedly</b> with your index finger <b>as fast as you can!</b></p><ul class = 'warning'><li>Do not tap the <b>{{KEY_TO_PRESS}}</b> key until the <b>GO!</b> appears</li> <li>Do not release the <b>{{KEYS_TO_HOLD_0}}</b>, <b>{{KEYS_TO_HOLD_1}}</b>, <b>{{KEYS_TO_HOLD_2}}</b> until prompted.</li></ul>",
   "CLICK_BUTTON_TO_PROCEED_MESSAGE": "<p1> Click the button below to proceed.</p1>",
