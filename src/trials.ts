@@ -386,7 +386,8 @@ export const createTrialBlock = ({
  * @param {Object} state - An object for storing and tracking state data during the trials.
  * 
  * @returns {Array} - An array of arrays, where each sub-array contains the timeline for one of the trial blocks.
- */export const trialsArray = (jsPsych: JsPsych, state: State) => [
+ */
+export const trialsArray = (jsPsych: JsPsych, state: State) => [
   [
     // Demo trials
     createTrialBlock({
@@ -496,6 +497,242 @@ export const createTrialBlock = ({
     createRewardDisplayTrial(jsPsych, state),
   ],
 ];
+
+const syncBlock = (jsPsych: JsPsych, state: State) => 
+[
+  [
+  // Demo trials
+  createTrialBlock({
+    randomDelay: [0, 0],
+    includeDemo: true,
+    jsPsych,
+    state,
+  }),
+  // Synchronous Block of 63 trials
+  createTrialBlock({
+    blockName: 'Synchronous Block',
+    randomDelay: [0, 0],
+    jsPsych,
+    state,
+  }),
+  // Display accumulated reward in between trials
+  createRewardDisplayTrial(jsPsych, state),
+  ],
+]
+
+
+
+const narrowAsyncBlock = (jsPsych: JsPsych, state: State) => 
+[
+  [
+    // Demo trials
+    createTrialBlock({
+      randomDelay: [400, 600],
+      includeDemo: true,
+      jsPsych,
+      state,
+    }),
+    // Narrow Asynchronous Block of 63 trials
+    createTrialBlock({
+      blockName: 'Narrow Asynchronous Block',
+      randomDelay: [400, 600],
+      jsPsych,
+      state,
+    }),
+    // Display accumulated reward
+    createRewardDisplayTrial(jsPsych, state),
+  ],
+]
+
+
+
+
+const wideAsyncBlock = (jsPsych: JsPsych, state: State) => 
+[
+  [
+    createTrialBlock({
+      // Demo trials
+      randomDelay: [0, 1000],
+      includeDemo: true,
+      jsPsych,
+      state,
+    }),
+    createTrialBlock({
+      // Wide Asynchronous Block of 63 trials
+      blockName: 'Wide Asynchronous Block',
+      randomDelay: [0, 1000],
+      jsPsych,
+      state,
+    }),
+    // Display accumulated reward
+    createRewardDisplayTrial(jsPsych, state),
+  ],
+]
+
+
+export const trialOrders = (jsPsych: JsPsych, state: State) => ({
+  S01: [
+    narrowAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+  ],
+  S02: [
+    narrowAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+  ],
+  S03: [
+    narrowAsyncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+  ],
+  S04: [
+    syncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+  ],
+  S05: [
+    wideAsyncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+  ],
+  S06: [
+    syncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+  ],
+  S07: [
+    wideAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+  ],
+  S08: [
+    syncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+  ],
+  S09: [
+    narrowAsyncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+  ],
+  S10: [
+    syncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+  ],
+  S11: [
+    wideAsyncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+  ],
+  S12: [
+    narrowAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+  ],
+  S13: [
+    wideAsyncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+  ],
+  S14: [
+    syncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+  ],
+  S15: [
+    narrowAsyncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+  ],
+  S16: [
+    syncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+  ],
+  S17: [
+    wideAsyncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+  ],
+  S18: [
+    narrowAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+  ],
+  S19: [
+    wideAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+  ],
+  S20: [
+    syncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+  ],
+});
+
 
 /**
  * @function sampledArray

@@ -12,7 +12,7 @@ import '../styles/main.scss';
 import { calibrationTrialPart1, calibrationTrialPart2, conditionalCalibrationTrialPart1, conditionalCalibrationTrialPart2, finalCalibrationTrialPart1, finalCalibrationTrialPart2 } from './calibration';
 import { CALIBRATION_PART_1_DIRECTIONS, PROGRESS_BAR, } from './constants';
 import { finishExperiment } from './finish';
-import { sampledArray } from './trials';
+import { trialOrders } from './trials';
 import { instructionalTrial, noStimuliVideoTutorialTrial, practiceLoop, stimuliVideoTutorialTrial, validationVideoTutorialTrial, } from './tutorial';
 import { validationResultScreen, validationTrialEasy, validationTrialExtra, validationTrialHard, validationTrialMedium, } from './validation';
 // State variable that is passed throughout trials to ensure variables are updated universally
@@ -40,6 +40,7 @@ let state = {
     numberOfPracticeLoopsCompleted: 1,
     finalMedianTapsPart1: 0,
     finalMedianTapsPart2: 0,
+    userID: '',
 };
 import './i18n';
 if (window.Cypress) {
@@ -83,7 +84,7 @@ export function run(_a) {
                 console.error(`Failed to preload: ${file}`);
             }
         });
-        timeline.push(userIDTrial);
+        timeline.push(userIDTrial(jsPsych, state));
         timeline.push(experimentBeginTrial);
         timeline.push(sitComfortably);
         timeline.push(tutorialIntroductionTrial(jsPsych));
@@ -123,9 +124,9 @@ export function run(_a) {
         timeline.push({
             timeline: [trialBlocksDirection(jsPsych)]
         });
-        const sampledTrials = sampledArray(jsPsych, state);
-        sampledTrials.forEach((trialBlock) => {
-            trialBlock.forEach((trial) => {
+        const sampledTrials = trialOrders(jsPsych, state);
+        sampledTrials['S04'].forEach((section) => {
+            section.forEach((trial) => {
                 timeline.push(trial);
             });
         });

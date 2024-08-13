@@ -21,6 +21,8 @@ export interface State {
   numberOfPracticeLoopsCompleted: number;
   finalMedianTapsPart1: number;
   finalMedianTapsPart2: number;
+  userID: string,
+
 }
 
 // Define the CalibrationTrialParams interface

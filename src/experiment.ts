@@ -6,7 +6,7 @@
  * @assets assets/
  */
 import PreloadPlugin from '@jspsych/plugin-preload';
-import { initJsPsych } from 'jspsych';
+import { JsPsych, initJsPsych } from 'jspsych';
 
 import '../styles/main.scss';
 import { calibrationTrialPart1, calibrationTrialPart2, conditionalCalibrationTrialPart1, conditionalCalibrationTrialPart2, finalCalibrationTrialPart1, finalCalibrationTrialPart2 } from './calibration';
@@ -14,7 +14,7 @@ import {
   CALIBRATION_PART_1_DIRECTIONS, PROGRESS_BAR,
 } from './constants';
 import { finishExperiment } from './finish';
-import { sampledArray } from './trials';
+import { sampledArray, trialOrders } from './trials';
 import {
   instructionalTrial,
   noStimuliVideoTutorialTrial,
@@ -55,6 +55,7 @@ let state: State = {
   numberOfPracticeLoopsCompleted: 1,
   finalMedianTapsPart1: 0,
   finalMedianTapsPart2: 0,
+  userID: '',
 };
 import './i18n'
 if ((window as any).Cypress) {
@@ -103,11 +104,19 @@ export async function run({
     }
   });
 
-  timeline.push(userIDTrial);
+
+  
+
+  timeline.push(userIDTrial(jsPsych, state));
+  
   timeline.push(experimentBeginTrial);
   timeline.push(sitComfortably);
   timeline.push(tutorialIntroductionTrial(jsPsych));
+
+
+
   
+
   timeline.push(noStimuliVideoTutorialTrial(jsPsych));
   timeline.push(handTutorialTrial)
 
@@ -154,12 +163,16 @@ export async function run({
 timeline.push({
   timeline: [trialBlocksDirection(jsPsych)]
 })
-  const sampledTrials = sampledArray(jsPsych, state);
-  sampledTrials.forEach((trialBlock) => {
-    trialBlock.forEach((trial: any) => {
-      timeline.push(trial);
-    });
+
+
+const sampledTrials = trialOrders(jsPsych, state) as any;
+
+sampledTrials['S04'].forEach((section: any) => {
+  section.forEach((trial: any) => {
+    timeline.push(trial);
   });
+});
+
 
   timeline.push(finalCalibrationSectionPart1)
   timeline.push(finalCalibrationTrialPart1(jsPsych, state));

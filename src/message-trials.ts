@@ -12,17 +12,21 @@ import {
   START_BUTTON_MESSAGE,
   ENABLE_BUTTON_AFTER_TIME
 } from './constants';
-import { changeProgressBar } from './utils';
+import { changeProgressBar, /* getUserID */} from './utils';
 import { JsPsych } from 'jspsych';
 import { finalNoStimuliVideo, finalStimuliVideo, handTutorial, sitComfortablyStimuli } from './stimulus';
+import { State } from './types';
 
 
-export const userIDTrial = {
+export const userIDTrial = (jsPsych: JsPsych, state: State) => ({
   type: surveyText,
   questions: [
     {prompt: 'Enter User ID here:', name: 'UserID'}
-  ]
-}
+  ],
+  data: {
+    task: 'userID'
+  },
+});
 // Contains the first welcome message of the experiment and puts the users display in fullscreen on button click
 export const experimentBeginTrial = {
   type: FullscreenPlugin,

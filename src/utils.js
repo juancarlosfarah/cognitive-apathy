@@ -111,6 +111,12 @@ export function saveDataToLocalStorage(jsPsych) {
     const jsonData = jsPsych.data.get().json();
     localStorage.setItem('jspsych-data', jsonData);
 }
+/* export function getUserID(jsPsych: JsPsych, state: State) {
+  const lastTrialData = jsPsych.data.get().last(1).values()[0];
+  console.log(lastTrialData)
+  state.userID = lastTrialData.response
+  console.log(state.userID)
+} */
 /* export function randomAcceptance(){
   let randomChance = Math.random()
   if(randomChance > .5){
