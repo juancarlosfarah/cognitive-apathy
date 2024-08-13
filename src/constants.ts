@@ -41,7 +41,7 @@ export const NUM_DEMO_TRIALS = 3; //3 default
 export const MINIMUM_DEMO_TAPS = 10;
 export const FAILED_MINIMUM_DEMO_TAPS_DURATION = 3000;
 
-export const NUM_TRIALS = 9; //63 default 
+export const NUM_TRIALS = 63; //63 default 
 export const TRIAL_DURATION = 7000; //7000 default
 export const PARAMETER_COMBINATIONS = fastCartesian([
   REWARD_OPTIONS,
