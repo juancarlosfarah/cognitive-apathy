@@ -167,7 +167,7 @@ timeline.push({
 
 const sampledTrials = trialOrders(jsPsych, state) as any;
 
-sampledTrials['S06'].forEach((section: any) => {
+sampledTrials['S07'].forEach((section: any) => {
   section.forEach((trial: any) => {
     timeline.push(trial);
   });
