@@ -125,7 +125,7 @@ export function run(_a) {
             timeline: [trialBlocksDirection(jsPsych)]
         });
         const sampledTrials = trialOrders(jsPsych, state);
-        sampledTrials['S09'].forEach((section) => {
+        sampledTrials['S10'].forEach((section) => {
             section.forEach((trial) => {
                 timeline.push(trial);
             });
