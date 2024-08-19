@@ -142,7 +142,7 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
             ],
         }, 
         // Likert scale survey after demo
-        likertIntroDemo, likertQuestions1);
+        likertIntroDemo, ...likertQuestions1);
     }
     // If a block created is an actual trial
     if (blockName) {
@@ -645,6 +645,38 @@ export const trialOrders = (jsPsych, state) => ({
         narrowAsyncBlock(jsPsych, state),
         syncBlock(jsPsych, state),
         wideAsyncBlock(jsPsych, state),
+    ],
+    S21: [
+        syncBlock(jsPsych, state),
+        wideAsyncBlock(jsPsych, state),
+        narrowAsyncBlock(jsPsych, state),
+        wideAsyncBlock(jsPsych, state),
+        syncBlock(jsPsych, state),
+        narrowAsyncBlock(jsPsych, state),
+    ],
+    S22: [
+        narrowAsyncBlock(jsPsych, state),
+        syncBlock(jsPsych, state),
+        wideAsyncBlock(jsPsych, state),
+        syncBlock(jsPsych, state),
+        wideAsyncBlock(jsPsych, state),
+        narrowAsyncBlock(jsPsych, state),
+    ],
+    S23: [
+        wideAsyncBlock(jsPsych, state),
+        narrowAsyncBlock(jsPsych, state),
+        syncBlock(jsPsych, state),
+        narrowAsyncBlock(jsPsych, state),
+        syncBlock(jsPsych, state),
+        wideAsyncBlock(jsPsych, state),
+    ],
+    S24: [
+        syncBlock(jsPsych, state),
+        narrowAsyncBlock(jsPsych, state),
+        wideAsyncBlock(jsPsych, state),
+        wideAsyncBlock(jsPsych, state),
+        narrowAsyncBlock(jsPsych, state),
+        syncBlock(jsPsych, state),
     ],
 });
 /**

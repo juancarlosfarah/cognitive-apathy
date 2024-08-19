@@ -16,7 +16,7 @@ export const likertIntro = {
 export const likertIntroDemo= {
   type: htmlButtonResponse,
   choices: [CONTINUE_BUTTON_MESSAGE],
-  stimulus: [LIKERT_INTRO_DEMO],
+  stimulus: [LIKERT_INTRO],
 }
 
 
@@ -33,7 +33,7 @@ export const likertIntroDemo= {
  * 
  * This is used to collect participant responses on a specific question in the Likert survey after the 3 demo trials.
  */
-export const likertQuestions1 = 
+export const likertQuestions1 = [
   {
     type: surveyLikert,
     questions: [
@@ -54,7 +54,32 @@ export const likertQuestions1 =
     ],
     randomize_question_order: false,
     button_label: CONTINUE_BUTTON_MESSAGE,
-  };
+  },
+  {
+    type: surveyLikert,
+    questions: [
+      {
+        prompt: `${LIKERT_PREAMBLE_DEMO}<br><br><b>${LIKERT_SURVEY_1_QUESTIONS.QUESTION_2}</b>`,
+        labels: [
+          LIKERT_RESPONSES.STRONGLY_DISAGREE,
+          LIKERT_RESPONSES.DISAGREE,
+          LIKERT_RESPONSES.SOMEWHAT_DISAGREE,
+          LIKERT_RESPONSES.NEUTRAL,
+          LIKERT_RESPONSES.SOMEWHAT_AGREE,
+          LIKERT_RESPONSES.AGREE,
+          LIKERT_RESPONSES.STRONGLY_AGREE,
+        ],
+        name: LIKERT_SURVEY_1_QUESTIONS.QUESTION_2,
+        required: true,
+      },
+    ],
+    data: {
+      additional: true
+    },
+    randomize_question_order: false,
+    button_label: CONTINUE_BUTTON_MESSAGE,
+  }
+];
 /**
  * @const likertQuestions2
  * @description An array of jsPsych trial objects representing the first 6 questions asked after a trial block (in a random order).
@@ -261,6 +286,61 @@ export const likertFinalQuestion = [
   },
 
 ]
+
+
+export const likertFinalQuestionAfterValidation = [
+  {
+    type: surveyLikert,
+    questions: [
+      {
+        prompt: `<b>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_7}</b>`,
+        labels: [
+          LIKERT_RESPONSES.STRONGLY_DISAGREE,
+          LIKERT_RESPONSES.DISAGREE,
+          LIKERT_RESPONSES.SOMEWHAT_DISAGREE,
+          LIKERT_RESPONSES.NEUTRAL,
+          LIKERT_RESPONSES.SOMEWHAT_AGREE,
+          LIKERT_RESPONSES.AGREE,
+          LIKERT_RESPONSES.STRONGLY_AGREE,
+        ],
+        name: LIKERT_SURVEY_2_QUESTIONS.QUESTION_7,
+        required: true,
+      },
+    ],
+    data: {
+      additional: true,
+      validation: true
+    },
+    randomize_question_order: false,
+    button_label: CONTINUE_BUTTON_MESSAGE,
+  },
+  {
+    type: surveyLikert,
+    questions: [
+      {
+        prompt: `<b>${LIKERT_SURVEY_2_QUESTIONS.QUESTION_8}</b>`,
+        labels: [
+          LIKERT_RESPONSES.STRONGLY_DISAGREE,
+          LIKERT_RESPONSES.DISAGREE,
+          LIKERT_RESPONSES.SOMEWHAT_DISAGREE,
+          LIKERT_RESPONSES.NEUTRAL,
+          LIKERT_RESPONSES.SOMEWHAT_AGREE,
+          LIKERT_RESPONSES.AGREE,
+          LIKERT_RESPONSES.STRONGLY_AGREE,
+        ],
+        name: LIKERT_SURVEY_2_QUESTIONS.QUESTION_8,
+        required: true,
+      },
+    ],
+    data: {
+      additional: true,
+      validation: true
+    },
+    randomize_question_order: false,
+    button_label: CONTINUE_BUTTON_MESSAGE,
+    },
+  
+  ]
 // Randomizes the first 6 likert questions asked after a trial block. 
 export const likertQuestions2Randomized = (jsPsych: JsPsych) => jsPsych.randomization.sampleWithoutReplacement(likertQuestions2, 6);
 

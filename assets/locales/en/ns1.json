@@ -50,7 +50,8 @@
     "STRONGLY_AGREE": "Strongly Agree"
   },
   "LIKERT_SURVEY_1_QUESTIONS": {
-    "QUESTION_1": "I felt I was in control of the bar's movement."
+    "QUESTION_1": "I felt I was in control of the bar's movement.",
+    "QUESTION_2": "I found the task difficult."
   },
   "LIKERT_SURVEY_2_QUESTIONS": {
     "QUESTION_1": "My task performance affects how I feel now.",

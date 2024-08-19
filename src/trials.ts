@@ -183,7 +183,7 @@ export const createTrialBlock = ({
       },
       // Likert scale survey after demo
       likertIntroDemo,
-      likertQuestions1,
+      ...likertQuestions1,
     );
   }
 
@@ -731,6 +731,38 @@ export const trialOrders = (jsPsych: JsPsych, state: State) => ({
     syncBlock(jsPsych, state),
     wideAsyncBlock(jsPsych, state),
   ],
+  S21: [
+    syncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+],
+S22: [
+    narrowAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+],
+S23: [
+    wideAsyncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+],
+S24: [
+    syncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
+    syncBlock(jsPsych, state),
+],
 });
 
 

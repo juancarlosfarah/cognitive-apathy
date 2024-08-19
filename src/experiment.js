@@ -9,9 +9,12 @@ import { __awaiter } from "tslib";
 import PreloadPlugin from '@jspsych/plugin-preload';
 import { initJsPsych } from 'jspsych';
 import '../styles/main.scss';
-import { calibrationTrialPart1, calibrationTrialPart2, conditionalCalibrationTrialPart1, conditionalCalibrationTrialPart2, finalCalibrationTrialPart1, finalCalibrationTrialPart2 } from './calibration';
-import { CALIBRATION_PART_1_DIRECTIONS, PROGRESS_BAR, } from './constants';
+import { calibrationTrialPart1, calibrationTrialPart2, conditionalCalibrationTrialPart1, conditionalCalibrationTrialPart2, finalCalibrationTrialPart1, finalCalibrationTrialPart2, } from './calibration';
+import { CALIBRATION_PART_1_DIRECTIONS, PROGRESS_BAR } from './constants';
 import { finishExperiment } from './finish';
+import './i18n';
+import { likertFinalQuestionAfterValidation, } from './likert';
+import { calibrationSectionDirectionTrial, experimentBeginTrial, finalCalibrationSectionPart1, finalCalibrationSectionPart2, handTutorialTrial, sitComfortably, trialBlocksDirection, tutorialIntroductionTrial, userIDTrial, } from './message-trials';
 import { trialOrders } from './trials';
 import { instructionalTrial, noStimuliVideoTutorialTrial, practiceLoop, stimuliVideoTutorialTrial, validationVideoTutorialTrial, } from './tutorial';
 import { validationResultScreen, validationTrialEasy, validationTrialExtra, validationTrialHard, validationTrialMedium, } from './validation';
@@ -29,9 +32,9 @@ let state = {
     validationSuccess: true,
     extraValidationRequired: false,
     validationFailures: {
-        'validationEasy': 0,
-        'validationMedium': 0,
-        'validationHard': 0,
+        validationEasy: 0,
+        validationMedium: 0,
+        validationHard: 0,
     },
     failedMinimumDemoTapsTrial: 0,
     demoTrialSuccesses: 0,
@@ -42,14 +45,12 @@ let state = {
     finalMedianTapsPart2: 0,
     userID: '',
 };
-import './i18n';
 if (window.Cypress) {
     window.state = state;
     window.appReady = true;
 }
-import { calibrationSectionDirectionTrial, experimentBeginTrial, finalCalibrationSectionPart1, finalCalibrationSectionPart2, handTutorialTrial, sitComfortably, trialBlocksDirection, tutorialIntroductionTrial, userIDTrial } from './message-trials';
 // Ensures warning message on reload
-window.addEventListener("beforeunload", function (event) {
+window.addEventListener('beforeunload', function (event) {
     event.preventDefault();
     event.returnValue = ''; // Modern browsers require returnValue to be set
     return '';
@@ -64,17 +65,22 @@ export function run(_a) {
         const jsPsych = initJsPsych({
             show_progress_bar: true,
             auto_update_progress_bar: false,
-            message_progress_bar: PROGRESS_BAR.PROGRESS_BAR_INTRODUCTION
+            message_progress_bar: PROGRESS_BAR.PROGRESS_BAR_INTRODUCTION,
         });
         const timeline = [];
         timeline.push({
             type: PreloadPlugin,
-            images: ['./assets/images/left.jpg', './assets/images/right.jpg', './assets/images/tip.png', './assets/images/hand.png'],
+            images: [
+                './assets/images/left.jpg',
+                './assets/images/right.jpg',
+                './assets/images/tip.png',
+                './assets/images/hand.png',
+            ],
             audio: assetPaths.audio,
             video: [
                 './assets/videos/calibration-part1.mp4',
                 './assets/videos/calibration-part2.mp4',
-                './assets/videos/validation.mp4'
+                './assets/videos/validation.mp4',
             ],
             max_load_time: 120000, // Increased timeout to 120 seconds
             on_success: function (file) {
@@ -82,7 +88,7 @@ export function run(_a) {
             },
             on_error: function (file) {
                 console.error(`Failed to preload: ${file}`);
-            }
+            },
         });
         timeline.push(userIDTrial(jsPsych, state));
         timeline.push(experimentBeginTrial);
@@ -118,14 +124,15 @@ export function run(_a) {
                 return state.extraValidationRequired;
             },
         });
+        timeline.push(likertFinalQuestionAfterValidation),
+            timeline.push({
+                timeline: [validationResultScreen(jsPsych, state)],
+            });
         timeline.push({
-            timeline: [validationResultScreen(jsPsych, state)],
-        });
-        timeline.push({
-            timeline: [trialBlocksDirection(jsPsych)]
+            timeline: [trialBlocksDirection(jsPsych)],
         });
         const sampledTrials = trialOrders(jsPsych, state);
-        sampledTrials['S10'].forEach((section) => {
+        sampledTrials['S11'].forEach((section) => {
             section.forEach((trial) => {
                 timeline.push(trial);
             });
