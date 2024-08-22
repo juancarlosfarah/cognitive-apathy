@@ -185,7 +185,7 @@ export async function run({ assetPaths }: any) {
 
   const sampledTrials = trialOrders(jsPsych, state) as any;
 
-  sampledTrials['S18'].forEach((section: any) => {
+  sampledTrials['S19'].forEach((section: any) => {
     section.forEach((trial: any) => {
       timeline.push(trial);
     });
