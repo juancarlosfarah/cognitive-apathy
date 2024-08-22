@@ -724,44 +724,28 @@ export const trialOrders = (jsPsych: JsPsych, state: State) => ({
     wideAsyncBlock(jsPsych, state),
   ],
   S20: [
+    wideAsyncBlock(jsPsych, state),
+    narrowAsyncBlock(jsPsych, state),
     syncBlock(jsPsych, state),
     wideAsyncBlock(jsPsych, state),
     narrowAsyncBlock(jsPsych, state),
-    narrowAsyncBlock(jsPsych, state),
     syncBlock(jsPsych, state),
-    wideAsyncBlock(jsPsych, state),
-  ],
-  S21: [
-    syncBlock(jsPsych, state),
-    wideAsyncBlock(jsPsych, state),
-    narrowAsyncBlock(jsPsych, state),
-    wideAsyncBlock(jsPsych, state),
-    syncBlock(jsPsych, state),
-    narrowAsyncBlock(jsPsych, state),
 ],
-S22: [
+S21: [
     narrowAsyncBlock(jsPsych, state),
-    syncBlock(jsPsych, state),
     wideAsyncBlock(jsPsych, state),
-    syncBlock(jsPsych, state),
-    wideAsyncBlock(jsPsych, state),
-    narrowAsyncBlock(jsPsych, state),
-],
-S23: [
-    wideAsyncBlock(jsPsych, state),
-    narrowAsyncBlock(jsPsych, state),
     syncBlock(jsPsych, state),
     narrowAsyncBlock(jsPsych, state),
     syncBlock(jsPsych, state),
     wideAsyncBlock(jsPsych, state),
 ],
-S24: [
+S22: [
     syncBlock(jsPsych, state),
     narrowAsyncBlock(jsPsych, state),
     wideAsyncBlock(jsPsych, state),
-    wideAsyncBlock(jsPsych, state),
     narrowAsyncBlock(jsPsych, state),
     syncBlock(jsPsych, state),
+    wideAsyncBlock(jsPsych, state),
 ],
 });
 
