@@ -8,8 +8,6 @@ import {
   FAILED_MINIMUM_DEMO_TAPS_MESSAGE,
   MINIMUM_DEMO_TAPS,
   NUM_DEMO_TRIALS,
-  NUM_TRIALS,
-  PARAMETER_COMBINATIONS,
   REWARD_TOTAL_MESSAGE,
   TRIAL_DURATION,
   EXPECTED_MAXIMUM_PERCENTAGE,
@@ -19,16 +17,17 @@ import {
   HARD_BOUNDS
 } from './constants';
 import { countdownStep } from './countdown';
-import {likertFinalQuestion, likertIntro, likertIntroDemo, likertQuestions1, likertQuestions2Randomized } from './likert';
+import {likertFinalQuestion, likertQuestions1, likertQuestions2Randomized } from './likert';
 import { loadingBarTrial } from './loading-bar';
 import { successScreen } from './success';
 import { releaseKeysStep } from './release-keys';
 import { acceptanceThermometer } from './stimulus';
 import TaskPlugin from './task';
-import { autoIncreaseAmount, calculateTotalReward, checkFlag, randomNumberBm, checkKeys, changeProgressBar, saveDataToLocalStorage, /* randomAcceptance */ } from './utils';
+import { autoIncreaseAmount, calculateTotalReward, checkFlag, checkKeys, changeProgressBar, saveDataToLocalStorage, createShuffledTrials, /* randomAcceptance */ } from './utils';
 import { State, TaskTrialData, PassedTaskData, CreateTrialBlockParams } from './types'; // Assuming you have the appropriate types defined here
 import { EASY_BOUNDS } from './constants';
 import htmlButtonResponse from '@jspsych/plugin-html-button-response';
+import { likertIntro, likertIntroDemo } from './message-trials';
 
 /**
  * @const failedMinimumDemoTapsTrial
@@ -118,7 +117,6 @@ export const createTrialBlock = ({
                   } else return [0,0]
                 },
                 autoIncreaseAmount: function () {
-                  console.log(state.medianTaps);
                   return autoIncreaseAmount(
                     EXPECTED_MAXIMUM_PERCENTAGE,
                     TRIAL_DURATION,
@@ -142,7 +140,6 @@ export const createTrialBlock = ({
                   data.keyTappedEarlyFlag = keyTappedEarlyFlag;
                 },
                 on_finish: function (data: TaskTrialData) {
-                  console.log(`KEYS RELEASED FLAG: ${data.keysReleasedFlag}`)
                   // Check if minimum taps was reached
                   if (data.tapCount > MINIMUM_DEMO_TAPS) {
                     state.minimumDemoTapsReached = true;
@@ -189,40 +186,7 @@ export const createTrialBlock = ({
 
   // If a block created is an actual trial
   if (blockName) {
-    // Create the number of full combination of trials (63 trials  / (3 x 3) factorial design = 7 sets of these 9 trials)
-    const numTrialsPerCombination = Math.floor(
-      NUM_TRIALS / PARAMETER_COMBINATIONS.length,
-    );
-    // Randomly map each of these combination parameters to each trial within 63 created samples
-    let trials = PARAMETER_COMBINATIONS.flatMap((combination) =>
-      Array(numTrialsPerCombination)
-        .fill(null)
-        .map(() => ({
-          reward: jsPsych.randomization.sampleWithReplacement(
-            combination.reward,
-            1,
-          )[0],
-          randomDelay: randomDelay,
-          bounds: combination.bounds,
-          originalBounds: combination.bounds
-          /* randomChanceAccepted: randomAcceptance() */
-        })),
-    );
-    // Add 10% variation of bounds while keeping distance the same
-    let differenceBetweenBounds = EASY_BOUNDS[1] - EASY_BOUNDS[0];
-    for (let i = 0; i < trials.length; i++) {
-      let center = (trials[i].bounds[0] + trials[i].bounds[1]) / 2;
-      let min = center - (differenceBetweenBounds / 2) - (center - (differenceBetweenBounds / 2)) * 0.1;
-      let max = center + (differenceBetweenBounds / 2) + (center + (differenceBetweenBounds / 2)) * 0.1;
-      let newCenter = randomNumberBm(min, max);
-
-      trials[i].bounds = [newCenter - (differenceBetweenBounds / 2), newCenter + (differenceBetweenBounds / 2)];
-    }
-    if ((window as any).Cypress) {
-      (window as any).trials = trials;
-    }
-    // Shuffle the order of these trials
-    trials = jsPsych.randomization.shuffle(trials);
+    let trials = createShuffledTrials({ randomDelay, jsPsych });
     timeline.push(
       {
         timeline: trials.map((trialData: PassedTaskData) => ({
@@ -298,7 +262,6 @@ export const createTrialBlock = ({
                   },
                   on_finish: function (data: TaskTrialData) {
                     data.medianTaps = {calibrationPart1Median: state.medianTapsPart1, calibrationPart2Median: state.medianTaps}
-                    console.log(data);
                     saveDataToLocalStorage(jsPsych)
                   },
                 },
@@ -765,3 +728,4 @@ S22: [
  */
 export const sampledArray = (jsPsych: JsPsych, state: State) =>
   jsPsych.randomization.sampleWithoutReplacement(trialsArray(jsPsych, state), 6);
+

@@ -64,7 +64,6 @@ export const finishExperimentEarly = (jsPsych) => {
  *
  * @returns {Object} - A jsPsych trial object that handles the early termination of the experiment and performs the necessary data saving and display logic.
  */
-// This is used in the calibration section section and should eventually be merged with the "finishExperimentEarly" function above
 export const finishExperimentEarlyTrial = (jsPsych) => ({
     type: htmlButtonResponse,
     choices: [FINISH_BUTTON_MESSAGE],
@@ -73,7 +72,6 @@ export const finishExperimentEarlyTrial = (jsPsych) => ({
         task: 'finish_experiment',
     },
     on_finish: function () {
-        jsPsych.data.get().localSave('csv', 'cognitive-apathy.csv');
-        showEndScreen(EXPERIMENT_HAS_ENDED_MESSAGE);
+        finishExperimentEarly(jsPsych);
     },
 });

@@ -53,6 +53,9 @@ export function createKeyboard(displayElement: HTMLElement) {
       console.log('Button pressed', button);
       if (button === '{shift}' || button === '{lock}') handleShift(keyboard);
     },
+    physicalKeyboardHighlight: true,
+    physicalKeyboardHighlightPress: true,
+    physicalKeyboardHighlightBgColor: "#008000",
     theme: 'hg-theme-default hg-layout-default myTheme',
   });
 

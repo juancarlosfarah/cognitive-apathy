@@ -1,7 +1,7 @@
 import htmlButtonResponse from '@jspsych/plugin-html-button-response';
 import FullscreenPlugin from '@jspsych/plugin-fullscreen';
 import surveyText from '@jspsych/plugin-survey-text';
-import { CONTINUE_BUTTON_MESSAGE, EXPERIMENT_BEGIN_MESSAGE, TUTORIAL_INTRODUCTION_MESSAGE, CALIBRATION_PART_1_DIRECTIONS, CALIBRATION_SECTION_MESSAGE, PROGRESS_BAR, TRIAL_BLOCKS_DIRECTIONS, START_BUTTON_MESSAGE, ENABLE_BUTTON_AFTER_TIME } from './constants';
+import { CONTINUE_BUTTON_MESSAGE, EXPERIMENT_BEGIN_MESSAGE, TUTORIAL_INTRODUCTION_MESSAGE, CALIBRATION_PART_1_DIRECTIONS, CALIBRATION_SECTION_MESSAGE, PROGRESS_BAR, TRIAL_BLOCKS_DIRECTIONS, START_BUTTON_MESSAGE, ENABLE_BUTTON_AFTER_TIME, LIKERT_INTRO, } from './constants';
 import { changeProgressBar, /* getUserID */ } from './utils';
 import { finalNoStimuliVideo, finalStimuliVideo, handTutorial, sitComfortablyStimuli } from './stimulus';
 export const userIDTrial = (jsPsych, state) => ({
@@ -75,6 +75,18 @@ export const trialBlocksDirection = (jsPsych) => ({
         changeProgressBar(`${PROGRESS_BAR.PROGRESS_BAR_TRIAL_BLOCKS}`, .11, jsPsych);
     }
 });
+// Likert prescreen for the blocks of trials
+export const likertIntro = {
+    type: htmlButtonResponse,
+    choices: [CONTINUE_BUTTON_MESSAGE],
+    stimulus: [LIKERT_INTRO],
+};
+// Likert prescreen for the demo trials
+export const likertIntroDemo = {
+    type: htmlButtonResponse,
+    choices: [CONTINUE_BUTTON_MESSAGE],
+    stimulus: [LIKERT_INTRO],
+};
 // Directional trial that contains the image to show users finger placement
 export const handTutorialTrial = {
     type: htmlButtonResponse,

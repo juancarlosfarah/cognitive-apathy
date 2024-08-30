@@ -10,7 +10,9 @@ import {
   PROGRESS_BAR,
   TRIAL_BLOCKS_DIRECTIONS,
   START_BUTTON_MESSAGE,
-  ENABLE_BUTTON_AFTER_TIME
+  ENABLE_BUTTON_AFTER_TIME,
+  LIKERT_INTRO,
+  
 } from './constants';
 import { changeProgressBar, /* getUserID */} from './utils';
 import { JsPsych } from 'jspsych';
@@ -100,6 +102,19 @@ export const trialBlocksDirection = (jsPsych: JsPsych) => ({
     changeProgressBar(`${PROGRESS_BAR.PROGRESS_BAR_TRIAL_BLOCKS}`, .11, jsPsych)
   }
 })
+// Likert prescreen for the blocks of trials
+export const likertIntro = {
+  type: htmlButtonResponse,
+  choices: [CONTINUE_BUTTON_MESSAGE],
+  stimulus: [LIKERT_INTRO],
+}
+
+// Likert prescreen for the demo trials
+export const likertIntroDemo= {
+  type: htmlButtonResponse,
+  choices: [CONTINUE_BUTTON_MESSAGE],
+  stimulus: [LIKERT_INTRO],
+}
 
 // Directional trial that contains the image to show users finger placement
 export const handTutorialTrial = {

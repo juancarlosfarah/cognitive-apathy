@@ -1,4 +1,5 @@
 import { JsPsych } from 'jspsych';
+import { EASY_BOUNDS, NUM_TRIALS, PARAMETER_COMBINATIONS } from './constants';
 import { State } from './types';
 
 /**
@@ -143,12 +144,85 @@ export function saveDataToLocalStorage(jsPsych: JsPsych) {
   localStorage.setItem('jspsych-data', jsonData);
 }
 
-/* export function getUserID(jsPsych: JsPsych, state: State) {
-  const lastTrialData = jsPsych.data.get().last(1).values()[0];
-  console.log(lastTrialData)
-  state.userID = lastTrialData.response
-  console.log(state.userID)
-} */
+
+/**
+ * @function createShuffledTrials
+ * @description Creates and shuffles trials based on parameter combinations, with added variation to the bounds.
+ * 
+ * This function includes:
+ * - Randomly mapping each combination of parameters to a set of trials.
+ * - Adding a 10% variation to the bounds while keeping the difference between bounds the same.
+ * - Shuffling the order of the trials.
+ * 
+ * @param {Array} randomDelay - An array specifying the minimum and maximum delay after a tap.
+ * @param {JsPsych} jsPsych - The jsPsych instance used to control the experiment's flow.
+ * 
+ * @returns {Array} - An array of shuffled trials.
+ */
+export function createShuffledTrials({
+  randomDelay,
+  jsPsych,
+}: {
+  randomDelay: number[];
+  jsPsych: JsPsych;
+}) {
+  const numTrialsPerCombination = Math.floor(
+    NUM_TRIALS / PARAMETER_COMBINATIONS.length,
+  );
+
+  let trials = PARAMETER_COMBINATIONS.flatMap((combination) =>
+    Array(numTrialsPerCombination)
+      .fill(null)
+      .map(() => ({
+        reward: jsPsych.randomization.sampleWithReplacement(
+          combination.reward,
+          1,
+        )[0],
+        randomDelay: randomDelay,
+        bounds: combination.bounds,
+        originalBounds: combination.bounds,
+      })),
+  );
+
+  // Add 10% variation to bounds while keeping the distance between bounds the same
+  const differenceBetweenBounds = EASY_BOUNDS[1] - EASY_BOUNDS[0];
+  trials.forEach((trial) => {
+    const center = (trial.bounds[0] + trial.bounds[1]) / 2;
+    const min = center - (differenceBetweenBounds / 2) - (center - (differenceBetweenBounds / 2)) * 0.1;
+    const max = center + (differenceBetweenBounds / 2) + (center + (differenceBetweenBounds / 2)) * 0.1;
+    const newCenter = randomNumberBm(min, max);
+
+    trial.bounds = [
+      newCenter - differenceBetweenBounds / 2,
+      newCenter + differenceBetweenBounds / 2,
+    ];
+  });
+
+  // Shuffle the order of these trials
+  return jsPsych.randomization.shuffle(trials);
+}
+
+
+
+
+
+
+
+
+
+
+export function getUserID(jsPsych: JsPsych, state: State): string {
+  const userIdData = jsPsych.data.get().filter({ task: 'userID' }).last(1).values()[0];
+  console.log('userIdData:', userIdData);
+
+  // Correctly extract the value from userIdData.response
+  const userID = userIdData.response.UserID; // Access the 'UserID' key
+  console.log('Extracted userID:', userID);
+
+  return String(userID); // Ensure it's returned as a string
+}
+
+
 
 /* export function randomAcceptance(){
   let randomChance = Math.random()
@@ -156,3 +230,5 @@ export function saveDataToLocalStorage(jsPsych: JsPsych) {
     return true
   } else return false
 } */
+
+

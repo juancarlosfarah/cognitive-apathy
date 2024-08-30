@@ -6,7 +6,7 @@
  * @assets assets/
  */
 import PreloadPlugin from '@jspsych/plugin-preload';
-import { JsPsych, initJsPsych } from 'jspsych';
+import {initJsPsych } from 'jspsych';
 
 import '../styles/main.scss';
 import {
@@ -18,10 +18,9 @@ import {
   finalCalibrationTrialPart2,
 } from './calibration';
 import { CALIBRATION_PART_1_DIRECTIONS, PROGRESS_BAR } from './constants';
-import { finishExperiment, finishExperimentEarlyTrial } from './finish';
+import { finishExperiment } from './finish';
 import './i18n';
 import {
-  likertFinalQuestion,
   likertFinalQuestionAfterValidation,
 } from './likert';
 import {
@@ -35,7 +34,7 @@ import {
   tutorialIntroductionTrial,
   userIDTrial,
 } from './message-trials';
-import { sampledArray, trialOrders } from './trials';
+import { trialOrders } from './trials';
 import {
   instructionalTrial,
   noStimuliVideoTutorialTrial,
@@ -80,10 +79,6 @@ let state: State = {
   userID: '',
 };
 
-if ((window as any).Cypress) {
-  (window as any).state = state;
-  (window as any).appReady = true;
-}
 
 // Ensures warning message on reload
 window.addEventListener('beforeunload', function (event) {
@@ -129,7 +124,7 @@ export async function run({ assetPaths }: any) {
   });
 
 
-
+/* 
   timeline.push(userIDTrial(jsPsych, state));
 
   timeline.push(experimentBeginTrial);
@@ -147,7 +142,7 @@ export async function run({ assetPaths }: any) {
 
   timeline.push(calibrationSectionDirectionTrial(jsPsych));
 
-  timeline.push(instructionalTrial(CALIBRATION_PART_1_DIRECTIONS));
+  timeline.push(instructionalTrial(CALIBRATION_PART_1_DIRECTIONS)); */
 
   timeline.push(calibrationTrialPart1(jsPsych, state));
   timeline.push(conditionalCalibrationTrialPart1(jsPsych, state));
@@ -184,7 +179,8 @@ export async function run({ assetPaths }: any) {
   });
 
   const sampledTrials = trialOrders(jsPsych, state) as any;
-
+  
+  // Change based on participant ID
   sampledTrials['S22'].forEach((section: any) => {
     section.forEach((trial: any) => {
       timeline.push(trial);

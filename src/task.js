@@ -205,7 +205,6 @@ class TaskPlugin {
                 keysState: keysState
             };
             this.jsPsych.finishTrial(trialData);
-            console.log(trialData);
         };
         display_element.innerHTML = stimulus(trial.showThermometer, this.mercuryHeight, trial.bounds[0], trial.bounds[1]);
         if (trial.showKeyboard) {
@@ -313,7 +312,7 @@ TaskPlugin.info = {
         randomChanceAccepted: {
             type: ParameterType.BOOL,
             default: false
-        }
+        },
     },
 };
 export default TaskPlugin;

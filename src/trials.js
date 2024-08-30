@@ -1,15 +1,16 @@
 import HtmlKeyboardResponsePlugin from '@jspsych/plugin-html-keyboard-response';
-import { AUTO_DECREASE_AMOUNT, AUTO_DECREASE_RATE, DEMO_TRIAL_MESSAGE, FAILED_MINIMUM_DEMO_TAPS_DURATION, FAILED_MINIMUM_DEMO_TAPS_MESSAGE, MINIMUM_DEMO_TAPS, NUM_DEMO_TRIALS, NUM_TRIALS, PARAMETER_COMBINATIONS, REWARD_TOTAL_MESSAGE, TRIAL_DURATION, EXPECTED_MAXIMUM_PERCENTAGE, PROGRESS_BAR, CONTINUE_BUTTON_MESSAGE, MEDIUM_BOUNDS, HARD_BOUNDS } from './constants';
+import { AUTO_DECREASE_AMOUNT, AUTO_DECREASE_RATE, DEMO_TRIAL_MESSAGE, FAILED_MINIMUM_DEMO_TAPS_DURATION, FAILED_MINIMUM_DEMO_TAPS_MESSAGE, MINIMUM_DEMO_TAPS, NUM_DEMO_TRIALS, REWARD_TOTAL_MESSAGE, TRIAL_DURATION, EXPECTED_MAXIMUM_PERCENTAGE, PROGRESS_BAR, CONTINUE_BUTTON_MESSAGE, MEDIUM_BOUNDS, HARD_BOUNDS } from './constants';
 import { countdownStep } from './countdown';
-import { likertFinalQuestion, likertIntro, likertIntroDemo, likertQuestions1, likertQuestions2Randomized } from './likert';
+import { likertFinalQuestion, likertQuestions1, likertQuestions2Randomized } from './likert';
 import { loadingBarTrial } from './loading-bar';
 import { successScreen } from './success';
 import { releaseKeysStep } from './release-keys';
 import { acceptanceThermometer } from './stimulus';
 import TaskPlugin from './task';
-import { autoIncreaseAmount, calculateTotalReward, checkFlag, randomNumberBm, checkKeys, changeProgressBar, saveDataToLocalStorage, /* randomAcceptance */ } from './utils';
+import { autoIncreaseAmount, calculateTotalReward, checkFlag, checkKeys, changeProgressBar, saveDataToLocalStorage, createShuffledTrials, /* randomAcceptance */ } from './utils';
 import { EASY_BOUNDS } from './constants';
 import htmlButtonResponse from '@jspsych/plugin-html-button-response';
+import { likertIntro, likertIntroDemo } from './message-trials';
 /**
  * @const failedMinimumDemoTapsTrial
  * @description A jsPsych trial that displays a failure message when the participant fails to reach the minimum number of taps during a demo trial.
@@ -88,7 +89,6 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
                                     return [0, 0];
                             },
                             autoIncreaseAmount: function () {
-                                console.log(state.medianTaps);
                                 return autoIncreaseAmount(EXPECTED_MAXIMUM_PERCENTAGE, TRIAL_DURATION, AUTO_DECREASE_RATE, AUTO_DECREASE_AMOUNT, state.medianTaps);
                             },
                             data: {
@@ -102,7 +102,6 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
                                 data.keyTappedEarlyFlag = keyTappedEarlyFlag;
                             },
                             on_finish: function (data) {
-                                console.log(`KEYS RELEASED FLAG: ${data.keysReleasedFlag}`);
                                 // Check if minimum taps was reached
                                 if (data.tapCount > MINIMUM_DEMO_TAPS) {
                                     state.minimumDemoTapsReached = true;
@@ -146,32 +145,7 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
     }
     // If a block created is an actual trial
     if (blockName) {
-        // Create the number of full combination of trials (63 trials  / (3 x 3) factorial design = 7 sets of these 9 trials)
-        const numTrialsPerCombination = Math.floor(NUM_TRIALS / PARAMETER_COMBINATIONS.length);
-        // Randomly map each of these combination parameters to each trial within 63 created samples
-        let trials = PARAMETER_COMBINATIONS.flatMap((combination) => Array(numTrialsPerCombination)
-            .fill(null)
-            .map(() => ({
-            reward: jsPsych.randomization.sampleWithReplacement(combination.reward, 1)[0],
-            randomDelay: randomDelay,
-            bounds: combination.bounds,
-            originalBounds: combination.bounds
-            /* randomChanceAccepted: randomAcceptance() */
-        })));
-        // Add 10% variation of bounds while keeping distance the same
-        let differenceBetweenBounds = EASY_BOUNDS[1] - EASY_BOUNDS[0];
-        for (let i = 0; i < trials.length; i++) {
-            let center = (trials[i].bounds[0] + trials[i].bounds[1]) / 2;
-            let min = center - (differenceBetweenBounds / 2) - (center - (differenceBetweenBounds / 2)) * 0.1;
-            let max = center + (differenceBetweenBounds / 2) + (center + (differenceBetweenBounds / 2)) * 0.1;
-            let newCenter = randomNumberBm(min, max);
-            trials[i].bounds = [newCenter - (differenceBetweenBounds / 2), newCenter + (differenceBetweenBounds / 2)];
-        }
-        if (window.Cypress) {
-            window.trials = trials;
-        }
-        // Shuffle the order of these trials
-        trials = jsPsych.randomization.shuffle(trials);
+        let trials = createShuffledTrials({ randomDelay, jsPsych });
         timeline.push({
             timeline: trials.map((trialData) => ({
                 timeline: [
@@ -233,7 +207,6 @@ export const createTrialBlock = ({ blockName, randomDelay, bounds, includeDemo =
                                 },
                                 on_finish: function (data) {
                                     data.medianTaps = { calibrationPart1Median: state.medianTapsPart1, calibrationPart2Median: state.medianTaps };
-                                    console.log(data);
                                     saveDataToLocalStorage(jsPsych);
                                 },
                             },
@@ -677,3 +650,225 @@ export const trialOrders = (jsPsych, state) => ({
  * @returns {Array} - An array containing the sampled trial blocks, ready to be used in the experiment's timeline.
  */
 export const sampledArray = (jsPsych, state) => jsPsych.randomization.sampleWithoutReplacement(trialsArray(jsPsych, state), 6);
+export const trialOrders2 = (jsPsych, state) => ({
+    S01: () => ({
+        timeline: [
+            narrowAsyncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+        ]
+    }),
+    S02: () => ({
+        timeline: [
+            narrowAsyncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+        ]
+    }),
+    S03: () => ({
+        timeline: [
+            narrowAsyncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+        ]
+    }),
+    S04: () => ({
+        timeline: [
+            syncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+        ]
+    }),
+    S05: () => ({
+        timeline: [
+            wideAsyncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+        ]
+    }),
+    S06: () => ({
+        timeline: [
+            syncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+        ]
+    }),
+    S07: () => ({
+        timeline: [
+            wideAsyncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+        ]
+    }),
+    S08: () => ({
+        timeline: [
+            syncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+        ]
+    }),
+    S09: () => ({
+        timeline: [
+            narrowAsyncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+        ]
+    }),
+    S10: () => ({
+        timeline: [
+            syncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+        ]
+    }),
+    S11: () => ({
+        timeline: [
+            wideAsyncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+        ]
+    }),
+    S12: () => ({
+        timeline: [
+            narrowAsyncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+        ]
+    }),
+    S13: () => ({
+        timeline: [
+            wideAsyncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+        ]
+    }),
+    S14: () => ({
+        timeline: [
+            syncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+        ]
+    }),
+    S15: () => ({
+        timeline: [
+            narrowAsyncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+        ]
+    }),
+    S16: () => ({
+        timeline: [
+            syncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+        ]
+    }),
+    S17: () => ({
+        timeline: [
+            wideAsyncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+        ]
+    }),
+    S18: () => ({
+        timeline: [
+            narrowAsyncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+        ]
+    }),
+    S19: () => ({
+        timeline: [
+            wideAsyncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+        ]
+    }),
+    S20: () => ({
+        timeline: [
+            wideAsyncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+        ]
+    }),
+    S21: () => ({
+        timeline: [
+            narrowAsyncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+        ]
+    }),
+    S22: () => ({
+        timeline: [
+            syncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+            narrowAsyncBlock(jsPsych, state),
+            syncBlock(jsPsych, state),
+            wideAsyncBlock(jsPsych, state),
+        ]
+    })
+});

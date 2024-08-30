@@ -1,5 +1,4 @@
 import { JsPsych } from 'jspsych';
-
 // Define the State interface
 export interface State {
   medianTaps: number;
@@ -21,9 +20,10 @@ export interface State {
   numberOfPracticeLoopsCompleted: number;
   finalMedianTapsPart1: number;
   finalMedianTapsPart2: number;
-  userID: string,
-
+  userID: any;
+  [key: string]: number | boolean | Record<string, number> | string; // Allow dynamic keys with specific types
 }
+
 
 // Define the CalibrationTrialParams interface
 export interface CalibrationTrialParams {

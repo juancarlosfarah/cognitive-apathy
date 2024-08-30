@@ -1,4 +1,5 @@
 import { ParameterType, JsPsych } from 'jspsych';
+import { createKeyboard } from './keyboard';
 
 import {
   COUNTDOWN_TIME,
@@ -7,7 +8,6 @@ import {
   KEY_TO_PRESS,
   COUNTDOWN_TIMER_MESSAGE
 } from './constants';
-import { createKeyboard } from './keyboard';
 /**
  * @class CountdownTrialPlugin
  * @description A custom jsPsych plugin that creates a trial where participants must hold specified keys for a countdown period before proceeding.
@@ -94,10 +94,10 @@ export class CountdownTrialPlugin {
 
     let areKeysHeld = false;
     let interval: number | null = null;
-    let keyboardInstance: any;
     let inputElement: HTMLInputElement | undefined;
+    let keyboardInstance: any;
 
-    // Create a specific container for the trial message
+    // Create a specific container for the message
     const messageContainer = document.createElement('div');
     messageContainer.id = 'message-container';
     messageContainer.innerHTML = trial.message;
@@ -110,9 +110,9 @@ export class CountdownTrialPlugin {
     const timerContainer = document.createElement('div');
     timerContainer.id = 'timer-container';
     displayElement.appendChild(timerContainer);
-
+    // Show keyboard if showKeyboard parameter is set to true
     if (trial.showKeyboard) {
-      const { keyboard, keyboardDiv } = createKeyboard(displayElement);
+      const { keyboard } = createKeyboard(displayElement);
       keyboardInstance = keyboard;
       inputElement = document.createElement('input');
       inputElement.type = 'text';
@@ -120,35 +120,7 @@ export class CountdownTrialPlugin {
       inputElement.style.position = 'absolute';
       inputElement.style.top = '-9999px';
       document.body.appendChild(inputElement);
-
-      // Event listeners to sync physical keyboard with on-screen keyboard
-      document.addEventListener('keydown', (event) => {
-        const key = event.key.toLowerCase();
-        if (trial.keysToHold.includes(key) && inputElement) {
-          keyboardInstance.setInput(inputElement.value + key);
-          const button = keyboardDiv.querySelector(`[data-skbtn="${key}"]`);
-          if (button) {
-            button.classList.add('hg-activeButton');
-          }
-        }
-      });
-
-      document.addEventListener('keyup', (event) => {
-        const key = event.key.toLowerCase();
-        const button = keyboardDiv.querySelector(`[data-skbtn="${key}"]`);
-        if (button && button instanceof HTMLElement) {
-          button.classList.remove('hg-activeButton');
-          button.style.backgroundColor = ''; // Remove inline style
-          button.style.color = ''; // Remove inline style
-        }
-      });
-
-      // Event listener for input changes
-      inputElement.addEventListener('input', (event) => {
-        keyboardInstance.setInput((event.target as HTMLInputElement).value);
-      });
     }
-
     const setAreKeysHeld = () => {
       areKeysHeld = (trial.keysToHold || []).every(
         (key: string) => keysState[key.toLowerCase()],
@@ -237,8 +209,6 @@ export class CountdownTrialPlugin {
 
   }
 }
-
-
 
 export const countdownStep = {
   timeline: [

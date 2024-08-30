@@ -115,7 +115,7 @@ class TaskPlugin {
       randomChanceAccepted: {
         type: ParameterType.BOOL,
         default: false
-      }
+      },
     },
   };
 
@@ -301,7 +301,6 @@ class TaskPlugin {
       };
 
       this.jsPsych.finishTrial(trialData);
-      console.log(trialData);
     };
 
 

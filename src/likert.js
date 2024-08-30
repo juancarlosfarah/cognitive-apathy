@@ -1,18 +1,5 @@
 import surveyLikert from '@jspsych/plugin-survey-likert';
-import { LIKERT_PREAMBLE, CONTINUE_BUTTON_MESSAGE, LIKERT_SURVEY_1_QUESTIONS, LIKERT_SURVEY_2_QUESTIONS, LIKERT_RESPONSES, LIKERT_PREAMBLE_DEMO, LIKERT_INTRO } from './constants';
-import htmlButtonResponse from '@jspsych/plugin-html-button-response';
-// Likert prescreen for the blocks of trials
-export const likertIntro = {
-    type: htmlButtonResponse,
-    choices: [CONTINUE_BUTTON_MESSAGE],
-    stimulus: [LIKERT_INTRO],
-};
-// Likert prescreen for the demo trials
-export const likertIntroDemo = {
-    type: htmlButtonResponse,
-    choices: [CONTINUE_BUTTON_MESSAGE],
-    stimulus: [LIKERT_INTRO],
-};
+import { LIKERT_PREAMBLE, CONTINUE_BUTTON_MESSAGE, LIKERT_SURVEY_1_QUESTIONS, LIKERT_SURVEY_2_QUESTIONS, LIKERT_RESPONSES, LIKERT_PREAMBLE_DEMO } from './constants';
 /**
  * @const likertQuestions1
  * @description A jsPsych trial object representing the likert scale question asked after a set of demo trials.
