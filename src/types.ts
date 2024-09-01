@@ -88,3 +88,6 @@ export interface CreateTrialBlockParams {
   jsPsych: JsPsych;
   state: State;
 }
+
+type TrialBlock = { timeline: any[] } | { [key: string]: any }; // Define the type of each block or trial
+export type TrialOrdersType = Record<string, TrialBlock[][][]>;

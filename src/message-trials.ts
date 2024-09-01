@@ -14,13 +14,12 @@ import {
   LIKERT_INTRO,
   
 } from './constants';
-import { changeProgressBar, /* getUserID */} from './utils';
+import { changeProgressBar} from './utils';
 import { JsPsych } from 'jspsych';
 import { finalNoStimuliVideo, finalStimuliVideo, handTutorial, sitComfortablyStimuli } from './stimulus';
-import { State } from './types';
 
 
-export const userIDTrial = (jsPsych: JsPsych, state: State) => ({
+export const userIDTrial = ({
   type: surveyText,
   questions: [
     {prompt: 'Enter User ID here:', name: 'UserID'}

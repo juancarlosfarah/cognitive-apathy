@@ -1,6 +1,5 @@
 import { JsPsych } from 'jspsych';
 import { EASY_BOUNDS, NUM_TRIALS, PARAMETER_COMBINATIONS } from './constants';
-import { State } from './types';
 
 /**
  * Generate a random number with a bias towards the mean.
@@ -30,7 +29,7 @@ export function randomNumberBm(min: number, max: number, skew = 1): number {
 }
 
 /**
- * Calculate the auto-increase amount for the thermometer.
+ * Calculate the auto-increase amount for each tap within the thermometer.
  *
  * @param {number} EXPECTED_MAXIMUM_PERCENTAGE - The expected maximum percentage for calibration.
  * @param {number} TRIAL_DURATION - The duration of the trial.
@@ -76,6 +75,17 @@ export function calculateMedianTapCount(
   return medianValue;
 }
 
+
+/**
+ * @function checkFlag
+ * @description Checks if a specific flag is set in the last trial of a specified task type.
+ *
+ * @param {string} taskFilter - The task type to filter the data by.
+ * @param {string} flag - The flag to check (e.g., 'keyTappedEarlyFlag' or 'keysReleasedFlag').
+ * @param {JsPsych} jsPsych - The jsPsych instance used to control the experiment's flow.
+ * @returns {boolean} - Returns true if the specified flag is set; otherwise, false.
+ */
+
 export const checkFlag = (
   taskFilter: string,
   flag: string,
@@ -95,7 +105,14 @@ export const checkFlag = (
   return false;
 };
 
-
+/**
+ * @function checkKeys
+ * @description Checks whether all keys were held down at the end of the last trial of a specified task type.
+ *
+ * @param {string} taskFilter - The task type to filter the data by.
+ * @param {JsPsych} jsPsych - The jsPsych instance used to control the experiment's flow.
+ * @returns {boolean} - Returns true if all keys were held down; otherwise, false.
+ */
 export const checkKeys = (
   taskFilter: string,
   jsPsych: JsPsych
@@ -106,13 +123,20 @@ export const checkKeys = (
   return wereKeysHeld
 };
 
-// Function to calculate accumulated reward
+/**
+ * @function calculateTotalReward
+ * @description Calculates the total accumulated reward from successful trials.
+ *
+ * @param {JsPsych} jsPsych - The jsPsych instance used to control the experiment's flow.
+ * @returns {number} - The total accumulated reward from successful trials.
+ */
 export function calculateTotalReward(jsPsych: JsPsych): number {
   const successfulTrials = jsPsych.data
     .get()
     .filter({ task: 'block', success: true });
   console.log(successfulTrials);
   console.log(successfulTrials.select('reward'));
+  // If random chance is implemented, this is useful to calculate the rewards including skipped trials
 /*   const accceptedSkippedTrials = jsPsych.data
     .get()
     .filter({ task: 'block', accept: true, randomChanceAccepted: true, success: false});
@@ -121,17 +145,38 @@ export function calculateTotalReward(jsPsych: JsPsych): number {
   return (successfulTrials.select('reward').sum()/* +accceptedSkippedTrials.select('reward').sum() */);
 }
 
+/**
+ * @function getQueryParam
+ * @description Retrieves the value of a specified query parameter from the URL. Current options are ?lang=en and ?lang=fr
+ *
+ * @param {string} param - The name of the query parameter to retrieve.
+ * @returns {string | null} - The value of the query parameter, or null if not found.
+ */
 export const getQueryParam = (param: string) => {
   const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get(param);
 };
 
+/**
+ * @function changeProgressBar
+ * @description Updates the progress bar and progress bar message in the jsPsych experiment.
+ *
+ * @param {string} name - The message to display alongside the progress bar.
+ * @param {number} percent - The percentage of progress to display.
+ * @param {JsPsych} jsPsych - The jsPsych instance used to control the experiment's flow.
+ */
 export const changeProgressBar = (name: string, percent: number, jsPsych: JsPsych) => {
   const progressBarMessageElement = document.getElementsByTagName('span')[0];
   jsPsych.progressBar!.progress = percent
   progressBarMessageElement!.innerText = name;
 }
 
+/**
+ * @function showEndScreen
+ * @description Displays an end screen with a specified message.
+ *
+ * @param {string} message - The message to display on the end screen.
+ */
 export function showEndScreen(message: string): void {
   const screen: HTMLElement = document.createElement('div');
   screen.classList.add('custom-overlay');
@@ -139,6 +184,12 @@ export function showEndScreen(message: string): void {
   document.body.appendChild(screen);
 } 
 
+/**
+ * @function saveDataToLocalStorage
+ * @description Saves the current jsPsych data to local storage.
+ *
+ * @param {JsPsych} jsPsych - The jsPsych instance used to control the experiment's flow.
+ */
 export function saveDataToLocalStorage(jsPsych: JsPsych) {
   const jsonData = jsPsych.data.get().json();
   localStorage.setItem('jspsych-data', jsonData);
@@ -203,15 +254,14 @@ export function createShuffledTrials({
 }
 
 
-
-
-
-
-
-
-
-
-export function getUserID(jsPsych: JsPsych, state: State): string {
+/**
+ * @function getUserID
+ * @description Retrieves the user ID from the jsPsych data.
+ *
+ * @param {JsPsych} jsPsych - The jsPsych instance used to control the experiment's flow.
+ * @returns {string} - The user ID as a string.
+ */
+export function getUserID(jsPsych: JsPsych): string {
   const userIdData = jsPsych.data.get().filter({ task: 'userID' }).last(1).values()[0];
   console.log('userIdData:', userIdData);
 
@@ -223,7 +273,7 @@ export function getUserID(jsPsych: JsPsych, state: State): string {
 }
 
 
-
+// If random chance is implemented, this function is useful
 /* export function randomAcceptance(){
   let randomChance = Math.random()
   if(randomChance > .5){

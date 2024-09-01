@@ -70,6 +70,7 @@ export class ReleaseKeysPlugin {
 }
 ReleaseKeysPlugin.info = {
     name: 'release-keys',
+    version: '1.0',
     parameters: {
         stimulus: {
             type: ParameterType.HTML_STRING,

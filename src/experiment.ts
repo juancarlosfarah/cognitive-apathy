@@ -34,7 +34,6 @@ import {
   tutorialIntroductionTrial,
   userIDTrial,
 } from './message-trials';
-import { trialOrders } from './trials';
 import {
   instructionalTrial,
   noStimuliVideoTutorialTrial,
@@ -50,6 +49,8 @@ import {
   validationTrialHard,
   validationTrialMedium,
 } from './validation';
+import { getUserID } from './utils';
+import { randomTrialOrder, userTrialOrder } from './trial-order';
 
 // State variable that is passed throughout trials to ensure variables are updated universally
 let state: State = {
@@ -124,8 +125,11 @@ export async function run({ assetPaths }: any) {
   });
 
 
-/* 
-  timeline.push(userIDTrial(jsPsych, state));
+  // Update global user ID variable after userID trial to ensure order of trial blocks is correct
+  timeline.push({
+    timeline: [userIDTrial],
+    on_timeline_finish: function() {state.userID = getUserID(jsPsych)}
+  });
 
   timeline.push(experimentBeginTrial);
   timeline.push(sitComfortably);
@@ -142,7 +146,7 @@ export async function run({ assetPaths }: any) {
 
   timeline.push(calibrationSectionDirectionTrial(jsPsych));
 
-  timeline.push(instructionalTrial(CALIBRATION_PART_1_DIRECTIONS)); */
+  timeline.push(instructionalTrial(CALIBRATION_PART_1_DIRECTIONS));
 
   timeline.push(calibrationTrialPart1(jsPsych, state));
   timeline.push(conditionalCalibrationTrialPart1(jsPsych, state));
@@ -176,17 +180,10 @@ export async function run({ assetPaths }: any) {
     });
   timeline.push({
     timeline: [trialBlocksDirection(jsPsych)],
-  });
-
-  const sampledTrials = trialOrders(jsPsych, state) as any;
-  
-  // Change based on participant ID
-  sampledTrials['S22'].forEach((section: any) => {
-    section.forEach((trial: any) => {
-      timeline.push(trial);
-    });
-  });
-
+  });  
+  // Add all conditional trial nodes to the main timeline
+  timeline.push(...userTrialOrder(jsPsych, state));
+  timeline.push(randomTrialOrder(jsPsych, state));
   timeline.push(finalCalibrationSectionPart1);
   timeline.push(finalCalibrationTrialPart1(jsPsych, state));
   timeline.push(finalCalibrationSectionPart2);

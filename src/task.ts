@@ -61,6 +61,55 @@ import { randomNumberBm } from './utils';
 class TaskPlugin {
   static info = {
     name: 'task-plugin',
+    version: '1.0',
+    data: {
+      task: {
+        type: ParameterType.STRING,
+      },
+      keyTappedEarlyFlag: {
+        type: ParameterType.BOOL,
+      },
+      tapCount: {
+        type: ParameterType.INT,
+      },
+      startTime: {
+        type: ParameterType.INT,
+      },
+      endTime: {
+        type: ParameterType.INT,
+      },
+      mercuryHeight: {
+        type: ParameterType.FLOAT,
+      },
+      bounds: {
+        type: ParameterType.COMPLEX,
+      },
+      reward: {
+        type: ParameterType.FLOAT,
+      },
+      errorOccured: {
+        type: ParameterType.BOOL,
+      },
+      keysReleasedFlag: {
+        type: ParameterType.BOOL,
+      },
+      keysState: {
+        type: ParameterType.OBJECT
+      },
+      calibrationPart1Median: {
+        type: ParameterType.INT
+      },
+      calibrationPart2Median: {
+        type: ParameterType.INT
+      },
+      finalCalibrationPart1Median: {
+        type: ParameterType.INT
+      },
+      finalCalibrationPart2Median: {
+        type: ParameterType.INT
+      },
+      },
+
     parameters: {
       task: {
         type: ParameterType.STRING,

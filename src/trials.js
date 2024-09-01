@@ -398,7 +398,7 @@ export const trialsArray = (jsPsych, state) => [
         createRewardDisplayTrial(jsPsych, state),
     ],
 ];
-const syncBlock = (jsPsych, state) => [
+export const syncBlock = (jsPsych, state) => [
     [
         // Demo trials
         createTrialBlock({
@@ -418,7 +418,7 @@ const syncBlock = (jsPsych, state) => [
         createRewardDisplayTrial(jsPsych, state),
     ],
 ];
-const narrowAsyncBlock = (jsPsych, state) => [
+export const narrowAsyncBlock = (jsPsych, state) => [
     [
         // Demo trials
         createTrialBlock({
@@ -438,7 +438,7 @@ const narrowAsyncBlock = (jsPsych, state) => [
         createRewardDisplayTrial(jsPsych, state),
     ],
 ];
-const wideAsyncBlock = (jsPsych, state) => [
+export const wideAsyncBlock = (jsPsych, state) => [
     [
         createTrialBlock({
             // Demo trials
@@ -650,225 +650,3 @@ export const trialOrders = (jsPsych, state) => ({
  * @returns {Array} - An array containing the sampled trial blocks, ready to be used in the experiment's timeline.
  */
 export const sampledArray = (jsPsych, state) => jsPsych.randomization.sampleWithoutReplacement(trialsArray(jsPsych, state), 6);
-export const trialOrders2 = (jsPsych, state) => ({
-    S01: () => ({
-        timeline: [
-            narrowAsyncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-        ]
-    }),
-    S02: () => ({
-        timeline: [
-            narrowAsyncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-        ]
-    }),
-    S03: () => ({
-        timeline: [
-            narrowAsyncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-        ]
-    }),
-    S04: () => ({
-        timeline: [
-            syncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-        ]
-    }),
-    S05: () => ({
-        timeline: [
-            wideAsyncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-        ]
-    }),
-    S06: () => ({
-        timeline: [
-            syncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-        ]
-    }),
-    S07: () => ({
-        timeline: [
-            wideAsyncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-        ]
-    }),
-    S08: () => ({
-        timeline: [
-            syncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-        ]
-    }),
-    S09: () => ({
-        timeline: [
-            narrowAsyncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-        ]
-    }),
-    S10: () => ({
-        timeline: [
-            syncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-        ]
-    }),
-    S11: () => ({
-        timeline: [
-            wideAsyncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-        ]
-    }),
-    S12: () => ({
-        timeline: [
-            narrowAsyncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-        ]
-    }),
-    S13: () => ({
-        timeline: [
-            wideAsyncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-        ]
-    }),
-    S14: () => ({
-        timeline: [
-            syncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-        ]
-    }),
-    S15: () => ({
-        timeline: [
-            narrowAsyncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-        ]
-    }),
-    S16: () => ({
-        timeline: [
-            syncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-        ]
-    }),
-    S17: () => ({
-        timeline: [
-            wideAsyncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-        ]
-    }),
-    S18: () => ({
-        timeline: [
-            narrowAsyncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-        ]
-    }),
-    S19: () => ({
-        timeline: [
-            wideAsyncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-        ]
-    }),
-    S20: () => ({
-        timeline: [
-            wideAsyncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-        ]
-    }),
-    S21: () => ({
-        timeline: [
-            narrowAsyncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-        ]
-    }),
-    S22: () => ({
-        timeline: [
-            syncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-            narrowAsyncBlock(jsPsych, state),
-            syncBlock(jsPsych, state),
-            wideAsyncBlock(jsPsych, state),
-        ]
-    })
-});

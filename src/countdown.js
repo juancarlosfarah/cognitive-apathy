@@ -141,6 +141,15 @@ export class CountdownTrialPlugin {
 }
 CountdownTrialPlugin.info = {
     name: 'countdown-trial',
+    version: '1.0',
+    data: {
+        task: {
+            type: ParameterType.STRING,
+        },
+        keyTappedEarlyFlag: {
+            type: ParameterType.BOOL,
+        },
+    },
     parameters: {
         keysToHold: {
             type: ParameterType.STRING,

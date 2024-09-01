@@ -10,14 +10,15 @@ import PreloadPlugin from '@jspsych/plugin-preload';
 import { initJsPsych } from 'jspsych';
 import '../styles/main.scss';
 import { calibrationTrialPart1, calibrationTrialPart2, conditionalCalibrationTrialPart1, conditionalCalibrationTrialPart2, finalCalibrationTrialPart1, finalCalibrationTrialPart2, } from './calibration';
-import { PROGRESS_BAR } from './constants';
+import { CALIBRATION_PART_1_DIRECTIONS, PROGRESS_BAR } from './constants';
 import { finishExperiment } from './finish';
 import './i18n';
 import { likertFinalQuestionAfterValidation, } from './likert';
-import { finalCalibrationSectionPart1, finalCalibrationSectionPart2, trialBlocksDirection, } from './message-trials';
-import { trialOrders } from './trials';
-import { stimuliVideoTutorialTrial, validationVideoTutorialTrial, } from './tutorial';
+import { calibrationSectionDirectionTrial, experimentBeginTrial, finalCalibrationSectionPart1, finalCalibrationSectionPart2, handTutorialTrial, sitComfortably, trialBlocksDirection, tutorialIntroductionTrial, userIDTrial, } from './message-trials';
+import { instructionalTrial, noStimuliVideoTutorialTrial, practiceLoop, stimuliVideoTutorialTrial, validationVideoTutorialTrial, } from './tutorial';
 import { validationResultScreen, validationTrialEasy, validationTrialExtra, validationTrialHard, validationTrialMedium, } from './validation';
+import { getUserID } from './utils';
+import { randomTrialOrder, userTrialOrder } from './trial-order';
 // State variable that is passed throughout trials to ensure variables are updated universally
 let state = {
     medianTapsPart1: 0,
@@ -86,25 +87,21 @@ export function run(_a) {
                 console.error(`Failed to preload: ${file}`);
             },
         });
-        /*
-          timeline.push(userIDTrial(jsPsych, state));
-        
-          timeline.push(experimentBeginTrial);
-          timeline.push(sitComfortably);
-          timeline.push(tutorialIntroductionTrial(jsPsych));
-        
-          timeline.push(noStimuliVideoTutorialTrial(jsPsych));
-          timeline.push(handTutorialTrial);
-        
-          timeline.push(practiceLoop(jsPsych, state));
-        
-          timeline.push(practiceLoop(jsPsych, state));
-        
-          timeline.push(practiceLoop(jsPsych, state));
-        
-          timeline.push(calibrationSectionDirectionTrial(jsPsych));
-        
-          timeline.push(instructionalTrial(CALIBRATION_PART_1_DIRECTIONS)); */
+        // Update global user ID variable after userID trial to ensure order of trial blocks is correct
+        timeline.push({
+            timeline: [userIDTrial],
+            on_timeline_finish: function () { state.userID = getUserID(jsPsych); }
+        });
+        timeline.push(experimentBeginTrial);
+        timeline.push(sitComfortably);
+        timeline.push(tutorialIntroductionTrial(jsPsych));
+        timeline.push(noStimuliVideoTutorialTrial(jsPsych));
+        timeline.push(handTutorialTrial);
+        timeline.push(practiceLoop(jsPsych, state));
+        timeline.push(practiceLoop(jsPsych, state));
+        timeline.push(practiceLoop(jsPsych, state));
+        timeline.push(calibrationSectionDirectionTrial(jsPsych));
+        timeline.push(instructionalTrial(CALIBRATION_PART_1_DIRECTIONS));
         timeline.push(calibrationTrialPart1(jsPsych, state));
         timeline.push(conditionalCalibrationTrialPart1(jsPsych, state));
         timeline.push(stimuliVideoTutorialTrial(jsPsych));
@@ -135,13 +132,9 @@ export function run(_a) {
         timeline.push({
             timeline: [trialBlocksDirection(jsPsych)],
         });
-        const sampledTrials = trialOrders(jsPsych, state);
-        // Change based on participant ID
-        sampledTrials['S22'].forEach((section) => {
-            section.forEach((trial) => {
-                timeline.push(trial);
-            });
-        });
+        // Add all conditional trial nodes to the main timeline
+        timeline.push(...userTrialOrder(jsPsych, state));
+        timeline.push(randomTrialOrder(jsPsych, state));
         timeline.push(finalCalibrationSectionPart1);
         timeline.push(finalCalibrationTrialPart1(jsPsych, state));
         timeline.push(finalCalibrationSectionPart2);

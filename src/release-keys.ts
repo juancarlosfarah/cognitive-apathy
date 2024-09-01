@@ -29,6 +29,7 @@ import { KEYS_TO_HOLD, RELEASE_KEYS_MESSAGE } from './constants';
 export class ReleaseKeysPlugin {
   static info = {
     name: 'release-keys',
+    version: '1.0',
     parameters: {
       stimulus: {
         type: ParameterType.HTML_STRING,

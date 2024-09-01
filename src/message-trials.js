@@ -2,9 +2,9 @@ import htmlButtonResponse from '@jspsych/plugin-html-button-response';
 import FullscreenPlugin from '@jspsych/plugin-fullscreen';
 import surveyText from '@jspsych/plugin-survey-text';
 import { CONTINUE_BUTTON_MESSAGE, EXPERIMENT_BEGIN_MESSAGE, TUTORIAL_INTRODUCTION_MESSAGE, CALIBRATION_PART_1_DIRECTIONS, CALIBRATION_SECTION_MESSAGE, PROGRESS_BAR, TRIAL_BLOCKS_DIRECTIONS, START_BUTTON_MESSAGE, ENABLE_BUTTON_AFTER_TIME, LIKERT_INTRO, } from './constants';
-import { changeProgressBar, /* getUserID */ } from './utils';
+import { changeProgressBar } from './utils';
 import { finalNoStimuliVideo, finalStimuliVideo, handTutorial, sitComfortablyStimuli } from './stimulus';
-export const userIDTrial = (jsPsych, state) => ({
+export const userIDTrial = ({
     type: surveyText,
     questions: [
         { prompt: 'Enter User ID here:', name: 'UserID' }

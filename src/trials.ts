@@ -24,7 +24,7 @@ import { releaseKeysStep } from './release-keys';
 import { acceptanceThermometer } from './stimulus';
 import TaskPlugin from './task';
 import { autoIncreaseAmount, calculateTotalReward, checkFlag, checkKeys, changeProgressBar, saveDataToLocalStorage, createShuffledTrials, /* randomAcceptance */ } from './utils';
-import { State, TaskTrialData, PassedTaskData, CreateTrialBlockParams } from './types'; // Assuming you have the appropriate types defined here
+import { State, TaskTrialData, PassedTaskData, CreateTrialBlockParams, TrialOrdersType } from './types'; // Assuming you have the appropriate types defined here
 import { EASY_BOUNDS } from './constants';
 import htmlButtonResponse from '@jspsych/plugin-html-button-response';
 import { likertIntro, likertIntroDemo } from './message-trials';
@@ -461,7 +461,7 @@ export const trialsArray = (jsPsych: JsPsych, state: State) => [
   ],
 ];
 
-const syncBlock = (jsPsych: JsPsych, state: State) => 
+export const syncBlock = (jsPsych: JsPsych, state: State) => 
 [
   [
   // Demo trials
@@ -485,7 +485,7 @@ const syncBlock = (jsPsych: JsPsych, state: State) =>
 
 
 
-const narrowAsyncBlock = (jsPsych: JsPsych, state: State) => 
+export const narrowAsyncBlock = (jsPsych: JsPsych, state: State) => 
 [
   [
     // Demo trials
@@ -510,7 +510,7 @@ const narrowAsyncBlock = (jsPsych: JsPsych, state: State) =>
 
 
 
-const wideAsyncBlock = (jsPsych: JsPsych, state: State) => 
+export const wideAsyncBlock = (jsPsych: JsPsych, state: State) => 
 [
   [
     createTrialBlock({
@@ -533,7 +533,7 @@ const wideAsyncBlock = (jsPsych: JsPsych, state: State) =>
 ]
 
 
-export const trialOrders = (jsPsych: JsPsych, state: State) => ({
+export const trialOrders = (jsPsych: JsPsych, state: State): TrialOrdersType => ({
   S01: [
     narrowAsyncBlock(jsPsych, state),
     syncBlock(jsPsych, state),
