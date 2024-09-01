@@ -36,7 +36,6 @@ import {
  * @method startCountdown - Starts the countdown timer when all specified keys are held.
  * @method endTrial - Ends the trial and sends the recorded data to jsPsych.
  * @method setAreKeysHeld - Checks if the required keys are being held down and starts or resets the countdown as needed.
- * @method setError - Logs error messages to the console.
  */
 export class CountdownTrialPlugin {
   static info = {
@@ -140,7 +139,6 @@ export class CountdownTrialPlugin {
       } else if (!areKeysHeld && interval) {
         clearInterval(interval);
         interval = null;
-        setError('You stopped holding the keys!');
         messageContainer.innerHTML = trial.message; // Reset the display message
         directionsContainer.innerHTML = ''; // Clear the directions
         timerContainer.innerHTML = ''; // Clear the timer
@@ -209,9 +207,6 @@ export class CountdownTrialPlugin {
       this.jsPsych.finishTrial(trialData);
     };
 
-    const setError = (message: string) => {
-      console.error(message);
-    };
 
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);

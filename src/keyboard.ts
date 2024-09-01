@@ -21,7 +21,6 @@ import 'simple-keyboard/build/css/index.css';
 
 // Discovered that there is a simple parameter called "physicalKeyboardHighlightPress: BOOLEAN" which can be set to true to not rework the wheel. Should be implemented for simplicity.
 export function createKeyboard(displayElement: HTMLElement) {
-  console.log('Creating keyboard...');
 
   const keyboardContainer = document.createElement('div');
   keyboardContainer.id = 'keyboard-container';
@@ -32,7 +31,6 @@ export function createKeyboard(displayElement: HTMLElement) {
   keyboardContainer.style.zIndex = '1000';
   displayElement.appendChild(keyboardContainer);
 
-  console.log('Keyboard container created and appended.');
 
   const keyboardDiv = document.createElement('div');
   keyboardDiv.className = 'simple-keyboard';
@@ -42,15 +40,12 @@ export function createKeyboard(displayElement: HTMLElement) {
   keyboardDiv.style.backgroundColor = 'lightgray';
   keyboardContainer.appendChild(keyboardDiv);
 
-  console.log('Keyboard div created and appended.');
 
   const keyboard = new Keyboard(keyboardDiv, {
     onChange: (input: string) => {
       (document.querySelector('.input') as HTMLInputElement).value = input;
-      console.log('Input changed', input);
     },
     onKeyPress: (button: string) => {
-      console.log('Button pressed', button);
       if (button === '{shift}' || button === '{lock}') handleShift(keyboard);
     },
     physicalKeyboardHighlight: true,
@@ -59,7 +54,6 @@ export function createKeyboard(displayElement: HTMLElement) {
     theme: 'hg-theme-default hg-layout-default myTheme',
   });
 
-  console.log('Keyboard initialized.');
 
   const handleShift = (keyboard: Keyboard) => {
     let currentLayout = keyboard.options.layoutName;
@@ -70,7 +64,6 @@ export function createKeyboard(displayElement: HTMLElement) {
     });
   };
 
-  console.log('Keyboard setup complete.');
 
   return { keyboard, keyboardDiv };
 }

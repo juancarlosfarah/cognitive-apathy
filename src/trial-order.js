@@ -217,12 +217,6 @@ export const userTrialOrder = (jsPsych, state) => {
         return {
             timeline: trialOrders(jsPsych, state)[userID].flat(),
             conditional_function: function () {
-                if (state.userID === userID) {
-                    console.log(`Match found: ${state.userID} = ${userID}`);
-                    trialOrders(jsPsych, state)[state.userID].flat().forEach((trial, index) => {
-                        console.log(`Trial ${index + 1}:`, trial);
-                    });
-                }
                 return state.userID === userID;
             },
         };

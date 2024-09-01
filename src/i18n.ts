@@ -6,7 +6,6 @@ import {getQueryParam} from './utils'
 // Initialize i18next
 
 const language = getQueryParam('lang') || 'en'; // Default to 'en' if not specified
-console.log('hello')
 
 i18n
 .init

@@ -145,7 +145,6 @@ export const createCalibrationTrial = ({ showThermometer, bounds, calibrationPar
             {
                 timeline: [releaseKeysStep],
                 conditional_function: function () {
-                    console.log({ 'Median Taps Calibration Part 1: ': state.medianTapsPart1, 'Median Taps Calibration Part 2: ': state.medianTaps, 'Final Median Taps Calibration Part 1: ': state.finalMedianTapsPart1, 'Final Median Taps Calibration Part 2: ': state.finalMedianTapsPart2, });
                     return checkKeys(calibrationPart, jsPsych);
                 },
             },
@@ -214,7 +213,6 @@ export const createConditionalCalibrationTrial = ({ calibrationPart, jsPsych, st
                             return true;
                     }
                     else {
-                        console.log(`state.medianTaps for conditional trial = ${state.medianTaps}`);
                         if (state.medianTaps >= MINIMUM_CALIBRATION_MEDIAN) {
                             return false;
                         }

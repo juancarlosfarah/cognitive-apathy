@@ -56,7 +56,6 @@ class SuccessScreenPlugin {
     });        
     
     const handleKeyUp = (event: KeyboardEvent) => {
-      console.log('keyup');
       const key = event.key.toLowerCase();
       if (KEYS_TO_HOLD.includes(key)) {
         keysState[key] = false;
@@ -68,11 +67,6 @@ class SuccessScreenPlugin {
     };
 
     const end_trial = () => {
-      console.log('successScreen keys state')
-      console.log(keysState)
-      console.log('trial success?')
-      console.log(isSuccess())
-      console.log(keysState)
       document.removeEventListener('keyup', handleKeyUp);
       const trialData = {
         keysState: keysState,

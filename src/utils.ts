@@ -125,7 +125,7 @@ export const checkKeys = (
 
 /**
  * @function calculateTotalReward
- * @description Calculates the total accumulated reward from successful trials.
+ * @description Calculates the total accumulated reward from successful trials. The commented out code is useful to calculate the rewards including skipped trials if random chance is implemented 
  *
  * @param {JsPsych} jsPsych - The jsPsych instance used to control the experiment's flow.
  * @returns {number} - The total accumulated reward from successful trials.
@@ -134,9 +134,7 @@ export function calculateTotalReward(jsPsych: JsPsych): number {
   const successfulTrials = jsPsych.data
     .get()
     .filter({ task: 'block', success: true });
-  console.log(successfulTrials);
-  console.log(successfulTrials.select('reward'));
-  // If random chance is implemented, this is useful to calculate the rewards including skipped trials
+  // If random chance is implemented, the commented out code is useful to calculate the rewards including skipped trials
 /*   const accceptedSkippedTrials = jsPsych.data
     .get()
     .filter({ task: 'block', accept: true, randomChanceAccepted: true, success: false});
@@ -263,22 +261,20 @@ export function createShuffledTrials({
  */
 export function getUserID(jsPsych: JsPsych): string {
   const userIdData = jsPsych.data.get().filter({ task: 'userID' }).last(1).values()[0];
-  console.log('userIdData:', userIdData);
 
   // Correctly extract the value from userIdData.response
   const userID = userIdData.response.UserID; // Access the 'UserID' key
-  console.log('Extracted userID:', userID);
 
   return String(userID); // Ensure it's returned as a string
 }
 
 
-// If random chance is implemented, this function is useful
-/* export function randomAcceptance(){
+// If random chance is implemented, this function is useful. Currently unused.
+export function randomAcceptance(){
   let randomChance = Math.random()
   if(randomChance > .5){
     return true
   } else return false
-} */
+}
 
 
